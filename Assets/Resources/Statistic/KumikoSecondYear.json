@@ -1,0 +1,69 @@
+{
+    "Info": [
+        {
+            "CardNumber": 1
+        }
+    ],
+    "Cards": [
+        {
+            "imageName": "13.mizore.yoroizuka-portrait",
+            "chineseName": "铠冢霙",
+            "englishName": "Yoroizuka Mizore",
+            "group": "KumikoSecondYear",
+            "grade": 3,
+            "originPower": 10,
+            "badgeType": "Wood",
+            "ability": "None",
+            "cardType": "Hero",
+            "quote": "“喜欢希美的一切。”"
+        },
+        {
+            "imageName": "64.satsuki.suzuki-portrait",
+            "chineseName": "铃木皋月",
+            "englishName": "Suzuki Satsuki",
+            "group": "KumikoSecondYear",
+            "grade": 1,
+            "originPower": 2,
+            "badgeType": "Brass",
+            "ability": "None",
+            "cardType": "Normal",
+            "quote": "“我是铃木皋月，\n在东中吹大号的！”"
+        },
+        {
+            "imageName": "65.mirei.suzuki-portrait",
+            "chineseName": "铃木皋月",
+            "englishName": "Suzuki Mirei",
+            "group": "KumikoSecondYear",
+            "grade": 1,
+            "originPower": 5,
+            "badgeType": "Brass",
+            "ability": "None",
+            "cardType": "Normal",
+            "quote": "“那个。。\n两位不觉得距离太近了吗？”"
+        },
+        {
+            "imageName": "66.natsuki.nakagawa-portrait",
+            "chineseName": "中川夏纪",
+            "englishName": "Nakagawa Natsuki",
+            "group": "KumikoSecondYear",
+            "grade": 3,
+            "originPower": 5,
+            "badgeType": "Brass",
+            "ability": "None",
+            "cardType": "Normal",
+            "quote": "“托小黄你的福，\n我现在觉得自己吹的比以前好些了。”"
+        },
+        {
+            "imageName": "74.masako.sakai-portrait",
+            "chineseName": "堺万纱子",
+            "englishName": "Sakai Masako",
+            "group": "KumikoSecondYear",
+            "grade": 2,
+            "originPower": 5,
+            "badgeType": "Percussion",
+            "ability": "None",
+            "cardType": "Normal",
+            "quote": "非常喜欢音乐，\n演奏时会感到无比幸福。"
+        }
+    ]
+}
