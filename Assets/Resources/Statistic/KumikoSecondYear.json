@@ -6,9 +6,21 @@
     ],
     "Cards": [
         {
+            "imageName": "01.rie.shima-portrait",
+            "chineseName": "岛理惠",
+            "englishName": "Rie Shima",
+            "group": "KumikoSecondYear",
+            "grade": 3,
+            "originPower": 7,
+            "badgeType": "Wood",
+            "ability": "Tunning",
+            "cardType": "Normal",
+            "quote": "带领着人数很多的单簧管组。\n是疯狂的宇宙迷。"
+        },
+        {
             "imageName": "13.mizore.yoroizuka-portrait",
             "chineseName": "铠冢霙",
-            "englishName": "Yoroizuka Mizore",
+            "englishName": "Mizore Yoroizuka",
             "group": "KumikoSecondYear",
             "grade": 3,
             "originPower": 10,
@@ -20,7 +32,7 @@
         {
             "imageName": "64.satsuki.suzuki-portrait",
             "chineseName": "铃木皋月",
-            "englishName": "Suzuki Satsuki",
+            "englishName": "Satsuki Suzuki",
             "group": "KumikoSecondYear",
             "grade": 1,
             "originPower": 2,
@@ -31,8 +43,8 @@
         },
         {
             "imageName": "65.mirei.suzuki-portrait",
-            "chineseName": "铃木皋月",
-            "englishName": "Suzuki Mirei",
+            "chineseName": "铃木美玲",
+            "englishName": "Mirei Suzuki",
             "group": "KumikoSecondYear",
             "grade": 1,
             "originPower": 5,
@@ -44,7 +56,7 @@
         {
             "imageName": "66.natsuki.nakagawa-portrait",
             "chineseName": "中川夏纪",
-            "englishName": "Nakagawa Natsuki",
+            "englishName": "Natsuki Nakagawa",
             "group": "KumikoSecondYear",
             "grade": 3,
             "originPower": 5,
@@ -56,7 +68,7 @@
         {
             "imageName": "74.masako.sakai-portrait",
             "chineseName": "堺万纱子",
-            "englishName": "Sakai Masako",
+            "englishName": "Masako Sakai",
             "group": "KumikoSecondYear",
             "grade": 2,
             "originPower": 5,

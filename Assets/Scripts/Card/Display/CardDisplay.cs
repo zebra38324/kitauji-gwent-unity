@@ -15,6 +15,7 @@ public class CardDisplay : MonoBehaviour
     public GameObject dialogBackground;
     public GameObject cardName;
     public GameObject quote;
+    public GameObject chineseName;
 
     // Belt
     public GameObject belt;
@@ -57,6 +58,7 @@ public class CardDisplay : MonoBehaviour
         dialogBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/dialog/dialog");
         cardName.GetComponent<TextMeshProUGUI>().text = cardInfo.englishName;
         quote.GetComponent<TextMeshProUGUI>().text = cardInfo.quote;
+        chineseName.GetComponent<TextMeshProUGUI>().text = cardInfo.chineseName;
 
         // Belt
         belt.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/belt/" + GetBeltName());
@@ -122,6 +124,8 @@ public class CardDisplay : MonoBehaviour
                 return "attack";
             case CardAbility.Spy:
                 return "spy";
+            case CardAbility.Tunning:
+                return "tunning";
             default: // None
                 return "none";
         }

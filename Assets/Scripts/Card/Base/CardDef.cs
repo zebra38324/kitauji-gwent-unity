@@ -18,7 +18,8 @@ public enum CardAbility // TODO: 完善
 {
     None = 0,
     Spy,
-    Attack
+    Attack,
+    Tunning
 }
 
 public enum CardType
