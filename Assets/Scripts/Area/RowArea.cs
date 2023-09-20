@@ -10,15 +10,26 @@ public class RowArea : MonoBehaviour
     public delegate void ScoreChangeNotifyHandler(int diff);
     public event ScoreChangeNotifyHandler ScoreChangeNotify;
 
+    private int currentScore;
+
     public void AddNormalCard(GameObject newCard)
     {
         newCard.transform.SetParent(normalArea.transform);
         normalArea.GetComponent<CardArea>().AddCard(newCard);
 
-        // 计算分数
-        int currentScore = int.Parse(scoreNum.GetComponent<TextMeshProUGUI>().text);
-        int diff = newCard.GetComponent<CardDisplay>().cardInfo.originPower;
-        scoreNum.GetComponent<TextMeshProUGUI>().text = (currentScore + diff).ToString();
+        // 设置buff
+        if (newCard.GetComponent<CardDisplay>().cardInfo.ability == CardAbility.Tunning) {
+            normalArea.GetComponent<CardArea>().ClearNormalDebuff();
+        }
+        UpdateScore();
+    }
+
+    private void UpdateScore()
+    {
+        int newScore = normalArea.GetComponent<CardArea>().GetCurrentScore();
+        int diff = newScore - currentScore;
         ScoreChangeNotify(diff);
+        currentScore = newScore;
+        scoreNum.GetComponent<TextMeshProUGUI>().text = currentScore.ToString();
     }
 }

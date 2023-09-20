@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 // 卡牌区域，主要用于场上普通牌以及手牌的排布
@@ -36,6 +37,25 @@ public class CardArea : MonoBehaviour
     {
         cardList.Remove(card);
         ReArrange();
+    }
+
+    // 消除除天气外的debuff
+    public void ClearNormalDebuff()
+    {
+        foreach (GameObject card in cardList)
+        {
+            card.GetComponent<CardDisplay>().ClearNormalDebuff();
+        }
+    }
+
+    public int GetCurrentScore()
+    {
+        int sum = 0;
+        foreach (GameObject card in cardList)
+        {
+            sum += int.Parse(card.GetComponent<CardDisplay>().powerNum.GetComponent<TextMeshProUGUI>().text);
+        }
+        return sum;
     }
 
     // 添加或移出卡片时，重新排布位置

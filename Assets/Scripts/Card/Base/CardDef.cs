@@ -41,3 +41,13 @@ public struct CardInfo
     public CardType cardType; // 是否为英雄牌
     public string quote; // 卡牌最下方的台词引用
 }
+
+// 最终分数=(basePower + add) * times
+// TODO 区分天气buff
+public struct CardPowerBuff
+{
+    public int basePower;
+    public int add;
+    public int minus;
+    public int times;
+}

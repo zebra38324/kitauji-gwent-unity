@@ -33,6 +33,8 @@ public class CardDisplay : MonoBehaviour
     public GameObject abilityBackground;
     public GameObject ability;
 
+    private CardPowerBuff cardPowerBuff;
+
     void Awake()
     {
 
@@ -41,6 +43,7 @@ public class CardDisplay : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        InitCardPowerBuff();
         ShowCard();
     }
 
@@ -66,11 +69,11 @@ public class CardDisplay : MonoBehaviour
         // Power
         if (cardInfo.cardType == CardType.Hero) {
             powerBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/power/power-hero");
-            powerNum.GetComponent<TextMeshProUGUI>().text = cardInfo.originPower.ToString();
+            powerNum.GetComponent<TextMeshProUGUI>().text = cardPowerBuff.basePower.ToString();
             powerNum.GetComponent<TextMeshProUGUI>().color = new Color(1, 1, 1, 1);
         } else {
             powerBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/power/power-normal");
-            powerNum.GetComponent<TextMeshProUGUI>().text = cardInfo.originPower.ToString();
+            powerNum.GetComponent<TextMeshProUGUI>().text = cardPowerBuff.basePower.ToString();
         }
         powerType.GetComponent<Image>().color = new Color(0, 0, 0, 0); // TODO: 未考虑非角色牌
 
@@ -88,6 +91,41 @@ public class CardDisplay : MonoBehaviour
             ability.SetActive(false);
         }
         
+    }
+
+    // 添加点数buff
+    public void SetBuffAddMinus(int diff)
+    {
+        if (diff > 0) {
+            cardPowerBuff.add += diff;
+        } else {
+            cardPowerBuff.minus += diff;
+        }
+        UpdateDisplayPower();
+    }
+
+    // 消除除天气外的debuff
+    public void ClearNormalDebuff()
+    {
+        if (cardPowerBuff.basePower < cardInfo.originPower) {
+            cardPowerBuff.basePower = cardInfo.originPower;
+        }
+        cardPowerBuff.minus = 0;
+        UpdateDisplayPower();
+    }
+
+    private void InitCardPowerBuff()
+    {
+        cardPowerBuff.basePower = cardInfo.originPower;
+        cardPowerBuff.add = 0;
+        cardPowerBuff.minus = 0;
+        cardPowerBuff.times = 1;
+    }
+
+    private void UpdateDisplayPower()
+    {
+        int result = (cardPowerBuff.basePower + cardPowerBuff.add + cardPowerBuff.minus) * cardPowerBuff.times;
+        powerNum.GetComponent<TextMeshProUGUI>().text = result.ToString();
     }
 
     static string[] beltNames = { "belt-red", "belt-blue", "belt-green" };
