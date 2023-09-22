@@ -18,6 +18,31 @@
             "quote": "带领着人数很多的单簧管组。\n是疯狂的宇宙迷。"
         },
         {
+            "imageName": "02.hiyoko.ueda-portrait",
+            "chineseName": "植田日和子",
+            "englishName": "Hiyoko Ueda",
+            "group": "KumikoSecondYear",
+            "grade": 2,
+            "originPower": 5,
+            "badgeType": "Wood",
+            "ability": "None",
+            "cardType": "Normal",
+            "quote": "辫子的编法每天都会稍微变化，\n但是并没有人注意到。"
+        },
+        {
+            "imageName": "04.chieri.takahisa-portrait",
+            "chineseName": "高久智惠理",
+            "englishName": "Chieri Takahisa",
+            "group": "KumikoSecondYear",
+            "grade": 2,
+            "originPower": 5,
+            "badgeType": "Wood",
+            "ability": "Bond",
+            "bondType": "bg",
+            "cardType": "Normal",
+            "quote": "受到次中音萨克斯管的泷川近夫鼓励，\n成了积极面对吹奏乐的单簧管候选人。"
+        },
+        {
             "imageName": "13.mizore.yoroizuka-portrait",
             "chineseName": "铠冢霙",
             "englishName": "Mizore Yoroizuka",
@@ -28,6 +53,19 @@
             "ability": "None",
             "cardType": "Hero",
             "quote": "“喜欢希美的一切。”"
+        },
+        {
+            "imageName": "27.chikao.takigawa-portrait",
+            "chineseName": "泷川近夫",
+            "englishName": "Chikao Takigawa",
+            "group": "KumikoSecondYear",
+            "grade": 2,
+            "originPower": 5,
+            "badgeType": "Wood",
+            "ability": "Bond",
+            "bondType": "bg",
+            "cardType": "Normal",
+            "quote": "和负责高音单簧管的高久智惠理，\n刚刚开始交往不久。"
         },
         {
             "imageName": "64.satsuki.suzuki-portrait",

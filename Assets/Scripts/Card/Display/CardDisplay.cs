@@ -104,6 +104,15 @@ public class CardDisplay : MonoBehaviour
         UpdateDisplayPower();
     }
 
+    public void SetBuffTimes(int times)
+    {
+        if (times < 1) {
+            return;
+        }
+        cardPowerBuff.times = times;
+        UpdateDisplayPower();
+    }
+
     // 消除除天气外的debuff
     public void ClearNormalDebuff()
     {
@@ -164,6 +173,8 @@ public class CardDisplay : MonoBehaviour
                 return "spy";
             case CardAbility.Tunning:
                 return "tunning";
+            case CardAbility.Bond:
+                return "bond";
             default: // None
                 return "none";
         }

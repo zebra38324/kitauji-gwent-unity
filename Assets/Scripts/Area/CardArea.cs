@@ -48,6 +48,24 @@ public class CardArea : MonoBehaviour
         }
     }
 
+    // 更新bond的buff
+    public void UpdateBondBuff(string bondType)
+    {
+        int count = 0;
+        List<GameObject> updateList = new List<GameObject>();
+        foreach (GameObject card in cardList)
+        {
+            if (card.GetComponent<CardDisplay>().cardInfo.bondType == bondType) {
+                count++;
+                updateList.Add(card);
+            }
+        }
+        foreach (GameObject card in updateList)
+        {
+            card.GetComponent<CardDisplay>().SetBuffTimes(count);
+        }
+    }
+
     public int GetCurrentScore()
     {
         int sum = 0;

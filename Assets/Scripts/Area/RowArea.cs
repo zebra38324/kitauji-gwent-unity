@@ -20,6 +20,8 @@ public class RowArea : MonoBehaviour
         // 设置buff
         if (newCard.GetComponent<CardDisplay>().cardInfo.ability == CardAbility.Tunning) {
             normalArea.GetComponent<CardArea>().ClearNormalDebuff();
+        } else if (newCard.GetComponent<CardDisplay>().cardInfo.ability == CardAbility.Bond) {
+            normalArea.GetComponent<CardArea>().UpdateBondBuff(newCard.GetComponent<CardDisplay>().cardInfo.bondType);
         }
         UpdateScore();
     }

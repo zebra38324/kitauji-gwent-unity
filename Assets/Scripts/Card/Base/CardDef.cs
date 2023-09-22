@@ -19,7 +19,8 @@ public enum CardAbility // TODO: 完善
     None = 0,
     Spy,
     Attack,
-    Tunning
+    Tunning,
+    Bond, // 同袍之情
 }
 
 public enum CardType
@@ -38,6 +39,7 @@ public struct CardInfo
     public int originPower; // 初始点数
     public CardBadgeType badgeType; // 类型，位于场上哪一排
     public CardAbility ability; // 特殊能力
+    public string bondType; // bond类型，用于匹配bond的组合
     public CardType cardType; // 是否为英雄牌
     public string quote; // 卡牌最下方的台词引用
 }
