@@ -40,28 +40,10 @@ public class CardSelect : MonoBehaviour, IPointerClickHandler
     {
         // TODO 待优化
         handArea.GetComponent<HandArea>().RemoveCard(gameObject);
-        GameObject rowArea;
-        string areaName = "SelfPlayArea/";
-        switch (gameObject.GetComponent<CardDisplay>().cardInfo.badgeType) {
-            case CardBadgeType.Wood: {
-                areaName += "WoodRowArea";
-                break;
-            }
-            case CardBadgeType.Brass: {
-                areaName += "BrassRowArea";
-                break;
-            }
-            case CardBadgeType.Percussion: {
-                areaName += "PercussionRowArea";
-                break;
-            }
-            default: {
-                Debug.LogError("badgeType error = " + gameObject.GetComponent<CardDisplay>().cardInfo.badgeType);
-                break;
-            }
-        }
-        rowArea = GameObject.Find(areaName);
-        rowArea.GetComponent<RowArea>().AddNormalCard(gameObject);
+        GameObject singlePlayerArea;
+        string areaName = "SelfPlayArea";
+        singlePlayerArea = GameObject.Find(areaName);
+        singlePlayerArea.GetComponent<SinglePlayerArea>().AddNormalCard(gameObject);
         enableSelect = false;
         gameObject.GetComponent<CardInfoDisplay>().SetIsCardUp(false);
     }
