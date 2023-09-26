@@ -48,21 +48,27 @@ public class CardArea : MonoBehaviour
         }
     }
 
-    // 更新bond的buff
-    public void UpdateBondBuff(string bondType)
+    // 统计一个类型bond的卡牌数量
+    public int GetBondCardNum(string bondType)
     {
         int count = 0;
-        List<GameObject> updateList = new List<GameObject>();
         foreach (GameObject card in cardList)
         {
             if (card.GetComponent<CardDisplay>().cardInfo.bondType == bondType) {
                 count++;
-                updateList.Add(card);
             }
         }
-        foreach (GameObject card in updateList)
+        return count;
+    }
+
+    // 更新bond的buff
+    public void UpdateBondBuff(string bondType, int times)
+    {
+        foreach (GameObject card in cardList)
         {
-            card.GetComponent<CardDisplay>().SetBuffTimes(count);
+            if (card.GetComponent<CardDisplay>().cardInfo.bondType == bondType) {
+                card.GetComponent<CardDisplay>().SetBuffTimes(times);
+            }
         }
     }
 

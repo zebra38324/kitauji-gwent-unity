@@ -46,5 +46,22 @@ public class SinglePlayerArea : MonoBehaviour
         }
 
         targetArea.GetComponent<RowArea>().AddNormalCard(newCard);
+        // 设置buff
+        if (newCard.GetComponent<CardDisplay>().cardInfo.ability == CardAbility.Tunning) {
+            targetArea.GetComponent<RowArea>().ClearNormalDebuff();
+        } else if (newCard.GetComponent<CardDisplay>().cardInfo.ability == CardAbility.Bond) {
+            UpdateBondBuff(newCard.GetComponent<CardDisplay>().cardInfo.bondType);
+        }
+    }
+
+    private void UpdateBondBuff(string bondType)
+    {
+        int times = woodRow.GetComponent<RowArea>().GetBondCardNum(bondType);
+        times += brassRow.GetComponent<RowArea>().GetBondCardNum(bondType);
+        times += percussionRow.GetComponent<RowArea>().GetBondCardNum(bondType);
+
+        woodRow.GetComponent<RowArea>().UpdateBondBuff(bondType, times);
+        brassRow.GetComponent<RowArea>().UpdateBondBuff(bondType, times);
+        percussionRow.GetComponent<RowArea>().UpdateBondBuff(bondType, times);
     }
 }

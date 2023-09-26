@@ -16,13 +16,23 @@ public class RowArea : MonoBehaviour
     {
         newCard.transform.SetParent(normalArea.transform);
         normalArea.GetComponent<CardArea>().AddCard(newCard);
+        UpdateScore();
+    }
 
-        // 设置buff
-        if (newCard.GetComponent<CardDisplay>().cardInfo.ability == CardAbility.Tunning) {
-            normalArea.GetComponent<CardArea>().ClearNormalDebuff();
-        } else if (newCard.GetComponent<CardDisplay>().cardInfo.ability == CardAbility.Bond) {
-            normalArea.GetComponent<CardArea>().UpdateBondBuff(newCard.GetComponent<CardDisplay>().cardInfo.bondType);
-        }
+    public void ClearNormalDebuff() 
+    {
+        normalArea.GetComponent<CardArea>().ClearNormalDebuff();
+        UpdateScore();
+    }
+
+    public int GetBondCardNum(string bondType)
+    {
+        return normalArea.GetComponent<CardArea>().GetBondCardNum(bondType);
+    }
+
+    public void UpdateBondBuff(string bondType, int times)
+    {
+        normalArea.GetComponent<CardArea>().UpdateBondBuff(bondType, times);
         UpdateScore();
     }
 
