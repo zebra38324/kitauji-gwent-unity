@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-// 卡牌区域，主要用于场上普通牌以及手牌的排布
+// 卡牌区域，主要用于手牌的排布
 public class CardArea : MonoBehaviour
 {
     public GameObject cardArea;
@@ -37,49 +37,6 @@ public class CardArea : MonoBehaviour
     {
         cardList.Remove(card);
         ReArrange();
-    }
-
-    // 消除除天气外的debuff
-    public void ClearNormalDebuff()
-    {
-        foreach (GameObject card in cardList)
-        {
-            card.GetComponent<CardDisplay>().ClearNormalDebuff();
-        }
-    }
-
-    // 统计一个类型bond的卡牌数量
-    public int GetBondCardNum(string bondType)
-    {
-        int count = 0;
-        foreach (GameObject card in cardList)
-        {
-            if (card.GetComponent<CardDisplay>().cardInfo.bondType == bondType) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    // 更新bond的buff
-    public void UpdateBondBuff(string bondType, int times)
-    {
-        foreach (GameObject card in cardList)
-        {
-            if (card.GetComponent<CardDisplay>().cardInfo.bondType == bondType) {
-                card.GetComponent<CardDisplay>().SetBuffTimes(times);
-            }
-        }
-    }
-
-    public int GetCurrentScore()
-    {
-        int sum = 0;
-        foreach (GameObject card in cardList)
-        {
-            sum += int.Parse(card.GetComponent<CardDisplay>().powerNum.GetComponent<TextMeshProUGUI>().text);
-        }
-        return sum;
     }
 
     // 添加或移出卡片时，重新排布位置

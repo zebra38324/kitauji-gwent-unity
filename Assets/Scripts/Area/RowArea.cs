@@ -15,30 +15,30 @@ public class RowArea : MonoBehaviour
     public void AddNormalCard(GameObject newCard)
     {
         newCard.transform.SetParent(normalArea.transform);
-        normalArea.GetComponent<CardArea>().AddCard(newCard);
+        normalArea.GetComponent<RowNormalCardArea>().AddCard(newCard);
         UpdateScore();
     }
 
     public void ClearNormalDebuff() 
     {
-        normalArea.GetComponent<CardArea>().ClearNormalDebuff();
+        normalArea.GetComponent<RowNormalCardArea>().ClearNormalDebuff();
         UpdateScore();
     }
 
     public int GetBondCardNum(string bondType)
     {
-        return normalArea.GetComponent<CardArea>().GetBondCardNum(bondType);
+        return normalArea.GetComponent<RowNormalCardArea>().GetBondCardNum(bondType);
     }
 
     public void UpdateBondBuff(string bondType, int times)
     {
-        normalArea.GetComponent<CardArea>().UpdateBondBuff(bondType, times);
+        normalArea.GetComponent<RowNormalCardArea>().UpdateBondBuff(bondType, times);
         UpdateScore();
     }
 
     private void UpdateScore()
     {
-        int newScore = normalArea.GetComponent<CardArea>().GetCurrentScore();
+        int newScore = normalArea.GetComponent<RowNormalCardArea>().GetCurrentScore();
         int diff = newScore - currentScore;
         ScoreChangeNotify(diff);
         currentScore = newScore;
