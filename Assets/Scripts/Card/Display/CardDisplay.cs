@@ -135,6 +135,20 @@ public class CardDisplay : MonoBehaviour
     {
         int result = (cardPowerBuff.basePower + cardPowerBuff.add + cardPowerBuff.minus) * cardPowerBuff.times;
         powerNum.GetComponent<TextMeshProUGUI>().text = result.ToString();
+        if (cardInfo.cardType == CardType.Normal) {
+            UpdatePowerNumColor(result);
+        }
+    }
+
+    private void UpdatePowerNumColor(int newPower)
+    {
+        if (newPower > cardInfo.originPower) {
+            powerNum.GetComponent<TextMeshProUGUI>().color = new Color(0, 0.8f, 0, 1);
+        } else if (newPower == cardInfo.originPower) {
+            powerNum.GetComponent<TextMeshProUGUI>().color = new Color(0, 0, 0, 1);
+        } else {
+            powerNum.GetComponent<TextMeshProUGUI>().color = new Color(0.8f, 0, 0, 1);
+        }
     }
 
     static string[] beltNames = { "belt-red", "belt-blue", "belt-green" };
