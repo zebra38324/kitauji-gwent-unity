@@ -67,6 +67,45 @@
             "quote": "“喜欢希美的一切。”"
         },
         {
+            "imageName": "14.ririka.kenzaki-portrait",
+            "chineseName": "剑崎梨梨花",
+            "englishName": "Ririka Kenzaki",
+            "group": "KumikoSecondYear",
+            "grade": 1,
+            "originPower": 4,
+            "badgeType": "Wood",
+            "ability": "Bond",
+            "bondType": "doubleReed",
+            "cardType": "Normal",
+            "quote": "“这是便利店的煮鸡蛋，\n是卤过的，很好吃哦。”"
+        },
+        {
+            "imageName": "15.eru.kabutodani-portrait",
+            "chineseName": "兜谷爱瑠",
+            "englishName": "Eru Kabutodani",
+            "group": "KumikoSecondYear",
+            "grade": 1,
+            "originPower": 4,
+            "badgeType": "Wood",
+            "ability": "Bond",
+            "bondType": "doubleReed",
+            "cardType": "Normal",
+            "quote": "和笼手山骏河与剑崎梨梨花一起\n结成了“双簧乐器会”。"
+        },
+        {
+            "imageName": "16.suruga.koteyama-portrait",
+            "chineseName": "笼手山骏河",
+            "englishName": "Suruga Koteyama",
+            "group": "KumikoSecondYear",
+            "grade": 1,
+            "originPower": 4,
+            "badgeType": "Wood",
+            "ability": "Bond",
+            "bondType": "doubleReed",
+            "cardType": "Normal",
+            "quote": "“双簧乐器会”的成员之一。\n希望学姐铠冢霙也能加入。"
+        },
+        {
             "imageName": "27.chikao.takigawa-portrait",
             "chineseName": "泷川近夫",
             "englishName": "Chikao Takigawa",
