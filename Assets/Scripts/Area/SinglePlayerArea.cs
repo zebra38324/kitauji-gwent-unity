@@ -8,6 +8,7 @@ public class SinglePlayerArea : MonoBehaviour
     public GameObject brassRow;
     public GameObject percussionRow;
     public GameObject scoreNum;
+    public GameObject enemyArea;
 
     // Start is called before the first frame update
     void Start()
@@ -51,7 +52,14 @@ public class SinglePlayerArea : MonoBehaviour
             targetArea.GetComponent<RowArea>().ClearNormalDebuff();
         } else if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Bond) {
             UpdateBondBuff(newCard.GetComponent<CardDisplay>().GetCardInfo().bondType);
+        } else if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.ScorchWood) {
+            enemyArea.GetComponent<SinglePlayerArea>().ScorchWood();
         }
+    }
+
+    public void ScorchWood()
+    {
+        woodRow.GetComponent<RowArea>().ScorchWood();
     }
 
     private void UpdateBondBuff(string bondType)

@@ -37,6 +37,7 @@ public class CardArea : MonoBehaviour
     {
         cardList.Remove(card);
         ReArrange();
+        card.transform.SetParent(null);
     }
 
     // 添加或移出卡片时，重新排布位置

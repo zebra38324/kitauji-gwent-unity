@@ -48,4 +48,31 @@ public class RowNormalCardArea : CardArea
         }
         return sum;
     }
+
+    public void ScorchWood()
+    {
+        if (GetCurrentScore() <= 10) {
+            return;
+        }
+        List<GameObject> targetCards = new List<GameObject>();
+        int maxPower = -1;
+        foreach (GameObject card in cardList)
+        {
+            if (card.GetComponent<CardDisplay>().GetCardInfo().cardType != CardType.Normal) {
+                continue;
+            }
+            int cardPower = card.GetComponent<CardDisplay>().GetCurrentPower();
+            if (cardPower > maxPower) {
+                targetCards.Clear();
+                targetCards.Add(card);
+                maxPower = cardPower;
+            } else if (cardPower == maxPower) {
+                targetCards.Add(card);
+            }
+        }
+        foreach (GameObject card in targetCards)
+        {
+            RemoveCard(card); // TODO: 特效
+        }
+    }
 }

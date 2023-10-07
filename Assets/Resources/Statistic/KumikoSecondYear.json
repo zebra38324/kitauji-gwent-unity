@@ -106,6 +106,30 @@
             "quote": "“双簧乐器会”的成员之一。\n希望学姐铠冢霙也能加入。"
         },
         {
+            "imageName": "17.shirabe.inoue-portrait",
+            "chineseName": "井上调",
+            "englishName": "Shirabe Inoue",
+            "group": "KumikoSecondYear",
+            "grade": 3,
+            "originPower": 7,
+            "badgeType": "Wood",
+            "ability": "None",
+            "cardType": "Normal",
+            "quote": "笛子组可靠的组长。"
+        },
+        {
+            "imageName": "18.nozomi.kasaki-portrait",
+            "chineseName": "伞木希美",
+            "englishName": "Nozomi Kasaki",
+            "group": "KumikoSecondYear",
+            "grade": 3,
+            "originPower": 7,
+            "badgeType": "Wood",
+            "ability": "ScorchWood",
+            "cardType": "Hero",
+            "quote": "“进了高中以后，一定要拿金奖。”"
+        },
+        {
             "imageName": "27.chikao.takigawa-portrait",
             "chineseName": "泷川近夫",
             "englishName": "Chikao Takigawa",

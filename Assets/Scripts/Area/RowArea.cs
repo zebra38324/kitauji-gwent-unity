@@ -36,6 +36,12 @@ public class RowArea : MonoBehaviour
         UpdateScore();
     }
 
+    public void ScorchWood()
+    {
+        normalArea.GetComponent<RowNormalCardArea>().ScorchWood();
+        UpdateScore();
+    }
+
     private void UpdateScore()
     {
         int newScore = normalArea.GetComponent<RowNormalCardArea>().GetCurrentScore();

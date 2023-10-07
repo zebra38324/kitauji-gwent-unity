@@ -21,6 +21,7 @@ public enum CardAbility // TODO: 完善
     Attack,
     Tunning,
     Bond, // 同袍之情
+    ScorchWood, // 伞击：令对方实力最强的木管成员退部（仅当对方木管总吹奏实力大于10）
 }
 
 public enum CardType

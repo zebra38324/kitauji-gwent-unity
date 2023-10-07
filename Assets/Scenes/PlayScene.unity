@@ -1589,6 +1589,7 @@ MonoBehaviour:
   brassRow: {fileID: 569485858}
   percussionRow: {fileID: 1947284397}
   scoreNum: {fileID: 763298916}
+  enemyArea: {fileID: 1636682482}
 --- !u!224 &1301925239 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3091957128405939424, guid: b6f5d5b45f5df274aa0c1e24bf26858b, type: 3}
@@ -1656,6 +1657,7 @@ MonoBehaviour:
   brassRow: {fileID: 230357069}
   percussionRow: {fileID: 682698323}
   scoreNum: {fileID: 588257044}
+  enemyArea: {fileID: 1173754400}
 --- !u!1001 &1759878757
 PrefabInstance:
   m_ObjectHideFlags: 0

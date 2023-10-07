@@ -205,6 +205,8 @@ public class CardDisplay : MonoBehaviour
                 return "tunning";
             case CardAbility.Bond:
                 return "bond";
+            case CardAbility.ScorchWood:
+                return "umbrella";
             default: // None
                 return "none";
         }
