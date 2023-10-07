@@ -26,7 +26,7 @@ class StatisticJsonParse
         public List<JsonCardInfo> Cards;
     }
 
-    public static List<CardInfo> GetCardsInfo(string statisticStr)
+    public static List<CardInfo> GetCardInfo(string statisticStr)
     {
         CardsInfo cardsInfo = JsonUtility.FromJson<CardsInfo>(statisticStr);
         List<CardInfo> result = new List<CardInfo>();

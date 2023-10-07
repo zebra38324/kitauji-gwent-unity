@@ -21,7 +21,7 @@ public class RowNormalCardArea : CardArea
         int count = 0;
         foreach (GameObject card in cardList)
         {
-            if (card.GetComponent<CardDisplay>().cardInfo.bondType == bondType) {
+            if (card.GetComponent<CardDisplay>().GetCardInfo().bondType == bondType) {
                 count++;
             }
         }
@@ -33,7 +33,7 @@ public class RowNormalCardArea : CardArea
     {
         foreach (GameObject card in cardList)
         {
-            if (card.GetComponent<CardDisplay>().cardInfo.bondType == bondType) {
+            if (card.GetComponent<CardDisplay>().GetCardInfo().bondType == bondType) {
                 card.GetComponent<CardDisplay>().SetBuffTimes(times);
             }
         }
@@ -44,7 +44,7 @@ public class RowNormalCardArea : CardArea
         int sum = 0;
         foreach (GameObject card in cardList)
         {
-            sum += int.Parse(card.GetComponent<CardDisplay>().powerNum.GetComponent<TextMeshProUGUI>().text);
+            sum += card.GetComponent<CardDisplay>().GetCurrentPower();
         }
         return sum;
     }

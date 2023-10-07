@@ -23,12 +23,12 @@ public class NewCardButtonScript : MonoBehaviour
 
     public void CreateNewCard()
     {
-        List<CardInfo> cardsInfo = StatisticJsonParse.GetCardsInfo(cardInfoStatistic.text);
+        List<CardInfo> cardsInfo = StatisticJsonParse.GetCardInfo(cardInfoStatistic.text);
         Debug.Log("cardsInfo num = " + cardsInfo.Count);
         Debug.Log("imageName =  " + cardsInfo[0].imageName + " badgeType: " + cardsInfo[0].badgeType);
 
         GameObject newCard = GameObject.Instantiate(cardPrefab, handArea.transform);
-        newCard.GetComponent<CardDisplay>().cardInfo = cardsInfo[Random.Range(0, cardsInfo.Count)];
+        newCard.GetComponent<CardDisplay>().SetCardInfo(cardsInfo[Random.Range(0, cardsInfo.Count)]);
 
         handArea.GetComponent<HandArea>().AddCard(newCard);
 }

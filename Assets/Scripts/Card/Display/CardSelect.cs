@@ -30,7 +30,7 @@ public class CardSelect : MonoBehaviour, IPointerClickHandler
         if (!enableSelect) {
             return;
         }
-        Debug.Log("on click " + gameObject.GetComponent<CardDisplay>().cardInfo.englishName);
+        Debug.Log("on click " + gameObject.GetComponent<CardDisplay>().GetCardInfo().englishName);
 
         // TODO: 目前先实现最简单的打出一张普通牌的功能
         PlayNormalCard();

@@ -7,7 +7,7 @@ using TMPro;
 public class CardDisplay : MonoBehaviour
 {
     [HideInInspector]
-    public CardInfo cardInfo;
+    private CardInfo cardInfo;
 
     public GameObject originImage;
 
@@ -43,7 +43,6 @@ public class CardDisplay : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        InitCardPowerBuff();
         ShowCard();
     }
 
@@ -53,7 +52,7 @@ public class CardDisplay : MonoBehaviour
 
     }
 
-    public void ShowCard()
+    private void ShowCard()
     {
         originImage.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/origin-image/KumikoSecondYear/" + cardInfo.imageName);
 
@@ -75,6 +74,7 @@ public class CardDisplay : MonoBehaviour
             powerBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/power/power-normal");
             powerNum.GetComponent<TextMeshProUGUI>().text = cardPowerBuff.basePower.ToString();
         }
+        UpdateDisplayPower();
         powerType.GetComponent<Image>().color = new Color(0, 0, 0, 0); // TODO: 未考虑非角色牌
 
         // Badge
@@ -91,6 +91,22 @@ public class CardDisplay : MonoBehaviour
             ability.SetActive(false);
         }
         
+    }
+
+    public void SetCardInfo(CardInfo info)
+    {
+        cardInfo = info;
+        InitCardPowerBuff();
+    }
+
+    public CardInfo GetCardInfo()
+    {
+        return cardInfo;
+    }
+
+    public int GetCurrentPower()
+    {
+        return (cardPowerBuff.basePower + cardPowerBuff.add + cardPowerBuff.minus) * cardPowerBuff.times;
     }
 
     // 添加点数buff
@@ -133,7 +149,7 @@ public class CardDisplay : MonoBehaviour
 
     private void UpdateDisplayPower()
     {
-        int result = (cardPowerBuff.basePower + cardPowerBuff.add + cardPowerBuff.minus) * cardPowerBuff.times;
+        int result = GetCurrentPower();
         powerNum.GetComponent<TextMeshProUGUI>().text = result.ToString();
         if (cardInfo.cardType == CardType.Normal) {
             UpdatePowerNumColor(result);

@@ -26,7 +26,7 @@ public class SinglePlayerArea : MonoBehaviour
     public void AddNormalCard(GameObject newCard)
     {
         GameObject targetArea;
-        switch (newCard.GetComponent<CardDisplay>().cardInfo.badgeType) {
+        switch (newCard.GetComponent<CardDisplay>().GetCardInfo().badgeType) {
             case CardBadgeType.Wood: {
                 targetArea = woodRow;
                 break;
@@ -40,17 +40,17 @@ public class SinglePlayerArea : MonoBehaviour
                 break;
             }
             default: {
-                Debug.LogError("badgeType error = " + newCard.GetComponent<CardDisplay>().cardInfo.badgeType);
+                Debug.LogError("badgeType error = " + newCard.GetComponent<CardDisplay>().GetCardInfo().badgeType);
                 return;
             }
         }
 
         targetArea.GetComponent<RowArea>().AddNormalCard(newCard);
         // 设置buff
-        if (newCard.GetComponent<CardDisplay>().cardInfo.ability == CardAbility.Tunning) {
+        if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Tunning) {
             targetArea.GetComponent<RowArea>().ClearNormalDebuff();
-        } else if (newCard.GetComponent<CardDisplay>().cardInfo.ability == CardAbility.Bond) {
-            UpdateBondBuff(newCard.GetComponent<CardDisplay>().cardInfo.bondType);
+        } else if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Bond) {
+            UpdateBondBuff(newCard.GetComponent<CardDisplay>().GetCardInfo().bondType);
         }
     }
 

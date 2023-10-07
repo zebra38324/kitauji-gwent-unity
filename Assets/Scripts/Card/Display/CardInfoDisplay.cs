@@ -40,7 +40,7 @@ public class CardInfoDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExit
         transform.Translate(0, 10, 0); // 鼠标悬浮时，卡片上移
         
         entireCard = GameObject.Instantiate(entireCardPrefeb, cardInfoArea.transform);
-        entireCard.GetComponent<CardDisplay>().cardInfo = gameObject.GetComponent<CardDisplay>().cardInfo;
+        entireCard.GetComponent<CardDisplay>().SetCardInfo(gameObject.GetComponent<CardDisplay>().GetCardInfo());
         float areaWidth = cardInfoArea.GetComponent<RectTransform>().rect.width;
         float areaHeight = cardInfoArea.GetComponent<RectTransform>().rect.height;
         float scale = areaWidth / entireCard.GetComponent<RectTransform>().rect.width;
