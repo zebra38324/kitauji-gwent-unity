@@ -22,6 +22,7 @@ public enum CardAbility // TODO: 完善
     Tunning,
     Bond, // 同袍之情
     ScorchWood, // 伞击：令对方实力最强的木管成员退部（仅当对方木管总吹奏实力大于10）
+    Muster, // 抱团，令牌组中自己的闺蜜/基友立即上场比赛。
 }
 
 public enum CardType
@@ -41,6 +42,7 @@ public struct CardInfo
     public CardBadgeType badgeType; // 类型，位于场上哪一排
     public CardAbility ability; // 特殊能力
     public string bondType; // bond类型，用于匹配bond的组合
+    public string musterType; // 抱团类型，用于匹配muster组合
     public CardType cardType; // 是否为英雄牌
     public string quote; // 卡牌最下方的台词引用
 }

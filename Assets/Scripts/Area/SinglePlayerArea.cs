@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ public class SinglePlayerArea : MonoBehaviour
     public GameObject percussionRow;
     public GameObject scoreNum;
     public GameObject enemyArea;
+    public GameObject cardPrefab;
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +28,26 @@ public class SinglePlayerArea : MonoBehaviour
 
     public void AddNormalCard(GameObject newCard)
     {
+        GameObject targetArea = GetTargetArea(newCard);
+        if (targetArea == null) {
+            return;
+        }
+        targetArea.GetComponent<RowArea>().AddNormalCard(newCard);
+
+        // 设置buff
+        if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Tunning) {
+            targetArea.GetComponent<RowArea>().ClearNormalDebuff();
+        } else if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Bond) {
+            UpdateBondBuff(newCard.GetComponent<CardDisplay>().GetCardInfo().bondType);
+        } else if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.ScorchWood) {
+            enemyArea.GetComponent<SinglePlayerArea>().ScorchWood();
+        } else if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Muster) {
+            ApplyMuster(newCard.GetComponent<CardDisplay>().GetCardInfo().musterType);
+        }
+    }
+
+    private GameObject GetTargetArea(GameObject newCard)
+    {
         GameObject targetArea;
         switch (newCard.GetComponent<CardDisplay>().GetCardInfo().badgeType) {
             case CardBadgeType.Wood: {
@@ -42,19 +64,28 @@ public class SinglePlayerArea : MonoBehaviour
             }
             default: {
                 Debug.LogError("badgeType error = " + newCard.GetComponent<CardDisplay>().GetCardInfo().badgeType);
-                return;
+                return null;
             }
         }
+        return targetArea;
+    }
 
-        targetArea.GetComponent<RowArea>().AddNormalCard(newCard);
-        // 设置buff
-        if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Tunning) {
-            targetArea.GetComponent<RowArea>().ClearNormalDebuff();
-        } else if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Bond) {
-            UpdateBondBuff(newCard.GetComponent<CardDisplay>().GetCardInfo().bondType);
-        } else if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.ScorchWood) {
-            enemyArea.GetComponent<SinglePlayerArea>().ScorchWood();
+    private void ApplyMuster(string musterType)
+    {
+        // 备选卡牌中拉取
+        List<CardInfo> cardInfos = BackupCardManager.Instance.GetCardInfosWithMusterType(musterType);
+        foreach (CardInfo info in cardInfos) {
+            GameObject musterCard = GameObject.Instantiate(cardPrefab, null);
+            musterCard.GetComponent<CardDisplay>().SetCardInfo(info);
+            GameObject target = GetTargetArea(musterCard);
+            if (target == null) {
+                return;
+            }
+            target.GetComponent<RowArea>().AddNormalCard(musterCard);
         }
+
+        // 手牌区拉取 TODO
+
     }
 
     public void ScorchWood()

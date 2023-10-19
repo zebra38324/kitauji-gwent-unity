@@ -258,6 +258,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 66579902853419817}
+  - component: {fileID: 8752162394277737111}
   m_Layer: 5
   m_Name: BackUp
   m_TagString: Untagged
@@ -287,6 +288,20 @@ RectTransform:
   m_AnchoredPosition: {x: 72.7, y: -0.000012159}
   m_SizeDelta: {x: 93.2403, y: 93.2407}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &8752162394277737111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7083586842636488428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f2fe536b7386964cacba6f2c758e83c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backupCardNum: {fileID: 3778870638141254796}
+  isSelf: 0
 --- !u!1 &7210584225426723864
 GameObject:
   m_ObjectHideFlags: 0

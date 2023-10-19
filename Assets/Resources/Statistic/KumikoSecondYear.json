@@ -130,6 +130,45 @@
             "quote": "“进了高中以后，一定要拿金奖。”"
         },
         {
+            "imageName": "19.meiko.oda-portrait",
+            "chineseName": "小田芽衣子",
+            "englishName": "Meiko Oda",
+            "group": "KumikoSecondYear",
+            "grade": 2,
+            "originPower": 4,
+            "badgeType": "Wood",
+            "ability": "Muster",
+            "musterType": "flute2",
+            "cardType": "Normal",
+            "quote": "和短笛担当的高桥沙里去年是一个班，\n关系非常好。"
+        },
+        {
+            "imageName": "20.sari.takahashi-portrait",
+            "chineseName": "高桥沙里",
+            "englishName": "Sari Takahashi",
+            "group": "KumikoSecondYear",
+            "grade": 2,
+            "originPower": 4,
+            "badgeType": "Wood",
+            "ability": "Muster",
+            "musterType": "flute2",
+            "cardType": "Normal",
+            "quote": "去年还是长笛担当，作为\n毕业了的杂贺赖子的后继改吹短笛。"
+        },
+        {
+            "imageName": "21.tsubomi.nakano-portrait",
+            "chineseName": "中野蕾实",
+            "englishName": "Tsubomi Nakano",
+            "group": "KumikoSecondYear",
+            "grade": 2,
+            "originPower": 4,
+            "badgeType": "Wood",
+            "ability": "Muster",
+            "musterType": "flute2",
+            "cardType": "Normal",
+            "quote": "去年作为落选成员支援着全体部员们。\n有着不管对谁都温柔率真的性格。"
+        },
+        {
             "imageName": "27.chikao.takigawa-portrait",
             "chineseName": "泷川近夫",
             "englishName": "Chikao Takigawa",

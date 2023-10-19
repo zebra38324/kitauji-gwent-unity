@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,12 +24,13 @@ public class NewCardButtonScript : MonoBehaviour
     public void CreateNewCard()
     {
         List<CardInfo> cardsInfo = StatisticJsonParse.GetCardInfo(cardInfoStatistic.text);
-        Debug.Log("cardsInfo num = " + cardsInfo.Count);
-        Debug.Log("imageName =  " + cardsInfo[0].imageName + " badgeType: " + cardsInfo[0].badgeType);
+        BackupCardManager.Instance.SetCardInfoList(cardsInfo);
 
-        GameObject newCard = GameObject.Instantiate(cardPrefab, handArea.transform);
-        newCard.GetComponent<CardDisplay>().SetCardInfo(cardsInfo[Random.Range(0, cardsInfo.Count)]);
-
-        handArea.GetComponent<HandArea>().AddCard(newCard);
-}
+        List<CardInfo> loadCardInfo = BackupCardManager.Instance.GetCardInfos(10);
+        foreach (CardInfo cardInfo in loadCardInfo) {
+            GameObject newCard = GameObject.Instantiate(cardPrefab, handArea.transform);
+            newCard.GetComponent<CardDisplay>().SetCardInfo(cardInfo);
+            handArea.GetComponent<HandArea>().AddCard(newCard);
+        }
+    }
 }
