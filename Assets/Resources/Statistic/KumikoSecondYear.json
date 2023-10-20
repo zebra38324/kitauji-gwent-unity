@@ -169,6 +169,45 @@
             "quote": "去年作为落选成员支援着全体部员们。\n有着不管对谁都温柔率真的性格。"
         },
         {
+            "imageName": "22.kana.etou-portrait",
+            "chineseName": "江藤香奈",
+            "englishName": "Kana Etou",
+            "group": "KumikoSecondYear",
+            "grade": 1,
+            "originPower": 2,
+            "badgeType": "Wood",
+            "ability": "Muster",
+            "musterType": "flute1",
+            "cardType": "Normal",
+            "quote": "约会的时候被对方说“像河豚”，\n于是被同组的成员称为“河豚酱”。"
+        },
+        {
+            "imageName": "23.narumi.hiraishi-portrait",
+            "chineseName": "平石成美",
+            "englishName": "Narumi Hiraishi",
+            "group": "KumikoSecondYear",
+            "grade": 1,
+            "originPower": 2,
+            "badgeType": "Wood",
+            "ability": "Muster",
+            "musterType": "flute1",
+            "cardType": "Normal",
+            "quote": "头脑十分灵活，经常观察周围，\n因而成了支持着其他组员的幕后英雄。"
+        },
+        {
+            "imageName": "24.tsumiki.yamane-portrait",
+            "chineseName": "山根都美贵",
+            "englishName": "Tsumiki Yamane",
+            "group": "KumikoSecondYear",
+            "grade": 1,
+            "originPower": 2,
+            "badgeType": "Wood",
+            "ability": "Muster",
+            "musterType": "flute1",
+            "cardType": "Normal",
+            "quote": "爱好是电影鉴赏，\n因而经常向组员们推荐电影。"
+        },
+        {
             "imageName": "27.chikao.takigawa-portrait",
             "chineseName": "泷川近夫",
             "englishName": "Chikao Takigawa",
