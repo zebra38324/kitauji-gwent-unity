@@ -84,8 +84,11 @@ public class SinglePlayerArea : MonoBehaviour
             target.GetComponent<RowArea>().AddNormalCard(musterCard);
         }
 
-        // 手牌区拉取 TODO
-
+        // 手牌区拉取
+        GameObject handArea;
+        string areaName = "HandArea";
+        handArea = GameObject.Find(areaName);
+        handArea.GetComponent<HandArea>().PlayMusterCard(musterType);
     }
 
     public void ScorchWood()

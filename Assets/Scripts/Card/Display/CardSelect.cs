@@ -10,7 +10,7 @@ public class CardSelect : MonoBehaviour, IPointerClickHandler
 
     private GameObject handArea;
 
-    private bool enableSelect = true; // 打出后，不再允许选中
+    private bool enableSelect = false; // 仅进入手牌区后允许选择。打出后，不再允许选中
 
     // Start is called before the first frame update
     void Start()
@@ -34,6 +34,16 @@ public class CardSelect : MonoBehaviour, IPointerClickHandler
 
         // TODO: 目前先实现最简单的打出一张普通牌的功能
         PlayNormalCard();
+    }
+
+    public void PlayPassively()
+    {
+        PlayNormalCard();
+    }
+
+    public void EnableSelect(bool flag)
+    {
+        enableSelect = flag;
     }
 
     private void PlayNormalCard()

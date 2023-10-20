@@ -26,7 +26,7 @@ public class CardArea : MonoBehaviour
         
     }
 
-    public void AddCard(GameObject newCard) // TODO 同时添加多张牌
+    public virtual void AddCard(GameObject newCard) // TODO 同时添加多张牌
     {
         cardList.Add(newCard);
         SetCardSize(newCard);
