@@ -26,7 +26,7 @@ public class NewCardButtonScript : MonoBehaviour
         List<CardInfo> cardsInfo = StatisticJsonParse.GetCardInfo(cardInfoStatistic.text);
         BackupCardManager.Instance.SetCardInfoList(cardsInfo);
 
-        List<CardInfo> loadCardInfo = BackupCardManager.Instance.GetCardInfos(10);
+        List<CardInfo> loadCardInfo = BackupCardManager.Instance.GetCardInfos(20);
         foreach (CardInfo cardInfo in loadCardInfo) {
             GameObject newCard = GameObject.Instantiate(cardPrefab, handArea.transform);
             newCard.GetComponent<CardDisplay>().SetCardInfo(cardInfo);

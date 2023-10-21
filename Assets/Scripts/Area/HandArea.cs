@@ -12,14 +12,11 @@ public class HandArea : CardArea
 
     public void PlayMusterCard(string musterType)
     {
-        List<GameObject> musterCards = new List<GameObject>();
         foreach (GameObject card in cardList) {
             if (card.GetComponent<CardDisplay>().GetCardInfo().musterType == musterType) {
-                musterCards.Add(card);
+                card.GetComponent<CardSelect>().PlayPassively();
+                break; // 打出一张牌就够，剩下的由链式调用逐张打出
             }
-        }
-        foreach(GameObject card in musterCards) {
-            card.GetComponent<CardSelect>().PlayPassively();
         }
     }
 }
