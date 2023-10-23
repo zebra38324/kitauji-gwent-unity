@@ -23,6 +23,7 @@ public enum CardAbility // TODO: 完善
     Bond, // 同袍之情
     ScorchWood, // 伞击：令对方实力最强的木管成员退部（仅当对方木管总吹奏实力大于10）
     Muster, // 抱团，令牌组中自己的闺蜜/基友立即上场比赛。
+    Morale, // 士气: 高喊“北宇治Fight！”，使同一行内除自己以外的部员吹奏能力+1。TODO: 具体实现
 }
 
 public enum CardType

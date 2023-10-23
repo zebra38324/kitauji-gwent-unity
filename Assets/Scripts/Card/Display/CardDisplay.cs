@@ -209,6 +209,8 @@ public class CardDisplay : MonoBehaviour
                 return "umbrella";
             case CardAbility.Muster:
                 return "muster";
+            case CardAbility.Morale:
+                return "morale";
             default: // None
                 return "none";
         }

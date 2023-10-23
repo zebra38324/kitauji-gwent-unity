@@ -245,6 +245,18 @@
             "quote": "和低音提琴担当的川岛绿辉\n结成了“大号君同盟”"
         },
         {
+            "imageName": "38.yuko.yoshikawa-portrait",
+            "chineseName": "吉川优子",
+            "englishName": "Yuko Yoshikawa",
+            "group": "KumikoSecondYear",
+            "grade": 3,
+            "originPower": 7,
+            "badgeType": "Brass",
+            "ability": "Morale",
+            "cardType": "Hero",
+            "quote": "“有什么好消沉的，\n我们在那个瞬间献上了最好的演奏！”"
+        },
+        {
             "imageName": "64.satsuki.suzuki-portrait",
             "chineseName": "铃木皋月",
             "englishName": "Satsuki Suzuki",
