@@ -6,6 +6,14 @@ using UnityEngine;
 // 卡牌区域，主要用于场上普通牌的排布
 public class RowNormalCardArea : CardArea
 {
+    private int moraleCount = 0; // TODO: 移除效果
+
+    public override void AddCard(GameObject newCard)
+    {
+        TryUpdateMoraleBuff(newCard); // morale这种只影响本行的buff，在row area这层操作就可以了。morale不对自己生效，因此先加buff再添加卡牌
+        base.AddCard(newCard);
+    }
+
     // 消除除天气外的debuff
     public void ClearNormalDebuff()
     {
@@ -73,6 +81,21 @@ public class RowNormalCardArea : CardArea
         foreach (GameObject card in targetCards)
         {
             RemoveCard(card); // TODO: 特效
+        }
+    }
+
+    public void TryUpdateMoraleBuff(GameObject newCard)
+    {
+        if (moraleCount > 0) {
+            // 本来就有morale，先给新卡牌加上
+            newCard.GetComponent<CardDisplay>().SetBuffAddMinus(moraleCount);
+        }
+        if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Morale) {
+            moraleCount++;
+            foreach (GameObject card in cardList)
+            {
+                card.GetComponent<CardDisplay>().SetBuffAddMinus(1);
+            }
         }
     }
 }

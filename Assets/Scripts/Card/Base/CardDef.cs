@@ -48,11 +48,14 @@ public struct CardInfo
     public string quote; // 卡牌最下方的台词引用
 }
 
-// 最终分数=(basePower + add) * times
-// TODO 区分天气buff
+/**
+ * 计算方法：score = (basePower + add) * times;
+ * 由于攻击牌也可能会减basePower，和天气牌效果类似。且清除天气和tunning是分开的，所以需要分别记录.攻击牌直接
+ * 需要注意的是，当从场上移除某个卡牌时，若这个卡牌带了某些buff，需要重新计算其相关卡牌的点数。例如削减bond的翻倍倍数
+ */
 public struct CardPowerBuff
 {
-    public int basePower;
+    public int basePower; // 当且仅当天气牌影响时，basePower为1
     public int add;
     public int minus;
     public int times;
