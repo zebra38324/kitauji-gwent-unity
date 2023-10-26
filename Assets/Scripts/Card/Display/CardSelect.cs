@@ -56,5 +56,6 @@ public class CardSelect : MonoBehaviour, IPointerClickHandler
         singlePlayerArea.GetComponent<SinglePlayerArea>().AddNormalCard(gameObject);
         enableSelect = false;
         gameObject.GetComponent<CardInfoDisplay>().SetIsCardUp(false);
+        gameObject.GetComponent<CardInfoDisplay>().SetEnableUp(false);
     }
 }

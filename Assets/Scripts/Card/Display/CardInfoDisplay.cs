@@ -13,6 +13,7 @@ public class CardInfoDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExit
     private GameObject entireCard;
 
     private bool isCardUp = false; // 卡片是否是抬升状态
+    private bool enableUp = false; // 是否允许抬升
 
     // Start is called before the first frame update
     void Start()
@@ -31,13 +32,20 @@ public class CardInfoDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExit
         isCardUp = flag;
     }
 
+    public void SetEnableUp(bool flag)
+    {
+        enableUp = flag;
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (isCardUp) {
             return;
         }
         isCardUp = true;
-        transform.Translate(0, 10, 0); // 鼠标悬浮时，卡片上移
+        if (enableUp) {
+            transform.Translate(0, 10, 0); // 鼠标悬浮时，卡片上移
+        }
         
         entireCard = GameObject.Instantiate(entireCardPrefeb, cardInfoArea.transform);
         entireCard.GetComponent<CardDisplay>().SetCardInfo(gameObject.GetComponent<CardDisplay>().GetCardInfo());
@@ -51,7 +59,7 @@ public class CardInfoDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (isCardUp) {
+        if (isCardUp && enableUp) {
             transform.Translate(0, -10, 0); // 鼠标悬移出时，卡片恢复
         }
         isCardUp = false;
