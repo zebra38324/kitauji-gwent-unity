@@ -16,9 +16,4 @@ public class DiscardArea : MonoBehaviour
     {
         
     }
-
-    void CloseDiscardArea()
-    {
-        discardArea.SetActive(false);
-    }
 }
