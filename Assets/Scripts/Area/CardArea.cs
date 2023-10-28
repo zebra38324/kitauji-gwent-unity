@@ -40,6 +40,16 @@ public class CardArea : MonoBehaviour
         card.transform.SetParent(null);
     }
 
+    // 是否已放满，放满之后要进行堆叠放置
+    public bool IsAreaFull(float gap = 5f)
+    {
+        if (cardList.Count == 0) {
+            return false;
+        }
+        float cardWidth = cardList[0].transform.localScale.x * cardList[0].GetComponent<RectTransform>().rect.width; // TODO 间隔
+        return (cardWidth + gap) * cardList.Count > cardAreaWidth;
+    }
+
     // 添加或移出卡片时，重新排布位置
     private void ReArrange()
     {
@@ -49,9 +59,8 @@ public class CardArea : MonoBehaviour
         float cardWidth = cardList[0].transform.localScale.x * cardList[0].GetComponent<RectTransform>().rect.width; // TODO 间隔
         float currentPosition = 0f;
         float gap = 5f; // 左右gap
-        bool tooManyCards = (cardWidth + gap) * cardList.Count > cardAreaWidth;
         float step = 0f;
-        if (!tooManyCards)
+        if (!IsAreaFull(gap))
         {
             currentPosition =  -(cardWidth + gap) * cardList.Count / 2;
             step = cardWidth + gap;
