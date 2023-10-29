@@ -106,4 +106,11 @@ public class SinglePlayerArea : MonoBehaviour
         brassRow.GetComponent<RowArea>().UpdateBondBuff(bondType, times);
         percussionRow.GetComponent<RowArea>().UpdateBondBuff(bondType, times);
     }
+
+    public void ClearCard(DiscardCardManager manager)
+    {
+        woodRow.GetComponent<RowArea>().ClearCard(manager);
+        brassRow.GetComponent<RowArea>().ClearCard(manager);
+        percussionRow.GetComponent<RowArea>().ClearCard(manager);
+    }
 }

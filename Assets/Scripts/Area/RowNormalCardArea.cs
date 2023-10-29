@@ -98,4 +98,16 @@ public class RowNormalCardArea : CardArea
             }
         }
     }
+
+    public void ClearCard(DiscardCardManager manager)
+    {
+        List<GameObject> tempList = new List<GameObject>();
+        foreach(GameObject card in cardList) {
+            manager.AddCard(card);
+            tempList.Add(card);
+        }
+        foreach(GameObject card in tempList) {
+            RemoveCard(card);
+        }
+    }
 }

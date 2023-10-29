@@ -14,7 +14,6 @@ public class RowArea : MonoBehaviour
 
     public void AddNormalCard(GameObject newCard)
     {
-        newCard.transform.SetParent(normalArea.transform);
         normalArea.GetComponent<RowNormalCardArea>().AddCard(newCard);
         UpdateScore();
     }
@@ -49,5 +48,10 @@ public class RowArea : MonoBehaviour
         ScoreChangeNotify(diff);
         currentScore = newScore;
         scoreNum.GetComponent<TextMeshProUGUI>().text = currentScore.ToString();
+    }
+
+    public void ClearCard(DiscardCardManager manager)
+    {
+        normalArea.GetComponent<RowNormalCardArea>().ClearCard(manager);
     }
 }

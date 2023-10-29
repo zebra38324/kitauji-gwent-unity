@@ -1,0 +1,14 @@
+using System.Collections.Generic;
+using System.Diagnostics;
+using UnityEngine;
+
+// 卡牌管理器，保存已弃用的卡牌
+public class DiscardCardManager
+{
+    private List<GameObject> cardList = new List<GameObject>();
+
+    public void AddCard(GameObject card)
+    {
+        cardList.Add(card);
+    }
+}

@@ -28,6 +28,7 @@ public class CardArea : MonoBehaviour
 
     public virtual void AddCard(GameObject newCard) // TODO 同时添加多张牌
     {
+        newCard.transform.SetParent(cardArea.transform);
         cardList.Add(newCard);
         SetCardSize(newCard);
         ReArrange();
