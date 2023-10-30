@@ -108,6 +108,7 @@ public class RowNormalCardArea : CardArea
         }
         foreach(GameObject card in tempList) {
             RemoveCard(card);
+            card.GetComponent<CardDisplay>().ClearAllBuff();
         }
     }
 }

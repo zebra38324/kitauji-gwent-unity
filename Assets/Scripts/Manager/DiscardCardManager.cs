@@ -11,4 +11,9 @@ public class DiscardCardManager
     {
         cardList.Add(card);
     }
+
+    public List<GameObject> GetCardList()
+    {
+        return cardList;
+    }
 }

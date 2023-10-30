@@ -5,6 +5,8 @@ using UnityEngine;
 public class DiscardButtonScript : MonoBehaviour
 {
     public GameObject discardArea;
+    public bool isSelf;
+    private bool isShowing = false;
 
     // Start is called before the first frame update
     void Start()
@@ -20,11 +22,19 @@ public class DiscardButtonScript : MonoBehaviour
 
     public void ShowDiscardArea()
     {
+        if (isShowing) {
+            // 避免连续点两边的弃牌区按钮
+            discardArea.GetComponent<DiscardArea>().HideCard();
+        }
+        isShowing = true;
+        discardArea.GetComponent<DiscardArea>().ShowCard(isSelf);
         discardArea.SetActive(true);
     }
 
     public void CloseDiscardArea()
     {
+        isShowing = false;
         discardArea.SetActive(false);
+        discardArea.GetComponent<DiscardArea>().HideCard();
     }
 }

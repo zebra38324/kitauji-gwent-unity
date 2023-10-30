@@ -220,7 +220,7 @@ RectTransform:
   - {fileID: 625461728}
   - {fileID: 1923690202}
   m_Father: {fileID: 973567613}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -278,6 +278,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   discardArea: {fileID: 296122536}
+  row1: {fileID: 962770941}
+  row2: {fileID: 971585663}
+  row3: {fileID: 625461727}
 --- !u!224 &316367911 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3091957128405939424, guid: b6f5d5b45f5df274aa0c1e24bf26858b, type: 3}
@@ -686,7 +689,7 @@ RectTransform:
   - {fileID: 1636682483}
   - {fileID: 1173754401}
   m_Father: {fileID: 973567613}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1066,6 +1069,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 625461728}
+  - component: {fileID: 625461729}
   m_Layer: 5
   m_Name: DiscardAreaRow3
   m_TagString: Untagged
@@ -1093,6 +1097,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0.000022888, y: -159}
   m_SizeDelta: {x: 1139.7903, y: 129.29}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &625461729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625461727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa9f44768b5848e418ebb8ad8d090174, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardArea: {fileID: 625461727}
 --- !u!1 &682698323 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2559679141672662074, guid: b6f5d5b45f5df274aa0c1e24bf26858b, type: 3}
@@ -2033,6 +2050,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 962770942}
+  - component: {fileID: 962770943}
   m_Layer: 5
   m_Name: DiscardAreaRow1
   m_TagString: Untagged
@@ -2060,6 +2078,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0.000022888, y: 159}
   m_SizeDelta: {x: 1139.7903, y: 129.29}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &962770943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 962770941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa9f44768b5848e418ebb8ad8d090174, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardArea: {fileID: 962770941}
 --- !u!1 &971585663
 GameObject:
   m_ObjectHideFlags: 0
@@ -2069,6 +2100,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 971585664}
+  - component: {fileID: 971585665}
   m_Layer: 5
   m_Name: DiscardAreaRow2
   m_TagString: Untagged
@@ -2096,6 +2128,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0.000022888, y: 0}
   m_SizeDelta: {x: 1139.7903, y: 129.29}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &971585665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 971585663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa9f44768b5848e418ebb8ad8d090174, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardArea: {fileID: 971585663}
 --- !u!1 &973567612
 GameObject:
   m_ObjectHideFlags: 0
@@ -2133,9 +2178,9 @@ RectTransform:
   - {fileID: 1918509223}
   - {fileID: 926245254}
   - {fileID: 121925421}
-  - {fileID: 1842093214}
   - {fileID: 491948970}
   - {fileID: 296122537}
+  - {fileID: 1842093214}
   m_Father: {fileID: 2089318588}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2699,7 +2744,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 973567613}
-  m_RootOrder: 6
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3049,6 +3094,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   discardArea: {fileID: 296122536}
+  isSelf: 0
 --- !u!114 &1923690204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3596,6 +3642,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8752162394277737111, guid: 095e9e48fea2f1a4193c4881d96eeb83, type: 3}
+      propertyPath: isSelf
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9009220531869172879, guid: 095e9e48fea2f1a4193c4881d96eeb83, type: 3}
       propertyPath: isSelf
       value: 1
       objectReference: {fileID: 0}

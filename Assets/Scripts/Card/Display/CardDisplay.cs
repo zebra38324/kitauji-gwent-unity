@@ -139,6 +139,15 @@ public class CardDisplay : MonoBehaviour
         UpdateDisplayPower();
     }
 
+    public void ClearAllBuff()
+    {
+        cardPowerBuff.basePower = cardInfo.originPower;
+        cardPowerBuff.add = 0;
+        cardPowerBuff.minus = 0;
+        cardPowerBuff.times = 1;
+        UpdateDisplayPower();
+    }
+
     private void InitCardPowerBuff()
     {
         cardPowerBuff.basePower = cardInfo.originPower;

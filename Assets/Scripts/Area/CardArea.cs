@@ -13,11 +13,12 @@ public class CardArea : MonoBehaviour
 
     protected List<GameObject> cardList = new List<GameObject>();
 
+    private bool hasInit = false;
+
     // Start is called before the first frame update
     void Start()
     {
-        cardAreaWidth = cardArea.GetComponent<RectTransform>().rect.width;
-        cardAreaHeight = cardArea.GetComponent<RectTransform>().rect.height;
+        Init();
     }
 
     // Update is called once per frame
@@ -26,8 +27,19 @@ public class CardArea : MonoBehaviour
         
     }
 
+    private void Init()
+    {
+        if (hasInit) {
+            return;
+        }
+        cardAreaWidth = cardArea.GetComponent<RectTransform>().rect.width;
+        cardAreaHeight = cardArea.GetComponent<RectTransform>().rect.height;
+        hasInit = true;
+    }
+
     public virtual void AddCard(GameObject newCard) // TODO 同时添加多张牌
     {
+        Init(); // 这里的init实现实际上有些问题，主要为了兼容弃牌区Start函数调用过晚地问题，TODO: 尝试更合适地解决方案
         newCard.transform.SetParent(cardArea.transform);
         cardList.Add(newCard);
         SetCardSize(newCard);
@@ -39,6 +51,17 @@ public class CardArea : MonoBehaviour
         cardList.Remove(card);
         ReArrange();
         card.transform.SetParent(null);
+    }
+
+    public void RemoveAllCard()
+    {
+        List<GameObject> tempList = new List<GameObject>();
+        foreach(GameObject card in cardList) {
+            tempList.Add(card);
+        }
+        foreach(GameObject card in tempList) {
+            RemoveCard(card);
+        }
     }
 
     // 是否已放满，放满之后要进行堆叠放置
