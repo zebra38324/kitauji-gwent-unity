@@ -30,11 +30,4 @@ public class DiscardButtonScript : MonoBehaviour
         discardArea.GetComponent<DiscardArea>().ShowCard(isSelf);
         discardArea.SetActive(true);
     }
-
-    public void CloseDiscardArea()
-    {
-        isShowing = false;
-        discardArea.SetActive(false);
-        discardArea.GetComponent<DiscardArea>().HideCard();
-    }
 }

@@ -1,13 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 // 打出的牌所在区域，一个RowArea为一排，包括这一排的分数、指挥牌、普通牌
-public class DiscardArea : MonoBehaviour
+public class DiscardArea : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public GameObject discardArea;
     public GameObject row1;
     public GameObject row2;
     public GameObject row3;
+
+    private bool isPointerInside = false;
 
     // Start is called before the first frame update
     void Start()
@@ -18,7 +21,12 @@ public class DiscardArea : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(Input.GetMouseButtonDown(0)) {
+            if (!isPointerInside) {
+                HideCard();
+                gameObject.SetActive(false);
+            }
+        }
     }
 
     public void ShowCard(bool isSelf)
@@ -44,5 +52,15 @@ public class DiscardArea : MonoBehaviour
         row1.GetComponent<CardArea>().RemoveAllCard();
         row2.GetComponent<CardArea>().RemoveAllCard();
         row3.GetComponent<CardArea>().RemoveAllCard();
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        isPointerInside = true;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        isPointerInside = false;
     }
 }
