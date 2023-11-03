@@ -53,5 +53,6 @@ public class RowArea : MonoBehaviour
     public void ClearCard(DiscardCardManager manager)
     {
         normalArea.GetComponent<RowNormalCardArea>().ClearCard(manager);
+        UpdateScore();
     }
 }
