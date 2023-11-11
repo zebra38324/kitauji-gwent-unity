@@ -100,6 +100,11 @@ public class RowNormalCardArea : CardArea
         }
     }
 
+    private void ClearMoraleBuff()
+    {
+        moraleCount = 0;
+    }
+
     public void ClearCard(DiscardCardManager manager)
     {
         List<GameObject> tempList = new List<GameObject>();
@@ -112,5 +117,6 @@ public class RowNormalCardArea : CardArea
             card.GetComponent<CardDisplay>().ClearAllBuff();
             card.GetComponent<CardDisplay>().SetStatus(CardStatus.Discard);
         }
+        ClearMoraleBuff();
     }
 }
