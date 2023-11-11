@@ -12,6 +12,11 @@ public class DiscardCardManager
         cardList.Add(card);
     }
 
+    public void RemoveCard(GameObject card)
+    {
+        cardList.Remove(card);
+    }
+
     public List<GameObject> GetCardList()
     {
         return cardList;

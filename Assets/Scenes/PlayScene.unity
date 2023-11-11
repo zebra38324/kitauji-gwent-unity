@@ -2211,6 +2211,7 @@ MonoBehaviour:
   scoreNum: {fileID: 763298916}
   enemyArea: {fileID: 1636682482}
   cardPrefab: {fileID: 0}
+  discardArea: {fileID: 0}
 --- !u!1 &1254062862
 GameObject:
   m_ObjectHideFlags: 0
@@ -2420,6 +2421,7 @@ MonoBehaviour:
   scoreNum: {fileID: 588257044}
   enemyArea: {fileID: 1173754400}
   cardPrefab: {fileID: 4237425473757966632, guid: e766b7c7e9d9cfe4eb2fcb6d91c6bf61, type: 3}
+  discardArea: {fileID: 296122536}
 --- !u!1001 &1691119000
 PrefabInstance:
   m_ObjectHideFlags: 0

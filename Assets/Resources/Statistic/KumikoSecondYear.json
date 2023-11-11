@@ -257,6 +257,18 @@
             "quote": "“有什么好消沉的，\n我们在那个瞬间献上了最好的演奏！”"
         },
         {
+            "imageName": "39.tomoe.kabe-portrait",
+            "chineseName": "加部友惠",
+            "englishName": "Tomoe Kabe",
+            "group": "KumikoSecondYear",
+            "grade": 3,
+            "originPower": 0,
+            "badgeType": "Brass",
+            "ability": "Medic",
+            "cardType": "Normal",
+            "quote": "“我打算以经纪人的身份，\n来继续支持大家！”"
+        },
+        {
             "imageName": "64.satsuki.suzuki-portrait",
             "chineseName": "铃木皋月",
             "englishName": "Satsuki Suzuki",

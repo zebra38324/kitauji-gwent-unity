@@ -34,6 +34,7 @@ public class CardDisplay : MonoBehaviour
     public GameObject ability;
 
     private CardPowerBuff cardPowerBuff;
+    private CardStatus cardStatus;
 
     void Awake()
     {
@@ -220,8 +221,20 @@ public class CardDisplay : MonoBehaviour
                 return "muster";
             case CardAbility.Morale:
                 return "morale";
+            case CardAbility.Medic:
+                return "medic";
             default: // None
                 return "none";
         }
+    }
+
+    public void SetStatus(CardStatus status)
+    {
+        cardStatus = status;
+    }
+
+    public CardStatus GetStatus()
+    {
+        return cardStatus;
     }
 }

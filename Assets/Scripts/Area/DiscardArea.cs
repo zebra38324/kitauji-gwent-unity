@@ -23,19 +23,13 @@ public class DiscardArea : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         if(Input.GetMouseButtonDown(0)) {
             if (!isPointerInside) {
-                HideCard();
-                gameObject.SetActive(false);
+                CloseArea();
             }
         }
     }
 
-    public void ShowCard(bool isSelf)
+    public void ShowCard(List<GameObject> cardList)
     {
-        DiscardCardManager manager = SelfDiscardCardManager.Instance;
-        if (!isSelf) {
-            manager = EnemyDiscardCardManager.Instance;
-        }
-        List<GameObject> cardList = manager.GetCardList();
         foreach(GameObject card in cardList) {
             if (!row1.GetComponent<CardArea>().IsAreaFull(30)) {
                 row1.GetComponent<CardArea>().AddCard(card);
@@ -52,6 +46,27 @@ public class DiscardArea : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         row1.GetComponent<CardArea>().RemoveAllCard();
         row2.GetComponent<CardArea>().RemoveAllCard();
         row3.GetComponent<CardArea>().RemoveAllCard();
+    }
+
+    public void RemoveCard(GameObject card)
+    {
+        Debug.Log("Remove card " + card.GetComponent<CardDisplay>().GetCardInfo().chineseName);
+        if (row1.GetComponent<CardArea>().ExistCard(card)) {
+            Debug.Log("Remove card in row1");
+            row1.GetComponent<CardArea>().RemoveCard(card);
+        } else if (row2.GetComponent<CardArea>().ExistCard(card)) {
+            Debug.Log("Remove card in row2");
+            row2.GetComponent<CardArea>().RemoveCard(card);
+        } else if (row3.GetComponent<CardArea>().ExistCard(card)) {
+            Debug.Log("Remove card in row3");
+            row3.GetComponent<CardArea>().RemoveCard(card);
+        }
+    }
+
+    public void CloseArea()
+    {
+        HideCard();
+        gameObject.SetActive(false);
     }
 
     public void OnPointerEnter(PointerEventData eventData)

@@ -57,11 +57,17 @@ public class CardArea : MonoBehaviour
     {
         List<GameObject> tempList = new List<GameObject>();
         foreach(GameObject card in cardList) {
+            card.GetComponent<CardSelect>().enableDiscardSelect = false;
             tempList.Add(card);
         }
         foreach(GameObject card in tempList) {
             RemoveCard(card);
         }
+    }
+
+    public bool ExistCard(GameObject card)
+    {
+        return cardList.Exists(t => t.GetComponent<CardDisplay>().GetCardInfo().englishName == card.GetComponent<CardDisplay>().GetCardInfo().englishName);
     }
 
     // 是否已放满，放满之后要进行堆叠放置

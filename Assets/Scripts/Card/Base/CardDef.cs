@@ -23,7 +23,8 @@ public enum CardAbility // TODO: 完善
     Bond, // 同袍之情
     ScorchWood, // 伞击：令对方实力最强的木管成员退部（仅当对方木管总吹奏实力大于10）
     Muster, // 抱团，令牌组中自己的闺蜜/基友立即上场比赛。
-    Morale, // 士气: 高喊“北宇治Fight！”，使同一行内除自己以外的部员吹奏能力+1。TODO: 具体实现
+    Morale, // 士气: 高喊“北宇治Fight！”，使同一行内除自己以外的部员吹奏能力+1。
+    Medic, // 复活: 令一名退部/毕业的部员（天王除外）回归吹奏部，并立即加入演奏。
 }
 
 public enum CardType
@@ -59,4 +60,13 @@ public struct CardPowerBuff
     public int add;
     public int minus;
     public int times;
+}
+
+// 标注卡牌当前状态
+public enum CardStatus
+{
+    Backup = 0, // 备用
+    Hand, // 手牌区
+    PlayArea, // 打出状态
+    Discard, // 弃牌区
 }

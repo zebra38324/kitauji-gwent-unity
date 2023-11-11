@@ -7,8 +7,8 @@ public class HandArea : CardArea
     public override void AddCard(GameObject newCard)
     {
         base.AddCard(newCard);
-        newCard.GetComponent<CardSelect>().EnableSelect(true);
         newCard.GetComponent<CardInfoDisplay>().SetEnableUp(true);
+        newCard.GetComponent<CardDisplay>().SetStatus(CardStatus.Hand);
     }
 
     public void PlayMusterCard(string musterType)

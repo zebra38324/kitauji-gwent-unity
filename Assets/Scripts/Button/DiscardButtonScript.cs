@@ -27,7 +27,11 @@ public class DiscardButtonScript : MonoBehaviour
             discardArea.GetComponent<DiscardArea>().HideCard();
         }
         isShowing = true;
-        discardArea.GetComponent<DiscardArea>().ShowCard(isSelf);
+        DiscardCardManager manager = SelfDiscardCardManager.Instance;
+        if (!isSelf) {
+            manager = EnemyDiscardCardManager.Instance;
+        }
+        discardArea.GetComponent<DiscardArea>().ShowCard(manager.GetCardList());
         discardArea.SetActive(true);
     }
 }

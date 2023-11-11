@@ -11,6 +11,7 @@ public class SinglePlayerArea : MonoBehaviour
     public GameObject scoreNum;
     public GameObject enemyArea;
     public GameObject cardPrefab;
+    public GameObject discardArea;
 
     // Start is called before the first frame update
     void Start()
@@ -43,6 +44,8 @@ public class SinglePlayerArea : MonoBehaviour
             enemyArea.GetComponent<SinglePlayerArea>().ScorchWood();
         } else if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Muster) {
             ApplyMuster(newCard.GetComponent<CardDisplay>().GetCardInfo().musterType);
+        } else if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Medic) {
+            ApplyMedic();
         }
     }
 
@@ -112,5 +115,23 @@ public class SinglePlayerArea : MonoBehaviour
         woodRow.GetComponent<RowArea>().ClearCard(manager);
         brassRow.GetComponent<RowArea>().ClearCard(manager);
         percussionRow.GetComponent<RowArea>().ClearCard(manager);
+    }
+
+    private void ApplyMedic()
+    {
+        List<GameObject> targetList = SelfDiscardCardManager.Instance.GetCardList();
+        List<GameObject> invalid = new List<GameObject>();
+        foreach (GameObject card in targetList) {
+            if (card.GetComponent<CardDisplay>().GetCardInfo().cardType == CardType.Hero) {
+                invalid.Add(card);
+            } else {
+                card.GetComponent<CardSelect>().enableDiscardSelect = true;
+            }
+        }
+        foreach (GameObject card in invalid) {
+            targetList.Remove(card);
+        }
+        discardArea.GetComponent<DiscardArea>().ShowCard(targetList);
+        discardArea.SetActive(true);
     }
 }
