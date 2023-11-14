@@ -269,6 +269,32 @@
             "quote": "“我打算以经纪人的身份，\n来继续支持大家！”"
         },
         {
+            "imageName": "40.junichi.takino-portrait",
+            "chineseName": "泷野纯一",
+            "englishName": "Junichi Takino",
+            "group": "KumikoSecondYear",
+            "grade": 3,
+            "originPower": 4,
+            "badgeType": "Brass",
+            "ability": "Bond",
+            "bondType": "siblings",
+            "cardType": "Normal",
+            "quote": "小号担当，\n不擅长应对新入部的妹妹泷野沙耶香。"
+        },
+        {
+            "imageName": "46.sayaka.takino-portrait",
+            "chineseName": "泷野沙耶香",
+            "englishName": "Sayaka Takino",
+            "group": "KumikoSecondYear",
+            "grade": 1,
+            "originPower": 4,
+            "badgeType": "Brass",
+            "ability": "Bond",
+            "bondType": "siblings",
+            "cardType": "Normal",
+            "quote": "同组的泷野纯一的妹妹。\n性格十分招人喜爱，人气很高。"
+        },
+        {
             "imageName": "64.satsuki.suzuki-portrait",
             "chineseName": "铃木皋月",
             "englishName": "Satsuki Suzuki",
