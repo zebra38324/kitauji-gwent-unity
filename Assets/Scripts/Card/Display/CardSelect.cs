@@ -30,12 +30,13 @@ public class CardSelect : MonoBehaviour, IPointerClickHandler
         {
             case CardStatus.Hand: {
                 // TODO: 目前先实现最简单的打出一张普通牌的功能
+                PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.PlayCardFromHandArea, gameObject, true);
                 PlayNormalCard();
                 break;
             }
             case CardStatus.Discard: {
                 if (enableDiscardSelect) {
-                    PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.MedicSelectDiscardCard, gameObject);
+                    PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.MedicSelectDiscardCard, gameObject, true);
                     PlayNormalCard(); // 这里顺序不能调整
                 }
                 break;
@@ -45,17 +46,12 @@ public class CardSelect : MonoBehaviour, IPointerClickHandler
 
     public void PlayPassively()
     {
+        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.PlayCardFromHandArea, gameObject, true);
         PlayNormalCard();
     }
 
     private void PlayNormalCard()
     {
-        // TODO 待优化
-        handArea.GetComponent<HandArea>().RemoveCard(gameObject); // TODO handarea
-        GameObject singlePlayerArea;
-        string areaName = "SelfPlayArea";
-        singlePlayerArea = GameObject.Find(areaName);
-        singlePlayerArea.GetComponent<SinglePlayerArea>().AddNormalCard(gameObject);
         gameObject.GetComponent<CardInfoDisplay>().SetIsCardUp(false);
         gameObject.GetComponent<CardInfoDisplay>().SetEnableUp(false);
     }
