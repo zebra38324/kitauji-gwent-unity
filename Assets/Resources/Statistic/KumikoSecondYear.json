@@ -282,6 +282,19 @@
             "quote": "小号担当，\n不擅长应对新入部的妹妹泷野沙耶香。"
         },
         {
+            "imageName": "41.reina.kousaka-portrait",
+            "chineseName": "高坂丽奈",
+            "englishName": "Reina Kousaka",
+            "group": "KumikoSecondYear",
+            "grade": 2,
+            "originPower": 10,
+            "badgeType": "Brass",
+            "ability": "Attack",
+            "attackNum": 4,
+            "cardType": "Hero",
+            "quote": "“我想成为特别的人。”"
+        },
+        {
             "imageName": "46.sayaka.takino-portrait",
             "chineseName": "泷野沙耶香",
             "englishName": "Sayaka Takino",

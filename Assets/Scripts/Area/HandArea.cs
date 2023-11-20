@@ -8,7 +8,7 @@ public class HandArea : CardArea
     {
         base.AddCard(newCard);
         newCard.GetComponent<CardInfoDisplay>().SetEnableUp(true);
-        newCard.GetComponent<CardDisplay>().SetStatus(CardStatus.Hand);
+        newCard.GetComponent<CardSelect>().selectType = CardSelectType.HandCard;
     }
 
     public void PlayMusterCard(string musterType)

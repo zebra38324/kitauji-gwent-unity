@@ -34,7 +34,6 @@ public class CardDisplay : MonoBehaviour
     public GameObject ability;
 
     private CardPowerBuff cardPowerBuff;
-    private CardStatus cardStatus;
 
     void Awake()
     {
@@ -159,11 +158,13 @@ public class CardDisplay : MonoBehaviour
 
     private void UpdateDisplayPower()
     {
+        if (cardInfo.cardType == CardType.Hero) {
+            powerNum.GetComponent<TextMeshProUGUI>().text = cardInfo.originPower.ToString(); // 英雄牌不受buff影响
+            return;
+        }
         int result = GetCurrentPower();
         powerNum.GetComponent<TextMeshProUGUI>().text = result.ToString();
-        if (cardInfo.cardType == CardType.Normal) {
-            UpdatePowerNumColor(result);
-        }
+        UpdatePowerNumColor(result);
     }
 
     private void UpdatePowerNumColor(int newPower)
@@ -226,15 +227,5 @@ public class CardDisplay : MonoBehaviour
             default: // None
                 return "none";
         }
-    }
-
-    public void SetStatus(CardStatus status)
-    {
-        cardStatus = status;
-    }
-
-    public CardStatus GetStatus()
-    {
-        return cardStatus;
     }
 }

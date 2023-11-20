@@ -125,7 +125,7 @@ public class SinglePlayerArea : MonoBehaviour
             if (card.GetComponent<CardDisplay>().GetCardInfo().cardType == CardType.Hero) {
                 invalid.Add(card);
             } else {
-                card.GetComponent<CardSelect>().enableDiscardSelect = true;
+                card.GetComponent<CardSelect>().selectType = CardSelectType.MedicDiscardCard;
             }
         }
         foreach (GameObject card in invalid) {
@@ -133,5 +133,32 @@ public class SinglePlayerArea : MonoBehaviour
         }
         discardArea.GetComponent<DiscardArea>().ShowCard(targetList);
         discardArea.SetActive(true);
+    }
+
+    public int ReadyEmbraceAttack(int num)
+    {
+        int count = 0;
+        count += woodRow.GetComponent<RowArea>().ReadyEmbraceAttack(num);
+        count += brassRow.GetComponent<RowArea>().ReadyEmbraceAttack(num);
+        count += percussionRow.GetComponent<RowArea>().ReadyEmbraceAttack(num);
+        return count;
+    }
+
+    public void FinishWithstandAttack()
+    {
+        woodRow.GetComponent<RowArea>().FinishWithstandAttack();
+        brassRow.GetComponent<RowArea>().FinishWithstandAttack();
+        percussionRow.GetComponent<RowArea>().FinishWithstandAttack();
+    }
+
+    public void RemoveSingleCard(GameObject card)
+    {
+        woodRow.GetComponent<RowArea>().RemoveSingleCard(card);
+        brassRow.GetComponent<RowArea>().RemoveSingleCard(card);
+        percussionRow.GetComponent<RowArea>().RemoveSingleCard(card);
+        // 更新buff
+        if (card.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Bond) {
+            UpdateBondBuff(card.GetComponent<CardDisplay>().GetCardInfo().bondType);
+        }
     }
 }

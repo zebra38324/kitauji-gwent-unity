@@ -18,7 +18,7 @@ public enum CardAbility // TODO: 完善
 {
     None = 0,
     Spy,
-    Attack,
+    Attack, // 投掷: 投掷号嘴（或洗手液等），使指定对方一名部员吹奏能力降低。
     Tunning,
     Bond, // 同袍之情
     ScorchWood, // 伞击：令对方实力最强的木管成员退部（仅当对方木管总吹奏实力大于10）
@@ -45,6 +45,7 @@ public struct CardInfo
     public CardAbility ability; // 特殊能力
     public string bondType; // bond类型，用于匹配bond的组合
     public string musterType; // 抱团类型，用于匹配muster组合
+    public int attackNum; // 攻击牌的攻击数值
     public CardType cardType; // 是否为英雄牌
     public string quote; // 卡牌最下方的台词引用
 }
@@ -62,11 +63,11 @@ public struct CardPowerBuff
     public int times;
 }
 
-// 标注卡牌当前状态
-public enum CardStatus
+// 卡牌可选择的类型
+public enum CardSelectType
 {
-    Backup = 0, // 备用
-    Hand, // 手牌区
-    PlayArea, // 打出状态
-    Discard, // 弃牌区
+    None = 0, // 点击无效果
+    HandCard, // 手牌
+    MedicDiscardCard, // 复活弃牌区
+    WithstandAttack, // 准备被攻击
 }

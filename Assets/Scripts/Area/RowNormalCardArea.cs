@@ -12,7 +12,6 @@ public class RowNormalCardArea : CardArea
     {
         TryUpdateMoraleBuff(newCard); // morale这种只影响本行的buff，在row area这层操作就可以了。morale不对自己生效，因此先加buff再添加卡牌
         base.AddCard(newCard);
-        newCard.GetComponent<CardDisplay>().SetStatus(CardStatus.PlayArea);
     }
 
     // 消除除天气外的debuff
@@ -115,8 +114,29 @@ public class RowNormalCardArea : CardArea
         foreach(GameObject card in tempList) {
             RemoveCard(card);
             card.GetComponent<CardDisplay>().ClearAllBuff();
-            card.GetComponent<CardDisplay>().SetStatus(CardStatus.Discard);
         }
         ClearMoraleBuff();
+    }
+
+    public int ReadyEmbraceAttack(int num)
+    {
+        int count = 0;
+        foreach (GameObject card in cardList) {
+            if (card.GetComponent<CardDisplay>().GetCardInfo().cardType != CardType.Hero) {
+                card.GetComponent<CardSelect>().selectType = CardSelectType.WithstandAttack; // TODO: 加个特效
+                card.GetComponent<CardSelect>().attackNum = num;
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public void FinishWithstandAttack()
+    {
+        foreach (GameObject card in cardList) {
+            if (card.GetComponent<CardDisplay>().GetCardInfo().cardType != CardType.Hero) {
+                card.GetComponent<CardSelect>().selectType = CardSelectType.None;
+            }
+        }
     }
 }

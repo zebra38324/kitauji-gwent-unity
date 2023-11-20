@@ -8,7 +8,8 @@ public class CardSelect : MonoBehaviour, IPointerClickHandler
 
     private GameObject handArea;
 
-    public bool enableDiscardSelect { get; set; } // 弃牌状态是否允许选择
+    public CardSelectType selectType { get; set; }
+    public int attackNum { get; set; } // 即将遭受的攻击数值
 
     // Start is called before the first frame update
     void Start()
@@ -26,19 +27,27 @@ public class CardSelect : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         Debug.Log("on click " + gameObject.GetComponent<CardDisplay>().GetCardInfo().englishName);
-        switch (gameObject.GetComponent<CardDisplay>().GetStatus())
+        switch (selectType)
         {
-            case CardStatus.Hand: {
+            case CardSelectType.HandCard: {
                 // TODO: 目前先实现最简单的打出一张普通牌的功能
                 PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.PlayCardFromHandArea, gameObject, true);
                 PlayNormalCard();
                 break;
             }
-            case CardStatus.Discard: {
-                if (enableDiscardSelect) {
-                    PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.MedicSelectDiscardCard, gameObject, true);
-                    PlayNormalCard(); // 这里顺序不能调整
+            case CardSelectType.MedicDiscardCard: {
+                PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.MedicSelectDiscardCard, gameObject, true);
+                PlayNormalCard(); // 这里顺序不能调整
+                break;
+            }
+            case CardSelectType.WithstandAttack: {
+                gameObject.GetComponent<CardDisplay>().SetBuffAddMinus(-attackNum);
+                if (gameObject.GetComponent<CardDisplay>().GetCurrentPower() < 0 ||
+                    (gameObject.GetComponent<CardDisplay>().GetCurrentPower() == 0 && gameObject.GetComponent<CardDisplay>().GetCardInfo().originPower > 0)) {
+                    // 点数小于0，移除卡牌。等于0时需判断原点数是否为0
+                    PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.RemoveSingleCard, gameObject, false);
                 }
+                PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.FinishWithstandAttack);
                 break;
             }
         }
@@ -54,5 +63,6 @@ public class CardSelect : MonoBehaviour, IPointerClickHandler
     {
         gameObject.GetComponent<CardInfoDisplay>().SetIsCardUp(false);
         gameObject.GetComponent<CardInfoDisplay>().SetEnableUp(false);
+        selectType = CardSelectType.None;
     }
 }

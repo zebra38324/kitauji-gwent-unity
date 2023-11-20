@@ -53,11 +53,12 @@ public class CardArea : MonoBehaviour
         card.transform.SetParent(null);
     }
 
+    // 此处仅弃牌区调用。TODO: 优化，继承一下
     public void RemoveAllCard()
     {
         List<GameObject> tempList = new List<GameObject>();
         foreach(GameObject card in cardList) {
-            card.GetComponent<CardSelect>().enableDiscardSelect = false;
+            card.GetComponent<CardSelect>().selectType = CardSelectType.None;
             tempList.Add(card);
         }
         foreach(GameObject card in tempList) {
