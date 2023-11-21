@@ -8,7 +8,23 @@ public class CardSelect : MonoBehaviour, IPointerClickHandler
 
     private GameObject handArea;
 
-    public CardSelectType selectType { get; set; }
+    private CardSelectType selectType_;
+    public CardSelectType selectType
+    {
+        get
+        {
+            return selectType_;
+        }
+        set
+        {
+            selectType_ = value;
+            if (selectType_ == CardSelectType.WithstandAttack) {
+                gameObject.GetComponent<CardDisplay>().SetFrameVisible(true);
+            } else {
+                gameObject.GetComponent<CardDisplay>().SetFrameVisible(false);
+            }
+        } 
+    }
     public int attackNum { get; set; } // 即将遭受的攻击数值
 
     // Start is called before the first frame update
@@ -47,6 +63,7 @@ public class CardSelect : MonoBehaviour, IPointerClickHandler
                     // 点数小于0，移除卡牌。等于0时需判断原点数是否为0
                     PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.RemoveSingleCard, gameObject, false);
                 }
+                gameObject.GetComponent<CardDisplay>().SetFrameVisible(false);
                 PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.FinishWithstandAttack);
                 break;
             }

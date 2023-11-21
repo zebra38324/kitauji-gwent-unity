@@ -33,6 +33,9 @@ public class CardDisplay : MonoBehaviour
     public GameObject abilityBackground;
     public GameObject ability;
 
+    // 边框
+    public GameObject frame;
+
     private CardPowerBuff cardPowerBuff;
 
     void Awake()
@@ -91,6 +94,10 @@ public class CardDisplay : MonoBehaviour
             ability.SetActive(false);
         }
         
+        // frame
+        if (frame != null) {
+            frame.SetActive(false);
+        }
     }
 
     public void SetCardInfo(CardInfo info)
@@ -226,6 +233,13 @@ public class CardDisplay : MonoBehaviour
                 return "medic";
             default: // None
                 return "none";
+        }
+    }
+
+    public void SetFrameVisible(bool flag)
+    {
+        if (frame != null) {
+            frame.SetActive(flag);
         }
     }
 }

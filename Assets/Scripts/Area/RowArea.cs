@@ -64,6 +64,7 @@ public class RowArea : MonoBehaviour
     public void FinishWithstandAttack()
     {
         normalArea.GetComponent<RowNormalCardArea>().FinishWithstandAttack();
+        UpdateScore();
     }
 
     public void RemoveSingleCard(GameObject card)
