@@ -295,6 +295,30 @@
             "quote": "“我想成为特别的人。”"
         },
         {
+            "imageName": "42.akiko.yoshizawa-portrait",
+            "chineseName": "吉泽秋子",
+            "englishName": "Akiko Yoshizawa",
+            "group": "KumikoSecondYear",
+            "grade": 2,
+            "originPower": 4,
+            "badgeType": "Brass",
+            "ability": "None",
+            "cardType": "Normal",
+            "quote": "小号担当。\n非常自我的性格，总是飘飘然的。"
+        },
+        {
+            "imageName": "44.yume.kohinata-portrait",
+            "chineseName": "小日向梦",
+            "englishName": "Yume Kohinata",
+            "group": "KumikoSecondYear",
+            "grade": 1,
+            "originPower": 6,
+            "badgeType": "Brass",
+            "ability": "None",
+            "cardType": "Normal",
+            "quote": "北中出身，演奏技术很高，\n但性格内向保守。"
+        },
+        {
             "imageName": "46.sayaka.takino-portrait",
             "chineseName": "泷野沙耶香",
             "englishName": "Sayaka Takino",
@@ -306,6 +330,42 @@
             "bondType": "siblings",
             "cardType": "Normal",
             "quote": "同组的泷野纯一的妹妹。\n性格十分招人喜爱，人气很高。"
+        },
+        {
+            "imageName": "47.keina.iwata-portrait",
+            "chineseName": "岩田慧菜",
+            "englishName": "Keina Iwata",
+            "group": "KumikoSecondYear",
+            "grade": 3,
+            "originPower":5,
+            "badgeType": "Brass",
+            "ability": "Medic",
+            "cardType": "Normal",
+            "quote": "担任长号组组长。家中是祖传的\n医生世家，将来想致力于音乐疗法。"
+        },
+        {
+            "imageName": "49.shuichi.tsukamoto-portrait",
+            "chineseName": "冢本秀一",
+            "englishName": "Shuichi Tsukamoto",
+            "group": "KumikoSecondYear",
+            "grade": 2,
+            "originPower": 6,
+            "badgeType": "Brass",
+            "ability": "None",
+            "cardType": "Normal",
+            "quote": "“高坂。。算了，\n你这人挺可怕的。”"
+        },
+        {
+            "imageName": "50.sayaka.fukui-portrait",
+            "chineseName": "福井沙耶香",
+            "englishName": "Sayaka Fukui",
+            "group": "KumikoSecondYear",
+            "grade": 2,
+            "originPower": 4,
+            "badgeType": "Brass",
+            "ability": "None",
+            "cardType": "Normal",
+            "quote": "长号担当。非常喜欢海豹，\n将来想做水族馆的饲养员。"
         },
         {
             "imageName": "64.satsuki.suzuki-portrait",
