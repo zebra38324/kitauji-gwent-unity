@@ -380,6 +380,56 @@
             "quote": "内心对同组的冢本秀一憧憬着，\n组内练习的时候会积极地搭话。"
         },
         {
+            "imageName": "54.miru.kishibe-portrait",
+            "chineseName": "岸部海松",
+            "englishName": "Miru Kishibe",
+            "group": "KumikoSecondYear",
+            "grade": 3,
+            "originPower": 5,
+            "badgeType": "Brass",
+            "ability": "None",
+            "cardType": "Normal",
+            "quote": "“该做的时候就做，\n该玩的时候就全力玩。”"
+        },
+        {
+            "imageName": "55.lala.hitomi-portrait",
+            "chineseName": "瞳拉拉",
+            "englishName": "Lala Hitomi",
+            "group": "KumikoSecondYear",
+            "grade": 2,
+            "originPower": 4,
+            "badgeType": "Brass",
+            "ability": "Spy",
+            "cardType": "Normal",
+            "quote": "“是的，\n拉拉我打听到了。”"
+        },
+        {
+            "imageName": "61.takuya.gotou-portrait",
+            "chineseName": "后藤卓也",
+            "englishName": "Takuya Gotou",
+            "group": "KumikoSecondYear",
+            "grade": 3,
+            "originPower": 6,
+            "badgeType": "Brass",
+            "ability": "Bond",
+            "bondType": "tuba",
+            "cardType": "Normal",
+            "quote": "“虽然没有优点却拼命努力，\n这就是大号的优点。”"
+        },
+        {
+            "imageName": "62.riko.nagase-portrait",
+            "chineseName": "长濑梨子",
+            "englishName": "Riko Nagase",
+            "group": "KumikoSecondYear",
+            "grade": 3,
+            "originPower": 6,
+            "badgeType": "Brass",
+            "ability": "Bond",
+            "bondType": "tuba",
+            "cardType": "Normal",
+            "quote": "“该说我们是在交往呢，\n还是没在交往呢。。”"
+        },
+        {
             "imageName": "64.satsuki.suzuki-portrait",
             "chineseName": "铃木皋月",
             "englishName": "Satsuki Suzuki",
