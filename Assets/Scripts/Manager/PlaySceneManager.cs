@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 
 // 统一管理全局通知行为
@@ -23,6 +25,8 @@ public class PlaySceneManager
     private GameObject selfPlayArea;
     private GameObject enemyPlayArea;
 
+    private GameObject cardPrefab;
+
     private GameObject curCard; // 当前需要异步处理的卡牌
 
     static PlaySceneManager() {}
@@ -43,6 +47,9 @@ public class PlaySceneManager
         if (enemyPlayArea == null) {
             enemyPlayArea = GameObject.Find("EnemyPlayArea");
         }
+        if (handArea == null) {
+            handArea = GameObject.Find("HandArea");
+        }
         switch (msg)
         {
             case PlaySceneMsg.MedicSelectDiscardCard: {
@@ -53,30 +60,19 @@ public class PlaySceneManager
                 discardArea.GetComponent<DiscardArea>().RemoveCard(card);
                 discardArea.GetComponent<DiscardArea>().CloseArea();
                 SelfDiscardCardManager.Instance.RemoveCard(card);
-
-                bool isSelf = (bool)list[1]; // TODO: 间谍牌
-                AddCardToPlayArea(card, isSelf);
+                AddCardToPlayArea(card);
                 break;
             }
             case PlaySceneMsg.PlayCardFromHandArea: {
-                if (handArea == null) {
-                    handArea = GameObject.Find("HandArea");
-                }
                 GameObject card = (GameObject)list[0];
                 handArea.GetComponent<HandArea>().RemoveCard(card);
-
-                bool isSelf = (bool)list[1]; // TODO: 间谍牌
-                if (card.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Attack && ApplyAttackCard(card)) {
-                    curCard = card;
-                    break;
-                }
-                AddCardToPlayArea(card, isSelf);
+                AddCardToPlayArea(card);
                 break;
             }
             case PlaySceneMsg.FinishWithstandAttack: {
                 Debug.Log("FinishWithstandAttack");
                 enemyPlayArea.GetComponent<SinglePlayerArea>().FinishWithstandAttack();
-                AddCardToPlayArea(curCard, true); // 不考虑同时是间谍牌和攻击牌的情况
+                selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(curCard); // 不考虑同时是间谍牌和攻击牌的情况
                 curCard = null;
                 break;
             }
@@ -93,9 +89,16 @@ public class PlaySceneManager
         }
     }
 
-    private void AddCardToPlayArea(GameObject card, bool isSelf)
+    private void AddCardToPlayArea(GameObject card)
     {
-        if (isSelf) {
+        if (card.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Attack && ApplyAttackCard(card)) {
+            curCard = card;
+            return;
+        }
+        if (card.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Spy) {
+            DrawCards(2);
+            enemyPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
+        } else {
             selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
         }
     }
@@ -107,5 +110,20 @@ public class PlaySceneManager
         int attackNum = card.GetComponent<CardDisplay>().GetCardInfo().attackNum;
         int count = enemyPlayArea.GetComponent<SinglePlayerArea>().ReadyEmbraceAttack(attackNum);
         return count > 0;
+    }
+
+    // 从备选卡牌中拉取几张牌到手牌区
+    private void DrawCards(int num)
+    {
+        if (cardPrefab == null) {
+            cardPrefab = Resources.Load<GameObject>("Prefabs/HalfCard");
+        }
+        // 备选卡牌中拉取
+        List<CardInfo> cardInfos = BackupCardManager.Instance.GetCardInfos(num);
+        foreach (CardInfo info in cardInfos) {
+            GameObject card = GameObject.Instantiate(cardPrefab, null);
+            card.GetComponent<CardDisplay>().SetCardInfo(info);
+            handArea.GetComponent<HandArea>().AddCard(card);
+        }
     }
 }

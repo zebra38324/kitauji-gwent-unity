@@ -368,6 +368,18 @@
             "quote": "长号担当。非常喜欢海豹，\n将来想做水族馆的饲养员。"
         },
         {
+            "imageName": "52.michiru.hakase-portrait",
+            "chineseName": "叶加濑满",
+            "englishName": "Michiru Hakase",
+            "group": "KumikoSecondYear",
+            "grade": 1,
+            "originPower": 4,
+            "badgeType": "Brass",
+            "ability": "Spy",
+            "cardType": "Normal",
+            "quote": "内心对同组的冢本秀一憧憬着，\n组内练习的时候会积极地搭话。"
+        },
+        {
             "imageName": "64.satsuki.suzuki-portrait",
             "chineseName": "铃木皋月",
             "englishName": "Satsuki Suzuki",

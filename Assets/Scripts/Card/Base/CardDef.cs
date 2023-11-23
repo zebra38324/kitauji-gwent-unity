@@ -17,7 +17,7 @@ public enum CardBadgeType
 public enum CardAbility // TODO: 完善
 {
     None = 0,
-    Spy,
+    Spy, // 间谍: 加入对面吹奏部，让己方新增两名部员。
     Attack, // 投掷: 投掷号嘴（或洗手液等），使指定对方一名部员吹奏能力降低。
     Tunning,
     Bond, // 同袍之情
