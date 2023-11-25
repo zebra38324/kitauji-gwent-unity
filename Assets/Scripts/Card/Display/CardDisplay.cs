@@ -119,6 +119,9 @@ public class CardDisplay : MonoBehaviour
     // 添加点数buff
     public void SetBuffAddMinus(int diff)
     {
+        if (cardInfo.cardType == CardType.Hero) {
+            return;
+        }
         if (diff > 0) {
             cardPowerBuff.add += diff;
         } else {
@@ -129,10 +132,22 @@ public class CardDisplay : MonoBehaviour
 
     public void SetBuffTimes(int times)
     {
-        if (times < 1) {
+        if (times < 1 || cardInfo.cardType == CardType.Hero) {
             return;
         }
         cardPowerBuff.times = times;
+        UpdateDisplayPower();
+    }
+
+    public void SetBuffTimesDiff(int times)
+    {
+        if (cardInfo.cardType == CardType.Hero) {
+            return;
+        }
+        cardPowerBuff.times += times;
+        if (cardPowerBuff.times < 0) {
+            cardPowerBuff.times = 0;
+        }
         UpdateDisplayPower();
     }
 
@@ -231,6 +246,8 @@ public class CardDisplay : MonoBehaviour
                 return "morale";
             case CardAbility.Medic:
                 return "medic";
+            case CardAbility.Horn:
+                return "horn";
             default: // None
                 return "none";
         }

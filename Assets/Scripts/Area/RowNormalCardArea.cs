@@ -7,10 +7,11 @@ using UnityEngine;
 public class RowNormalCardArea : CardArea
 {
     private int moraleCount = 0; // TODO: 移除效果
+    private int hornCount = 0;
 
     public override void AddCard(GameObject newCard)
     {
-        TryUpdateMoraleBuff(newCard); // morale这种只影响本行的buff，在row area这层操作就可以了。morale不对自己生效，因此先加buff再添加卡牌
+        TryAddBuff(newCard); // morale这种只影响本行的buff，在row area这层操作就可以了。morale不对自己生效，因此先加buff再添加卡牌
         base.AddCard(newCard);
     }
 
@@ -84,7 +85,7 @@ public class RowNormalCardArea : CardArea
         }
     }
 
-    public void TryUpdateMoraleBuff(GameObject newCard)
+    private void TryUpdateMoraleBuff(GameObject newCard)
     {
         if (moraleCount > 0) {
             // 本来就有morale，先给新卡牌加上
@@ -99,9 +100,58 @@ public class RowNormalCardArea : CardArea
         }
     }
 
+    private void TryAddHornBuff(GameObject newCard)
+    {
+        if (hornCount > 0) {
+            // 本来就有horn，先加上
+            newCard.GetComponent<CardDisplay>().SetBuffTimesDiff(hornCount);
+        }
+        if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Horn) {
+            hornCount++;
+            foreach (GameObject card in cardList)
+            {
+                card.GetComponent<CardDisplay>().SetBuffTimesDiff(1);
+            }
+        }
+
+    }
+
+    // 添加士气与号角buff
+    private void TryAddBuff(GameObject newCard)
+    {
+        TryUpdateMoraleBuff(newCard);
+        TryAddHornBuff(newCard);
+    }
+
+    // 移除士气与号角buff
+    private void TryRemoveBuff(GameObject removeCard)
+    {
+        if (removeCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Morale) {
+            moraleCount--;
+            foreach (GameObject card in cardList)
+            {
+                card.GetComponent<CardDisplay>().SetBuffAddMinus(-1);
+            }
+        }
+        if (removeCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Horn) {
+            hornCount--;
+            foreach (GameObject card in cardList)
+            {
+                card.GetComponent<CardDisplay>().SetBuffTimesDiff(-1);
+            }
+        }
+    }
+
+    public override void RemoveCard(GameObject card)
+    {
+        base.RemoveCard(card);
+        TryRemoveBuff(card); // 先移除卡牌，再对剩下的牌结算影响
+    }
+
     private void ClearMoraleBuff()
     {
         moraleCount = 0;
+        hornCount = 0;
     }
 
     public void ClearCard(DiscardCardManager manager)

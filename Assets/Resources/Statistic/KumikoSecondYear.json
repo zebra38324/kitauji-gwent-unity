@@ -430,6 +430,18 @@
             "quote": "“该说我们是在交往呢，\n还是没在交往呢。。”"
         },
         {
+            "imageName": "63.hazuki.katou-portrait",
+            "chineseName": "加藤叶月",
+            "englishName": "Hazuki Katou",
+            "group": "KumikoSecondYear",
+            "grade": 2,
+            "originPower": 2,
+            "badgeType": "Brass",
+            "ability": "Horn",
+            "cardType": "Normal",
+            "quote": "“大号的职责就是在背后支持乐队，\n冢本。”"
+        },
+        {
             "imageName": "64.satsuki.suzuki-portrait",
             "chineseName": "铃木皋月",
             "englishName": "Satsuki Suzuki",

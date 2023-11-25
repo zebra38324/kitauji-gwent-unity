@@ -46,7 +46,7 @@ public class CardArea : MonoBehaviour
         ReArrange();
     }
 
-    public void RemoveCard(GameObject card)
+    public virtual void RemoveCard(GameObject card)
     {
         cardList.Remove(card);
         ReArrange();
