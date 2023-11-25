@@ -483,11 +483,23 @@
             "englishName": "Kumiko Oumae",
             "group": "KumikoSecondYear",
             "grade": 2,
-            "originPower":9,
+            "originPower": 9,
             "badgeType": "Brass",
             "ability": "Medic",
             "cardType": "Hero",
             "quote": "“想要吹得更好。”"
+        },
+        {
+            "imageName": "68.kanade.hisaishi-portrait",
+            "chineseName": "久石奏",
+            "englishName": "Kanade Hisaishi",
+            "group": "KumikoSecondYear",
+            "grade": 1,
+            "originPower": 0,
+            "badgeType": "Brass",
+            "ability": "Spy",
+            "cardType": "Hero",
+            "quote": "“所谓努力，到底算什么回事。”"
         },
         {
             "imageName": "74.masako.sakai-portrait",
