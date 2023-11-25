@@ -502,6 +502,42 @@
             "quote": "“所谓努力，到底算什么回事。”"
         },
         {
+            "imageName": "69.sapphire.kawashima-portrait",
+            "chineseName": "川岛绿辉",
+            "englishName": "Sapphire Kawashima",
+            "group": "KumikoSecondYear",
+            "grade": 2,
+            "originPower": 10,
+            "badgeType": "Percussion",
+            "ability": "None",
+            "cardType": "Hero",
+            "quote": "“爱与死亡是音乐永恒的主题。”"
+        },
+        {
+            "imageName": "70.motomu.tsukinaga-portrait",
+            "chineseName": "月永求",
+            "englishName": "Motomu Tsukinaga",
+            "group": "KumikoSecondYear",
+            "grade": 1,
+            "originPower": 5,
+            "badgeType": "Percussion",
+            "ability": "None",
+            "cardType": "Normal",
+            "quote": "“可以叫我求吗？”"
+        },
+        {
+            "imageName": "71.miyoko.ono-portrait",
+            "chineseName": "大野美代子",
+            "englishName": "Miyoko Ono",
+            "group": "KumikoSecondYear",
+            "grade": 3,
+            "originPower": 7,
+            "badgeType": "Percussion",
+            "ability": "None",
+            "cardType": "Normal",
+            "quote": "在《利兹与青鸟》中，\n负责弹自己憧憬的竖琴。"
+        },
+        {
             "imageName": "74.masako.sakai-portrait",
             "chineseName": "堺万纱子",
             "englishName": "Masako Sakai",
