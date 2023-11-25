@@ -538,6 +538,19 @@
             "quote": "在《利兹与青鸟》中，\n负责弹自己憧憬的竖琴。"
         },
         {
+            "imageName": "72.junna.inoue-portrait",
+            "chineseName": "井上顺菜",
+            "englishName": "Junna Inoue",
+            "group": "KumikoSecondYear",
+            "grade": 2,
+            "originPower": 5,
+            "badgeType": "Percussion",
+            "ability": "Bond",
+            "bondType": "perc",
+            "cardType": "Normal",
+            "quote": "初中时便是打击乐担当，\n演奏技术很高。"
+        },
+        {
             "imageName": "74.masako.sakai-portrait",
             "chineseName": "堺万纱子",
             "englishName": "Masako Sakai",
@@ -545,7 +558,8 @@
             "grade": 2,
             "originPower": 5,
             "badgeType": "Percussion",
-            "ability": "None",
+            "ability": "Bond",
+            "bondType": "perc",
             "cardType": "Normal",
             "quote": "非常喜欢音乐，\n演奏时会感到无比幸福。"
         }
