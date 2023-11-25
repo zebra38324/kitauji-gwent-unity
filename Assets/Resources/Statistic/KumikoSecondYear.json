@@ -478,6 +478,18 @@
             "quote": "“托小黄你的福，\n我现在觉得自己吹的比以前好些了。”"
         },
         {
+            "imageName": "67.kumiko.oumae-portrait",
+            "chineseName": "黄前久美子",
+            "englishName": "Kumiko Oumae",
+            "group": "KumikoSecondYear",
+            "grade": 2,
+            "originPower":9,
+            "badgeType": "Brass",
+            "ability": "Medic",
+            "cardType": "Hero",
+            "quote": "“想要吹得更好。”"
+        },
+        {
             "imageName": "74.masako.sakai-portrait",
             "chineseName": "堺万纱子",
             "englishName": "Masako Sakai",
