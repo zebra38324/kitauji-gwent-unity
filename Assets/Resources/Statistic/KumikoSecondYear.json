@@ -404,6 +404,18 @@
             "quote": "“是的，\n拉拉我打听到了。”"
         },
         {
+            "imageName": "56.michiyo.morimoto-portrait",
+            "chineseName": "森本美千代",
+            "englishName": "Michiyo Morimoto",
+            "group": "KumikoSecondYear",
+            "grade": 2,
+            "originPower": 7,
+            "badgeType": "Brass",
+            "ability": "None",
+            "cardType": "Normal",
+            "quote": "初中起就在吹圆号，\n在圆号组中经验No.1。"
+        },
+        {
             "imageName": "61.takuya.gotou-portrait",
             "chineseName": "后藤卓也",
             "englishName": "Takuya Gotou",
@@ -551,6 +563,18 @@
             "quote": "初中时便是打击乐担当，\n演奏技术很高。"
         },
         {
+            "imageName": "73.tsubame.kamaya-portrait",
+            "chineseName": "釜屋燕",
+            "englishName": "Tsubame Kamaya",
+            "group": "KumikoSecondYear",
+            "grade": 2,
+            "originPower": 4,
+            "badgeType": "Percussion",
+            "ability": "None",
+            "cardType": "Normal",
+            "quote": "没有节奏感，不善舞蹈，\n但唯独十分擅长马林巴琴。"
+        },
+        {
             "imageName": "74.masako.sakai-portrait",
             "chineseName": "堺万纱子",
             "englishName": "Masako Sakai",
@@ -562,6 +586,44 @@
             "bondType": "perc",
             "cardType": "Normal",
             "quote": "非常喜欢音乐，\n演奏时会感到无比幸福。"
+        },
+        {
+            "imageName": "77.motoko.higashiura-portrait",
+            "chineseName": "东浦心子",
+            "englishName": "Motoko Higashiura",
+            "group": "KumikoSecondYear",
+            "grade": 1,
+            "originPower": 6,
+            "badgeType": "Percussion",
+            "ability": "None",
+            "cardType": "Normal",
+            "quote": "初中的时候就是打击乐担当，\n尤其是节奏感拔群。"
+        },
+        {
+            "imageName": "78.aota.maeda-portrait",
+            "chineseName": "前田苍太",
+            "englishName": "Aota Maeda",
+            "group": "KumikoSecondYear",
+            "grade": 1,
+            "originPower": 3,
+            "badgeType": "Percussion",
+            "ability": "Bond",
+            "bondType": "perc2",
+            "cardType": "Normal",
+            "quote": "小学的时候就和弟弟\n前田飒介一起学习鼓。"
+        },
+        {
+            "imageName": "79.sosuke.maeda-portrait",
+            "chineseName": "前田飒介",
+            "englishName": "Sosuke Maeda",
+            "group": "KumikoSecondYear",
+            "grade": 1,
+            "originPower": 3,
+            "badgeType": "Percussion",
+            "ability": "Bond",
+            "bondType": "perc2",
+            "cardType": "Normal",
+            "quote": "与双胞胎哥哥——前田苍太\n一起备受期待成为打击乐的双人王牌。"
         }
     ]
 }
