@@ -39,6 +39,7 @@
             "badgeType": "Wood",
             "ability": "Bond",
             "bondType": "bg",
+            "relatedCard": "泷川近夫",
             "cardType": "Normal",
             "quote": "受到次中音萨克斯管的泷川近夫鼓励，\n成了积极面对吹奏乐的单簧管候选人。"
         },
@@ -76,6 +77,7 @@
             "badgeType": "Wood",
             "ability": "Bond",
             "bondType": "doubleReed",
+            "relatedCard": "兜谷爱瑠、笼手山骏河",
             "cardType": "Normal",
             "quote": "“这是便利店的煮鸡蛋，\n是卤过的，很好吃哦。”"
         },
@@ -89,6 +91,7 @@
             "badgeType": "Wood",
             "ability": "Bond",
             "bondType": "doubleReed",
+            "relatedCard": "剑崎梨梨花、笼手山骏河",
             "cardType": "Normal",
             "quote": "和笼手山骏河与剑崎梨梨花一起\n结成了“双簧乐器会”。"
         },
@@ -102,6 +105,7 @@
             "badgeType": "Wood",
             "ability": "Bond",
             "bondType": "doubleReed",
+            "relatedCard": "剑崎梨梨花、兜谷爱瑠",
             "cardType": "Normal",
             "quote": "“双簧乐器会”的成员之一。\n希望学姐铠冢霙也能加入。"
         },
@@ -139,6 +143,7 @@
             "badgeType": "Wood",
             "ability": "Muster",
             "musterType": "flute2",
+            "relatedCard": "高桥沙里、中野蕾实",
             "cardType": "Normal",
             "quote": "和短笛担当的高桥沙里去年是一个班，\n关系非常好。"
         },
@@ -152,6 +157,7 @@
             "badgeType": "Wood",
             "ability": "Muster",
             "musterType": "flute2",
+            "relatedCard": "小田芽衣子、中野蕾实",
             "cardType": "Normal",
             "quote": "去年还是长笛担当，作为\n毕业了的杂贺赖子的后继改吹短笛。"
         },
@@ -165,6 +171,7 @@
             "badgeType": "Wood",
             "ability": "Muster",
             "musterType": "flute2",
+            "relatedCard": "小田芽衣子、高桥沙里",
             "cardType": "Normal",
             "quote": "去年作为落选成员支援着全体部员们。\n有着不管对谁都温柔率真的性格。"
         },
@@ -178,6 +185,7 @@
             "badgeType": "Wood",
             "ability": "Muster",
             "musterType": "flute1",
+            "relatedCard": "平石成美、山根都美贵",
             "cardType": "Normal",
             "quote": "约会的时候被对方说“像河豚”，\n于是被同组的成员称为“河豚酱”。"
         },
@@ -191,6 +199,7 @@
             "badgeType": "Wood",
             "ability": "Muster",
             "musterType": "flute1",
+            "relatedCard": "江藤香奈、山根都美贵",
             "cardType": "Normal",
             "quote": "头脑十分灵活，经常观察周围，\n因而成了支持着其他组员的幕后英雄。"
         },
@@ -204,6 +213,7 @@
             "badgeType": "Wood",
             "ability": "Muster",
             "musterType": "flute1",
+            "relatedCard": "江藤香奈、平石成美",
             "cardType": "Normal",
             "quote": "爱好是电影鉴赏，\n因而经常向组员们推荐电影。"
         },
@@ -229,6 +239,7 @@
             "badgeType": "Wood",
             "ability": "Bond",
             "bondType": "bg",
+            "relatedCard": "高久智惠理",
             "cardType": "Normal",
             "quote": "和负责高音单簧管的高久智惠理，\n刚刚开始交往不久。"
         },
@@ -278,6 +289,7 @@
             "badgeType": "Brass",
             "ability": "Bond",
             "bondType": "siblings",
+            "relatedCard": "泷野沙耶香",
             "cardType": "Normal",
             "quote": "小号担当，\n不擅长应对新入部的妹妹泷野沙耶香。"
         },
@@ -328,6 +340,7 @@
             "badgeType": "Brass",
             "ability": "Bond",
             "bondType": "siblings",
+            "relatedCard": "泷野纯一",
             "cardType": "Normal",
             "quote": "同组的泷野纯一的妹妹。\n性格十分招人喜爱，人气很高。"
         },
@@ -425,6 +438,7 @@
             "badgeType": "Brass",
             "ability": "Bond",
             "bondType": "tuba",
+            "relatedCard": "长濑梨子",
             "cardType": "Normal",
             "quote": "“虽然没有优点却拼命努力，\n这就是大号的优点。”"
         },
@@ -438,6 +452,7 @@
             "badgeType": "Brass",
             "ability": "Bond",
             "bondType": "tuba",
+            "relatedCard": "后藤卓也",
             "cardType": "Normal",
             "quote": "“该说我们是在交往呢，\n还是没在交往呢。。”"
         },
@@ -559,6 +574,7 @@
             "badgeType": "Percussion",
             "ability": "Bond",
             "bondType": "perc",
+            "relatedCard": "堺万纱子",
             "cardType": "Normal",
             "quote": "初中时便是打击乐担当，\n演奏技术很高。"
         },
@@ -584,6 +600,7 @@
             "badgeType": "Percussion",
             "ability": "Bond",
             "bondType": "perc",
+            "relatedCard": "井上顺菜",
             "cardType": "Normal",
             "quote": "非常喜欢音乐，\n演奏时会感到无比幸福。"
         },
@@ -609,6 +626,7 @@
             "badgeType": "Percussion",
             "ability": "Bond",
             "bondType": "perc2",
+            "relatedCard": "前田飒介",
             "cardType": "Normal",
             "quote": "小学的时候就和弟弟\n前田飒介一起学习鼓。"
         },
@@ -622,6 +640,7 @@
             "badgeType": "Percussion",
             "ability": "Bond",
             "bondType": "perc2",
+            "relatedCard": "前田苍太",
             "cardType": "Normal",
             "quote": "与双胞胎哥哥——前田苍太\n一起备受期待成为打击乐的双人王牌。"
         }

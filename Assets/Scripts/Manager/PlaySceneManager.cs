@@ -14,6 +14,8 @@ public class PlaySceneManager
         PlayCardFromHandArea, // 从手牌区打出牌
         FinishWithstandAttack, // 完成攻击目标选择
         RemoveSingleCard, // 移除一个特定卡牌
+        ShowCardInfo, // 显示卡牌信息
+        HideCardInfo, // 隐藏卡牌信息
     }
 
     private static readonly PlaySceneManager instance = new PlaySceneManager();
@@ -24,6 +26,7 @@ public class PlaySceneManager
 
     private GameObject selfPlayArea;
     private GameObject enemyPlayArea;
+    private GameObject cardInfoArea;
 
     private GameObject cardPrefab;
 
@@ -49,6 +52,9 @@ public class PlaySceneManager
         }
         if (handArea == null) {
             handArea = GameObject.Find("HandArea");
+        }
+        if (cardInfoArea == null) {
+            cardInfoArea = GameObject.Find("CardInfoArea");
         }
         switch (msg)
         {
@@ -84,6 +90,15 @@ public class PlaySceneManager
                 } else {
                     enemyPlayArea.GetComponent<SinglePlayerArea>().RemoveSingleCard(card);
                 }
+                break;
+            }
+            case PlaySceneMsg.ShowCardInfo: {
+                CardInfo info = (CardInfo)list[0];
+                cardInfoArea.GetComponent<CardInfoArea>().ShowInfo(info);
+                break;
+            }
+            case PlaySceneMsg.HideCardInfo: {
+                cardInfoArea.GetComponent<CardInfoArea>().HideInfo();
                 break;
             }
         }

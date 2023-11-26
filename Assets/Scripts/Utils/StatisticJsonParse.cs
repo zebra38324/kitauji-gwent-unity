@@ -18,6 +18,7 @@ class StatisticJsonParse
         public string ability; // 特殊能力
         public string bondType; // bond类型，用于匹配bond的组合
         public string musterType; // 抱团类型，用于匹配muster组合
+        public string relatedCard; // 相关卡牌，bond与muster使用
         public int attackNum; // 攻击牌的攻击数值
         public string cardType; // 是否为英雄牌
         public string quote; // 卡牌最下方的台词引用
@@ -44,6 +45,7 @@ class StatisticJsonParse
             info.ability = (CardAbility)Enum.Parse(typeof(CardAbility), jsonInfo.ability, true);
             info.bondType = jsonInfo.bondType;
             info.musterType = jsonInfo.musterType;
+            info.relatedCard = jsonInfo.relatedCard;
             info.attackNum = jsonInfo.attackNum;
             info.cardType = (CardType)Enum.Parse(typeof(CardType), jsonInfo.cardType, true);
             info.quote = jsonInfo.quote;
