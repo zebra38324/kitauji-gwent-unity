@@ -24,14 +24,13 @@ public class DiscardButtonScript : MonoBehaviour
     {
         if (isShowing) {
             // 避免连续点两边的弃牌区按钮
-            discardArea.GetComponent<DiscardArea>().HideCard();
+            discardArea.GetComponent<DiscardArea>().CloseArea();
         }
         isShowing = true;
         DiscardCardManager manager = SelfDiscardCardManager.Instance;
         if (!isSelf) {
             manager = EnemyDiscardCardManager.Instance;
         }
-        discardArea.GetComponent<DiscardArea>().ShowCard(manager.GetCardList());
-        discardArea.SetActive(true);
+        discardArea.GetComponent<DiscardArea>().ShowArea(manager.GetCardList(), false);
     }
 }

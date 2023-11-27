@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -9,6 +10,10 @@ public class DiscardArea : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public GameObject row1;
     public GameObject row2;
     public GameObject row3;
+    public GameObject tipText;
+
+    private static readonly string defaultTip = "点击其他区域关闭";
+    private static readonly string medicTip = "请选择要复活的卡牌";
 
     private bool isPointerInside = false;
 
@@ -28,7 +33,16 @@ public class DiscardArea : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         }
     }
 
-    public void ShowCard(List<GameObject> cardList)
+    public void ShowArea(List<GameObject> cardList, bool isMedic)
+    {
+        ShowCard(cardList);
+        if (isMedic) {
+            tipText.GetComponent<TextMeshProUGUI>().text = medicTip + "\n" + defaultTip;
+        }
+        gameObject.SetActive(true);
+    }
+
+    private void ShowCard(List<GameObject> cardList)
     {
         foreach(GameObject card in cardList) {
             if (!row1.GetComponent<CardArea>().IsAreaFull(30)) {
@@ -41,7 +55,7 @@ public class DiscardArea : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         }
     }
 
-    public void HideCard()
+    private void HideCard()
     {
         row1.GetComponent<CardArea>().RemoveAllCard();
         row2.GetComponent<CardArea>().RemoveAllCard();
@@ -67,6 +81,7 @@ public class DiscardArea : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         HideCard();
         gameObject.SetActive(false);
+        tipText.GetComponent<TextMeshProUGUI>().text = defaultTip;
     }
 
     public void OnPointerEnter(PointerEventData eventData)

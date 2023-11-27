@@ -131,8 +131,11 @@ public class SinglePlayerArea : MonoBehaviour
         foreach (GameObject card in invalid) {
             targetList.Remove(card);
         }
-        discardArea.GetComponent<DiscardArea>().ShowCard(targetList);
-        discardArea.SetActive(true);
+        if (targetList.Count == 0) {
+            // 无可选卡牌，不显示弃牌区
+            return;
+        }
+        discardArea.GetComponent<DiscardArea>().ShowArea(targetList, true);
     }
 
     public int ReadyEmbraceAttack(int num)
