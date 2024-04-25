@@ -43,11 +43,14 @@ public class CardSelect : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         Debug.Log("on click " + gameObject.GetComponent<CardDisplay>().GetCardInfo().englishName);
+        if (!PlaySceneManager.Instance.IsSelfTurn()) {
+            return;
+        }
         switch (selectType)
         {
             case CardSelectType.HandCard: {
                 // TODO: 目前先实现最简单的打出一张普通牌的功能
-                PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.PlayCardFromHandArea, gameObject, true);
+                PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.PlayCardFromHandArea, gameObject, false);
                 PlayNormalCard();
                 break;
             }
@@ -64,7 +67,7 @@ public class CardSelect : MonoBehaviour, IPointerClickHandler
                     PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.RemoveSingleCard, gameObject, false);
                 }
                 gameObject.GetComponent<CardDisplay>().SetFrameVisible(false);
-                PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.FinishWithstandAttack);
+                PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.FinishWithstandAttack, gameObject);
                 break;
             }
         }
@@ -72,7 +75,7 @@ public class CardSelect : MonoBehaviour, IPointerClickHandler
 
     public void PlayPassively()
     {
-        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.PlayCardFromHandArea, gameObject, true);
+        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.PlayCardFromHandArea, gameObject, false);
         PlayNormalCard();
     }
 

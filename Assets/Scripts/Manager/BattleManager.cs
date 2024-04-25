@@ -1,4 +1,5 @@
 using System.Threading;
+using UnityEngine;
 
 public enum BattleStatus
 {
@@ -19,9 +20,9 @@ public enum BattleStatus
  */
 public struct BattleAction
 {
-    bool isPass; // 玩家是否点了pass
-    CardInfo selected; // 点击的牌
-    CardInfo extend; // 后续操作的牌
+    public bool isPass; // 玩家是否点了pass
+    public CardInfo selected; // 点击的牌
+    public CardInfo extend; // 后续操作的牌
 }
 
 // 对战统一管理接口，包括人机对战与网络联机
@@ -39,7 +40,7 @@ public class BattleManager
     public BattleManager() {}
 
     // 重置并启动
-    public void Reset()
+    public void Start()
     {
         if (loopThread != null) {
             loopThread.Abort();
@@ -51,7 +52,7 @@ public class BattleManager
         {
             StatusPolling();
         });
-        // loopThread.Start();
+        loopThread.Start();
     }
 
     public BattleStatus GetCurStatus()
@@ -64,7 +65,7 @@ public class BattleManager
         if (curStatus != BattleStatus.SelfTurn) {
             return;
         }
-        curStatus = BattleStatus.EnemyTurn;
+        // curStatus = BattleStatus.EnemyTurn;
         // TODO: network
     }
 
@@ -97,6 +98,8 @@ public class BattleManager
             BattleAction action = new BattleAction();
             EnemyActionNotify(action);
             curStatus = BattleStatus.SelfTurn;
+            Thread.Sleep(1000);
+            Debug.Log("StatusPolling");
         }
     }
 }

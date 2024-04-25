@@ -27,11 +27,12 @@ public class SinglePlayerArea : MonoBehaviour
         scoreNum.GetComponent<TextMeshProUGUI>().text = (currentScore + diff).ToString();
     }
 
-    public void AddNormalCard(GameObject newCard)
+    // return: 这张牌打出后，是否需要等待玩家的进一步操作
+    public bool AddNormalCard(GameObject newCard)
     {
         GameObject targetArea = GetTargetArea(newCard);
         if (targetArea == null) {
-            return;
+            return false;
         }
         targetArea.GetComponent<RowArea>().AddNormalCard(newCard);
 
@@ -45,8 +46,9 @@ public class SinglePlayerArea : MonoBehaviour
         } else if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Muster) {
             ApplyMuster(newCard.GetComponent<CardDisplay>().GetCardInfo().musterType);
         } else if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Medic) {
-            ApplyMedic();
+            return ApplyMedic();
         }
+        return true;
     }
 
     private GameObject GetTargetArea(GameObject newCard)
@@ -117,7 +119,7 @@ public class SinglePlayerArea : MonoBehaviour
         percussionRow.GetComponent<RowArea>().ClearCard(manager);
     }
 
-    private void ApplyMedic()
+    private bool ApplyMedic()
     {
         List<GameObject> targetList = SelfDiscardCardManager.Instance.GetCardList();
         List<GameObject> invalid = new List<GameObject>();
@@ -133,9 +135,10 @@ public class SinglePlayerArea : MonoBehaviour
         }
         if (targetList.Count == 0) {
             // 无可选卡牌，不显示弃牌区
-            return;
+            return false;
         }
         discardArea.GetComponent<DiscardArea>().ShowArea(targetList, true);
+        return true;
     }
 
     public int ReadyEmbraceAttack(int num)

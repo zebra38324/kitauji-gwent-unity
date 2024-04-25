@@ -32,6 +32,10 @@ public class PlaySceneManager
 
     private GameObject curCard; // 当前需要异步处理的卡牌
 
+    private BattleManager battleManager;
+
+    private BattleAction action;
+
     static PlaySceneManager() {}
 
     public static PlaySceneManager Instance
@@ -40,6 +44,19 @@ public class PlaySceneManager
         {
             return instance;
         }
+    }
+
+    // 单例模式，每次启动一局游戏都需要调用Reset进行初始化
+    public void Reset()
+    {
+        battleManager = new BattleManager();
+        battleManager.Start();
+        battleManager.EnemyActionNotify += new BattleManager.EnemyActionNotifyHandler(ApplyEnemyAction);
+    }
+
+    public bool IsSelfTurn()
+    {
+        return battleManager.GetCurStatus() == BattleStatus.SelfTurn;
     }
 
     public void HandleMessage(PlaySceneMsg msg, params object[] list)
@@ -66,20 +83,33 @@ public class PlaySceneManager
                 discardArea.GetComponent<DiscardArea>().RemoveCard(card);
                 discardArea.GetComponent<DiscardArea>().CloseArea();
                 SelfDiscardCardManager.Instance.RemoveCard(card);
-                AddCardToPlayArea(card);
+                bool needWait = AddCardToPlayArea(card);
+                if (!needWait) {
+                    action.extend = card.GetComponent<CardDisplay>().GetCardInfo();
+                    FinishSelfTurn();
+                }
                 break;
             }
             case PlaySceneMsg.PlayCardFromHandArea: {
                 GameObject card = (GameObject)list[0];
+                bool isClick = (bool)list[1]; // 是否为玩家点击手牌触发的
                 handArea.GetComponent<HandArea>().RemoveCard(card);
-                AddCardToPlayArea(card);
+                bool needWait = AddCardToPlayArea(card);
+                if (isClick) {
+                    action.selected = card.GetComponent<CardDisplay>().GetCardInfo();
+                    if (!needWait) {
+                        FinishSelfTurn();
+                    }
+                }
                 break;
             }
             case PlaySceneMsg.FinishWithstandAttack: {
-                Debug.Log("FinishWithstandAttack");
+                GameObject target = (GameObject)list[0];
                 enemyPlayArea.GetComponent<SinglePlayerArea>().FinishWithstandAttack();
                 selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(curCard); // 不考虑同时是间谍牌和攻击牌的情况
                 curCard = null;
+                action.extend = target.GetComponent<CardDisplay>().GetCardInfo();
+                FinishSelfTurn(); // TODO: 多个一样的牌咋办？
                 break;
             }
             case PlaySceneMsg.RemoveSingleCard: {
@@ -104,11 +134,12 @@ public class PlaySceneManager
         }
     }
 
-    private void AddCardToPlayArea(GameObject card)
+    // return: 这张牌打出后，是否需要等待玩家的进一步操作
+    private bool AddCardToPlayArea(GameObject card)
     {
         if (card.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Attack && ApplyAttackCard(card)) {
             curCard = card;
-            return;
+            return true;
         }
         if (card.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Spy) {
             DrawCards(2);
@@ -116,6 +147,7 @@ public class PlaySceneManager
         } else {
             selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
         }
+        return false;
     }
 
     // 实施攻击牌技能，如果没有可攻击的牌，返回false
@@ -140,5 +172,16 @@ public class PlaySceneManager
             card.GetComponent<CardDisplay>().SetCardInfo(info);
             handArea.GetComponent<HandArea>().AddCard(card);
         }
+    }
+
+    private void FinishSelfTurn()
+    {
+        battleManager.FinishSelfTurn(action);
+        action = new BattleAction();
+    }
+
+    private void ApplyEnemyAction(BattleAction action)
+    {
+
     }
 }
