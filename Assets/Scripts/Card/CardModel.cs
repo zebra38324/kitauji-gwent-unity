@@ -32,7 +32,7 @@ public class CardModel
     {
         buffRecord = new int[buffTypeCount];
         this.cardInfo = info;
-        currentPower = info.originPower;
+        UpdateCurrentPower();
     }
 
     public int GetCurrentPower()
@@ -48,16 +48,54 @@ public class CardModel
     // 添加buff并指定添加buff的数量
     public void AddBuff(BuffType buffType, int num)
     {
+        if (!EnableModifyBuff()) {
+            return;
+        }
         buffRecord[(int)buffType] += num;
+        UpdateCurrentPower();
     }
 
     // 移除buff并指定移除buff的数量，为0时表示移除所有
     public void RemoveBuff(BuffType buffType, int num = 0)
     {
+        if (!EnableModifyBuff()) {
+            return;
+        }
         if (num > 0) {
             buffRecord[(int)buffType] -= Math.Min(num, buffRecord[(int)buffType]);
         } else {
             buffRecord[(int)buffType] = 0;
         }
+        UpdateCurrentPower();
+    }
+
+    public bool IsDead()
+    {
+        return currentPower <= 0 && currentPower < cardInfo.originPower;
+    }
+
+    private void UpdateCurrentPower()
+    {
+        int power = cardInfo.originPower;
+        if (buffRecord[(int)BuffType.Weather] > 0) {
+            power = Math.Min(cardInfo.originPower, 1);
+        }
+        // Bond与Horn的倍数计算需要+1
+        int times = buffRecord[(int)BuffType.Bond] + buffRecord[(int)BuffType.Horn] + 1;
+        if (times > 0) {
+            power *= times;
+        }
+        int diff = buffRecord[(int)BuffType.Morale] -
+            2 * buffRecord[(int)BuffType.Attack2] -
+            4 * buffRecord[(int)BuffType.Attack4];
+        power += diff;
+        currentPower = power;
+    }
+
+    // 是否支持变更buff
+    private bool EnableModifyBuff()
+    {
+        // TODO: 考虑技能牌（包括天气）
+        return cardInfo.cardType == CardType.Normal;
     }
 }
