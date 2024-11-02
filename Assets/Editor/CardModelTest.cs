@@ -79,4 +79,16 @@ public class CardModelTest
         cardModel.AddBuff(CardModel.BuffType.Weather, 1);
         Assert.AreEqual(10, cardModel.GetCurrentPower());
     }
+
+    // 测试卡牌索引
+    [Test]
+    public void CardIndex()
+    {
+        CardModel[] cardModels = new CardModel[10];
+        for (int i = 0; i < 10; i++) {
+            CardInfo cardInfo = new CardInfo();
+            cardModels[i] = new CardModel(cardInfo);
+        }
+        Assert.AreEqual(10, cardModels[9].GetIndex());
+    }
 }
