@@ -23,14 +23,24 @@ public class NewCardButtonScript : MonoBehaviour
 
     public void CreateNewCard()
     {
+        //List<CardInfo> cardsInfo = StatisticJsonParse.GetCardInfo(cardInfoStatistic.text);
+        //BackupCardManager.Instance.SetCardInfoList(cardsInfo);
+
+        //List<CardInfo> loadCardInfo = BackupCardManager.Instance.GetCardInfos(20);
+        //foreach (CardInfo cardInfo in loadCardInfo) {
+        //    GameObject newCard = GameObject.Instantiate(cardPrefab, handArea.transform);
+        //    newCard.GetComponent<CardDisplay>().SetCardInfo(cardInfo);
+        //    handArea.GetComponent<HandArea>().AddCard(newCard);
+        //}
+
         List<CardInfo> cardsInfo = StatisticJsonParse.GetCardInfo(cardInfoStatistic.text);
         BackupCardManager.Instance.SetCardInfoList(cardsInfo);
 
-        List<CardInfo> loadCardInfo = BackupCardManager.Instance.GetCardInfos(20);
+        List<CardInfo> loadCardInfo = BackupCardManager.Instance.GetCardInfos(1);
         foreach (CardInfo cardInfo in loadCardInfo) {
             GameObject newCard = GameObject.Instantiate(cardPrefab, handArea.transform);
-            newCard.GetComponent<CardDisplay>().SetCardInfo(cardInfo);
-            handArea.GetComponent<HandArea>().AddCard(newCard);
+            newCard.GetComponent<CardController>().Init(cardInfo);
+            //handArea.GetComponent<HandArea>().AddCard(newCard);
         }
     }
 }

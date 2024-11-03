@@ -1403,7 +1403,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handArea: {fileID: 121925420}
-  cardPrefab: {fileID: 4237425473757966632, guid: e766b7c7e9d9cfe4eb2fcb6d91c6bf61, type: 3}
+  cardPrefab: {fileID: 4237425473757966632, guid: 2687824f273ea2b42a614b9c48722aa2, type: 3}
   cardInfoStatistic: {fileID: 4900000, guid: 7c2356a6854b8f145aeeb0ad631876cf, type: 3}
 --- !u!114 &710333674
 MonoBehaviour:
