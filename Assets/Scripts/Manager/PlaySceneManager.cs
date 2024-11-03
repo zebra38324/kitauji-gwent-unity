@@ -177,7 +177,7 @@ public class PlaySceneManager
 
     private void FinishSelfTurn()
     {
-        battleManager.FinishSelfTurn(action);
+        //battleManager.FinishSelfTurn(action);
         action = new BattleAction();
     }
 
