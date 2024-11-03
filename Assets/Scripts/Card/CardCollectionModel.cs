@@ -19,10 +19,10 @@ public class CardCollectionModel
         cardModelList.Add(cardModel);
     }
 
-    public void RemoveCard(int index)
+    public void RemoveCard(int cardId)
     {
         foreach (CardModel cardModel in cardModelList) {
-            if (cardModel.GetIndex() == index) {
+            if (cardModel.GetId() == cardId) {
                 cardModelList.Remove(cardModel);
                 break;
             }

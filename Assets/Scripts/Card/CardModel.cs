@@ -27,26 +27,17 @@ public class CardModel
 
     private int currentPower;
 
-    private static object indexLock = new object();
-
-    private static int globalCardIndex = 1;
-
-    private int index; // 卡牌全局唯一索引
-
 
     public CardModel(CardInfo info)
     {
         buffRecord = new int[buffTypeCount];
         this.cardInfo = info;
         UpdateCurrentPower();
-        lock (indexLock) {
-            index = globalCardIndex++;
-        }
     }
 
-    public int GetIndex()
+    public int GetId()
     {
-        return index;
+        return cardInfo.id;
     }
 
     public int GetCurrentPower()

@@ -36,6 +36,7 @@ public enum CardType
 
 public struct CardInfo
 {
+    public int id; // 每张卡牌全局唯一索引
     public string imageName; // 资源名，用于在文件系统中搜索，“64.satsuki.suzuki-portrait.jpg”格式
     public string chineseName; // 中文角色名，“铃木皋月”格式
     public string englishName; // 英文角色名，“satsuki suzuki”格式
