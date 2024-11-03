@@ -136,13 +136,13 @@ public class CardDisplay : MonoBehaviour
     }
 
     // 消除除天气外的debuff
-    public void ClearNormalDebuff()
+    public void RemoveNormalDebuff()
     {
         cardPower.RemoveNormalDebuff();
         UpdateDisplayPower();
     }
 
-    public void ClearAllBuff()
+    public void RemoveAllBuff()
     {
         cardPower.RemoveAllBuff();
         UpdateDisplayPower();

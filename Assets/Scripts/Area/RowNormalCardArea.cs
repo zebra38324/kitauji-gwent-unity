@@ -16,11 +16,11 @@ public class RowNormalCardArea : CardArea
     }
 
     // 消除除天气外的debuff
-    public void ClearNormalDebuff()
+    public void RemoveNormalDebuff()
     {
         foreach (GameObject card in cardList)
         {
-            card.GetComponent<CardDisplay>().ClearNormalDebuff();
+            card.GetComponent<CardDisplay>().RemoveNormalDebuff();
         }
     }
 
@@ -164,7 +164,7 @@ public class RowNormalCardArea : CardArea
         }
         foreach(GameObject card in tempList) {
             RemoveCard(card);
-            card.GetComponent<CardDisplay>().ClearAllBuff();
+            card.GetComponent<CardDisplay>().RemoveAllBuff();
         }
         ClearMoraleBuff();
     }

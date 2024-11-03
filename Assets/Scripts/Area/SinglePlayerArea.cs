@@ -38,7 +38,7 @@ public class SinglePlayerArea : MonoBehaviour
 
         // 设置buff
         if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Tunning) {
-            targetArea.GetComponent<RowArea>().ClearNormalDebuff();
+            targetArea.GetComponent<RowArea>().RemoveNormalDebuff();
         } else if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Bond) {
             UpdateBondBuff(newCard.GetComponent<CardDisplay>().GetCardInfo().bondType);
         } else if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.ScorchWood) {
