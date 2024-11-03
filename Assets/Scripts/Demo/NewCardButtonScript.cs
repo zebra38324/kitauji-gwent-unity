@@ -40,7 +40,7 @@ public class NewCardButtonScript : MonoBehaviour
         foreach (CardInfo cardInfo in loadCardInfo) {
             GameObject newCard = GameObject.Instantiate(cardPrefab, handArea.transform);
             newCard.GetComponent<CardController>().Init(cardInfo);
-            //handArea.GetComponent<HandArea>().AddCard(newCard);
+            handArea.GetComponent<CardRowController>().AddCard(newCard);
         }
     }
 }

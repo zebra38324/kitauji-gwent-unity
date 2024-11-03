@@ -36,6 +36,11 @@ public class CardController : MonoBehaviour
         cardView.SetCardInfo(cardInfo);
     }
 
+    public int GetId()
+    {
+        return cardModel.GetId();
+    }
+
     // 点击事件
     public void OnClick()
     {
