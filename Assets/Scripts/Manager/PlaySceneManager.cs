@@ -56,7 +56,8 @@ public class PlaySceneManager
 
     public bool IsSelfTurn()
     {
-        return battleManager.GetCurStatus() == BattleStatus.SelfTurn;
+        //return battleManager.GetCurStatus() == BattleStatus.SelfTurn;
+        return true;
     }
 
     public void HandleMessage(PlaySceneMsg msg, params object[] list)
