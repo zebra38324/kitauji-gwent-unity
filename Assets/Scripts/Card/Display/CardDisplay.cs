@@ -83,7 +83,6 @@ public class CardDisplay : MonoBehaviour
             powerBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/power/power-normal");
         }
         powerNum.GetComponent<TextMeshProUGUI>().text = cardInfo.originPower.ToString();
-        UpdateDisplayPower(); // TODO: 这里不好
         powerType.GetComponent<Image>().color = new Color(0, 0, 0, 0); // TODO: 未考虑非角色牌
 
         // Badge
@@ -158,7 +157,6 @@ public class CardDisplay : MonoBehaviour
     private void UpdateDisplayPower()
     {
         if (cardInfo.cardType == CardType.Hero) {
-            powerNum.GetComponent<TextMeshProUGUI>().text = cardInfo.originPower.ToString(); // 英雄牌不受buff影响
             return;
         }
         int result = GetCurrentPower();
