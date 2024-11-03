@@ -26,11 +26,6 @@ public class CardPower
         return currentPower;
     }
 
-    public int GetOriginPower()
-    {
-        return cardInfo.originPower;
-    }
-
     // 添加buff并指定添加buff的数量
     public void AddBuff(CardBuffType buffType, int num)
     {

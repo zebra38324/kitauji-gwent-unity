@@ -38,6 +38,8 @@ public class CardDisplay : MonoBehaviour
 
     private CardPower cardPower;
 
+    private bool hasInit = false;
+
     void Awake()
     {
 
@@ -57,6 +59,10 @@ public class CardDisplay : MonoBehaviour
 
     private void Init()
     {
+        if (hasInit) {
+            return;
+        }
+        hasInit = true;
         // Image
         originImage.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/origin-image/KumikoSecondYear/" + cardInfo.imageName);
 
@@ -77,7 +83,7 @@ public class CardDisplay : MonoBehaviour
             powerBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/power/power-normal");
         }
         powerNum.GetComponent<TextMeshProUGUI>().text = cardInfo.originPower.ToString();
-        UpdateDisplayPower();
+        UpdateDisplayPower(); // TODO: 这里不好
         powerType.GetComponent<Image>().color = new Color(0, 0, 0, 0); // TODO: 未考虑非角色牌
 
         // Badge
@@ -104,6 +110,7 @@ public class CardDisplay : MonoBehaviour
     {
         cardInfo = info;
         cardPower = new CardPower(cardInfo);
+        Init();
     }
 
     public CardInfo GetCardInfo()
