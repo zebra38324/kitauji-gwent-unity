@@ -52,19 +52,6 @@ public struct CardInfo
     public string quote; // 卡牌最下方的台词引用
 }
 
-/**
- * 计算方法：score = (basePower + add) * times;
- * 由于攻击牌也可能会减basePower，和天气牌效果类似。且清除天气和tunning是分开的，所以需要分别记录.攻击牌直接
- * 需要注意的是，当从场上移除某个卡牌时，若这个卡牌带了某些buff，需要重新计算其相关卡牌的点数。例如削减bond的翻倍倍数
- */
-public struct CardPowerBuff
-{
-    public int basePower; // 当且仅当天气牌影响时，basePower为1
-    public int add;
-    public int minus;
-    public int times;
-}
-
 // 卡牌可选择的类型
 public enum CardSelectType
 {
@@ -72,4 +59,17 @@ public enum CardSelectType
     HandCard, // 手牌
     MedicDiscardCard, // 复活弃牌区
     WithstandAttack, // 准备被攻击
+}
+
+// buff类型，明确记录增减益效果来源
+public enum CardBuffType
+{
+    // 增益buff
+    Bond = 0, // 点数加倍
+    Morale, // +1
+    Horn, // 点数加倍
+    // 减益buff
+    Attack2, // -2
+    Attack4, // -4
+    Weather, // 基础数值降为1
 }

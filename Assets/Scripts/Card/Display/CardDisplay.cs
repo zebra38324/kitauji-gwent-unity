@@ -36,7 +36,7 @@ public class CardDisplay : MonoBehaviour
     // 边框
     public GameObject frame;
 
-    private CardPowerBuff cardPowerBuff;
+    private CardPower cardPower;
 
     void Awake()
     {
@@ -46,7 +46,7 @@ public class CardDisplay : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ShowCard();
+        Init();
     }
 
     // Update is called once per frame
@@ -55,8 +55,9 @@ public class CardDisplay : MonoBehaviour
 
     }
 
-    private void ShowCard()
+    private void Init()
     {
+        // Image
         originImage.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/origin-image/KumikoSecondYear/" + cardInfo.imageName);
 
         // Dialog
@@ -71,12 +72,11 @@ public class CardDisplay : MonoBehaviour
         // Power
         if (cardInfo.cardType == CardType.Hero) {
             powerBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/power/power-hero");
-            powerNum.GetComponent<TextMeshProUGUI>().text = cardPowerBuff.basePower.ToString();
             powerNum.GetComponent<TextMeshProUGUI>().color = new Color(1, 1, 1, 1);
         } else {
             powerBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/power/power-normal");
-            powerNum.GetComponent<TextMeshProUGUI>().text = cardPowerBuff.basePower.ToString();
         }
+        powerNum.GetComponent<TextMeshProUGUI>().text = cardInfo.originPower.ToString();
         UpdateDisplayPower();
         powerType.GetComponent<Image>().color = new Color(0, 0, 0, 0); // TODO: 未考虑非角色牌
 
@@ -103,7 +103,7 @@ public class CardDisplay : MonoBehaviour
     public void SetCardInfo(CardInfo info)
     {
         cardInfo = info;
-        InitCardPowerBuff();
+        cardPower = new CardPower(cardInfo);
     }
 
     public CardInfo GetCardInfo()
@@ -113,69 +113,39 @@ public class CardDisplay : MonoBehaviour
 
     public int GetCurrentPower()
     {
-        return (cardPowerBuff.basePower + cardPowerBuff.add + cardPowerBuff.minus) * cardPowerBuff.times;
+        return cardPower.GetCurrentPower();
     }
 
-    // 添加点数buff
-    public void SetBuffAddMinus(int diff)
+    // 添加buff并指定添加buff的数量
+    public void AddBuff(CardBuffType buffType, int num)
     {
-        if (cardInfo.cardType == CardType.Hero) {
-            return;
-        }
-        if (diff > 0) {
-            cardPowerBuff.add += diff;
-        } else {
-            cardPowerBuff.minus += diff;
-        }
+        cardPower.AddBuff(buffType, num);
         UpdateDisplayPower();
     }
 
-    public void SetBuffTimes(int times)
+    // 移除buff并指定移除buff的数量，为0时表示移除所有
+    public void RemoveBuff(CardBuffType buffType, int num = 0)
     {
-        if (times < 1 || cardInfo.cardType == CardType.Hero) {
-            return;
-        }
-        cardPowerBuff.times = times;
+        cardPower.RemoveBuff(buffType, num);
         UpdateDisplayPower();
     }
 
-    public void SetBuffTimesDiff(int times)
+    public bool IsDead()
     {
-        if (cardInfo.cardType == CardType.Hero) {
-            return;
-        }
-        cardPowerBuff.times += times;
-        if (cardPowerBuff.times < 0) {
-            cardPowerBuff.times = 0;
-        }
-        UpdateDisplayPower();
+        return cardPower.IsDead();
     }
 
     // 消除除天气外的debuff
     public void ClearNormalDebuff()
     {
-        if (cardPowerBuff.basePower < cardInfo.originPower) {
-            cardPowerBuff.basePower = cardInfo.originPower;
-        }
-        cardPowerBuff.minus = 0;
+        cardPower.RemoveNormalDebuff();
         UpdateDisplayPower();
     }
 
     public void ClearAllBuff()
     {
-        cardPowerBuff.basePower = cardInfo.originPower;
-        cardPowerBuff.add = 0;
-        cardPowerBuff.minus = 0;
-        cardPowerBuff.times = 1;
+        cardPower.RemoveAllBuff();
         UpdateDisplayPower();
-    }
-
-    private void InitCardPowerBuff()
-    {
-        cardPowerBuff.basePower = cardInfo.originPower;
-        cardPowerBuff.add = 0;
-        cardPowerBuff.minus = 0;
-        cardPowerBuff.times = 1;
     }
 
     private void UpdateDisplayPower()

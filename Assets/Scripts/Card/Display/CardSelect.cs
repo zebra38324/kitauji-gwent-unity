@@ -60,7 +60,11 @@ public class CardSelect : MonoBehaviour, IPointerClickHandler
                 break;
             }
             case CardSelectType.WithstandAttack: {
-                gameObject.GetComponent<CardDisplay>().SetBuffAddMinus(-attackNum);
+                if (attackNum == 2) {
+                    gameObject.GetComponent<CardDisplay>().AddBuff(CardBuffType.Attack2, 1);
+                } else {
+                    gameObject.GetComponent<CardDisplay>().AddBuff(CardBuffType.Attack4, 1); // TODO: 这里需要优化
+                }
                 if (gameObject.GetComponent<CardDisplay>().GetCurrentPower() < 0 ||
                     (gameObject.GetComponent<CardDisplay>().GetCurrentPower() == 0 && gameObject.GetComponent<CardDisplay>().GetCardInfo().originPower > 0)) {
                     // 点数小于0，移除卡牌。等于0时需判断原点数是否为0

@@ -43,7 +43,8 @@ public class RowNormalCardArea : CardArea
         foreach (GameObject card in cardList)
         {
             if (card.GetComponent<CardDisplay>().GetCardInfo().bondType == bondType) {
-                card.GetComponent<CardDisplay>().SetBuffTimes(times);
+                card.GetComponent<CardDisplay>().RemoveBuff(CardBuffType.Bond); // TODO: 这里需要优化
+                card.GetComponent<CardDisplay>().AddBuff(CardBuffType.Bond, times - 1);
             }
         }
     }
@@ -89,13 +90,13 @@ public class RowNormalCardArea : CardArea
     {
         if (moraleCount > 0) {
             // 本来就有morale，先给新卡牌加上
-            newCard.GetComponent<CardDisplay>().SetBuffAddMinus(moraleCount);
+            newCard.GetComponent<CardDisplay>().AddBuff(CardBuffType.Morale, moraleCount);
         }
         if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Morale) {
             moraleCount++;
             foreach (GameObject card in cardList)
             {
-                card.GetComponent<CardDisplay>().SetBuffAddMinus(1);
+                newCard.GetComponent<CardDisplay>().AddBuff(CardBuffType.Morale, 1);
             }
         }
     }
@@ -104,13 +105,13 @@ public class RowNormalCardArea : CardArea
     {
         if (hornCount > 0) {
             // 本来就有horn，先加上
-            newCard.GetComponent<CardDisplay>().SetBuffTimesDiff(hornCount);
+            newCard.GetComponent<CardDisplay>().AddBuff(CardBuffType.Horn, hornCount);
         }
         if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Horn) {
             hornCount++;
             foreach (GameObject card in cardList)
             {
-                card.GetComponent<CardDisplay>().SetBuffTimesDiff(1);
+                newCard.GetComponent<CardDisplay>().AddBuff(CardBuffType.Horn, hornCount);
             }
         }
 
@@ -130,14 +131,14 @@ public class RowNormalCardArea : CardArea
             moraleCount--;
             foreach (GameObject card in cardList)
             {
-                card.GetComponent<CardDisplay>().SetBuffAddMinus(-1);
+                removeCard.GetComponent<CardDisplay>().RemoveBuff(CardBuffType.Morale, 1);
             }
         }
         if (removeCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Horn) {
             hornCount--;
             foreach (GameObject card in cardList)
             {
-                card.GetComponent<CardDisplay>().SetBuffTimesDiff(-1);
+                removeCard.GetComponent<CardDisplay>().RemoveBuff(CardBuffType.Horn, 1);
             }
         }
     }
