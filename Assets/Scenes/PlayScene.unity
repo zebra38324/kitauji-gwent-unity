@@ -133,7 +133,6 @@ GameObject:
   m_Component:
   - component: {fileID: 121925421}
   - component: {fileID: 121925422}
-  - component: {fileID: 121925423}
   m_Layer: 5
   m_Name: HandArea
   m_TagString: Untagged
@@ -170,21 +169,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 121925420}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 389d9ed03becc4442a35139b8f88be4f, type: 3}
+  m_Script: {fileID: 11500000, guid: 4decd1eb9ddb69f4ca0a65ca3074ccc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &121925423
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 121925420}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f403cbe26e141854aad8df6d253585ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  cardArea: {fileID: 121925420}
 --- !u!1 &230357069 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2559679141672662074, guid: b6f5d5b45f5df274aa0c1e24bf26858b, type: 3}
@@ -1415,7 +1403,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handArea: {fileID: 121925420}
-  cardPrefab: {fileID: 4237425473757966632, guid: 2687824f273ea2b42a614b9c48722aa2, type: 3}
+  cardPrefab: {fileID: 4237425473757966632, guid: e766b7c7e9d9cfe4eb2fcb6d91c6bf61, type: 3}
   cardInfoStatistic: {fileID: 4900000, guid: 7c2356a6854b8f145aeeb0ad631876cf, type: 3}
 --- !u!114 &710333674
 MonoBehaviour:

@@ -19,10 +19,10 @@ public enum CardAbility // TODO: 完善
     None = 0,
     Spy, // 间谍: 加入对面吹奏部，让己方新增两名部员。
     Attack, // 投掷: 投掷号嘴（或洗手液等），使指定对方一名部员吹奏能力降低。
-    Tunning, // 调音：消除己方除天气外的所有不良影响。
-    Bond, // 同袍之情: 当CP（或组合）同时登场时，吹奏能力翻倍。
+    Tunning,
+    Bond, // 同袍之情
     ScorchWood, // 伞击：令对方实力最强的木管成员退部（仅当对方木管总吹奏实力大于10）
-    Muster, // 抱团：令牌组中自己的闺蜜/基友立即上场比赛。
+    Muster, // 抱团，令牌组中自己的闺蜜/基友立即上场比赛。
     Morale, // 士气: 高喊“北宇治Fight！”，使同一行内除自己以外的部员吹奏能力+1。
     Medic, // 复活: 令一名退部/毕业的部员（天王除外）回归吹奏部，并立即加入演奏。
     Horn, // 支援: 使同一行内除自己之外的部员吹奏实力翻倍。
@@ -36,7 +36,6 @@ public enum CardType
 
 public struct CardInfo
 {
-    public int id; // 每张卡牌全局唯一索引
     public string imageName; // 资源名，用于在文件系统中搜索，“64.satsuki.suzuki-portrait.jpg”格式
     public string chineseName; // 中文角色名，“铃木皋月”格式
     public string englishName; // 英文角色名，“satsuki suzuki”格式
