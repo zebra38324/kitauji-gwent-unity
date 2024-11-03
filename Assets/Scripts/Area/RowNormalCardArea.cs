@@ -111,7 +111,7 @@ public class RowNormalCardArea : CardArea
             hornCount++;
             foreach (GameObject card in cardList)
             {
-                newCard.GetComponent<CardDisplay>().AddBuff(CardBuffType.Horn, hornCount);
+                card.GetComponent<CardDisplay>().AddBuff(CardBuffType.Horn, hornCount);
             }
         }
 
