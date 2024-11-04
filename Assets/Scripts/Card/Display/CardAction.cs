@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 /**
  * 实现卡牌可能的动作
@@ -13,14 +14,14 @@ using UnityEngine.UI;
  * 6. 被攻击
  * 7. 展示详细信息
  */
-public class CardAction : MonoBehaviour
+public class CardAction : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     // 悬停时卡片上移距离
     private static int hoverUpDistance = 10;
 
-    private bool isHovering = false;
+    private bool isHovering = false; // 鼠标是否在ui内
 
-
+    private bool isCardInfoShowing = false; // 当前card info正处于展示状态
 
     // Start is called before the first frame update
     void Start()
@@ -31,61 +32,61 @@ public class CardAction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        HandleHover();
+        JudgeShowCardInfo();
     }
 
-    // 处理悬停操作
-    private void HandleHover()
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        // 将鼠标屏幕坐标转换为RectTransform的局部坐标
-        Vector2 localMousePos;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(gameObject.GetComponent<RectTransform>(), Input.mousePosition, null, out localMousePos);
-        if (isHovering) {
-            JudgeHoverEnd(localMousePos);
-        } else {
-            JudgeHoverStart(localMousePos);
-        }
-    }
-
-    // 判断鼠标是否进入设定区域 TODO: 卡牌覆盖
-    private void JudgeHoverStart(Vector2 localMousePos)
-    {
-        if (!gameObject.GetComponent<RectTransform>().rect.Contains(localMousePos)) {
-            return; // 没进入卡牌ui区域
-        }
-        if (HoverNeedUp()) {
-            transform.Translate(0, hoverUpDistance, 0); // 卡片上移
-        }
         isHovering = true;
-        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.ShowCardInfo, gameObject.GetComponent<CardDisplay>().GetCardInfo());
     }
 
-    // 判断鼠标是否离开设定区域
-    private void JudgeHoverEnd(Vector2 localMousePos)
+    public void OnPointerExit(PointerEventData eventData)
     {
-        if (gameObject.GetComponent<RectTransform>().rect.Contains(localMousePos)) {
-            return; // 没离开卡牌ui区域
-        }
-        if (HoverNeedUp()) {
-            Rect cardRect = gameObject.GetComponent<RectTransform>().rect;
-            Rect extendRect = new Rect(cardRect.position.x,
-                cardRect.position.y - cardRect.size.y / 5,
-                cardRect.size.x,
-                cardRect.size.y / 5);
-            if (extendRect.Contains(localMousePos)) {
-                // 卡牌上移后，需要判断卡下方width*(height/5)区域
-                // 避免鼠标处于这个区域中时，导致卡牌疯狂上下鬼畜
-                return;
-            }
-            transform.Translate(0, -hoverUpDistance, 0); // 卡片下移恢复
-        }
         isHovering = false;
-        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.HideCardInfo);
+        // hide如果也放在update里，可能造成下一卡片已经展示info，然后info区域被本卡牌关掉
+        JudgeHideCardInfo();
     }
 
     // 判断悬停时是否需要卡牌上移 TODO: 完善
     private bool HoverNeedUp()
     {
         return true;
+    }
+    
+    // 判断是否需要显示info
+    private void JudgeShowCardInfo()
+    {
+        if (!isHovering || isCardInfoShowing) {
+            return;
+        }
+        // 将鼠标屏幕坐标转换为RectTransform的局部坐标
+        Vector2 localMousePos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(gameObject.GetComponent<RectTransform>(), Input.mousePosition, null, out localMousePos);
+        Rect cardRect = gameObject.GetComponent<RectTransform>().rect;
+        Rect excludeRect = new Rect(cardRect.position.x,
+                cardRect.position.y,
+                cardRect.size.x,
+                cardRect.size.y / 10);
+        if (excludeRect.Contains(localMousePos)) {
+            return; // 避免卡牌上下鬼畜，靠下侧width*(height/10)区域不进行响应
+        }
+        if (HoverNeedUp()) {
+            transform.Translate(0, hoverUpDistance, 0); // 卡片上移
+        }
+        isCardInfoShowing = true;
+        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.ShowCardInfo, gameObject.GetComponent<CardDisplay>().GetCardInfo());
+    }
+
+    // 判断是否需要隐藏info
+    private void JudgeHideCardInfo()
+    {
+        if (!isCardInfoShowing) {
+            return;
+        }
+        if (HoverNeedUp()) {
+            transform.Translate(0, -hoverUpDistance, 0); // 卡片下移恢复
+        }
+        isCardInfoShowing = false;
+        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.HideCardInfo);
     }
 }
