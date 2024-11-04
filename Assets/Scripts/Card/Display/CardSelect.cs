@@ -85,8 +85,8 @@ public class CardSelect : MonoBehaviour, IPointerClickHandler
 
     private void PlayNormalCard()
     {
-        gameObject.GetComponent<CardInfoDisplay>().SetIsCardUp(false);
-        gameObject.GetComponent<CardInfoDisplay>().SetEnableUp(false);
+        //gameObject.GetComponent<CardInfoDisplay>().SetIsCardUp(false);
+        //gameObject.GetComponent<CardInfoDisplay>().SetEnableUp(false);
         selectType = CardSelectType.None;
     }
 }

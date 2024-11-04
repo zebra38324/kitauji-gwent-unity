@@ -7,7 +7,7 @@ public class HandArea : CardArea
     public override void AddCard(GameObject newCard)
     {
         base.AddCard(newCard);
-        newCard.GetComponent<CardInfoDisplay>().SetEnableUp(true);
+        //newCard.GetComponent<CardInfoDisplay>().SetEnableUp(true);
         newCard.GetComponent<CardSelect>().selectType = CardSelectType.HandCard;
     }
 
