@@ -14,7 +14,10 @@ using UnityEngine.EventSystems;
  * 6. 被攻击
  * 7. 展示详细信息
  */
-public class CardAction : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class CardAction : MonoBehaviour,
+    IPointerEnterHandler,
+    IPointerExitHandler,
+    IPointerClickHandler
 {
     // 悬停时卡片上移距离
     private static int hoverUpDistance = 10;
@@ -22,6 +25,8 @@ public class CardAction : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     private bool isHovering = false; // 鼠标是否在ui内
 
     private bool isCardInfoShowing = false; // 当前card info正处于展示状态
+
+    public CardLocation cardLocation { get; set; }
 
     // Start is called before the first frame update
     void Start()
@@ -47,10 +52,21 @@ public class CardAction : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         JudgeHideCardInfo();
     }
 
-    // 判断悬停时是否需要卡牌上移 TODO: 完善
+    public void OnPointerClick(PointerEventData eventData)
+    {
+
+    }
+
+    // 打出牌到对战区
+    public void PlayCard()
+    {
+        
+    }
+
+    // 判断悬停时是否需要卡牌上移
     private bool HoverNeedUp()
     {
-        return true;
+        return cardLocation == CardLocation.HandArea;
     }
     
     // 判断是否需要显示info

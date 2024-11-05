@@ -61,6 +61,16 @@ public enum CardSelectType
     WithstandAttack, // 准备被攻击
 }
 
+// 卡牌当前所在区域
+public enum CardLocation
+{
+    None = 0, // 无ui显示，例如备选卡牌堆中
+    HandArea, // 手牌区
+    DiscardArea, // 弃牌区
+    SelfBattleArea, // 本方对战区
+    EnemyBattleArea, // 对方对战区
+}
+
 // buff类型，明确记录增减益效果来源
 public enum CardBuffType
 {
