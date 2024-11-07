@@ -8,6 +8,7 @@ using UnityEngine;
 // 统一管理全局通知行为
 public class PlaySceneManager
 {
+    private static string TAG = "PlaySceneManager";
     public enum PlaySceneMsg
     {
         MedicSelectDiscardCard = 0, // 复活技能，已点击选取弃用卡牌
@@ -194,6 +195,7 @@ public class PlaySceneManager
             }
             default: {
                 // TODO: LOG: error
+                KLog.E(TAG, "PlayCardlAction: error state = " + curState);
                 break;
             }
         }

@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 // 打出的牌所在区域，一个RowArea为一排，包括这一排的分数、指挥牌、普通牌
 public class DiscardArea : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    private static string TAG = "DiscardArea";
     public GameObject discardArea;
     public GameObject row1;
     public GameObject row2;
@@ -64,15 +65,15 @@ public class DiscardArea : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void RemoveCard(GameObject card)
     {
-        Debug.Log("Remove card " + card.GetComponent<CardDisplay>().GetCardInfo().chineseName);
+        KLog.I(TAG, "Remove card " + card.GetComponent<CardDisplay>().GetCardInfo().chineseName);
         if (row1.GetComponent<CardArea>().ExistCard(card)) {
-            Debug.Log("Remove card in row1");
+            KLog.I(TAG, "Remove card in row1");
             row1.GetComponent<CardArea>().RemoveCard(card);
         } else if (row2.GetComponent<CardArea>().ExistCard(card)) {
-            Debug.Log("Remove card in row2");
+            KLog.I(TAG, "Remove card in row2");
             row2.GetComponent<CardArea>().RemoveCard(card);
         } else if (row3.GetComponent<CardArea>().ExistCard(card)) {
-            Debug.Log("Remove card in row3");
+            KLog.I(TAG, "Remove card in row3");
             row3.GetComponent<CardArea>().RemoveCard(card);
         }
     }

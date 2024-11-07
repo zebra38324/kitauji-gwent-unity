@@ -4,6 +4,8 @@ using UnityEngine.EventSystems;
 // 定义选择卡片后的相关操作
 public class CardSelect : MonoBehaviour, IPointerClickHandler
 {
+    private static string TAG = "CardSelect";
+
     private GameObject playArea;
 
     private GameObject handArea;
@@ -42,7 +44,7 @@ public class CardSelect : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("on click " + gameObject.GetComponent<CardDisplay>().GetCardInfo().englishName);
+        KLog.I(TAG, "on click " + gameObject.GetComponent<CardDisplay>().GetCardInfo().englishName);
         if (!PlaySceneManager.Instance.IsSelfTurn()) {
             return;
         }

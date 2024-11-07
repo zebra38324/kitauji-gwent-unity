@@ -5,6 +5,7 @@ using UnityEngine;
 // 包含三行打出的牌，及分数区域
 public class SinglePlayerArea : MonoBehaviour
 {
+    private static string TAG = "SinglePlayerArea";
     public GameObject woodRow;
     public GameObject brassRow;
     public GameObject percussionRow;
@@ -68,7 +69,7 @@ public class SinglePlayerArea : MonoBehaviour
                 break;
             }
             default: {
-                Debug.LogError("badgeType error = " + newCard.GetComponent<CardDisplay>().GetCardInfo().badgeType);
+                KLog.E(TAG, "badgeType error = " + newCard.GetComponent<CardDisplay>().GetCardInfo().badgeType);
                 return null;
             }
         }

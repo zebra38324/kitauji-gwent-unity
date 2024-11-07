@@ -29,6 +29,7 @@ public struct BattleAction
 // 实例由PlaySceneManager持有
 public class BattleManager
 {
+    private static string TAG = "BattleManager";
     private BattleStatus curStatus = BattleStatus.WaitingStart;
     private bool isAbort = false;
     private Thread loopThread = null;
@@ -99,7 +100,7 @@ public class BattleManager
             EnemyActionNotify(action);
             curStatus = BattleStatus.SelfTurn;
             Thread.Sleep(1000);
-            Debug.Log("StatusPolling");
+            KLog.I(TAG, "StatusPolling");
         }
     }
 }
