@@ -26,12 +26,14 @@ public class CardAction : MonoBehaviour,
 
     private bool isCardInfoShowing = false; // 当前card info正处于展示状态
 
+    private bool enableSelect = false; // 当前卡牌是否允许被选择
+
     public CardLocation cardLocation { get; set; }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        PlaySceneManager.Instance.CardEnableSelect += new PlaySceneManager.CardEnableSelectDelegate(EnableSelect);
     }
 
     // Update is called once per frame
@@ -61,6 +63,11 @@ public class CardAction : MonoBehaviour,
     public void PlayCard()
     {
         
+    }
+
+    public void EnableSelect(bool enable)
+    {
+        enableSelect = enable;
     }
 
     // 判断悬停时是否需要卡牌上移

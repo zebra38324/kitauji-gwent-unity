@@ -14,9 +14,14 @@ public class PlaySceneManager
         PlayCardFromHandArea, // 从手牌区打出牌
         FinishWithstandAttack, // 完成攻击目标选择
         RemoveSingleCard, // 移除一个特定卡牌
+        PlayCard, // 打出一张牌
         ShowCardInfo, // 显示卡牌信息
         HideCardInfo, // 隐藏卡牌信息
     }
+
+    public delegate void CardEnableSelectDelegate(bool enable);
+
+    public CardEnableSelectDelegate CardEnableSelect;
 
     private static readonly PlaySceneManager instance = new PlaySceneManager();
 
@@ -35,6 +40,19 @@ public class PlaySceneManager
     private BattleManager battleManager;
 
     private BattleAction action;
+
+    // 状态机
+    private enum State
+    {
+        NOT_START = 0, // 还未开始
+        WAIT_SELF_ACTION, // 本方回合，正在等待玩家操作
+        SELF_DOING, // 本方正在操作中
+        SELF_DONE, // 本方操作结束
+        WAIT_ENEMY_ACTION, // 等待对方操作
+        STOP, // 本局结束
+    }
+
+    private State curState = State.WAIT_SELF_ACTION; // 测试时暂时WAIT_SELF_ACTION
 
     static PlaySceneManager() {}
 
@@ -123,6 +141,15 @@ public class PlaySceneManager
                 }
                 break;
             }
+            case PlaySceneMsg.PlayCard: {
+                GameObject card = (GameObject)list[0];
+                CardLocation cardLocation = (CardLocation)list[1];
+                bool success = (bool)list[2];
+                success = true;
+                //bool isClick = (bool)list[2]; // 是否为玩家点击手牌触发的
+                //PlayCard(card, cardLocation, isClick);
+                break;
+            }
             case PlaySceneMsg.ShowCardInfo: {
                 CardInfo info = (CardInfo)list[0];
                 cardInfoArea.GetComponent<CardInfoArea>().ShowInfo(info);
@@ -149,6 +176,67 @@ public class PlaySceneManager
             selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
         }
         return false;
+    }
+
+    private void PlayCardlAction(GameObject card, CardLocation cardLocation)
+    {
+        switch (curState) {
+            case State.WAIT_SELF_ACTION: {
+                // 首先关闭所有卡牌的可选状态
+                curState = State.SELF_DOING;
+                DisableSelect();
+                PlayCard(card, cardLocation);
+                break;
+            }
+            case State.SELF_DOING: {
+                PlayCard(card, cardLocation);
+                break;
+            }
+            default: {
+                // TODO: LOG: error
+                break;
+            }
+        }
+        if (curState == State.SELF_DONE) {
+            EnableSelect();
+        }
+    }
+
+    private void PlayCard(GameObject card, CardLocation cardLocation)
+    {
+        // 打出这张牌，并根据技能判断是否跟进后续操作
+        switch (card.GetComponent<CardDisplay>().GetCardInfo().ability) {
+            case CardAbility.Spy: {
+                DrawCards(2);
+                enemyPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
+                break;
+            }
+            case CardAbility.Medic: {
+                break;
+            }
+            case CardAbility.Attack: {
+                break;
+            }
+            default: {
+                break; // 其他技能交到下层各自实现即可
+            }
+        }
+    }
+
+    // 关闭所有卡牌的可选状态
+    private void DisableSelect()
+    {
+        if (CardEnableSelect != null) {
+            CardEnableSelect(false);
+        }
+    }
+
+    // 恢复卡牌的可选状态
+    private void EnableSelect()
+    {
+        if (CardEnableSelect != null) {
+            CardEnableSelect(true);
+        }
     }
 
     // 实施攻击牌技能，如果没有可攻击的牌，返回false
