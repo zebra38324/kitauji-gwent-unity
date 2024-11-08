@@ -144,8 +144,7 @@ public class PlaySceneManager
             }
             case PlaySceneMsg.PlayCard: {
                 GameObject card = (GameObject)list[0];
-                CardLocation cardLocation = (CardLocation)list[1];
-                PlayCardAction(card, cardLocation);
+                PlayCardAction(card);
                 break;
             }
             case PlaySceneMsg.ShowCardInfo: {
@@ -176,18 +175,18 @@ public class PlaySceneManager
         return false;
     }
 
-    private void PlayCardAction(GameObject card, CardLocation cardLocation)
+    private void PlayCardAction(GameObject card)
     {
         switch (curState) {
             case State.WAIT_SELF_ACTION: {
                 // 首先关闭所有卡牌的可选状态
                 curState = State.SELF_DOING;
                 DisableSelect();
-                PlayCard(card, cardLocation);
+                PlayCard(card);
                 break;
             }
             case State.SELF_DOING: {
-                PlayCard(card, cardLocation);
+                PlayCard(card);
                 break;
             }
             default: {
@@ -202,9 +201,10 @@ public class PlaySceneManager
         }
     }
 
-    private void PlayCard(GameObject card, CardLocation cardLocation)
+    private void PlayCard(GameObject card)
     {
         // 从原区域移除
+        CardLocation cardLocation = card.GetComponent<CardAction>().cardLocation;
         switch (cardLocation) {
             case CardLocation.HandArea: {
                 handArea.GetComponent<HandArea>().RemoveCard(card);

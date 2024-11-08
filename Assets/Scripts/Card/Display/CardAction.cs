@@ -106,7 +106,7 @@ public class CardAction : MonoBehaviour,
     // 打出牌到对战区
     public void PlayCard()
     {
-        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.PlayCard, gameObject, cardLocation);
+        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.PlayCard, gameObject);
     }
 
     private void EnableSelect(bool enable)
