@@ -107,14 +107,14 @@ public class CardDisplay : MonoBehaviour
 
     public void SetCardInfo(CardInfo info)
     {
-        cardInfo = info;
+        cardInfo = new CardInfo(info);
         cardPower = new CardPower(cardInfo);
         Init();
     }
 
     public CardInfo GetCardInfo()
     {
-        return cardInfo;
+        return new CardInfo(cardInfo);
     }
 
     public int GetCurrentPower()

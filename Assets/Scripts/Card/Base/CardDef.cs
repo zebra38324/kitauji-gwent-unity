@@ -50,6 +50,24 @@ public struct CardInfo
     public int attackNum; // 攻击牌的攻击数值
     public CardType cardType; // 是否为英雄牌
     public string quote; // 卡牌最下方的台词引用
+
+    public CardInfo(CardInfo other)
+    {
+        imageName = other.imageName;
+        chineseName = other.chineseName;
+        englishName = other.englishName;
+        group = other.group;
+        grade = other.grade;
+        originPower = other.originPower;
+        badgeType = other.badgeType;
+        ability = other.ability;
+        bondType = other.bondType;
+        musterType = other.musterType;
+        relatedCard = other.relatedCard;
+        attackNum = other.attackNum;
+        cardType = other.cardType;
+        quote = other.quote;
+    }
 }
 
 // 卡牌可选择的类型

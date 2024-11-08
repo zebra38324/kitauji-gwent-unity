@@ -17,7 +17,7 @@ public class CardPower
     public CardPower(CardInfo info)
     {
         buffRecord = new int[buffTypeCount];
-        this.cardInfo = info;
+        this.cardInfo = new CardInfo(info);
         currentPower = info.originPower;
     }
 
