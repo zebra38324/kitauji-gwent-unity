@@ -28,9 +28,38 @@ public class CardAction : MonoBehaviour,
 
     private bool isCardInfoShowing = false; // 当前card info正处于展示状态
 
-    private bool enableSelect = false; // 当前卡牌是否允许被选择
+    private bool enableSelect = true; // 当前卡牌是否允许被选择
 
-    public CardLocation cardLocation { get; set; }
+    private CardLocation cardLocation_ = CardLocation.None;
+
+    public CardLocation cardLocation {
+        get {
+            return cardLocation_;
+        }
+        set {
+            cardLocation_ = value;
+            if (cardLocation_ == CardLocation.HandArea) {
+                selectType = CardSelectType.HandCard;
+            } else {
+                selectType = CardSelectType.None;
+            }
+        }
+    }
+
+    private CardSelectType selectType_ = CardSelectType.None;
+    public CardSelectType selectType {
+        get {
+            return selectType_;
+        }
+        set {
+            selectType_ = value;
+            if (selectType_ == CardSelectType.WithstandAttack) {
+                gameObject.GetComponent<CardDisplay>().SetFrameVisible(true);
+            } else {
+                gameObject.GetComponent<CardDisplay>().SetFrameVisible(false);
+            }
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -59,7 +88,19 @@ public class CardAction : MonoBehaviour,
     public void OnPointerClick(PointerEventData eventData)
     {
         KLog.I(TAG, "on click " + gameObject.GetComponent<CardDisplay>().GetCardInfo().chineseName);
-        PlayCard();
+        if (!enableSelect) {
+            KLog.I(TAG, "disable click " + gameObject.GetComponent<CardDisplay>().GetCardInfo().chineseName);
+            return;
+        }
+        switch (selectType) {
+            case CardSelectType.HandCard: {
+                PlayCard();
+                break;
+            }
+            default: {
+                break;
+            }
+        }
     }
 
     // 打出牌到对战区
