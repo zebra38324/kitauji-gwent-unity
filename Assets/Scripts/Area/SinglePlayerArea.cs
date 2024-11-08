@@ -44,8 +44,6 @@ public class SinglePlayerArea : MonoBehaviour
             UpdateBondBuff(newCard.GetComponent<CardDisplay>().GetCardInfo().bondType);
         } else if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.ScorchWood) {
             enemyArea.GetComponent<SinglePlayerArea>().ScorchWood();
-        } else if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Muster) {
-            ApplyMuster(newCard.GetComponent<CardDisplay>().GetCardInfo().musterType);
         } else if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Medic) {
             return ApplyMedic();
         }
@@ -74,27 +72,6 @@ public class SinglePlayerArea : MonoBehaviour
             }
         }
         return targetArea;
-    }
-
-    private void ApplyMuster(string musterType)
-    {
-        // 备选卡牌中拉取
-        List<CardInfo> cardInfos = BackupCardManager.Instance.GetCardInfosWithMusterType(musterType);
-        foreach (CardInfo info in cardInfos) {
-            GameObject musterCard = GameObject.Instantiate(cardPrefab, null);
-            musterCard.GetComponent<CardDisplay>().SetCardInfo(info);
-            GameObject target = GetTargetArea(musterCard);
-            if (target == null) {
-                return;
-            }
-            target.GetComponent<RowArea>().AddNormalCard(musterCard);
-        }
-
-        // 手牌区拉取
-        GameObject handArea;
-        string areaName = "HandArea";
-        handArea = GameObject.Find(areaName);
-        handArea.GetComponent<HandArea>().PlayMusterCard(musterType);
     }
 
     public void ScorchWood()

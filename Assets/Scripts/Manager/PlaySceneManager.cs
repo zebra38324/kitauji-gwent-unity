@@ -93,6 +93,9 @@ public class PlaySceneManager
         if (cardInfoArea == null) {
             cardInfoArea = GameObject.Find("CardInfoArea");
         }
+        if (cardPrefab == null) {
+            cardPrefab = Resources.Load<GameObject>("Prefabs/HalfCard");
+        }
         switch (msg)
         {
             case PlaySceneMsg.MedicSelectDiscardCard: {
@@ -222,6 +225,12 @@ public class PlaySceneManager
                 enemyPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
                 break;
             }
+            case CardAbility.Muster: {
+                card.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
+                selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
+                ApplyMuster(card.GetComponent<CardDisplay>().GetCardInfo().musterType);
+                break;
+            }
             default: {
                 card.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
                 selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
@@ -259,15 +268,33 @@ public class PlaySceneManager
     // 从备选卡牌中拉取几张牌到手牌区
     private void DrawCards(int num)
     {
-        if (cardPrefab == null) {
-            cardPrefab = Resources.Load<GameObject>("Prefabs/HalfCard");
-        }
         // 备选卡牌中拉取
         List<CardInfo> cardInfos = BackupCardManager.Instance.GetCardInfos(num);
         foreach (CardInfo info in cardInfos) {
             GameObject card = GameObject.Instantiate(cardPrefab, null);
             card.GetComponent<CardDisplay>().SetCardInfo(info);
             handArea.GetComponent<HandArea>().AddCard(card);
+        }
+    }
+
+    // 应用抱团技能 TODO: 合并同类项
+    private void ApplyMuster(string musterType)
+    {
+        // 备选卡牌中拉取
+        List<CardInfo> cardInfos = BackupCardManager.Instance.GetCardInfosWithMusterType(musterType);
+        foreach (CardInfo info in cardInfos) {
+            GameObject musterCard = GameObject.Instantiate(cardPrefab, null);
+            musterCard.GetComponent<CardDisplay>().SetCardInfo(info);
+            musterCard.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
+            selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(musterCard);
+        }
+
+        // 手牌区拉取
+        List<GameObject> cardList = handArea.GetComponent<HandArea>().GetMusterCardList(musterType);
+        foreach (GameObject card in cardList) {
+            handArea.GetComponent<HandArea>().RemoveCard(card);
+            card.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
+            selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
         }
     }
 

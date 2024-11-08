@@ -10,13 +10,17 @@ public class HandArea : CardArea
         newCard.GetComponent<CardAction>().cardLocation = CardLocation.HandArea;
     }
 
-    public void PlayMusterCard(string musterType)
+    public List<GameObject> GetMusterCardList(string musterType)
     {
+        List<GameObject> list = new List<GameObject>();
         foreach (GameObject card in cardList) {
             if (card.GetComponent<CardDisplay>().GetCardInfo().musterType == musterType) {
-                card.GetComponent<CardAction>().PlayCard();
-                break; // 打出一张牌就够，剩下的由链式调用逐张打出
+                list.Add(card);
             }
         }
+        foreach (GameObject card in list) {
+            cardList.Remove(card);
+        }
+        return list;
     }
 }
