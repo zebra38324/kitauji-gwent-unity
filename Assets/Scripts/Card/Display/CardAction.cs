@@ -59,13 +59,13 @@ public class CardAction : MonoBehaviour,
     public void OnPointerClick(PointerEventData eventData)
     {
         KLog.I(TAG, "on click " + gameObject.GetComponent<CardDisplay>().GetCardInfo().chineseName);
-        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.PlayCard, gameObject);
+        PlayCard();
     }
 
     // 打出牌到对战区
     public void PlayCard()
     {
-        
+        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.PlayCard, gameObject, cardLocation);
     }
 
     private void EnableSelect(bool enable)

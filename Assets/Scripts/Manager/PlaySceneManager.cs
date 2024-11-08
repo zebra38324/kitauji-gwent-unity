@@ -144,7 +144,8 @@ public class PlaySceneManager
             }
             case PlaySceneMsg.PlayCard: {
                 GameObject card = (GameObject)list[0];
-                PlayCardAction(card);
+                CardLocation cardLocation = (CardLocation)list[1];
+                PlayCardAction(card, cardLocation);
                 break;
             }
             case PlaySceneMsg.ShowCardInfo: {
@@ -175,18 +176,18 @@ public class PlaySceneManager
         return false;
     }
 
-    private void PlayCardAction(GameObject card)
+    private void PlayCardAction(GameObject card, CardLocation cardLocation)
     {
         switch (curState) {
             case State.WAIT_SELF_ACTION: {
                 // 首先关闭所有卡牌的可选状态
                 curState = State.SELF_DOING;
                 DisableSelect();
-                PlayCard(card);
+                PlayCard(card, cardLocation);
                 break;
             }
             case State.SELF_DOING: {
-                PlayCard(card);
+                PlayCard(card, cardLocation);
                 break;
             }
             default: {
@@ -201,16 +202,28 @@ public class PlaySceneManager
         }
     }
 
-    private void PlayCard(GameObject card)
+    private void PlayCard(GameObject card, CardLocation cardLocation)
     {
+        // 从原区域移除
+        switch (cardLocation) {
+            case CardLocation.HandArea: {
+                handArea.GetComponent<HandArea>().RemoveCard(card);
+                break;
+            }
+            default: {
+                break;
+            }
+        }
         // 打出这张牌，并根据技能判断是否跟进后续操作
         switch (card.GetComponent<CardDisplay>().GetCardInfo().ability) {
             case CardAbility.Spy: {
                 DrawCards(2);
+                card.GetComponent<CardAction>().cardLocation = CardLocation.EnemyBattleArea;
                 enemyPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
                 break;
             }
             default: {
+                card.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
                 selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
                 break; // 其他技能交到下层各自实现即可
             }
