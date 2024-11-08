@@ -144,11 +144,7 @@ public class PlaySceneManager
             }
             case PlaySceneMsg.PlayCard: {
                 GameObject card = (GameObject)list[0];
-                CardLocation cardLocation = (CardLocation)list[1];
-                bool success = (bool)list[2];
-                success = true;
-                //bool isClick = (bool)list[2]; // 是否为玩家点击手牌触发的
-                //PlayCard(card, cardLocation, isClick);
+                PlayCardAction(card);
                 break;
             }
             case PlaySceneMsg.ShowCardInfo: {
@@ -179,18 +175,18 @@ public class PlaySceneManager
         return false;
     }
 
-    private void PlayCardlAction(GameObject card, CardLocation cardLocation)
+    private void PlayCardAction(GameObject card)
     {
         switch (curState) {
             case State.WAIT_SELF_ACTION: {
                 // 首先关闭所有卡牌的可选状态
                 curState = State.SELF_DOING;
                 DisableSelect();
-                PlayCard(card, cardLocation);
+                PlayCard(card);
                 break;
             }
             case State.SELF_DOING: {
-                PlayCard(card, cardLocation);
+                PlayCard(card);
                 break;
             }
             default: {
@@ -201,10 +197,11 @@ public class PlaySceneManager
         }
         if (curState == State.SELF_DONE) {
             EnableSelect();
+            curState = State.WAIT_SELF_ACTION; // TODO: 测试用
         }
     }
 
-    private void PlayCard(GameObject card, CardLocation cardLocation)
+    private void PlayCard(GameObject card)
     {
         // 打出这张牌，并根据技能判断是否跟进后续操作
         switch (card.GetComponent<CardDisplay>().GetCardInfo().ability) {
@@ -213,16 +210,12 @@ public class PlaySceneManager
                 enemyPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
                 break;
             }
-            case CardAbility.Medic: {
-                break;
-            }
-            case CardAbility.Attack: {
-                break;
-            }
             default: {
+                selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
                 break; // 其他技能交到下层各自实现即可
             }
         }
+        curState = State.SELF_DONE;
     }
 
     // 关闭所有卡牌的可选状态

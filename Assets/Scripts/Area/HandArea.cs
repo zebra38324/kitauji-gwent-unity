@@ -7,15 +7,14 @@ public class HandArea : CardArea
     public override void AddCard(GameObject newCard)
     {
         base.AddCard(newCard);
-        //newCard.GetComponent<CardInfoDisplay>().SetEnableUp(true);
-        newCard.GetComponent<CardSelect>().selectType = CardSelectType.HandCard;
+        newCard.GetComponent<CardAction>().cardLocation = CardLocation.HandArea;
     }
 
     public void PlayMusterCard(string musterType)
     {
         foreach (GameObject card in cardList) {
             if (card.GetComponent<CardDisplay>().GetCardInfo().musterType == musterType) {
-                card.GetComponent<CardSelect>().PlayPassively();
+                card.GetComponent<CardAction>().PlayCard();
                 break; // 打出一张牌就够，剩下的由链式调用逐张打出
             }
         }

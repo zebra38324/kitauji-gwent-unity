@@ -58,7 +58,7 @@ public class CardArea : MonoBehaviour
     {
         List<GameObject> tempList = new List<GameObject>();
         foreach(GameObject card in cardList) {
-            card.GetComponent<CardSelect>().selectType = CardSelectType.None;
+            card.GetComponent<CardAction>().cardLocation = CardLocation.None;
             tempList.Add(card);
         }
         foreach(GameObject card in tempList) {

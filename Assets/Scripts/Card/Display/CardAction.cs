@@ -19,6 +19,8 @@ public class CardAction : MonoBehaviour,
     IPointerExitHandler,
     IPointerClickHandler
 {
+    private static string TAG = "CardAction";
+
     // 悬停时卡片上移距离
     private static int hoverUpDistance = 10;
 
@@ -56,7 +58,8 @@ public class CardAction : MonoBehaviour,
 
     public void OnPointerClick(PointerEventData eventData)
     {
-
+        KLog.I(TAG, "on click " + gameObject.GetComponent<CardDisplay>().GetCardInfo().chineseName);
+        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.PlayCard, gameObject);
     }
 
     // 打出牌到对战区
@@ -65,7 +68,7 @@ public class CardAction : MonoBehaviour,
         
     }
 
-    public void EnableSelect(bool enable)
+    private void EnableSelect(bool enable)
     {
         enableSelect = enable;
     }

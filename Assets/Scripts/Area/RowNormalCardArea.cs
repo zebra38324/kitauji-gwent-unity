@@ -172,22 +172,11 @@ public class RowNormalCardArea : CardArea
     public int ReadyEmbraceAttack(int num)
     {
         int count = 0;
-        foreach (GameObject card in cardList) {
-            if (card.GetComponent<CardDisplay>().GetCardInfo().cardType != CardType.Hero) {
-                card.GetComponent<CardSelect>().selectType = CardSelectType.WithstandAttack; // TODO: 加个特效
-                card.GetComponent<CardSelect>().attackNum = num;
-                count++;
-            }
-        }
         return count;
     }
 
     public void FinishWithstandAttack()
     {
-        foreach (GameObject card in cardList) {
-            if (card.GetComponent<CardDisplay>().GetCardInfo().cardType != CardType.Hero) {
-                card.GetComponent<CardSelect>().selectType = CardSelectType.None;
-            }
-        }
+
     }
 }

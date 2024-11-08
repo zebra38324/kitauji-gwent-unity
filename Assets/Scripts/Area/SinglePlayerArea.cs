@@ -128,7 +128,7 @@ public class SinglePlayerArea : MonoBehaviour
             if (card.GetComponent<CardDisplay>().GetCardInfo().cardType == CardType.Hero) {
                 invalid.Add(card);
             } else {
-                card.GetComponent<CardSelect>().selectType = CardSelectType.MedicDiscardCard;
+                card.GetComponent<CardAction>().cardLocation = CardLocation.DiscardArea;
             }
         }
         foreach (GameObject card in invalid) {
