@@ -7,21 +7,23 @@ public class RowArea : MonoBehaviour
     public GameObject scoreNum;
     public GameObject normalArea;
 
-    public delegate void ScoreChangeNotifyHandler(int diff);
-    public event ScoreChangeNotifyHandler ScoreChangeNotify;
-
     private int currentScore;
 
     public void AddNormalCard(GameObject newCard)
     {
         normalArea.GetComponent<RowNormalCardArea>().AddCard(newCard);
-        UpdateScore();
     }
 
     public void RemoveNormalDebuff() 
     {
         normalArea.GetComponent<RowNormalCardArea>().RemoveNormalDebuff();
-        UpdateScore();
+    }
+
+    public int UpdateScore()
+    {
+        currentScore = normalArea.GetComponent<RowNormalCardArea>().GetCurrentScore();
+        scoreNum.GetComponent<TextMeshProUGUI>().text = currentScore.ToString();
+        return currentScore;
     }
 
     public int GetBondCardNum(string bondType)
@@ -32,28 +34,16 @@ public class RowArea : MonoBehaviour
     public void UpdateBondBuff(string bondType, int times)
     {
         normalArea.GetComponent<RowNormalCardArea>().UpdateBondBuff(bondType, times);
-        UpdateScore();
     }
 
     public void ScorchWood()
     {
         normalArea.GetComponent<RowNormalCardArea>().ScorchWood();
-        UpdateScore();
-    }
-
-    private void UpdateScore()
-    {
-        int newScore = normalArea.GetComponent<RowNormalCardArea>().GetCurrentScore();
-        int diff = newScore - currentScore;
-        ScoreChangeNotify(diff);
-        currentScore = newScore;
-        scoreNum.GetComponent<TextMeshProUGUI>().text = currentScore.ToString();
     }
 
     public void ClearCard(DiscardCardManager manager)
     {
         normalArea.GetComponent<RowNormalCardArea>().ClearCard(manager);
-        UpdateScore();
     }
 
     public int ReadyEmbraceAttack(int num)
@@ -64,7 +54,6 @@ public class RowArea : MonoBehaviour
     public void FinishWithstandAttack()
     {
         normalArea.GetComponent<RowNormalCardArea>().FinishWithstandAttack();
-        UpdateScore();
     }
 
     public void RemoveSingleCard(GameObject card)

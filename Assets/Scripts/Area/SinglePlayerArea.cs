@@ -17,15 +17,15 @@ public class SinglePlayerArea : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        woodRow.GetComponent<RowArea>().ScoreChangeNotify += new RowArea.ScoreChangeNotifyHandler(ScoreUpdate);
-        brassRow.GetComponent<RowArea>().ScoreChangeNotify += new RowArea.ScoreChangeNotifyHandler(ScoreUpdate);
-        percussionRow.GetComponent<RowArea>().ScoreChangeNotify += new RowArea.ScoreChangeNotifyHandler(ScoreUpdate);
+
     }
 
-    void ScoreUpdate(int diff)
+    public void UpdateScore()
     {
-        int currentScore = int.Parse(scoreNum.GetComponent<TextMeshProUGUI>().text);
-        scoreNum.GetComponent<TextMeshProUGUI>().text = (currentScore + diff).ToString();
+        int currentScore = woodRow.GetComponent<RowArea>().UpdateScore() +
+            brassRow.GetComponent<RowArea>().UpdateScore() +
+            percussionRow.GetComponent<RowArea>().UpdateScore();
+        scoreNum.GetComponent<TextMeshProUGUI>().text = currentScore.ToString();
     }
 
     // return: 这张牌打出后，是否需要等待玩家的进一步操作

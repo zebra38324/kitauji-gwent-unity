@@ -237,6 +237,8 @@ public class PlaySceneManager
                 break; // 其他技能交到下层各自实现即可
             }
         }
+        selfPlayArea.GetComponent<SinglePlayerArea>().UpdateScore(); // TODO: 优化调用时机
+        enemyPlayArea.GetComponent<SinglePlayerArea>().UpdateScore();
         curState = State.SELF_DONE;
     }
 
