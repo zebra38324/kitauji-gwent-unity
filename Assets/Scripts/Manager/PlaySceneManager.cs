@@ -20,9 +20,16 @@ public class PlaySceneManager
         HideCardInfo, // 隐藏卡牌信息
     }
 
-    public delegate void CardEnableSelectDelegate(bool enable);
+    public enum CardBoardcastType
+    {
+        EnableSelect = 0, // 卡牌是否可选状态
+        CountBond, // 统计本方场上特定bond type的卡牌数量
+        UpdateBond, // 更新本方场上特定bond type的buff状态
+    }
 
-    public CardEnableSelectDelegate CardEnableSelect;
+    public delegate int CardBoardcastDelegate(CardBoardcastType cardBoardcastType, params object[] list);
+
+    public CardBoardcastDelegate CardBoardcast;
 
     private static readonly PlaySceneManager instance = new PlaySceneManager();
 
@@ -231,6 +238,12 @@ public class PlaySceneManager
                 ApplyMuster(card.GetComponent<CardDisplay>().GetCardInfo().musterType);
                 break;
             }
+            case CardAbility.Bond: {
+                card.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
+                selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
+                ApplyBond(card.GetComponent<CardDisplay>().GetCardInfo().bondType);
+                break;
+            }
             default: {
                 card.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
                 selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
@@ -245,17 +258,39 @@ public class PlaySceneManager
     // 关闭所有卡牌的可选状态
     private void DisableSelect()
     {
-        if (CardEnableSelect != null) {
-            CardEnableSelect(false);
+        if (CardBoardcast != null) {
+            CardBoardcast(CardBoardcastType.EnableSelect, false);
         }
     }
 
     // 恢复卡牌的可选状态
     private void EnableSelect()
     {
-        if (CardEnableSelect != null) {
-            CardEnableSelect(true);
+        if (CardBoardcast != null) {
+            CardBoardcast(CardBoardcastType.EnableSelect, true);
         }
+    }
+
+    // 应用bond技能
+    private void ApplyBond(string bondType)
+    {
+        int count = GetBondCardCount(bondType); // 此时count包含刚刚打出去的那张
+        if (CardBoardcast != null) {
+            CardBoardcast(CardBoardcastType.UpdateBond, bondType, count);
+        }
+    }
+
+    // 统计己方场上bondType的卡牌数量
+    private int GetBondCardCount(string bondType)
+    {
+        if (CardBoardcast == null) {
+            return 0;
+        }
+        int count = 0;
+        foreach (CardBoardcastDelegate invocation in CardBoardcast.GetInvocationList()) {
+            count += invocation(CardBoardcastType.CountBond, bondType);
+        }
+        return count;
     }
 
     // 实施攻击牌技能，如果没有可攻击的牌，返回false

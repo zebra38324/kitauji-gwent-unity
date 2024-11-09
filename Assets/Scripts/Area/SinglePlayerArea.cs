@@ -40,8 +40,6 @@ public class SinglePlayerArea : MonoBehaviour
         // 设置buff
         if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Tunning) {
             targetArea.GetComponent<RowArea>().RemoveNormalDebuff();
-        } else if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Bond) {
-            UpdateBondBuff(newCard.GetComponent<CardDisplay>().GetCardInfo().bondType);
         } else if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.ScorchWood) {
             enemyArea.GetComponent<SinglePlayerArea>().ScorchWood();
         } else if (newCard.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Medic) {
@@ -77,17 +75,6 @@ public class SinglePlayerArea : MonoBehaviour
     public void ScorchWood()
     {
         woodRow.GetComponent<RowArea>().ScorchWood();
-    }
-
-    private void UpdateBondBuff(string bondType)
-    {
-        int times = woodRow.GetComponent<RowArea>().GetBondCardNum(bondType);
-        times += brassRow.GetComponent<RowArea>().GetBondCardNum(bondType);
-        times += percussionRow.GetComponent<RowArea>().GetBondCardNum(bondType);
-
-        woodRow.GetComponent<RowArea>().UpdateBondBuff(bondType, times);
-        brassRow.GetComponent<RowArea>().UpdateBondBuff(bondType, times);
-        percussionRow.GetComponent<RowArea>().UpdateBondBuff(bondType, times);
     }
 
     public void ClearCard(DiscardCardManager manager)
@@ -140,9 +127,9 @@ public class SinglePlayerArea : MonoBehaviour
         woodRow.GetComponent<RowArea>().RemoveSingleCard(card);
         brassRow.GetComponent<RowArea>().RemoveSingleCard(card);
         percussionRow.GetComponent<RowArea>().RemoveSingleCard(card);
-        // 更新buff
-        if (card.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Bond) {
-            UpdateBondBuff(card.GetComponent<CardDisplay>().GetCardInfo().bondType);
-        }
+        // 更新buff TODO: remove card
+        //if (card.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Bond) {
+        //    UpdateBondBuff(card.GetComponent<CardDisplay>().GetCardInfo().bondType);
+        //}
     }
 }

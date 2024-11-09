@@ -24,31 +24,6 @@ public class RowNormalCardArea : CardArea
         }
     }
 
-    // 统计一个类型bond的卡牌数量
-    public int GetBondCardNum(string bondType)
-    {
-        int count = 0;
-        foreach (GameObject card in cardList)
-        {
-            if (card.GetComponent<CardDisplay>().GetCardInfo().bondType == bondType) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    // 更新bond的buff
-    public void UpdateBondBuff(string bondType, int times)
-    {
-        foreach (GameObject card in cardList)
-        {
-            if (card.GetComponent<CardDisplay>().GetCardInfo().bondType == bondType) {
-                card.GetComponent<CardDisplay>().RemoveBuff(CardBuffType.Bond); // TODO: 这里需要优化
-                card.GetComponent<CardDisplay>().AddBuff(CardBuffType.Bond, times - 1);
-            }
-        }
-    }
-
     public int GetCurrentScore()
     {
         int sum = 0;

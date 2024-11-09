@@ -136,6 +136,14 @@ public class CardDisplay : MonoBehaviour
         UpdateDisplayPower();
     }
 
+    // 设置buff为指定数量
+    public void SetBuff(CardBuffType buffType, int num)
+    {
+        cardPower.RemoveBuff(buffType);
+        cardPower.AddBuff(buffType, num);
+        UpdateDisplayPower();
+    }
+
     public bool IsDead()
     {
         return cardPower.IsDead();

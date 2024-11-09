@@ -26,16 +26,6 @@ public class RowArea : MonoBehaviour
         return currentScore;
     }
 
-    public int GetBondCardNum(string bondType)
-    {
-        return normalArea.GetComponent<RowNormalCardArea>().GetBondCardNum(bondType);
-    }
-
-    public void UpdateBondBuff(string bondType, int times)
-    {
-        normalArea.GetComponent<RowNormalCardArea>().UpdateBondBuff(bondType, times);
-    }
-
     public void ScorchWood()
     {
         normalArea.GetComponent<RowNormalCardArea>().ScorchWood();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using static PlaySceneManager;
 
 /**
  * 实现卡牌可能的动作
@@ -64,7 +65,7 @@ public class CardAction : MonoBehaviour,
     // Start is called before the first frame update
     void Start()
     {
-        PlaySceneManager.Instance.CardEnableSelect += new PlaySceneManager.CardEnableSelectDelegate(EnableSelect);
+        PlaySceneManager.Instance.CardBoardcast += new PlaySceneManager.CardBoardcastDelegate(ReceiveCardBoardcast);
     }
 
     // Update is called once per frame
@@ -109,9 +110,34 @@ public class CardAction : MonoBehaviour,
         PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.PlayCard, gameObject);
     }
 
-    private void EnableSelect(bool enable)
+    private int ReceiveCardBoardcast(CardBoardcastType cardBoardcastType, params object[] list)
     {
-        enableSelect = enable;
+        switch (cardBoardcastType) {
+            case CardBoardcastType.EnableSelect: {
+                bool enable = (bool)list[0];
+                enableSelect = enable;
+                break;
+            }
+            case CardBoardcastType.CountBond: {
+                string bondType = (string)list[0];
+                if (cardLocation == CardLocation.SelfBattleArea && gameObject.GetComponent<CardDisplay>().GetCardInfo().bondType == bondType) {
+                    return 1;
+                }
+                break;
+            }
+            case CardBoardcastType.UpdateBond: {
+                string bondType = (string)list[0];
+                int count = (int)list[1];
+                if (cardLocation == CardLocation.SelfBattleArea && gameObject.GetComponent<CardDisplay>().GetCardInfo().bondType == bondType) {
+                    gameObject.GetComponent<CardDisplay>().SetBuff(CardBuffType.Bond, count - 1); // buff数量排除自身
+                }
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+        return 0;
     }
 
     // 判断悬停时是否需要卡牌上移
