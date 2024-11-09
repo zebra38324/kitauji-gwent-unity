@@ -284,6 +284,18 @@ public class PlaySceneManager
         }
     }
 
+    // 从备选卡牌中拉取几张牌到手牌区
+    private void DrawCards(int num)
+    {
+        // 备选卡牌中拉取
+        List<CardInfo> cardInfos = BackupCardManager.Instance.GetCardInfos(num);
+        foreach (CardInfo info in cardInfos) {
+            GameObject card = GameObject.Instantiate(cardPrefab, null);
+            card.GetComponent<CardDisplay>().SetCardInfo(info);
+            handArea.GetComponent<HandArea>().AddCard(card);
+        }
+    }
+
     // 实施攻击牌技能
     private void ApplyAttack(int attackNum)
     {
@@ -345,18 +357,6 @@ public class PlaySceneManager
             count += invocation(CardBoardcastType.CountBond, bondType);
         }
         return count;
-    }
-
-    // 从备选卡牌中拉取几张牌到手牌区
-    private void DrawCards(int num)
-    {
-        // 备选卡牌中拉取
-        List<CardInfo> cardInfos = BackupCardManager.Instance.GetCardInfos(num);
-        foreach (CardInfo info in cardInfos) {
-            GameObject card = GameObject.Instantiate(cardPrefab, null);
-            card.GetComponent<CardDisplay>().SetCardInfo(info);
-            handArea.GetComponent<HandArea>().AddCard(card);
-        }
     }
 
     // 应用抱团技能 TODO: 合并同类项
