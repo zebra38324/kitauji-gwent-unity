@@ -246,6 +246,12 @@ public class PlaySceneManager
                 curState = State.SELF_DONE;
                 break;
             }
+            case CardAbility.ScorchWood: {
+                card.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
+                selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
+                ApplyScorchWood();
+                break;
+            }
             case CardAbility.Muster: {
                 card.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
                 selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
@@ -336,6 +342,11 @@ public class PlaySceneManager
             count += invocation(CardBoardcastType.CountBond, bondType);
         }
         return count;
+    }
+
+    private void ApplyScorchWood()
+    {
+        enemyPlayArea.GetComponent<SinglePlayerArea>().ScorchWood();
     }
 
     // 应用抱团技能 TODO: 合并同类项
