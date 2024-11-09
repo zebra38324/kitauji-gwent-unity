@@ -23,8 +23,7 @@ public class PlaySceneManager
 
     public enum CardBoardcastType
     {
-        EnableSelect = 0, // 卡牌是否可选状态
-        CountBond, // 统计本方场上特定bond type的卡牌数量
+        CountBond = 0, // 统计本方场上特定bond type的卡牌数量
         UpdateBond, // 更新本方场上特定bond type的buff状态
         Tunning, // 本方应用调音技能
         WillWithstandAttack, // 统计对方场上可被攻击的对象，并使其做好被攻击准备
@@ -58,7 +57,7 @@ public class PlaySceneManager
     {
         NOT_START = 0, // 还未开始
         WAIT_SELF_ACTION, // 本方回合，正在等待玩家操作
-        SELF_DOING, // 本方正在操作中
+        SELF_ATTACKING, // 本方正在使用攻击技能中
         SELF_DONE, // 本方操作结束
         WAIT_ENEMY_ACTION, // 等待对方操作
         STOP, // 本局结束
@@ -186,13 +185,11 @@ public class PlaySceneManager
     {
         switch (curState) {
             case State.WAIT_SELF_ACTION: {
-                // 首先关闭所有卡牌的可选状态
-                curState = State.SELF_DOING;
-                DisableSelect();
                 PlayCard(card);
                 break;
             }
-            case State.SELF_DOING: {
+            case State.SELF_ATTACKING: {
+                FinishAttack();
                 PlayCard(card);
                 break;
             }
@@ -203,7 +200,6 @@ public class PlaySceneManager
             }
         }
         if (curState == State.SELF_DONE) {
-            EnableSelect();
             curState = State.WAIT_SELF_ACTION; // TODO: 测试用
         }
     }
@@ -268,22 +264,6 @@ public class PlaySceneManager
         enemyPlayArea.GetComponent<SinglePlayerArea>().UpdateScore();
     }
 
-    // 关闭所有卡牌的可选状态
-    private void DisableSelect()
-    {
-        if (CardBoardcast != null) {
-            CardBoardcast(CardBoardcastType.EnableSelect, false);
-        }
-    }
-
-    // 恢复卡牌的可选状态
-    private void EnableSelect()
-    {
-        if (CardBoardcast != null) {
-            CardBoardcast(CardBoardcastType.EnableSelect, true);
-        }
-    }
-
     // 从备选卡牌中拉取几张牌到手牌区
     private void DrawCards(int num)
     {
@@ -304,7 +284,7 @@ public class PlaySceneManager
             curState = State.SELF_DONE;
             return;
         }
-        curState = State.SELF_DOING;
+        curState = State.SELF_ATTACKING;
     }
 
     // 获取可攻击的目标数量，若有，就使其准备好被攻击
@@ -326,7 +306,6 @@ public class PlaySceneManager
         if (CardBoardcast != null) {
             CardBoardcast(CardBoardcastType.FinishAttack);
         }
-        EnableSelect();
         curState = State.WAIT_SELF_ACTION; // TODO: 测试用
     }
 

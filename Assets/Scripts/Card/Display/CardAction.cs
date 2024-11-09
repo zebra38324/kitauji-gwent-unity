@@ -29,8 +29,6 @@ public class CardAction : MonoBehaviour,
 
     private bool isCardInfoShowing = false; // 当前card info正处于展示状态
 
-    private bool enableSelect = true; // 当前卡牌是否允许被选择
-
     private CardLocation cardLocation_ = CardLocation.None;
 
     public CardLocation cardLocation {
@@ -93,10 +91,6 @@ public class CardAction : MonoBehaviour,
         KLog.I(TAG, "on click " + gameObject.GetComponent<CardDisplay>().GetCardInfo().chineseName);
         switch (selectType) {
             case CardSelectType.HandCard: {
-                if (!enableSelect) {
-                    KLog.I(TAG, "disable click " + gameObject.GetComponent<CardDisplay>().GetCardInfo().chineseName);
-                    return;
-                }
                 PlayCard();
                 break;
             }
@@ -128,11 +122,6 @@ public class CardAction : MonoBehaviour,
     private int ReceiveCardBoardcast(CardBoardcastType cardBoardcastType, params object[] list)
     {
         switch (cardBoardcastType) {
-            case CardBoardcastType.EnableSelect: {
-                bool enable = (bool)list[0];
-                enableSelect = enable;
-                break;
-            }
             case CardBoardcastType.CountBond: {
                 string bondType = (string)list[0];
                 if (cardLocation == CardLocation.SelfBattleArea && gameObject.GetComponent<CardDisplay>().GetCardInfo().bondType == bondType) {
