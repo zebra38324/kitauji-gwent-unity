@@ -232,38 +232,32 @@ public class PlaySceneManager
                 ApplyAttack(card.GetComponent<CardDisplay>().GetCardInfo().attackNum);
                 break;
             }
-            case CardAbility.Tunning: {
-                card.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
-                selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
-                ApplyTunning();
-                curState = State.SELF_DONE;
-                break;
-            }
-            case CardAbility.Bond: {
-                card.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
-                selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
-                ApplyBond(card.GetComponent<CardDisplay>().GetCardInfo().bondType);
-                curState = State.SELF_DONE;
-                break;
-            }
-            case CardAbility.ScorchWood: {
-                card.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
-                selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
-                ApplyScorchWood();
-                break;
-            }
-            case CardAbility.Muster: {
-                card.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
-                selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
-                ApplyMuster(card.GetComponent<CardDisplay>().GetCardInfo().musterType);
-                curState = State.SELF_DONE;
-                break;
-            }
             default: {
                 card.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
                 selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
+                switch (card.GetComponent<CardDisplay>().GetCardInfo().ability) {
+                    case CardAbility.Tunning: {
+                        ApplyTunning();
+                        break;
+                    }
+                    case CardAbility.Bond: {
+                        ApplyBond(card.GetComponent<CardDisplay>().GetCardInfo().bondType);
+                        break;
+                    }
+                    case CardAbility.ScorchWood: {
+                        ApplyScorchWood();
+                        break;
+                    }
+                    case CardAbility.Muster: {
+                        ApplyMuster(card.GetComponent<CardDisplay>().GetCardInfo().musterType);
+                        break;
+                    }
+                    default: {
+                        break; // 其他技能交到下层各自实现即可
+                    }
+                }
                 curState = State.SELF_DONE;
-                break; // 其他技能交到下层各自实现即可
+                break;
             }
         }
         selfPlayArea.GetComponent<SinglePlayerArea>().UpdateScore(); // TODO: 优化调用时机
