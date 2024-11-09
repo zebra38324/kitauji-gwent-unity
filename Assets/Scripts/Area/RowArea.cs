@@ -31,16 +31,6 @@ public class RowArea : MonoBehaviour
         normalArea.GetComponent<RowNormalCardArea>().ClearCard(manager);
     }
 
-    public int ReadyEmbraceAttack(int num)
-    {
-        return normalArea.GetComponent<RowNormalCardArea>().ReadyEmbraceAttack(num);
-    }
-
-    public void FinishWithstandAttack()
-    {
-        normalArea.GetComponent<RowNormalCardArea>().FinishWithstandAttack();
-    }
-
     public void RemoveSingleCard(GameObject card)
     {
         normalArea.GetComponent<CardArea>().RemoveCard(card);

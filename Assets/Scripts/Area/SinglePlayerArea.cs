@@ -104,22 +104,6 @@ public class SinglePlayerArea : MonoBehaviour
         return true;
     }
 
-    public int ReadyEmbraceAttack(int num)
-    {
-        int count = 0;
-        count += woodRow.GetComponent<RowArea>().ReadyEmbraceAttack(num);
-        count += brassRow.GetComponent<RowArea>().ReadyEmbraceAttack(num);
-        count += percussionRow.GetComponent<RowArea>().ReadyEmbraceAttack(num);
-        return count;
-    }
-
-    public void FinishWithstandAttack()
-    {
-        woodRow.GetComponent<RowArea>().FinishWithstandAttack();
-        brassRow.GetComponent<RowArea>().FinishWithstandAttack();
-        percussionRow.GetComponent<RowArea>().FinishWithstandAttack();
-    }
-
     public void RemoveSingleCard(GameObject card)
     {
         woodRow.GetComponent<RowArea>().RemoveSingleCard(card);

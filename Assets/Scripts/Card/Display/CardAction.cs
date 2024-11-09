@@ -62,6 +62,8 @@ public class CardAction : MonoBehaviour,
         }
     }
 
+    private int beAttackedNum = 0; // 可能被攻击的数值
+
     // Start is called before the first frame update
     void Start()
     {
@@ -89,13 +91,26 @@ public class CardAction : MonoBehaviour,
     public void OnPointerClick(PointerEventData eventData)
     {
         KLog.I(TAG, "on click " + gameObject.GetComponent<CardDisplay>().GetCardInfo().chineseName);
-        if (!enableSelect) {
-            KLog.I(TAG, "disable click " + gameObject.GetComponent<CardDisplay>().GetCardInfo().chineseName);
-            return;
-        }
         switch (selectType) {
             case CardSelectType.HandCard: {
+                if (!enableSelect) {
+                    KLog.I(TAG, "disable click " + gameObject.GetComponent<CardDisplay>().GetCardInfo().chineseName);
+                    return;
+                }
                 PlayCard();
+                break;
+            }
+            case CardSelectType.WithstandAttack: {
+                if (beAttackedNum == 2) {
+                    gameObject.GetComponent<CardDisplay>().AddBuff(CardBuffType.Attack2, 1);
+                } else {
+                    gameObject.GetComponent<CardDisplay>().AddBuff(CardBuffType.Attack4, 1); // TODO: 这里需要优化
+                }
+                if (gameObject.GetComponent<CardDisplay>().IsDead()) {
+                    // 移除卡牌
+                    PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.RemoveSingleCard, gameObject, false);
+                }
+                PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.FinishWithstandAttack, gameObject);
                 break;
             }
             default: {
@@ -136,6 +151,21 @@ public class CardAction : MonoBehaviour,
             case CardBoardcastType.Tunning: {
                 if (cardLocation == CardLocation.SelfBattleArea) {
                     gameObject.GetComponent<CardDisplay>().RemoveNormalDebuff();
+                }
+                break;
+            }
+            case CardBoardcastType.WillWithstandAttack: {
+                if (cardLocation == CardLocation.EnemyBattleArea && gameObject.GetComponent<CardDisplay>().GetCardInfo().cardType == CardType.Normal) {
+                    selectType = CardSelectType.WithstandAttack;
+                    beAttackedNum = (int)list[0];
+                    return 1;
+                }
+                break;
+            }
+            case CardBoardcastType.FinishAttack: {
+                if (selectType == CardSelectType.WithstandAttack) {
+                    selectType = CardSelectType.None;
+                    beAttackedNum = 0;
                 }
                 break;
             }

@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 // 统一管理全局通知行为
 public class PlaySceneManager
@@ -26,6 +27,8 @@ public class PlaySceneManager
         CountBond, // 统计本方场上特定bond type的卡牌数量
         UpdateBond, // 更新本方场上特定bond type的buff状态
         Tunning, // 本方应用调音技能
+        WillWithstandAttack, // 统计对方场上可被攻击的对象，并使其做好被攻击准备
+        FinishAttack, // 完成攻击动作，恢复卡牌状态
     }
 
     public delegate int CardBoardcastDelegate(CardBoardcastType cardBoardcastType, params object[] list);
@@ -136,10 +139,7 @@ public class PlaySceneManager
             }
             case PlaySceneMsg.FinishWithstandAttack: {
                 GameObject target = (GameObject)list[0];
-                enemyPlayArea.GetComponent<SinglePlayerArea>().FinishWithstandAttack();
-                selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(curCard); // 不考虑同时是间谍牌和攻击牌的情况
-                curCard = null;
-                action.extend = target.GetComponent<CardDisplay>().GetCardInfo();
+                FinishAttack();
                 FinishSelfTurn(); // TODO: 多个一样的牌咋办？
                 break;
             }
@@ -173,10 +173,6 @@ public class PlaySceneManager
     // return: 这张牌打出后，是否需要等待玩家的进一步操作
     private bool AddCardToPlayArea(GameObject card)
     {
-        if (card.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Attack && ApplyAttackCard(card)) {
-            curCard = card;
-            return true;
-        }
         if (card.GetComponent<CardDisplay>().GetCardInfo().ability == CardAbility.Spy) {
             DrawCards(2);
             enemyPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
@@ -231,35 +227,45 @@ public class PlaySceneManager
                 DrawCards(2);
                 card.GetComponent<CardAction>().cardLocation = CardLocation.EnemyBattleArea;
                 enemyPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
+                curState = State.SELF_DONE;
+                break;
+            }
+            case CardAbility.Attack: {
+                card.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
+                selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
+                ApplyAttack(card.GetComponent<CardDisplay>().GetCardInfo().attackNum);
                 break;
             }
             case CardAbility.Tunning: {
                 card.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
                 selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
                 ApplyTunning();
+                curState = State.SELF_DONE;
                 break;
             }
             case CardAbility.Bond: {
                 card.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
                 selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
                 ApplyBond(card.GetComponent<CardDisplay>().GetCardInfo().bondType);
+                curState = State.SELF_DONE;
                 break;
             }
             case CardAbility.Muster: {
                 card.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
                 selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
                 ApplyMuster(card.GetComponent<CardDisplay>().GetCardInfo().musterType);
+                curState = State.SELF_DONE;
                 break;
             }
             default: {
                 card.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
                 selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
+                curState = State.SELF_DONE;
                 break; // 其他技能交到下层各自实现即可
             }
         }
         selfPlayArea.GetComponent<SinglePlayerArea>().UpdateScore(); // TODO: 优化调用时机
         enemyPlayArea.GetComponent<SinglePlayerArea>().UpdateScore();
-        curState = State.SELF_DONE;
     }
 
     // 关闭所有卡牌的可选状态
@@ -276,6 +282,40 @@ public class PlaySceneManager
         if (CardBoardcast != null) {
             CardBoardcast(CardBoardcastType.EnableSelect, true);
         }
+    }
+
+    // 实施攻击牌技能
+    private void ApplyAttack(int attackNum)
+    {
+        int count = GetAttackTargetNum(attackNum);
+        if (count == 0) {
+            curState = State.SELF_DONE;
+            return;
+        }
+        curState = State.SELF_DOING;
+    }
+
+    // 获取可攻击的目标数量，若有，就使其准备好被攻击
+    private int GetAttackTargetNum(int attackNum)
+    {
+        if (CardBoardcast == null) {
+            return 0;
+        }
+        int count = 0;
+        foreach (CardBoardcastDelegate invocation in CardBoardcast.GetInvocationList()) {
+            count += invocation(CardBoardcastType.WillWithstandAttack, attackNum);
+        }
+        return count;
+    }
+
+    // 完成攻击动作
+    private void FinishAttack()
+    {
+        if (CardBoardcast != null) {
+            CardBoardcast(CardBoardcastType.FinishAttack);
+        }
+        EnableSelect();
+        curState = State.WAIT_SELF_ACTION; // TODO: 测试用
     }
 
     private void ApplyTunning()
@@ -305,15 +345,6 @@ public class PlaySceneManager
             count += invocation(CardBoardcastType.CountBond, bondType);
         }
         return count;
-    }
-
-    // 实施攻击牌技能，如果没有可攻击的牌，返回false
-    // 若有目标，则等待玩家选择完目标后再打出这个攻击牌
-    private bool ApplyAttackCard(GameObject card)
-    {
-        int attackNum = card.GetComponent<CardDisplay>().GetCardInfo().attackNum;
-        int count = enemyPlayArea.GetComponent<SinglePlayerArea>().ReadyEmbraceAttack(attackNum);
-        return count > 0;
     }
 
     // 从备选卡牌中拉取几张牌到手牌区

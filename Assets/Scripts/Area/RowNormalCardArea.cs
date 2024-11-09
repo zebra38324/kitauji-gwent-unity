@@ -134,15 +134,4 @@ public class RowNormalCardArea : CardArea
         }
         ClearMoraleBuff();
     }
-
-    public int ReadyEmbraceAttack(int num)
-    {
-        int count = 0;
-        return count;
-    }
-
-    public void FinishWithstandAttack()
-    {
-
-    }
 }
