@@ -14,11 +14,6 @@ public class RowArea : MonoBehaviour
         normalArea.GetComponent<RowNormalCardArea>().AddCard(newCard);
     }
 
-    public void RemoveNormalDebuff() 
-    {
-        normalArea.GetComponent<RowNormalCardArea>().RemoveNormalDebuff();
-    }
-
     public int UpdateScore()
     {
         currentScore = normalArea.GetComponent<RowNormalCardArea>().GetCurrentScore();

@@ -133,6 +133,12 @@ public class CardAction : MonoBehaviour,
                 }
                 break;
             }
+            case CardBoardcastType.Tunning: {
+                if (cardLocation == CardLocation.SelfBattleArea) {
+                    gameObject.GetComponent<CardDisplay>().RemoveNormalDebuff();
+                }
+                break;
+            }
             default: {
                 break;
             }

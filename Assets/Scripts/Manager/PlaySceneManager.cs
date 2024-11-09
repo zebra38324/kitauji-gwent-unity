@@ -25,6 +25,7 @@ public class PlaySceneManager
         EnableSelect = 0, // 卡牌是否可选状态
         CountBond, // 统计本方场上特定bond type的卡牌数量
         UpdateBond, // 更新本方场上特定bond type的buff状态
+        Tunning, // 本方应用调音技能
     }
 
     public delegate int CardBoardcastDelegate(CardBoardcastType cardBoardcastType, params object[] list);
@@ -232,16 +233,22 @@ public class PlaySceneManager
                 enemyPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
                 break;
             }
-            case CardAbility.Muster: {
+            case CardAbility.Tunning: {
                 card.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
                 selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
-                ApplyMuster(card.GetComponent<CardDisplay>().GetCardInfo().musterType);
+                ApplyTunning();
                 break;
             }
             case CardAbility.Bond: {
                 card.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
                 selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
                 ApplyBond(card.GetComponent<CardDisplay>().GetCardInfo().bondType);
+                break;
+            }
+            case CardAbility.Muster: {
+                card.GetComponent<CardAction>().cardLocation = CardLocation.SelfBattleArea;
+                selfPlayArea.GetComponent<SinglePlayerArea>().AddNormalCard(card);
+                ApplyMuster(card.GetComponent<CardDisplay>().GetCardInfo().musterType);
                 break;
             }
             default: {
@@ -268,6 +275,13 @@ public class PlaySceneManager
     {
         if (CardBoardcast != null) {
             CardBoardcast(CardBoardcastType.EnableSelect, true);
+        }
+    }
+
+    private void ApplyTunning()
+    {
+        if (CardBoardcast != null) {
+            CardBoardcast(CardBoardcastType.Tunning);
         }
     }
 

@@ -15,15 +15,6 @@ public class RowNormalCardArea : CardArea
         base.AddCard(newCard);
     }
 
-    // 消除除天气外的debuff
-    public void RemoveNormalDebuff()
-    {
-        foreach (GameObject card in cardList)
-        {
-            card.GetComponent<CardDisplay>().RemoveNormalDebuff();
-        }
-    }
-
     public int GetCurrentScore()
     {
         int sum = 0;
