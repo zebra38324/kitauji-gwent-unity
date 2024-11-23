@@ -188,7 +188,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scoreNum: {fileID: 1574199775496388243}
-  normalArea: {fileID: 3388358399778263191}
+  normalAreaView: {fileID: 3388358399778263191}
 --- !u!1 &3388358399778263191
 GameObject:
   m_ObjectHideFlags: 0
@@ -198,7 +198,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8723244077755748140}
-  - component: {fileID: 4730488591222287837}
+  - component: {fileID: 7885371480190986525}
   m_Layer: 5
   m_Name: NormalArea
   m_TagString: Untagged
@@ -226,7 +226,7 @@ RectTransform:
   m_AnchoredPosition: {x: 102.14, y: 0}
   m_SizeDelta: {x: 805.73, y: 124.36}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &4730488591222287837
+--- !u!114 &7885371480190986525
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -235,10 +235,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3388358399778263191}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d38158e9fea665428adaa35800040b2, type: 3}
+  m_Script: {fileID: 11500000, guid: 8eef474259b9b0d41b52488c4078cd6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardArea: {fileID: 3388358399778263191}
 --- !u!1 &5402436797222900045
 GameObject:
   m_ObjectHideFlags: 0

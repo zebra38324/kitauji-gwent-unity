@@ -21,7 +21,6 @@ public class TestDiscardButtonScript : MonoBehaviour
 
     public void DiscardAll()
     {
-        selfArea.GetComponent<SinglePlayerArea>().ClearCard(SelfDiscardCardManager.Instance);
-        enemyArea.GetComponent<SinglePlayerArea>().ClearCard(EnemyDiscardCardManager.Instance);
+
     }
 }

@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 
-public class CardDisplay : MonoBehaviour
+public class CardDisplay : MonoBehaviour,
+    IPointerEnterHandler,
+    IPointerExitHandler,
+    IPointerClickHandler
 {
-    [HideInInspector]
-    private CardInfo cardInfo;
+    private static string TAG = "CardDisplay";
 
     public GameObject originImage;
 
@@ -36,9 +39,14 @@ public class CardDisplay : MonoBehaviour
     // 边框
     public GameObject frame;
 
-    private CardPower cardPower;
+    private CardModel cardModel;
 
-    private bool hasInit = false;
+    // ui交互
+    private static int hoverUpDistance = 10; // 悬停时卡片上移距离
+
+    private bool isHovering = false; // 鼠标是否在ui内
+
+    private bool isCardInfoShowing = false; // 当前card info正处于展示状态
 
     void Awake()
     {
@@ -48,41 +56,50 @@ public class CardDisplay : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Init();
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        JudgeShowCardInfo();
+    }
 
+    public void SetCardModel(CardModel model)
+    {
+        cardModel = model;
+        Init();
+    }
+
+    public void SetFrameVisible(bool flag)
+    {
+        if (frame != null) {
+            frame.SetActive(flag);
+        }
     }
 
     private void Init()
     {
-        if (hasInit) {
-            return;
-        }
-        hasInit = true;
         // Image
-        originImage.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/origin-image/KumikoSecondYear/" + cardInfo.imageName);
+        originImage.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/origin-image/KumikoSecondYear/" + cardModel.cardInfo.imageName);
 
         // Dialog
         dialogBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/dialog/dialog");
-        cardName.GetComponent<TextMeshProUGUI>().text = cardInfo.englishName;
-        quote.GetComponent<TextMeshProUGUI>().text = cardInfo.quote;
-        chineseName.GetComponent<TextMeshProUGUI>().text = cardInfo.chineseName;
+        cardName.GetComponent<TextMeshProUGUI>().text = cardModel.cardInfo.englishName;
+        quote.GetComponent<TextMeshProUGUI>().text = cardModel.cardInfo.quote;
+        chineseName.GetComponent<TextMeshProUGUI>().text = cardModel.cardInfo.chineseName;
 
         // Belt
         belt.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/belt/" + GetBeltName());
 
         // Power
-        if (cardInfo.cardType == CardType.Hero) {
+        if (cardModel.cardInfo.cardType == CardType.Hero) {
             powerBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/power/power-hero");
             powerNum.GetComponent<TextMeshProUGUI>().color = new Color(1, 1, 1, 1);
         } else {
             powerBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/power/power-normal");
         }
-        powerNum.GetComponent<TextMeshProUGUI>().text = cardInfo.originPower.ToString();
+        powerNum.GetComponent<TextMeshProUGUI>().text = cardModel.cardInfo.originPower.ToString();
         powerType.GetComponent<Image>().color = new Color(0, 0, 0, 0); // TODO: 未考虑非角色牌
 
         // Badge
@@ -90,93 +107,35 @@ public class CardDisplay : MonoBehaviour
         badgeType.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/badge/type/" + GetBadgeTypeName());
 
         // Ability
-        if (cardInfo.ability != CardAbility.None)
-        {
+        if (cardModel.cardInfo.ability != CardAbility.None) {
             abilityBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/ability/ability-background");
             ability.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/ability/" + GetAbilityName());
         } else {
             abilityBackground.SetActive(false);
             ability.SetActive(false);
         }
-        
+
         // frame
         if (frame != null) {
             frame.SetActive(false);
         }
     }
 
-    public void SetCardInfo(CardInfo info)
-    {
-        cardInfo = new CardInfo(info);
-        cardPower = new CardPower(cardInfo);
-        Init();
-    }
-
-    public CardInfo GetCardInfo()
-    {
-        return new CardInfo(cardInfo);
-    }
-
-    public int GetCurrentPower()
-    {
-        return cardPower.GetCurrentPower();
-    }
-
-    // 添加buff并指定添加buff的数量
-    public void AddBuff(CardBuffType buffType, int num)
-    {
-        cardPower.AddBuff(buffType, num);
-        UpdateDisplayPower();
-    }
-
-    // 移除buff并指定移除buff的数量，为0时表示移除所有
-    public void RemoveBuff(CardBuffType buffType, int num = 0)
-    {
-        cardPower.RemoveBuff(buffType, num);
-        UpdateDisplayPower();
-    }
-
-    // 设置buff为指定数量
-    public void SetBuff(CardBuffType buffType, int num)
-    {
-        cardPower.RemoveBuff(buffType);
-        cardPower.AddBuff(buffType, num);
-        UpdateDisplayPower();
-    }
-
-    public bool IsDead()
-    {
-        return cardPower.IsDead();
-    }
-
-    // 消除除天气外的debuff
-    public void RemoveNormalDebuff()
-    {
-        cardPower.RemoveNormalDebuff();
-        UpdateDisplayPower();
-    }
-
-    public void RemoveAllBuff()
-    {
-        cardPower.RemoveAllBuff();
-        UpdateDisplayPower();
-    }
-
     private void UpdateDisplayPower()
     {
-        if (cardInfo.cardType == CardType.Hero) {
+        if (cardModel.cardInfo.cardType == CardType.Hero) {
             return;
         }
-        int result = GetCurrentPower();
+        int result = cardModel.currentPower;
         powerNum.GetComponent<TextMeshProUGUI>().text = result.ToString();
         UpdatePowerNumColor(result);
     }
 
     private void UpdatePowerNumColor(int newPower)
     {
-        if (newPower > cardInfo.originPower) {
+        if (newPower > cardModel.cardInfo.originPower) {
             powerNum.GetComponent<TextMeshProUGUI>().color = new Color(0, 0.8f, 0, 1);
-        } else if (newPower == cardInfo.originPower) {
+        } else if (newPower == cardModel.cardInfo.originPower) {
             powerNum.GetComponent<TextMeshProUGUI>().color = new Color(0, 0, 0, 1);
         } else {
             powerNum.GetComponent<TextMeshProUGUI>().color = new Color(0.8f, 0, 0, 1);
@@ -186,20 +145,18 @@ public class CardDisplay : MonoBehaviour
     static string[] beltNames = { "belt-red", "belt-blue", "belt-green" };
     private string GetBeltName()
     {
-        switch (cardInfo.group)
-        {
+        switch (cardModel.cardInfo.group) {
             case CardGroup.KumikoFirstYearS1:
             case CardGroup.KumikoFirstYearS2:
-                return beltNames[(cardInfo.grade - 1 + 3) % 3];
+                return beltNames[(cardModel.cardInfo.grade - 1 + 3) % 3];
             default:
-                return beltNames[(cardInfo.grade - 2 + 3) % 3];
+                return beltNames[(cardModel.cardInfo.grade - 2 + 3) % 3];
         }
     }
 
     private string GetBadgeTypeName()
     {
-        switch (cardInfo.badgeType)
-        {
+        switch (cardModel.cardInfo.badgeType) {
             case CardBadgeType.Wood:
                 return "wood";
             case CardBadgeType.Brass:
@@ -211,8 +168,7 @@ public class CardDisplay : MonoBehaviour
 
     private string GetAbilityName()
     {
-        switch (cardInfo.ability)
-        {
+        switch (cardModel.cardInfo.ability) {
             case CardAbility.Attack:
                 return "attack";
             case CardAbility.Spy:
@@ -236,10 +192,65 @@ public class CardDisplay : MonoBehaviour
         }
     }
 
-    public void SetFrameVisible(bool flag)
+    // ========================= ui交互逻辑 ===========================
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        if (frame != null) {
-            frame.SetActive(flag);
+        isHovering = true;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        isHovering = false;
+        // hide如果也放在update里，可能造成下一卡片已经展示info，然后info区域被本卡牌关掉
+        JudgeHideCardInfo();
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        KLog.I(TAG, "on click " + cardModel.cardInfo.chineseName);
+        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.ChooseCard, cardModel);
+    }
+
+    // 判断悬停时是否需要卡牌上移
+    private bool HoverNeedUp()
+    {
+        return cardModel.cardLocation == CardLocation.HandArea;
+    }
+
+    // 判断是否需要显示info
+    private void JudgeShowCardInfo()
+    {
+        if (!isHovering || isCardInfoShowing) {
+            return;
         }
+        // 将鼠标屏幕坐标转换为RectTransform的局部坐标
+        Vector2 localMousePos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(gameObject.GetComponent<RectTransform>(), Input.mousePosition, null, out localMousePos);
+        Rect cardRect = gameObject.GetComponent<RectTransform>().rect;
+        Rect excludeRect = new Rect(cardRect.position.x,
+                cardRect.position.y,
+                cardRect.size.x,
+                cardRect.size.y / 10);
+        if (excludeRect.Contains(localMousePos)) {
+            return; // 避免卡牌上下鬼畜，靠下侧width*(height/10)区域不进行响应
+        }
+        if (HoverNeedUp()) {
+            transform.Translate(0, hoverUpDistance, 0); // 卡片上移
+        }
+        isCardInfoShowing = true;
+        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.ShowCardInfo, cardModel.cardInfo);
+    }
+
+    // 判断是否需要隐藏info
+    private void JudgeHideCardInfo()
+    {
+        if (!isCardInfoShowing) {
+            return;
+        }
+        if (HoverNeedUp()) {
+            transform.Translate(0, -hoverUpDistance, 0); // 卡片下移恢复
+        }
+        isCardInfoShowing = false;
+        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.HideCardInfo);
     }
 }

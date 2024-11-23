@@ -78,6 +78,7 @@ public struct CardInfo
 public enum CardSelectType
 {
     None = 0, // 点击无效果
+    PlayCard, // 打出卡牌
     HandCard, // 手牌
     MedicDiscardCard, // 复活弃牌区
     WithstandAttack, // 准备被攻击

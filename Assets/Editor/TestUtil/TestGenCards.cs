@@ -12,6 +12,9 @@ public class TestGenCards
 
     private static List<CardInfo> allCardInfoList {
         get {
+            if (allCardInfoList_ != null) {
+                return allCardInfoList_;
+            }
             TextAsset cardInfoAsset = Resources.Load<TextAsset>(@"Statistic\KumikoSecondYear");
             if (cardInfoAsset == null) {
                 KLog.E(TAG, "cardInfoAsset is null");
@@ -24,6 +27,8 @@ public class TestGenCards
 
         }
     }
+
+    private static CardGenerator cardGenerator = new CardGenerator(CardGenerator.serverSalt);
 
     public static List<CardModel> GetCardList(List<int> infoIdList)
     {
@@ -45,6 +50,6 @@ public class TestGenCards
             KLog.E(TAG, "infoId: " + infoId + " is invalid");
             return new CardInfo();
         };
-        return CardGenerator.Instance.GetCard(FindCardInfo(allCardInfoList, infoId));
+        return cardGenerator.GetCard(FindCardInfo(allCardInfoList, infoId));
     }
 }
