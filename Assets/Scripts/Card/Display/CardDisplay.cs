@@ -71,11 +71,11 @@ public class CardDisplay : MonoBehaviour,
         Init();
     }
 
-    public void SetFrameVisible(bool flag)
+    // 每次操作完，更新ui
+    public void UpdateUI()
     {
-        if (frame != null) {
-            frame.SetActive(flag);
-        }
+        UpdateDisplayPower();
+        SetFrameVisible(cardModel.selectType == CardSelectType.WithstandAttack);
     }
 
     private void Init()
@@ -192,6 +192,13 @@ public class CardDisplay : MonoBehaviour,
         }
     }
 
+    private void SetFrameVisible(bool flag)
+    {
+        if (frame != null) {
+            frame.SetActive(flag);
+        }
+    }
+
     // ========================= ui交互逻辑 ===========================
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -209,6 +216,15 @@ public class CardDisplay : MonoBehaviour,
     {
         KLog.I(TAG, "on click " + cardModel.cardInfo.chineseName);
         PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.ChooseCard, cardModel);
+    }
+
+    public void UpdatePosition(Vector3 position)
+    {
+        transform.localPosition = position;
+        if (isCardInfoShowing && HoverNeedUp()) {
+            // 手牌区、正在展示info时更新了ui，需要保留卡牌上移状态
+            transform.Translate(0, hoverUpDistance, 0);
+        }
     }
 
     // 判断悬停时是否需要卡牌上移

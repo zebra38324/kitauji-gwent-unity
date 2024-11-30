@@ -6,35 +6,24 @@ public class CardGeneratorTest
 {
     private static string TAG = "CardGeneratorTest";
 
-    private List<CardInfo> cardInfoList;
-
     private CardGenerator cardGenerator;
 
     [SetUp]
     public void SetUp()
     {
         KLog.I(TAG, "SetUp");
-        cardGenerator = new CardGenerator(CardGenerator.serverSalt);
-        int total = 10;
-        cardInfoList = new List<CardInfo>();
-        for (int i = 0; i < total; i++) {
-            cardInfoList.Add(new CardInfo());
-        }
-    }
-
-    public List<CardInfo> GetCardInfoList(int num)
-    {
-        return cardInfoList.GetRange(0, num);
+        cardGenerator = new CardGenerator();
     }
 
     // GetCard接口，id不会重复
     [Test]
     public void GetCard()
     {
-        CardInfo cardInfo = cardInfoList[0];
-        CardModel cardModel1 = cardGenerator.GetCard(cardInfo);
-        CardModel cardModel2 = cardGenerator.GetCard(cardInfo);
-
+        CardModel cardModel1 = cardGenerator.GetCard(2001);
+        CardModel cardModel2 = cardGenerator.GetCard(2002);
         Assert.AreNotEqual(cardModel1.cardInfo.id, cardModel2.cardInfo.id);
+
+        CardModel cardModel3 = cardGenerator.GetCard(2001, 12);
+        Assert.AreEqual(12, cardModel3.cardInfo.id);
     }
 }

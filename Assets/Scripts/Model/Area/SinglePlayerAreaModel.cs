@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 // 单方对战区逻辑
 public class SinglePlayerAreaModel
 {
     private static string TAG = "SinglePlayerAreaModel";
 
-    private static readonly int initHandCardNum = 10; // 初始手牌数量
+    public static readonly int initHandCardNum = 10; // 初始手牌数量
 
     public List<CardModel> backupCardList { get; private set; }
 
@@ -23,27 +22,7 @@ public class SinglePlayerAreaModel
 
     private CardGenerator cardGenerator;
 
-    private static List<CardInfo> allCardInfoList_;
-
-    private static List<CardInfo> allCardInfoList {
-        get {
-            if (allCardInfoList_ != null) {
-                return allCardInfoList_;
-            }
-            TextAsset cardInfoAsset = Resources.Load<TextAsset>(@"Statistic\KumikoSecondYear");
-            if (cardInfoAsset == null) {
-                KLog.E(TAG, "cardInfoAsset is null");
-                return allCardInfoList_;
-            }
-            allCardInfoList_ = StatisticJsonParse.GetCardInfo(cardInfoAsset.text);
-            return allCardInfoList_;
-        }
-        set {
-
-        }
-    }
-
-    public SinglePlayerAreaModel()
+    public SinglePlayerAreaModel(bool isHost = true)
     {
         backupCardList = new List<CardModel>();
         handRowAreaModel = new HandRowAreaModel();
@@ -51,28 +30,21 @@ public class SinglePlayerAreaModel
         woodRowAreaModel = new BattleRowAreaModel(CardBadgeType.Wood);
         brassRowAreaModel = new BattleRowAreaModel(CardBadgeType.Brass);
         percussionRowAreaModel = new BattleRowAreaModel(CardBadgeType.Percussion);
-        cardGenerator = new CardGenerator(CardGenerator.serverSalt); // TODO: 应有个统一管理处，设置是server还是client
+        cardGenerator = new CardGenerator(isHost); // TODO: 应有个统一管理处，设置是server还是client
     }
 
     // 初始时调用，设置所有备选卡牌信息
-    public void SetBackupCardInfoIdList(List<int> infoIdList)
+    // enemy设置时idList由对端决定，因此不为null
+    public void SetBackupCardInfoIdList(List<int> infoIdList, List<int> idList = null)
     {
-        Func<List<CardInfo>, int, CardInfo> FindCardInfo = (List<CardInfo> cardInfoList, int infoId) => {
-            foreach (CardInfo cardInfo in cardInfoList) {
-                if (cardInfo.infoId == infoId) {
-                    return cardInfo;
-                }
-            }
-            KLog.E(TAG, "infoId: " + infoId + " is invalid");
-            return new CardInfo();
-        };
-        foreach (int infoId in infoIdList) {
+        for (int i = 0; i < infoIdList.Count; i++) {
             // 所有备选卡牌生成CardModel并存储
-            backupCardList.Add(cardGenerator.GetCard(FindCardInfo(allCardInfoList, infoId)));
+            if (idList != null) {
+                backupCardList.Add(cardGenerator.GetCard(infoIdList[i], idList[i]));
+            } else {
+                backupCardList.Add(cardGenerator.GetCard(infoIdList[i]));
+            }
         }
-
-        // 抽取十张手牌
-        DrawHandCards(initHandCardNum);
     }
 
     public void DrawHandCards(int num)
@@ -87,6 +59,22 @@ public class SinglePlayerAreaModel
             CardModel newCard = backupCardList[ran.Next(0, backupCardList.Count)];
             newCardList.Add(newCard);
             backupCardList.Remove(newCard);
+        }
+        handRowAreaModel.AddCardList(newCardList);
+    }
+
+    // enemy设置时，随机抽取的操作在对端进行，因此直接指定idList
+    public void DrawHandCards(List<int> idList)
+    {
+        List<CardModel> newCardList = new List<CardModel>();
+        foreach (int id in idList) {
+            CardModel card = backupCardList.Find(o => { return o.cardInfo.id == id; });
+            if (card == null) {
+                KLog.E(TAG, "DrawHandCards: invalid id: " + id);
+                return;
+            }
+            newCardList.Add(card);
+            backupCardList.Remove(card);
         }
         handRowAreaModel.AddCardList(newCardList);
     }
@@ -176,6 +164,29 @@ public class SinglePlayerAreaModel
                 action(card);
             }
         }
+    }
+
+    // 从手牌区、弃牌区、对战区尝试找到id对应的卡牌
+    public CardModel FindCard(int id)
+    {
+        CardModel card = handRowAreaModel.FindCard(id);
+        if (card != null) {
+            return card;
+        }
+        card = woodRowAreaModel.FindCard(id);
+        if (card != null) {
+            return card;
+        }
+        card = brassRowAreaModel.FindCard(id);
+        if (card != null) {
+            return card;
+        }
+        card = percussionRowAreaModel.FindCard(id);
+        if (card != null) {
+            return card;
+        }
+        card = discardAreaModel.cardList.Find(o => { return o.cardInfo.id == id; });
+        return card;
     }
 
     // 应用Tunning技能

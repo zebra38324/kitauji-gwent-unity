@@ -14,6 +14,7 @@ public class SinglePlayerAreaModelTest
         HandRowAreaModel handRowAreaModel = singlePlayerAreaModel.handRowAreaModel;
 
         singlePlayerAreaModel.SetBackupCardInfoIdList(infoIdList);
+        singlePlayerAreaModel.DrawHandCards(SinglePlayerAreaModel.initHandCardNum);
         Assert.AreEqual(10, handRowAreaModel.cardList.Count);
         Assert.AreEqual(40, singlePlayerAreaModel.backupCardList.Count);
     }
@@ -27,7 +28,26 @@ public class SinglePlayerAreaModelTest
         HandRowAreaModel handRowAreaModel = singlePlayerAreaModel.handRowAreaModel;
 
         singlePlayerAreaModel.SetBackupCardInfoIdList(infoIdList);
+        singlePlayerAreaModel.DrawHandCards(SinglePlayerAreaModel.initHandCardNum);
         singlePlayerAreaModel.DrawHandCards(2);
+        Assert.AreEqual(12, handRowAreaModel.cardList.Count);
+        Assert.AreEqual(38, singlePlayerAreaModel.backupCardList.Count);
+    }
+
+    // 测试enemy添加手牌
+    [Test]
+    public void EnemyDrawHandCard()
+    {
+        SinglePlayerAreaModel singlePlayerAreaModel = new SinglePlayerAreaModel();
+        List<int> infoIdList = Enumerable.Range(2001, 50).ToList();
+        List<int> idList = Enumerable.Range(1, 50).ToList();
+        HandRowAreaModel handRowAreaModel = singlePlayerAreaModel.handRowAreaModel;
+
+        singlePlayerAreaModel.SetBackupCardInfoIdList(infoIdList, idList);
+        List<int> initHandCardIdList = Enumerable.Range(1, 10).ToList();
+        singlePlayerAreaModel.DrawHandCards(initHandCardIdList);
+        initHandCardIdList = Enumerable.Range(11, 2).ToList();
+        singlePlayerAreaModel.DrawHandCards(initHandCardIdList);
         Assert.AreEqual(12, handRowAreaModel.cardList.Count);
         Assert.AreEqual(38, singlePlayerAreaModel.backupCardList.Count);
     }
@@ -78,6 +98,7 @@ public class SinglePlayerAreaModelTest
         HandRowAreaModel handRowAreaModel = singlePlayerAreaModel.handRowAreaModel;
 
         singlePlayerAreaModel.SetBackupCardInfoIdList(musterInfoIdList);
+        singlePlayerAreaModel.DrawHandCards(SinglePlayerAreaModel.initHandCardNum);
         CardModel selectedCard = handRowAreaModel.cardList[0];
         handRowAreaModel.RemoveCard(selectedCard);
 

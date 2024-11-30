@@ -6,29 +6,7 @@ using System;
 
 public class TestGenCards
 {
-    private static string TAG = "TestGenCards";
-
-    private static List<CardInfo> allCardInfoList_;
-
-    private static List<CardInfo> allCardInfoList {
-        get {
-            if (allCardInfoList_ != null) {
-                return allCardInfoList_;
-            }
-            TextAsset cardInfoAsset = Resources.Load<TextAsset>(@"Statistic\KumikoSecondYear");
-            if (cardInfoAsset == null) {
-                KLog.E(TAG, "cardInfoAsset is null");
-                return allCardInfoList_;
-            }
-            allCardInfoList_ = StatisticJsonParse.GetCardInfo(cardInfoAsset.text);
-            return allCardInfoList_;
-        }
-        set {
-
-        }
-    }
-
-    private static CardGenerator cardGenerator = new CardGenerator(CardGenerator.serverSalt);
+    private static CardGenerator cardGenerator = new CardGenerator();
 
     public static List<CardModel> GetCardList(List<int> infoIdList)
     {
@@ -41,15 +19,11 @@ public class TestGenCards
 
     public static CardModel GetCard(int infoId)
     {
-        Func<List<CardInfo>, int, CardInfo> FindCardInfo = (List<CardInfo> cardInfoList, int infoId) => {
-            foreach (CardInfo cardInfo in cardInfoList) {
-                if (cardInfo.infoId == infoId) {
-                    return cardInfo;
-                }
-            }
-            KLog.E(TAG, "infoId: " + infoId + " is invalid");
-            return new CardInfo();
-        };
-        return cardGenerator.GetCard(FindCardInfo(allCardInfoList, infoId));
+        return cardGenerator.GetCard(infoId);
+    }
+
+    public static CardModel GetCard(int infoId, int id)
+    {
+        return cardGenerator.GetCard(infoId, id);
     }
 }

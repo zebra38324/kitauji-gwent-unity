@@ -4,222 +4,161 @@ using System.Collections.Generic;
 /**
  * 游戏对局场景的逻辑管理，单例
  * 流程：
- * 1. SetBackupCardInfoIdList，设置双方备选卡牌
- * 2. StartSet，开始一小局比赛
- * 3. ChooseCard，双方出牌
- * 4. Pass，跳过本局出牌。双方都pass后，结束本局。
- * 5. Stop，结束整场比赛。TODO
+ * 1. SetBackupCardInfoIdList，设置本方备选卡牌，生成CardModel并发送信息至BattleModel
+ * 2. EnemyMsgCallback，等待收到对方备选卡牌信息，并生成对应CardModel
+ * 3. DrawInitHandCard，抽取本方手牌，并发送信息至BattleModel
+ * 4. EnemyMsgCallback，收到对方手牌信息
+ * 5. StartSet，开始一小局比赛
+ * 6. ChooseCard，双方出牌
+ * 7. Pass，跳过本局出牌。双方都pass后，结束本局。
+ * 8. Stop，结束整场比赛。TODO
  */
 public class PlaySceneModel
 {
-    private static string TAG = "PlaySceneModel";
+    private string TAG = "PlaySceneModel";
 
-    public PlaySceneModel()
+    public PlaySceneModel(bool isHost = true)
     {
-        selfSinglePlayerAreaModel = new SinglePlayerAreaModel();
-        enemySinglePlayerAreaModel = new SinglePlayerAreaModel();
-        curState = State.WAIT_BACKUP_INFO;
-        actionState = ActionState.None;
+        TAG += isHost ? "-Host" : "-Player";
+        selfSinglePlayerAreaModel = new SinglePlayerAreaModel(isHost);
+        enemySinglePlayerAreaModel = new SinglePlayerAreaModel(isHost);
+        battleModel = new BattleModel(isHost);
+        battleModel.EnemyMsgCallback += EnemyMsgCallback;
+        tracker = new PlayStateTracker(isHost);
     }
 
     public SinglePlayerAreaModel selfSinglePlayerAreaModel { get; private set; }
 
     public SinglePlayerAreaModel enemySinglePlayerAreaModel { get; private set; }
 
-    /**
-     * 状态机
-     * WAIT_BACKUP_INFO -> WAIT_START
-     * WAIT_START -> WAIT_SELF_ACTION, WAIT_ENEMY_ACTION
-     * WAIT_SELF_ACTION -> WAIT_ENEMY_ACTION, SET_FINFISH
-     * WAIT_ENEMY_ACTION -> WAIT_SELF_ACTION, SET_FINFISH
-     * SET_FINFISH -> WAIT_SELF_ACTION, WAIT_ENEMY_ACTION, STOP
-     * STOP 不会再继续流转
-     */
-    private enum State
-    {
-        WAIT_BACKUP_INFO = 0, // 等待设置备选卡牌信息
-        WAIT_START, // 本场对局还未开始
-        WAIT_SELF_ACTION, // 等待本方操作
-        WAIT_ENEMY_ACTION, // 等待对方操作
-        SET_FINFISH, // 一小局比赛结束
-        STOP, // 全场结束
-    }
+    public BattleModel battleModel { get; private set; }
 
-    // actionState不为None时，不允许流转State
-    // 只能在None与非None之间互相流转
-    public enum ActionState
-    {
-        None = 0, // 无特殊状态
-        ATTACKING, // 正在使用攻击技能中
-        MEDICING, // 正在使用复活技能中
-    }
-
-    private State curState_;
-
-    private State curState {
-        get {
-            return curState_;
-        }
-        set {
-            if (curState_ == value) {
-                KLog.I(TAG, "setCurState: same: " + curState_);
-                return;
-            }
-            if (actionState != ActionState.None) {
-                KLog.E(TAG, "setCurState: cur = " + curState_ + ", actionState invalid = " + actionState);
-                return;
-            }
-            switch (curState_) {
-                case State.WAIT_BACKUP_INFO: {
-                    if (value != State.WAIT_START) {
-                        KLog.E(TAG, "setCurState: invalid, cur = " + curState_ + ", new = " + value);
-                        return;
-                    }
-                    break;
-                }
-                case State.WAIT_START: {
-                    if (value != State.WAIT_SELF_ACTION &&
-                        value != State.WAIT_ENEMY_ACTION) {
-                        KLog.E(TAG, "setCurState: invalid, cur = " + curState_ + ", new = " + value);
-                        return;
-                    }
-                    break;
-                }
-                case State.WAIT_SELF_ACTION: {
-                    if (value != State.WAIT_ENEMY_ACTION &&
-                        value != State.SET_FINFISH) {
-                        KLog.E(TAG, "setCurState: invalid, cur = " + curState_ + ", new = " + value);
-                        return;
-                    }
-                    if (value == State.WAIT_ENEMY_ACTION && enemyPassing) {
-                        if (selfPassing) {
-                            KLog.I(TAG, "setCurState: set finsih");
-                            value = State.SET_FINFISH;
-                            // TODO: 结算
-                        } else {
-                            KLog.I(TAG, "setCurState: enemy pass, also self turn");
-                            value = State.WAIT_SELF_ACTION;
-                        }
-                    }
-                    break;
-                }
-                case State.WAIT_ENEMY_ACTION: {
-                    if (value != State.WAIT_SELF_ACTION &&
-                        value != State.SET_FINFISH) {
-                        KLog.E(TAG, "setCurState: invalid, cur = " + curState_ + ", new = " + value);
-                        return;
-                    }
-                    if (value == State.WAIT_SELF_ACTION && selfPassing) {
-                        if (enemyPassing) {
-                            KLog.I(TAG, "setCurState: set finsih");
-                            value = State.SET_FINFISH;
-                            // TODO: 结算
-                        } else {
-                            KLog.I(TAG, "setCurState: self pass, also enemy turn");
-                            value = State.WAIT_ENEMY_ACTION;
-                        }
-                    }
-                    break;
-                }
-                case State.SET_FINFISH: {
-                    if (value != State.WAIT_SELF_ACTION &&
-                        value != State.WAIT_ENEMY_ACTION &&
-                        value != State.STOP) {
-                        KLog.E(TAG, "setCurState: invalid, cur = " + curState_ + ", new = " + value);
-                        return;
-                    }
-                    break;
-                }
-                case State.STOP: {
-                    KLog.E(TAG, "setCurState: invalid, cur = " + curState_ + ", new = " + value);
-                    return;
-                }
-                default: {
-                    KLog.E(TAG, "setCurState: invalid, cur = " + curState_ + ", new = " + value);
-                    return;
-                }
-            }
-            KLog.I(TAG, "setCurState: cur = " + curState_ + ", new = " + value);
-            curState_ = value;
-            if (curState_ == State.WAIT_START ||
-                curState_ == State.SET_FINFISH ||
-                curState_ == State.STOP) {
-                selfPassing = false;
-                enemyPassing = false;
-            }
-        }
-    }
-
-    private ActionState actionState_;
-
-    public ActionState actionState {
-        get {
-            return actionState_;
-        }
-        private set {
-            switch (actionState_) {
-                case ActionState.None: {
-                    break;
-                }
-                case ActionState.ATTACKING: {
-                    if (value != ActionState.None) {
-                        KLog.E(TAG, "setActionState: invalid, cur = " + actionState_ + ", new = " + value);
-                        return;
-                    }
-                    break;
-                }
-                case ActionState.MEDICING: {
-                    if (value != ActionState.None) {
-                        KLog.E(TAG, "setActionState: invalid, cur = " + actionState_ + ", new = " + value);
-                        return;
-                    }
-                    break;
-                }
-                default: {
-                    KLog.E(TAG, "setActionState: invalid, cur = " + actionState_ + ", new = " + value);
-                    break;
-                }
-            }
-            if (actionState_ != value) {
-                KLog.I(TAG, "setActionState: cur = " + actionState_ + ", new = " + value);
-            }
-            actionState_ = value;
-        }
-    }
+    // 对方操作是否发生了更新，用于指示是否需要更新ui
+    public bool hasEnemyUpdate = false;
 
     private CardModel attackCard = null; // ActionState.ATTACKING时，记录发动攻击的牌
 
-    private bool selfPassing; // 本方本局已pass
+    public PlayStateTracker tracker { get; private set; }
 
-    private bool enemyPassing; // 对方本局已pass
-
-    // 设置双方所有可用卡牌
-    public void SetBackupCardInfoIdList(List<int> selfInfoIdList, List<int> enemyInfoIdList)
+    public void EnemyMsgCallback(BattleModel.ActionType actionType, params object[] list)
     {
+        switch (actionType) {
+            case BattleModel.ActionType.Init: {
+                List<int> infoIdList = (List<int>)list[0];
+                List<int> idList = (List<int>)list[1];
+                enemySinglePlayerAreaModel.SetBackupCardInfoIdList(infoIdList, idList);
+                lock (this) {
+                    if (selfSinglePlayerAreaModel.backupCardList.Count > 0) {
+                        tracker.TransState(PlayStateTracker.State.WAIT_INIT_HAND_CARD); // 多线程问题加锁
+                    }
+                }
+                break;
+            }
+            case BattleModel.ActionType.DrawHandCard: {
+                List<int> idList = (List<int>)list[0];
+                enemySinglePlayerAreaModel.DrawHandCards(idList);
+                lock (this) {
+                    if (selfSinglePlayerAreaModel.handRowAreaModel.cardList.Count > 0) {
+                        tracker.TransState(PlayStateTracker.State.WAIT_START); // 多线程问题加锁
+                    }
+                }
+                break;
+            }
+            case BattleModel.ActionType.ChooseCard: {
+                List<int> idList = (List<int>)list[0];
+                int id = idList[0];
+                CardModel card = selfSinglePlayerAreaModel.FindCard(id);
+                if (card == null) {
+                    card = enemySinglePlayerAreaModel.FindCard(id);
+                    if (card == null) {
+                        KLog.E(TAG, "EnemyMsgCallback: ChooseCard: invalid id: " + id);
+                        return;
+                    }
+                }
+                ChooseCard(card, false);
+                break;
+            }
+            case BattleModel.ActionType.Pass: {
+                Pass(false);
+                break;
+            }
+            case BattleModel.ActionType.InterruptAction: {
+                InterruptAction(false);
+                break;
+            }
+        }
+        hasEnemyUpdate = true;
+    }
+
+    // 设置本方备选卡牌
+    public void SetBackupCardInfoIdList(List<int> selfInfoIdList)
+    {
+        if (tracker.curState != PlayStateTracker.State.WAIT_BACKUP_INFO) {
+            KLog.E(TAG, "SetBackupCardInfoIdList: state invalid: " + tracker.curState);
+            return;
+        }
         selfSinglePlayerAreaModel.SetBackupCardInfoIdList(selfInfoIdList);
-        enemySinglePlayerAreaModel.SetBackupCardInfoIdList(enemyInfoIdList);
-        curState = State.WAIT_START;
+        // 发送self备选卡牌信息
+        Action SendSelfBackupCardInfo = () => {
+            List<int> infoIdList = new List<int>();
+            List<int> idList = new List<int>();
+            foreach (CardModel card in selfSinglePlayerAreaModel.backupCardList) {
+                infoIdList.Add(card.cardInfo.infoId);
+                idList.Add(card.cardInfo.id);
+            }
+            battleModel.AddSelfActionMsg(BattleModel.ActionType.Init, infoIdList, idList);
+            return;
+        };
+        SendSelfBackupCardInfo();
+        lock (this) {
+            if (enemySinglePlayerAreaModel.backupCardList.Count > 0) {
+                tracker.TransState(PlayStateTracker.State.WAIT_INIT_HAND_CARD); // 多线程问题加锁
+            }
+        }
+    }
+
+    public void DrawInitHandCard()
+    {
+        if (tracker.curState != PlayStateTracker.State.WAIT_INIT_HAND_CARD) {
+            KLog.E(TAG, "DrawInitHandCard: state invalid: " + tracker.curState);
+            return;
+        }
+        // self抽取十张初始手牌
+        selfSinglePlayerAreaModel.DrawHandCards(SinglePlayerAreaModel.initHandCardNum);
+        // 发送self初始手牌信息
+        Action SendSelfInitHandCardInfo = () => {
+            List<int> idList = new List<int>();
+            foreach (CardModel card in selfSinglePlayerAreaModel.handRowAreaModel.cardList) {
+                idList.Add(card.cardInfo.id);
+            }
+            battleModel.AddSelfActionMsg(BattleModel.ActionType.DrawHandCard, idList);
+            return;
+        };
+        SendSelfInitHandCardInfo();
+        lock (this) {
+            if (enemySinglePlayerAreaModel.handRowAreaModel.cardList.Count > 0) {
+                tracker.TransState(PlayStateTracker.State.WAIT_START); // 多线程问题加锁
+            }
+        }
     }
 
     // 开始一小局比赛。isSelf：哪方先出牌
     public void StartSet(bool isSelf)
     {
-        curState = isSelf ? State.WAIT_SELF_ACTION : State.WAIT_ENEMY_ACTION;
+        if (isSelf) {
+            tracker.TransState(PlayStateTracker.State.WAIT_SELF_ACTION);
+        } else {
+            tracker.TransState(PlayStateTracker.State.WAIT_ENEMY_ACTION);
+        }
     }
 
     // 跳过本局出牌
-    public void Pass(bool isSelf)
+    public void Pass(bool isSelf = true)
     {
-        if (isSelf && curState == State.WAIT_SELF_ACTION) {
-            KLog.I(TAG, "Pass: isSelf: " + isSelf);
-            selfPassing = true;
-            curState = State.WAIT_ENEMY_ACTION;
-        } else if (curState == State.WAIT_ENEMY_ACTION) {
-            KLog.I(TAG, "Pass: isSelf: " + isSelf);
-            enemyPassing = true;
-            curState = State.WAIT_SELF_ACTION;
-        } else {
-            KLog.E(TAG, "Pass: state invalid: " + curState + ", isSelf = " + isSelf);
+        tracker.Pass(isSelf);
+        if (isSelf) {
+            // 发送本方pass动作
+            battleModel.AddSelfActionMsg(BattleModel.ActionType.Pass);
         }
     }
 
@@ -227,51 +166,92 @@ public class PlaySceneModel
     public bool IsTurn(bool isSelf)
     {
         if (isSelf) {
-            return curState == State.WAIT_SELF_ACTION;
+            return tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION;
         } else {
-            return curState == State.WAIT_ENEMY_ACTION;
+            return tracker.curState == PlayStateTracker.State.WAIT_ENEMY_ACTION;
         }
     }
 
     // 选择卡牌，用户ui操作的处理接口
     // 双方都会调用这个接口
-    public void ChooseCard(CardModel card, bool isSelf)
+    public void ChooseCard(CardModel card, bool isSelf = true)
     {
-        if (!(isSelf && curState == State.WAIT_SELF_ACTION) &&
-            !(!isSelf && curState == State.WAIT_ENEMY_ACTION)) {
-            KLog.E(TAG, "ChooseCard: state invalid: " + curState + ", isSelf = " + isSelf);
+        if (!(isSelf && tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION) &&
+            !(!isSelf && tracker.curState == PlayStateTracker.State.WAIT_ENEMY_ACTION)) {
+            KLog.E(TAG, "ChooseCard: state invalid: " + tracker.curState + ", isSelf = " + isSelf);
         }
         // 从选择卡牌方的视角来看
         SinglePlayerAreaModel selfArea = isSelf ? selfSinglePlayerAreaModel : enemySinglePlayerAreaModel;
         SinglePlayerAreaModel enemyArea = isSelf ? enemySinglePlayerAreaModel : selfSinglePlayerAreaModel;
+        KLog.I(TAG, "ChooseCard: " + card.cardInfo.chineseName + ", isSelf = " + isSelf);
         switch (card.selectType) {
             case CardSelectType.None: {
                 KLog.I(TAG, "ChooseCard: selectType = None, can not choose");
                 return;
             }
             case CardSelectType.PlayCard: {
-                if (actionState == ActionState.MEDICING) {
+                if (tracker.actionState == PlayStateTracker.ActionState.ATTACKING) {
+                    KLog.I(TAG, "ChooseCard: actionState = ATTACKING, can not play card");
+                    return;
+                }
+                if (tracker.actionState == PlayStateTracker.ActionState.MEDICING) {
+                    if (card.cardLocation != CardLocation.DiscardArea) {
+                        // 此时不许打出非弃牌区的牌
+                        KLog.I(TAG, "ChooseCard: actionState = MEDICING, card location invalid = " + card.cardLocation);
+                        return;
+                    }
                     FinishMedic(selfArea);
                 }
-                actionState = ActionState.None; // medic技能可能递归打牌，先置空再进行后续
+                tracker.TransActionState(PlayStateTracker.ActionState.None); // medic技能可能递归打牌，先置空再进行后续
                 PlayCard(card, selfArea, enemyArea);
                 break;
             }
             case CardSelectType.WithstandAttack: {
                 ApplyBeAttacked(card, enemyArea);
                 FinishAttack(enemyArea);
-                actionState = ActionState.None; // 攻击技能，先完成再置空
+                tracker.TransActionState(PlayStateTracker.ActionState.None); // 攻击技能，先完成再置空
                 break;
             }
         }
-        // TODO: 刷新点数
+        if (isSelf) {
+            // 发送本方选择牌动作
+            battleModel.AddSelfActionMsg(BattleModel.ActionType.ChooseCard, card.cardInfo.id);
+        }
         // 流转双方出牌回合
-        if (actionState == ActionState.None) {
+        if (tracker.actionState == PlayStateTracker.ActionState.None) {
             if (isSelf) {
-                curState = State.WAIT_ENEMY_ACTION;
+                tracker.TransState(PlayStateTracker.State.WAIT_ENEMY_ACTION);
             } else {
-                curState = State.WAIT_SELF_ACTION;
+                tracker.TransState(PlayStateTracker.State.WAIT_SELF_ACTION);
             }
+        }
+    }
+
+    // actionState不为None时，一些特殊情况，中止技能流程并流转curState
+    public void InterruptAction(bool isSelf = true)
+    {
+        if (!(isSelf && tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION) &&
+            !(!isSelf && tracker.curState == PlayStateTracker.State.WAIT_ENEMY_ACTION)) {
+            KLog.E(TAG, "InterruptAction: state invalid: " + tracker.curState + ", isSelf = " + isSelf);
+        }
+        if (tracker.actionState == PlayStateTracker.ActionState.None) {
+            KLog.E(TAG, "InterruptAction: actionState = None, invalid, isSelf = " + isSelf);
+            return;
+        }
+        SinglePlayerAreaModel selfArea = isSelf ? selfSinglePlayerAreaModel : enemySinglePlayerAreaModel;
+        SinglePlayerAreaModel enemyArea = isSelf ? enemySinglePlayerAreaModel : selfSinglePlayerAreaModel;
+        KLog.I(TAG, "InterruptAction: actionState = " + tracker.actionState + ", isSelf = " + isSelf);
+        if (tracker.actionState == PlayStateTracker.ActionState.ATTACKING) {
+            FinishAttack(enemyArea);
+        } else if (tracker.actionState == PlayStateTracker.ActionState.MEDICING) {
+            FinishMedic(selfArea);
+        }
+        tracker.TransActionState(PlayStateTracker.ActionState.None);
+        if (isSelf) {
+            battleModel.AddSelfActionMsg(BattleModel.ActionType.InterruptAction);
+            tracker.TransState(PlayStateTracker.State.WAIT_ENEMY_ACTION);
+        } else {
+            tracker.TransState(PlayStateTracker.State.WAIT_SELF_ACTION);
         }
     }
 
@@ -350,7 +330,7 @@ public class PlaySceneModel
             targetCard.selectType = CardSelectType.WithstandAttack;
         });
         attackCard = card;
-        actionState = ActionState.ATTACKING;
+        tracker.TransActionState(PlayStateTracker.ActionState.ATTACKING);
     }
 
     // 为被攻击的牌添加debuff
@@ -413,7 +393,7 @@ public class PlaySceneModel
             card.selectType = CardSelectType.PlayCard;
         }
         selfArea.discardAreaModel.SetRow(true);
-        actionState = ActionState.MEDICING;
+        tracker.TransActionState(PlayStateTracker.ActionState.MEDICING);
     }
 
     // 结束复活技能的流程

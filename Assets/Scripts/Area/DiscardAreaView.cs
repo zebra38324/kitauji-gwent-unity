@@ -18,11 +18,11 @@ public class DiscardAreaView : MonoBehaviour, IPointerEnterHandler, IPointerExit
     private bool isPointerInside = false;
 
     private DiscardAreaModel model_;
-    private DiscardAreaModel model {
+    public DiscardAreaModel model {
         get {
             return model_;
         }
-        set {
+        private set {
             model_ = value;
             if (model_ == null) {
                 return;
@@ -53,6 +53,7 @@ public class DiscardAreaView : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public void ShowArea(DiscardAreaModel discardAreaModel, bool isMedic)
     {
         model = discardAreaModel;
+        model.SetRow(isMedic);
         row0.GetComponent<RowAreaView>().UpdateUI();
         row1.GetComponent<RowAreaView>().UpdateUI();
         row2.GetComponent<RowAreaView>().UpdateUI();
@@ -64,6 +65,13 @@ public class DiscardAreaView : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void HideArea()
     {
+        // 先把ui移除
+        foreach (CardModel cardModel in model.cardList) {
+            GameObject card = CardViewCollection.Instance.Get(cardModel);
+            card.transform.SetParent(null);
+        }
+        // 再清除model
+        model.ClearRow();
         row0.GetComponent<RowAreaView>().UpdateUI();
         row1.GetComponent<RowAreaView>().UpdateUI();
         row2.GetComponent<RowAreaView>().UpdateUI();

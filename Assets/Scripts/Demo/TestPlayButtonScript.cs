@@ -20,6 +20,5 @@ public class TestPlayButtonScript : MonoBehaviour
     public void SwtichToPlayScene()
     {
         SceneManager.LoadScene("PlayScene");
-        PlaySceneManager.Instance.Reset();
     }
 }

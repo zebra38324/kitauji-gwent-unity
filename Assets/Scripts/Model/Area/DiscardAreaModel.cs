@@ -15,7 +15,7 @@ public class DiscardAreaModel
 
     public List<CardModel> normalCardList { get; private set; } // 非英雄的角色牌
 
-    private List<CardModel> cardList { get; set; } // 所有的角色牌
+    public List<CardModel> cardList { get; private set; } // 所有的角色牌
 
     public DiscardAreaModel()
     {

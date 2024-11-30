@@ -71,7 +71,7 @@ public class BattleModelTest
 
         // 消息原路返回，测试序列化、反序列化是否正常
         Assert.AreNotEqual(null, testActionMsgStr);
-        battleModel.AddEnemyctionMsg(testActionMsgStr);
+        battleModel.AddEnemyActionMsg(testActionMsgStr);
         Thread.Sleep(30); // 等待异步执行完成
         Assert.AreEqual(2, testInfoIdList.Count);
         Assert.AreEqual(infoIdList[0], testInfoIdList[0]);

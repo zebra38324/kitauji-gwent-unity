@@ -9,9 +9,9 @@ public class SinglePlayerAreaView : MonoBehaviour
     public GameObject woodRow;
     public GameObject brassRow;
     public GameObject percussionRow;
-    public GameObject scoreNum;
     public GameObject handCardRow; // self时不为空，enemy为空
     public GameObject offFieldCardsArea;
+    public GameObject playStat;
 
     private SinglePlayerAreaModel model_;
     public SinglePlayerAreaModel model {
@@ -46,6 +46,16 @@ public class SinglePlayerAreaView : MonoBehaviour
         woodRow.GetComponent<BattleRowAreaView>().UpdateUI();
         brassRow.GetComponent<BattleRowAreaView>().UpdateUI();
         percussionRow.GetComponent<BattleRowAreaView>().UpdateUI();
-        scoreNum.GetComponent<TextMeshProUGUI>().text = model.GetCurrentPower().ToString();
+        playStat.GetComponent<PlayStatAreaView>().UpdateUI();
+
+        // 移除卡牌
+        foreach (CardModel cardModel in model.discardAreaModel.cardList) {
+            GameObject card = CardViewCollection.Instance.Get(cardModel);
+            if (card.transform.parent == woodRow.GetComponent<BattleRowAreaView>().normalAreaView.transform ||
+                card.transform.parent == brassRow.GetComponent<BattleRowAreaView>().normalAreaView.transform ||
+                card.transform.parent == percussionRow.GetComponent<BattleRowAreaView>().normalAreaView.transform) {
+                card.transform.SetParent(null);
+            }
+        }
     }
 }

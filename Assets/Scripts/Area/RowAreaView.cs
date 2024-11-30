@@ -40,6 +40,7 @@ public class RowAreaView : MonoBehaviour
             GameObject card = CardViewCollection.Instance.Get(cardModel);
             card.transform.SetParent(gameObject.transform);
             SetCardSize(card);
+            card.GetComponent<CardDisplay>().UpdateUI();
         }
         ReArrange();
     }
@@ -58,7 +59,6 @@ public class RowAreaView : MonoBehaviour
         float realCardHeight = areaHeight - gap;
         float scale = realCardHeight / originCardHeight;
         card.transform.localScale = Vector3.one * scale;
-        card.transform.localPosition = new Vector3(0, 0, 0);
     }
 
     // 添加或移出卡片时，重新排布位置
@@ -83,7 +83,7 @@ public class RowAreaView : MonoBehaviour
         // 重新排布位置
         foreach (CardModel cardModel in rowAreaModel.cardList) {
             GameObject card = CardViewCollection.Instance.Get(cardModel);
-            card.transform.localPosition = new Vector3(currentPosition, 0, 0);
+            card.GetComponent<CardDisplay>().UpdatePosition(new Vector3(currentPosition, 0, 0));
             currentPosition += step;
         }
     }
