@@ -75,7 +75,8 @@ public class CardDisplay : MonoBehaviour,
     public void UpdateUI()
     {
         UpdateDisplayPower();
-        SetFrameVisible(cardModel.selectType == CardSelectType.WithstandAttack);
+        bool frameVisible = cardModel.selectType == CardSelectType.WithstandAttack || (cardModel.cardLocation == CardLocation.InitHandArea && cardModel.isSelected);
+        SetFrameVisible(frameVisible);
     }
 
     private void Init()

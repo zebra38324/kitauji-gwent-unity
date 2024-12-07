@@ -6,19 +6,21 @@ using System.Collections.Generic;
  * 流程：
  * 1. SetBackupCardInfoIdList，设置本方备选卡牌，生成CardModel并发送信息至BattleModel
  * 2. EnemyMsgCallback，等待收到对方备选卡牌信息，并生成对应CardModel
- * 3. DrawInitHandCard，抽取本方手牌，并发送信息至BattleModel
- * 4. EnemyMsgCallback，收到对方手牌信息
- * 5. StartSet，开始一小局比赛
- * 6. ChooseCard，双方出牌
- * 7. Pass，跳过本局出牌。双方都pass后，结束本局。
- * 8. Stop，结束整场比赛。TODO
+ * 3. DrawInitHandCard，抽取本方手牌，等待用户选择重抽的牌
+ * 4. ReDrawInitHandCard，确定初始手牌，并发送信息至BattleModel
+ * 5. EnemyMsgCallback，收到对方手牌信息
+ * 6. StartGame，开始整场比赛（不需要外部调用，内部自动流转）
+ * 7. ChooseCard，双方出牌
+ * 8. Pass，跳过本局出牌。双方都pass后，结束本局。
+ * 9. Stop，结束整场比赛。TODO
  */
 public class PlaySceneModel
 {
     private string TAG = "PlaySceneModel";
 
-    public PlaySceneModel(bool isHost = true)
+    public PlaySceneModel(bool isHost_ = true)
     {
+        isHost = isHost_;
         TAG += isHost ? "-Host" : "-Player";
         selfSinglePlayerAreaModel = new SinglePlayerAreaModel(isHost);
         enemySinglePlayerAreaModel = new SinglePlayerAreaModel(isHost);
@@ -28,6 +30,9 @@ public class PlaySceneModel
     }
 
     public SinglePlayerAreaModel selfSinglePlayerAreaModel { get; private set; }
+
+    // 待确定的初始手牌区
+    public RowAreaModel selfPrepareHandCardAreaModel { get; private set; }
 
     public SinglePlayerAreaModel enemySinglePlayerAreaModel { get; private set; }
 
@@ -39,6 +44,8 @@ public class PlaySceneModel
     private CardModel attackCard = null; // ActionState.ATTACKING时，记录发动攻击的牌
 
     public PlayStateTracker tracker { get; private set; }
+
+    private bool isHost;
 
     public void EnemyMsgCallback(BattleModel.ActionType actionType, params object[] list)
     {
@@ -57,11 +64,16 @@ public class PlaySceneModel
             case BattleModel.ActionType.DrawHandCard: {
                 List<int> idList = (List<int>)list[0];
                 enemySinglePlayerAreaModel.DrawHandCards(idList);
-                lock (this) {
+                lock (this) { // 多线程问题加锁
                     if (selfSinglePlayerAreaModel.handRowAreaModel.cardList.Count > 0) {
-                        tracker.TransState(PlayStateTracker.State.WAIT_START); // 多线程问题加锁
+                        WillWaitStartGame();
                     }
                 }
+                break;
+            }
+            case BattleModel.ActionType.StartGame: {
+                bool hostFirst = (bool)list[0];
+                tracker.StartGamePlayer(hostFirst);
                 break;
             }
             case BattleModel.ActionType.ChooseCard: {
@@ -124,7 +136,18 @@ public class PlaySceneModel
             return;
         }
         // self抽取十张初始手牌
-        selfSinglePlayerAreaModel.DrawHandCards(SinglePlayerAreaModel.initHandCardNum);
+        selfSinglePlayerAreaModel.DrawInitHandCard();
+        // 等待玩家确定需要重新抽取的手牌
+        tracker.TransState(PlayStateTracker.State.DOING_INIT_HAND_CARD);
+    }
+
+    public void ReDrawInitHandCard()
+    {
+        if (tracker.curState != PlayStateTracker.State.DOING_INIT_HAND_CARD) {
+            KLog.E(TAG, "DrawInitHandCard: state invalid: " + tracker.curState);
+            return;
+        }
+        selfSinglePlayerAreaModel.ReDrawInitHandCard();
         // 发送self初始手牌信息
         Action SendSelfInitHandCardInfo = () => {
             List<int> idList = new List<int>();
@@ -135,20 +158,10 @@ public class PlaySceneModel
             return;
         };
         SendSelfInitHandCardInfo();
-        lock (this) {
+        lock (this) { // 多线程问题加锁
             if (enemySinglePlayerAreaModel.handRowAreaModel.cardList.Count > 0) {
-                tracker.TransState(PlayStateTracker.State.WAIT_START); // 多线程问题加锁
+                WillWaitStartGame();
             }
-        }
-    }
-
-    // 开始一小局比赛。isSelf：哪方先出牌
-    public void StartSet(bool isSelf)
-    {
-        if (isSelf) {
-            tracker.TransState(PlayStateTracker.State.WAIT_SELF_ACTION);
-        } else {
-            tracker.TransState(PlayStateTracker.State.WAIT_ENEMY_ACTION);
         }
     }
 
@@ -172,12 +185,21 @@ public class PlaySceneModel
         }
     }
 
+    // 是否允许选择卡牌
+    public bool EnableChooseCard(bool isSelf = true)
+    {
+        if (isSelf) {
+            return tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION || tracker.curState == PlayStateTracker.State.DOING_INIT_HAND_CARD;
+        } else {
+            return tracker.curState == PlayStateTracker.State.WAIT_ENEMY_ACTION;
+        }
+    }
+
     // 选择卡牌，用户ui操作的处理接口
     // 双方都会调用这个接口
     public void ChooseCard(CardModel card, bool isSelf = true)
     {
-        if (!(isSelf && tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION) &&
-            !(!isSelf && tracker.curState == PlayStateTracker.State.WAIT_ENEMY_ACTION)) {
+        if (!EnableChooseCard(isSelf)) {
             KLog.E(TAG, "ChooseCard: state invalid: " + tracker.curState + ", isSelf = " + isSelf);
         }
         // 从选择卡牌方的视角来看
@@ -188,6 +210,11 @@ public class PlaySceneModel
             case CardSelectType.None: {
                 KLog.I(TAG, "ChooseCard: selectType = None, can not choose");
                 return;
+            }
+            case CardSelectType.ReDrawHandCard: {
+                // 记录要选择的重抽手牌
+                selfSinglePlayerAreaModel.initHandRowAreaModel.SelectCard(card);
+                break;
             }
             case CardSelectType.PlayCard: {
                 if (tracker.actionState == PlayStateTracker.ActionState.ATTACKING) {
@@ -213,15 +240,15 @@ public class PlaySceneModel
                 break;
             }
         }
-        if (isSelf) {
+        if (isSelf && tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION) {
             // 发送本方选择牌动作
             battleModel.AddSelfActionMsg(BattleModel.ActionType.ChooseCard, card.cardInfo.id);
         }
         // 流转双方出牌回合
         if (tracker.actionState == PlayStateTracker.ActionState.None) {
-            if (isSelf) {
+            if (isSelf && tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION) {
                 tracker.TransState(PlayStateTracker.State.WAIT_ENEMY_ACTION);
-            } else {
+            } else if (tracker.curState == PlayStateTracker.State.WAIT_ENEMY_ACTION) {
                 tracker.TransState(PlayStateTracker.State.WAIT_SELF_ACTION);
             }
         }
@@ -252,6 +279,15 @@ public class PlaySceneModel
             tracker.TransState(PlayStateTracker.State.WAIT_ENEMY_ACTION);
         } else {
             tracker.TransState(PlayStateTracker.State.WAIT_SELF_ACTION);
+        }
+    }
+
+    private void WillWaitStartGame()
+    {
+        tracker.TransState(PlayStateTracker.State.WAIT_START);
+        if (isHost) {
+            tracker.StartGameHost();
+            battleModel.AddSelfActionMsg(BattleModel.ActionType.StartGame, tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION);
         }
     }
 

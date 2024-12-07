@@ -24,6 +24,8 @@ public class CardModel
             cardLocation_ = value;
             if (cardLocation_ == CardLocation.HandArea) {
                 selectType = CardSelectType.PlayCard;
+            } else if (cardLocation_ == CardLocation.InitHandArea) {
+                selectType = CardSelectType.ReDrawHandCard;
             } else {
                 selectType = CardSelectType.None;
             }
@@ -39,6 +41,7 @@ public class CardModel
             selectType_ = value;
         }
     }
+    public bool isSelected = false; // 初始化选择重抽手牌时使用
 
     public CardModel(CardInfo info)
     {

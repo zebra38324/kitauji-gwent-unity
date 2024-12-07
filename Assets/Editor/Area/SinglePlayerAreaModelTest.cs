@@ -5,17 +5,39 @@ using System.Collections.Generic;
 
 public class SinglePlayerAreaModelTest
 {
-    // 测试初始手牌
+    // 测试self初始手牌
     [Test]
-    public void InitHandCard()
+    public void InitHandCardSelf()
     {
         SinglePlayerAreaModel singlePlayerAreaModel = new SinglePlayerAreaModel();
         List<int> infoIdList = Enumerable.Range(2001, 50).ToList();
-        HandRowAreaModel handRowAreaModel = singlePlayerAreaModel.handRowAreaModel;
 
         singlePlayerAreaModel.SetBackupCardInfoIdList(infoIdList);
-        singlePlayerAreaModel.DrawHandCards(SinglePlayerAreaModel.initHandCardNum);
-        Assert.AreEqual(10, handRowAreaModel.cardList.Count);
+        singlePlayerAreaModel.DrawInitHandCard();
+        CardModel selectedCard = singlePlayerAreaModel.initHandRowAreaModel.cardList[0];
+        Assert.AreEqual(10, singlePlayerAreaModel.initHandRowAreaModel.cardList.Count);
+        Assert.AreEqual(40, singlePlayerAreaModel.backupCardList.Count);
+
+        singlePlayerAreaModel.initHandRowAreaModel.SelectCard(selectedCard);
+        singlePlayerAreaModel.ReDrawInitHandCard();
+        Assert.AreEqual(0, singlePlayerAreaModel.initHandRowAreaModel.cardList.Count);
+        Assert.AreEqual(10, singlePlayerAreaModel.handRowAreaModel.cardList.Count);
+        Assert.AreEqual(40, singlePlayerAreaModel.backupCardList.Count);
+    }
+
+    // 测试enemy初始手牌
+    [Test]
+    public void InitHandCardEnemy()
+    {
+        SinglePlayerAreaModel singlePlayerAreaModel = new SinglePlayerAreaModel();
+        List<int> infoIdList = Enumerable.Range(2001, 50).ToList();
+        List<int> idList = Enumerable.Range(1, 50).ToList();
+        List<int> handCardIdList = Enumerable.Range(1, 10).ToList();
+
+        singlePlayerAreaModel.SetBackupCardInfoIdList(infoIdList, idList);
+        singlePlayerAreaModel.DrawHandCards(handCardIdList);
+        Assert.AreEqual(0, singlePlayerAreaModel.initHandRowAreaModel.cardList.Count);
+        Assert.AreEqual(10, singlePlayerAreaModel.handRowAreaModel.cardList.Count);
         Assert.AreEqual(40, singlePlayerAreaModel.backupCardList.Count);
     }
 

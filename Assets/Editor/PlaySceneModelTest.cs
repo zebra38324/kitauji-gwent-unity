@@ -29,6 +29,7 @@ public class PlaySceneModelTest
     public void Teardown()
     {
         KLog.I(TAG, "Teardown");
+        ResetHostFirstRandom();
     }
 
     // 检测curState，不满足时等待一段时间
@@ -45,12 +46,31 @@ public class PlaySceneModelTest
         Assert.AreEqual(expectedState, model.tracker.curState);
     }
 
+    private void ResetHostFirstRandom()
+    {
+        PlayStateTracker.HOST_FIRST_RANDOM_MAX = 100;
+        PlayStateTracker.HOST_FIRST_RANDOM_MIN = 0;
+    }
+
+    // 设置是否host先手
+    private void SetIsHostFirst(bool isHostFirst)
+    {
+        ResetHostFirstRandom();
+        if (isHostFirst) {
+            PlayStateTracker.HOST_FIRST_RANDOM_MIN = PlayStateTracker.HOST_FIRST_RANDOM_THRESHOLD;
+        } else {
+            PlayStateTracker.HOST_FIRST_RANDOM_MAX = PlayStateTracker.HOST_FIRST_RANDOM_THRESHOLD;
+        }
+    }
+
     // 测试双方打出普通牌的一局流程
     [Test]
     public void Normal()
     {
         Assert.AreEqual(false, hostModel.hasEnemyUpdate);
         Assert.AreEqual(false, playerModel.hasEnemyUpdate);
+        // host先手
+        SetIsHostFirst(true);
         Thread hostThread = new Thread(() => {
             HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
             HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
@@ -62,9 +82,10 @@ public class PlaySceneModelTest
             Assert.AreEqual(true, hostModel.hasEnemyUpdate);
             // draw card
             hostModel.DrawInitHandCard();
-            CheckCurState(hostModel, PlayStateTracker.State.WAIT_START);
+            hostModel.ChooseCard(hostModel.selfSinglePlayerAreaModel.initHandRowAreaModel.cardList[0]);
+            hostModel.ReDrawInitHandCard();
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // 开始对局
-            hostModel.StartSet(true);
             long currentTs = KTime.CurrentMill();
             Assert.Greater(hostModel.tracker.stateChangeTs, currentTs - 50);
             Assert.Less(hostModel.tracker.stateChangeTs, currentTs + 50);
@@ -98,9 +119,8 @@ public class PlaySceneModelTest
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             Assert.AreEqual(true, playerModel.hasEnemyUpdate);
             playerModel.DrawInitHandCard();
-            CheckCurState(playerModel, PlayStateTracker.State.WAIT_START);
+            playerModel.ReDrawInitHandCard();
             // 开始对局
-            playerModel.StartSet(false);
             // 等待host出牌
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             long currentTs = KTime.CurrentMill();
@@ -137,6 +157,8 @@ public class PlaySceneModelTest
     [Test]
     public void Spy()
     {
+        // host先手
+        SetIsHostFirst(true);
         Thread hostThread = new Thread(() => {
             HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
             HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
@@ -147,9 +169,9 @@ public class PlaySceneModelTest
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             // draw card
             hostModel.DrawInitHandCard();
-            CheckCurState(hostModel, PlayStateTracker.State.WAIT_START);
+            hostModel.ReDrawInitHandCard();
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // 开始对局
-            hostModel.StartSet(true);
             // host出牌
             Assert.AreEqual(true, hostModel.IsTurn(true));
             Assert.AreEqual(false, hostModel.IsTurn(false));
@@ -179,9 +201,8 @@ public class PlaySceneModelTest
             playerModel.SetBackupCardInfoIdList(playerInfoIdList);
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             playerModel.DrawInitHandCard();
-            CheckCurState(playerModel, PlayStateTracker.State.WAIT_START);
+            playerModel.ReDrawInitHandCard();
             // 开始对局
-            playerModel.StartSet(false);
             // 等待host出牌
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // player出牌
@@ -215,6 +236,8 @@ public class PlaySceneModelTest
     [Test]
     public void ScorchWood()
     {
+        // player先手
+        SetIsHostFirst(false);
         Thread hostThread = new Thread(() => {
             HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
             HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
@@ -225,6 +248,7 @@ public class PlaySceneModelTest
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             // draw card
             hostModel.DrawInitHandCard();
+            hostModel.ReDrawInitHandCard();
             CardModel normalCard;
             CardModel scorchCard;
             if (selfHandRowAreaModel.cardList[0].cardInfo.ability == CardAbility.ScorchWood) {
@@ -234,9 +258,7 @@ public class PlaySceneModelTest
                 normalCard = selfHandRowAreaModel.cardList[0];
                 scorchCard = selfHandRowAreaModel.cardList[1];
             }
-            CheckCurState(hostModel, PlayStateTracker.State.WAIT_START);
             // 开始对局，对方先出牌
-            hostModel.StartSet(false);
             // 等待player出牌
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // host出牌
@@ -257,9 +279,9 @@ public class PlaySceneModelTest
             playerModel.SetBackupCardInfoIdList(playerInfoIdList);
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             playerModel.DrawInitHandCard();
-            CheckCurState(playerModel, PlayStateTracker.State.WAIT_START);
+            playerModel.ReDrawInitHandCard();
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // 开始对局
-            playerModel.StartSet(true);
             // player出牌
             playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
             // 等待host出牌
@@ -282,6 +304,8 @@ public class PlaySceneModelTest
     [Test]
     public void MedicNoTarget()
     {
+        // host先手
+        SetIsHostFirst(true);
         Thread hostThread = new Thread(() => {
             HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
             HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
@@ -292,9 +316,9 @@ public class PlaySceneModelTest
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             // draw card
             hostModel.DrawInitHandCard();
-            CheckCurState(hostModel, PlayStateTracker.State.WAIT_START);
+            hostModel.ReDrawInitHandCard();
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // 开始对局
-            hostModel.StartSet(true);
             // 测试用，给弃牌区加一张英雄牌
             hostModel.selfSinglePlayerAreaModel.discardAreaModel.AddCard(TestGenCards.GetCard(2042));
             // host出牌，打出复活牌，但没有可复活的，轮到对方出牌
@@ -312,9 +336,8 @@ public class PlaySceneModelTest
             playerModel.SetBackupCardInfoIdList(playerInfoIdList);
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             playerModel.DrawInitHandCard();
-            CheckCurState(playerModel, PlayStateTracker.State.WAIT_START);
+            playerModel.ReDrawInitHandCard();
             // 开始对局
-            playerModel.StartSet(false);
             // 测试用，给弃牌区加一张英雄牌
             playerModel.enemySinglePlayerAreaModel.discardAreaModel.AddCard(TestGenCards.GetCard(2042));
             // 等待host出牌
@@ -334,6 +357,8 @@ public class PlaySceneModelTest
     [Test]
     public void MedicNormal()
     {
+        // host先手
+        SetIsHostFirst(true);
         Thread hostThread = new Thread(() => {
             HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
             HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
@@ -344,6 +369,7 @@ public class PlaySceneModelTest
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             // draw card
             hostModel.DrawInitHandCard();
+            hostModel.ReDrawInitHandCard();
             CardModel normalCard;
             CardModel medicCard;
             if (selfHandRowAreaModel.cardList[0].cardInfo.ability == CardAbility.Medic) {
@@ -353,9 +379,8 @@ public class PlaySceneModelTest
                 normalCard = selfHandRowAreaModel.cardList[0];
                 medicCard = selfHandRowAreaModel.cardList[1];
             }
-            CheckCurState(hostModel, PlayStateTracker.State.WAIT_START);
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // 开始对局
-            hostModel.StartSet(true);
             // 测试用，给弃牌区加一张普通牌，能力5
             hostModel.selfSinglePlayerAreaModel.discardAreaModel.AddCard(TestGenCards.GetCard(2043, 31));
             // host出牌，打出复活牌
@@ -375,9 +400,8 @@ public class PlaySceneModelTest
             playerModel.SetBackupCardInfoIdList(playerInfoIdList);
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             playerModel.DrawInitHandCard();
-            CheckCurState(playerModel, PlayStateTracker.State.WAIT_START);
+            playerModel.ReDrawInitHandCard();
             // 开始对局
-            playerModel.StartSet(false);
             // 测试用，给弃牌区加一张普通牌，能力5
             playerModel.enemySinglePlayerAreaModel.discardAreaModel.AddCard(TestGenCards.GetCard(2043, 31));
             // 等待host出牌
@@ -397,6 +421,8 @@ public class PlaySceneModelTest
     [Test]
     public void MedicMedic()
     {
+        // host先手
+        SetIsHostFirst(true);
         Thread hostThread = new Thread(() => {
             HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
             HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
@@ -407,9 +433,9 @@ public class PlaySceneModelTest
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             // draw card
             hostModel.DrawInitHandCard();
-            CheckCurState(hostModel, PlayStateTracker.State.WAIT_START);
+            hostModel.ReDrawInitHandCard();
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // 开始对局
-            hostModel.StartSet(true);
             // 测试用，给弃牌区加一张普通牌和复活牌，能力都是5
             CardModel medicCard = TestGenCards.GetCard(2027, 21);
             CardModel normalCard = TestGenCards.GetCard(2043, 31);
@@ -432,9 +458,8 @@ public class PlaySceneModelTest
             playerModel.SetBackupCardInfoIdList(playerInfoIdList);
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             playerModel.DrawInitHandCard();
-            CheckCurState(playerModel, PlayStateTracker.State.WAIT_START);
+            playerModel.ReDrawInitHandCard();
             // 开始对局
-            playerModel.StartSet(false);
             // 测试用，给弃牌区加一张普通牌和复活牌，能力都是5
             CardModel medicCard = TestGenCards.GetCard(2027, 21);
             CardModel normalCard = TestGenCards.GetCard(2043, 31);
@@ -457,6 +482,8 @@ public class PlaySceneModelTest
     [Test]
     public void MedicInterrupt()
     {
+        // host先手
+        SetIsHostFirst(true);
         Thread hostThread = new Thread(() => {
             HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
             HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
@@ -467,9 +494,9 @@ public class PlaySceneModelTest
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             // draw card
             hostModel.DrawInitHandCard();
-            CheckCurState(hostModel, PlayStateTracker.State.WAIT_START);
+            hostModel.ReDrawInitHandCard();
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // 开始对局
-            hostModel.StartSet(true);
             // 测试用，给弃牌区加一张普通牌，能力5
             hostModel.selfSinglePlayerAreaModel.discardAreaModel.AddCard(TestGenCards.GetCard(2043, 31));
             // host出牌，打出复活牌
@@ -488,9 +515,8 @@ public class PlaySceneModelTest
             playerModel.SetBackupCardInfoIdList(playerInfoIdList);
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             playerModel.DrawInitHandCard();
-            CheckCurState(playerModel, PlayStateTracker.State.WAIT_START);
+            playerModel.ReDrawInitHandCard();
             // 开始对局
-            playerModel.StartSet(false);
             // 测试用，给弃牌区加一张普通牌，能力5
             playerModel.enemySinglePlayerAreaModel.discardAreaModel.AddCard(TestGenCards.GetCard(2043, 31));
             // 等待host出牌
@@ -510,6 +536,8 @@ public class PlaySceneModelTest
     [Test]
     public void AttckNoTarget()
     {
+        // player先手
+        SetIsHostFirst(false);
         Thread hostThread = new Thread(() => {
             HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
             HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
@@ -520,9 +548,8 @@ public class PlaySceneModelTest
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             // draw card
             hostModel.DrawInitHandCard();
-            CheckCurState(hostModel, PlayStateTracker.State.WAIT_START);
+            hostModel.ReDrawInitHandCard();
             // 开始对局，对方先行
-            hostModel.StartSet(false);
             // 等待player出牌
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // host出牌，打出攻击牌，但没有可攻击对象
@@ -540,9 +567,9 @@ public class PlaySceneModelTest
             playerModel.SetBackupCardInfoIdList(playerInfoIdList);
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             playerModel.DrawInitHandCard();
-            CheckCurState(playerModel, PlayStateTracker.State.WAIT_START);
+            playerModel.ReDrawInitHandCard();
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // 开始对局
-            playerModel.StartSet(true);
             // player出牌
             playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
             // 等待host出牌
@@ -560,6 +587,8 @@ public class PlaySceneModelTest
     [Test]
     public void AttackNormal()
     {
+        // player先手
+        SetIsHostFirst(false);
         Thread hostThread = new Thread(() => {
             HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
             HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
@@ -570,6 +599,7 @@ public class PlaySceneModelTest
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             // draw card
             hostModel.DrawInitHandCard();
+            hostModel.ReDrawInitHandCard();
             CardModel normalCard;
             CardModel attackCard;
             if (selfHandRowAreaModel.cardList[0].cardInfo.ability == CardAbility.Attack) {
@@ -579,9 +609,7 @@ public class PlaySceneModelTest
                 normalCard = selfHandRowAreaModel.cardList[0];
                 attackCard = selfHandRowAreaModel.cardList[1];
             }
-            CheckCurState(hostModel, PlayStateTracker.State.WAIT_START);
             // 开始对局，对方先行
-            hostModel.StartSet(false);
             // 等待player出牌
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // host出牌，打出攻击牌
@@ -601,9 +629,9 @@ public class PlaySceneModelTest
             playerModel.SetBackupCardInfoIdList(playerInfoIdList);
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             playerModel.DrawInitHandCard();
-            CheckCurState(playerModel, PlayStateTracker.State.WAIT_START);
+            playerModel.ReDrawInitHandCard();
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // 开始对局
-            playerModel.StartSet(true);
             // player出牌
             playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
             // 等待host出牌
@@ -621,6 +649,8 @@ public class PlaySceneModelTest
     [Test]
     public void AttackDead()
     {
+        // player先手
+        SetIsHostFirst(false);
         Thread hostThread = new Thread(() => {
             HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
             HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
@@ -631,9 +661,8 @@ public class PlaySceneModelTest
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             // draw card
             hostModel.DrawInitHandCard();
-            CheckCurState(hostModel, PlayStateTracker.State.WAIT_START);
+            hostModel.ReDrawInitHandCard();
             // 开始对局，对方先行
-            hostModel.StartSet(false);
             // 等待player出牌
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // host出牌，打出攻击牌
@@ -654,9 +683,9 @@ public class PlaySceneModelTest
             playerModel.SetBackupCardInfoIdList(playerInfoIdList);
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             playerModel.DrawInitHandCard();
-            CheckCurState(playerModel, PlayStateTracker.State.WAIT_START);
+            playerModel.ReDrawInitHandCard();
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // 开始对局
-            playerModel.StartSet(true);
             // player出牌
             playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
             // 等待host出牌
@@ -676,6 +705,8 @@ public class PlaySceneModelTest
     [Test]
     public void AttackInterrupt()
     {
+        // player先手
+        SetIsHostFirst(false);
         Thread hostThread = new Thread(() => {
             HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
             HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
@@ -686,9 +717,8 @@ public class PlaySceneModelTest
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             // draw card
             hostModel.DrawInitHandCard();
-            CheckCurState(hostModel, PlayStateTracker.State.WAIT_START);
+            hostModel.ReDrawInitHandCard();
             // 开始对局，对方先行
-            hostModel.StartSet(false);
             // 等待player出牌
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // host出牌，打出攻击牌
@@ -707,9 +737,9 @@ public class PlaySceneModelTest
             playerModel.SetBackupCardInfoIdList(playerInfoIdList);
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             playerModel.DrawInitHandCard();
-            CheckCurState(playerModel, PlayStateTracker.State.WAIT_START);
+            playerModel.ReDrawInitHandCard();
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // 开始对局
-            playerModel.StartSet(true);
             // player出牌
             playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
             // 等待host出牌
@@ -727,6 +757,8 @@ public class PlaySceneModelTest
     [Test]
     public void Tunning()
     {
+        // player先手
+        SetIsHostFirst(false);
         Thread hostThread = new Thread(() => {
             HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
             HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
@@ -737,9 +769,8 @@ public class PlaySceneModelTest
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             // draw card
             hostModel.DrawInitHandCard();
-            CheckCurState(hostModel, PlayStateTracker.State.WAIT_START);
+            hostModel.ReDrawInitHandCard();
             // 开始对局，对方先行
-            hostModel.StartSet(false);
             // 等待player出牌
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // host出牌，打出攻击牌
@@ -758,9 +789,9 @@ public class PlaySceneModelTest
             playerModel.SetBackupCardInfoIdList(playerInfoIdList);
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             playerModel.DrawInitHandCard();
-            CheckCurState(playerModel, PlayStateTracker.State.WAIT_START);
+            playerModel.ReDrawInitHandCard();
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // 开始对局
-            playerModel.StartSet(true);
             CardModel normalCard;
             CardModel tunningCard;
             if (selfHandRowAreaModel.cardList[0].cardInfo.ability == CardAbility.Tunning) {

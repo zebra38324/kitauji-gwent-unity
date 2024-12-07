@@ -27,6 +27,7 @@ public class PlaySceneManager : MonoBehaviour
         HideDiscardArea, // 隐藏弃牌区
         ChooseCard, // 选择卡牌
         ClickPass, // 点击pass按钮
+        ReDrawInitHandCard, // 重抽初始手牌
     }
 
     private GameObject discardArea;
@@ -34,6 +35,7 @@ public class PlaySceneManager : MonoBehaviour
     private GameObject selfPlayArea;
     private GameObject enemyPlayArea;
     private GameObject cardInfoArea;
+    private GameObject initReDrawHandCardAreaView;
 
     private GameObject cardPrefab;
 
@@ -67,6 +69,9 @@ public class PlaySceneManager : MonoBehaviour
         }
         if (discardArea == null) {
             discardArea = GameObject.Find("Canvas/Background/DiscardArea");
+        }
+        if (initReDrawHandCardAreaView == null) {
+            initReDrawHandCardAreaView = GameObject.Find("Canvas/Background/InitReDrawHandCardArea");
         }
 
         // 配置AI模块
@@ -111,7 +116,7 @@ public class PlaySceneManager : MonoBehaviour
             }
             case PlaySceneMsg.ChooseCard: {
                 CardModel cardModel = (CardModel)list[0];
-                if (playSceneModel.IsTurn(true)) {
+                if (playSceneModel.EnableChooseCard(true)) {
                     // self turn时才允许选择
                     playSceneModel.ChooseCard(cardModel);
                     // 复活技能流程
@@ -132,6 +137,10 @@ public class PlaySceneManager : MonoBehaviour
                 }
                 break;
             }
+            case PlaySceneMsg.ReDrawInitHandCard: {
+                playSceneModel.ReDrawInitHandCard();
+                break;
+            }
         }
     }
 
@@ -141,10 +150,16 @@ public class PlaySceneManager : MonoBehaviour
             yield return null;
         }
         playSceneModel.DrawInitHandCard();
-        while (playSceneModel.tracker.curState != PlayStateTracker.State.WAIT_START) {
+        UpdateUI();
+        while (playSceneModel.tracker.curState != PlayStateTracker.State.WAIT_SELF_ACTION &&
+               playSceneModel.tracker.curState != PlayStateTracker.State.WAIT_ENEMY_ACTION) {
+            if (KTime.CurrentMill() - initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().startTs > InitReDrawHandCardAreaView.MAX_TIME) {
+                // 超时未操作，结束重抽手牌
+                KLog.I(TAG, "initReDrawHandCard: self action timeout");
+                initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().ConfirmButton();
+            }
             yield return null;
         }
-        playSceneModel.StartSet(true);
         UpdateUI();
         StartCoroutine(ListenModel());
     }
@@ -155,6 +170,7 @@ public class PlaySceneManager : MonoBehaviour
         enemyPlayArea.GetComponent<SinglePlayerAreaView>().model = playSceneModel.enemySinglePlayerAreaModel;
         selfPlayArea.GetComponent<SinglePlayerAreaView>().playStat.GetComponent<PlayStatAreaView>().Init(playSceneModel, true);
         enemyPlayArea.GetComponent<SinglePlayerAreaView>().playStat.GetComponent<PlayStatAreaView>().Init(playSceneModel, false);
+        initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().model = playSceneModel.selfSinglePlayerAreaModel;
         UpdateUI();
     }
 
@@ -162,6 +178,12 @@ public class PlaySceneManager : MonoBehaviour
     {
         selfPlayArea.GetComponent<SinglePlayerAreaView>().UpdateUI();
         enemyPlayArea.GetComponent<SinglePlayerAreaView>().UpdateUI();
+        initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().UpdateUI();
+        if (playSceneModel.tracker.curState != PlayStateTracker.State.WAIT_BACKUP_INFO &&
+            playSceneModel.tracker.curState != PlayStateTracker.State.WAIT_INIT_HAND_CARD &&
+            playSceneModel.tracker.curState != PlayStateTracker.State.DOING_INIT_HAND_CARD) {
+            initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().Close();
+        }
     }
 
     // 监听playSceneModel的状态，状态变化时更新UI

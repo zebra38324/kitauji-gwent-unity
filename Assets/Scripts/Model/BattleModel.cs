@@ -12,7 +12,8 @@ using UnityEngine;
  *          1. host、player初始化PlaySceneModel，生成各自卡牌的id（包括备选卡牌）
  *          2. host、player将各自卡牌情况（infoId + id）发送至对方。接收对方的卡牌infoId+id组合后，生成CardModel
  *          3. host、player各自抽取自己的手牌，并将手牌信息（id）发送至对方
- *          4. 用户可能的操作
+ *          4. host向player发送开始整场游戏的信息，并附带先后手信息
+ *          5. 用户可能的操作
  *              1) 选择卡牌。将卡牌id发送至对方
  *              2) pass。将信息发送至对方
  *              3) 抽取手牌。将抽到手牌的id发送至对方
@@ -34,6 +35,7 @@ public class BattleModel
     {
         Init = 0, // 初始卡牌信息。data: infoIdList, idList
         DrawHandCard, // 抽取手牌。data: idList
+        StartGame, // 开始整场比赛，仅host向player发送。data: hostFirst
         ChooseCard, // 选择卡牌。data: id
         Pass, // 过牌。data: null
         InterruptAction, // 中断技能流程。data: null
@@ -44,6 +46,7 @@ public class BattleModel
         public ActionType actionType;
         public List<int> infoIdList;
         public List<int> idList;
+        public bool hostFirst; // 第一局游戏，是否由host先手
     }
 
     public BattleModel(bool isHost = true)
@@ -99,6 +102,10 @@ public class BattleModel
             }
             case ActionType.DrawHandCard: {
                 actionMsg.idList = (List<int>)list[0];
+                break;
+            }
+            case ActionType.StartGame: {
+                actionMsg.hostFirst = (bool)list[0];
                 break;
             }
             case ActionType.ChooseCard: {
@@ -158,6 +165,10 @@ public class BattleModel
                     }
                     case ActionType.DrawHandCard: {
                         EnemyMsgCallback(actionMsg.actionType, actionMsg.idList);
+                        break;
+                    }
+                    case ActionType.StartGame: {
+                        EnemyMsgCallback(actionMsg.actionType, actionMsg.hostFirst);
                         break;
                     }
                     case ActionType.ChooseCard: {

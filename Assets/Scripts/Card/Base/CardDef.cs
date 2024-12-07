@@ -78,6 +78,7 @@ public struct CardInfo
 public enum CardSelectType
 {
     None = 0, // 点击无效果
+    ReDrawHandCard, // 初始时等待重新抽取的手牌
     PlayCard, // 打出卡牌
     WithstandAttack, // 准备被攻击
 }
@@ -86,6 +87,7 @@ public enum CardSelectType
 public enum CardLocation
 {
     None = 0, // 无ui显示，例如备选卡牌堆中
+    InitHandArea, // 初始时预备手牌区
     HandArea, // 手牌区
     DiscardArea, // 弃牌区
     BattleArea, // 对战区

@@ -27,7 +27,7 @@ public class PlaySceneAI
 
     public void Start(bool selfStart = false)
     {
-        List<int> infoIdList = Enumerable.Range(2001, 15).ToList();
+        List<int> infoIdList = Enumerable.Range(2001, 10).ToList();
         playSceneModel.SetBackupCardInfoIdList(infoIdList);
         aiThread = new Thread(() => {
             AIThread();
@@ -41,10 +41,12 @@ public class PlaySceneAI
             Thread.Sleep(1);
         }
         playSceneModel.DrawInitHandCard();
-        while (!isAbort && playSceneModel.tracker.curState != PlayStateTracker.State.WAIT_START) {
+        playSceneModel.ReDrawInitHandCard();
+        while (!isAbort &&
+               playSceneModel.tracker.curState != PlayStateTracker.State.WAIT_SELF_ACTION && 
+               playSceneModel.tracker.curState != PlayStateTracker.State.WAIT_ENEMY_ACTION) {
             Thread.Sleep(1);
         }
-        playSceneModel.StartSet(false);
         while (!isAbort) {
             if (playSceneModel.tracker.curState != PlayStateTracker.State.WAIT_SELF_ACTION ||
                 playSceneModel.selfSinglePlayerAreaModel.handRowAreaModel.cardList.Count == 0) {

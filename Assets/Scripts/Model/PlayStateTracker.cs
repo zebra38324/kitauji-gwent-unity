@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using static UnityEngine.Rendering.DebugUI;
+using System.Linq;
 
 /**
  * 记录游戏中每局的先后手顺序、每局结果、是否pass等
@@ -9,20 +9,37 @@ public class PlayStateTracker
 {
     private string TAG = "PlayStateTracker";
 
+    public static int HOST_FIRST_RANDOM_MAX = 100;
+
+    public static int HOST_FIRST_RANDOM_MIN = 0;
+
+    public static int HOST_FIRST_RANDOM_THRESHOLD = 50;
+
     public bool selfPass = false; // self本局已pass
 
     public bool enemyPass = false; // enemy本局已pass
 
     public static int SET_NUM = 3; // 每场比赛最多三局
 
-    // 每局比赛的结果，正数代表self赢，负数enemy赢，0平局
-    // List长度为已完成的局数
-    public List<int> setResult { get; private set; }
+    // 记录一局的先后手、结果等
+    private class SetRecord
+    {
+        public bool selfFirst; // self先手
+        public int selfScore;
+        public int enemyScore;
+        public int result; // 每局结果，-1：self负，0：平局，1：self胜
+    }
+
+    // 每局比赛的结果记录
+    private List<SetRecord> setRecordList;
+
+    private int curSet = 0; // 当前是第几局
 
     /**
      * 状态机
      * WAIT_BACKUP_INFO -> WAIT_INIT_HAND_CARD
-     * WAIT_INIT_HAND_CARD -> WAIT_START
+     * WAIT_INIT_HAND_CARD -> DOING_INIT_HAND_CARD
+     * DOING_INIT_HAND_CARD -> WAIT_START
      * WAIT_START -> WAIT_SELF_ACTION, WAIT_ENEMY_ACTION
      * WAIT_SELF_ACTION -> WAIT_ENEMY_ACTION, SET_FINFISH
      * WAIT_ENEMY_ACTION -> WAIT_SELF_ACTION, SET_FINFISH
@@ -33,6 +50,7 @@ public class PlayStateTracker
     {
         WAIT_BACKUP_INFO = 0, // 等待设置备选卡牌信息
         WAIT_INIT_HAND_CARD, // 等待抽取初始手牌
+        DOING_INIT_HAND_CARD, // 正在抽取初始手牌
         WAIT_START, // 本场对局还未开始
         WAIT_SELF_ACTION, // 等待本方操作
         WAIT_ENEMY_ACTION, // 等待对方操作
@@ -64,6 +82,44 @@ public class PlayStateTracker
         curState = State.WAIT_BACKUP_INFO;
         actionState = ActionState.None;
         stateChangeTs = 0;
+        setRecordList = Enumerable.Repeat(new SetRecord(), SET_NUM).ToList();
+    }
+
+    // host调用
+    public void StartGameHost()
+    {
+        if (curSet > 0) {
+            KLog.E(TAG, "StartGameHost: curSet invalid: " + curSet);
+            return;
+        }
+        // host根据random值决策开局先后手
+        System.Random ran = new System.Random();
+        int randomNum = ran.Next(HOST_FIRST_RANDOM_MIN, HOST_FIRST_RANDOM_MAX); // 范围0-99，大于等于50为host先手
+        setRecordList[curSet].selfFirst = randomNum >= HOST_FIRST_RANDOM_THRESHOLD;
+        KLog.I(TAG, "StartGameHost: randomNum = " + randomNum + ", selfFirst = " + setRecordList[curSet].selfFirst);
+        // 转换状态
+        if (setRecordList[curSet].selfFirst) {
+            TransState(State.WAIT_SELF_ACTION);
+        } else {
+            TransState(State.WAIT_ENEMY_ACTION);
+        }
+    }
+
+    // player调用
+    public void StartGamePlayer(bool hostFirst)
+    {
+        if (curSet > 0) {
+            KLog.E(TAG, "StartGamePlayer: curSet invalid: " + curSet);
+            return;
+        }
+        setRecordList[curSet].selfFirst = !hostFirst;
+        KLog.I(TAG, "StartGamePlayer: selfFirst = " + setRecordList[curSet].selfFirst);
+        // 转换状态
+        if (setRecordList[curSet].selfFirst) {
+            TransState(State.WAIT_SELF_ACTION);
+        } else {
+            TransState(State.WAIT_ENEMY_ACTION);
+        }
     }
 
     // 流转curState
@@ -73,7 +129,6 @@ public class PlayStateTracker
         if (selfPass && enemyPass) {
             KLog.I(TAG, "TransState: set finsih");
             TransStateInternal(State.SET_FINFISH);
-            // TODO: finish set
         } else if (selfPass && curState == State.WAIT_SELF_ACTION) {
             KLog.I(TAG, "TransState: self pass, also enemy turn");
             TransStateInternal(State.WAIT_ENEMY_ACTION);
@@ -111,6 +166,42 @@ public class PlayStateTracker
         }
     }
 
+    // 结算单局游戏
+    public void SetFinish(int selfScore, int enemyScore)
+    {
+        KLog.I(TAG, "SetFinish: curSet = " + curSet + ", selfScore = " + selfScore + ", enemyScore = " + enemyScore);
+        setRecordList[curSet].selfScore = selfScore;
+        setRecordList[curSet].enemyScore = enemyScore;
+        if (selfScore > enemyScore) {
+            setRecordList[curSet].result = 1;
+        } else if (selfScore < enemyScore) {
+            setRecordList[curSet].result = -1;
+        } else {
+            setRecordList[curSet].result = 0;
+        }
+        if (curSet >= SET_NUM - 1) {
+            // TODO: finish game
+            return;
+        }
+        curSet += 1;
+        setRecordList[curSet] = new SetRecord();
+        // 上一局胜者，下一局先手。若平局则交换先后手
+        if (setRecordList[curSet].result == 1) {
+            setRecordList[curSet].selfFirst = true;
+        } else if (setRecordList[curSet].result == -1) {
+            setRecordList[curSet].selfFirst = false;
+        } else {
+            setRecordList[curSet].selfFirst = !setRecordList[curSet - 1].selfFirst;
+        }
+        KLog.I(TAG, "SetFinish: next set self first = " + setRecordList[curSet].selfFirst);
+        // 转换状态
+        if (setRecordList[curSet].selfFirst) {
+            TransState(State.WAIT_SELF_ACTION);
+        } else {
+            TransState(State.WAIT_ENEMY_ACTION);
+        }
+    }
+
     private bool CheckNewStateValid(State oldState, State newState)
     {
         if (oldState == newState) {
@@ -125,6 +216,12 @@ public class PlayStateTracker
                 break;
             }
             case State.WAIT_INIT_HAND_CARD: {
+                if (newState != State.DOING_INIT_HAND_CARD) {
+                    valid = false;
+                }
+                break;
+            }
+            case State.DOING_INIT_HAND_CARD: {
                 if (newState != State.WAIT_START) {
                     valid = false;
                 }

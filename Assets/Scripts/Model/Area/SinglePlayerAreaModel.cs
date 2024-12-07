@@ -12,6 +12,8 @@ public class SinglePlayerAreaModel
 
     public HandRowAreaModel handRowAreaModel {  get; private set; }
 
+    public InitHandRowAreaModel initHandRowAreaModel { get; private set; }
+
     public DiscardAreaModel discardAreaModel { get; private set; }
 
     public BattleRowAreaModel woodRowAreaModel { get; private set; }
@@ -26,6 +28,7 @@ public class SinglePlayerAreaModel
     {
         backupCardList = new List<CardModel>();
         handRowAreaModel = new HandRowAreaModel();
+        initHandRowAreaModel = new InitHandRowAreaModel();
         discardAreaModel = new DiscardAreaModel();
         woodRowAreaModel = new BattleRowAreaModel(CardBadgeType.Wood);
         brassRowAreaModel = new BattleRowAreaModel(CardBadgeType.Brass);
@@ -47,19 +50,35 @@ public class SinglePlayerAreaModel
         }
     }
 
+    // self抽取初始手牌时调用
+    public void DrawInitHandCard()
+    {
+        List<CardModel> newCardList = DrawRandomHandCardList(initHandCardNum);
+        initHandRowAreaModel.AddCardList(newCardList);
+    }
+
+    // reDrawCardList的牌放回备选卡牌区，重新抽取相同数量的手牌
+    public void ReDrawInitHandCard()
+    {
+        foreach (CardModel reDrawCard in initHandRowAreaModel.selectedCardList) {
+            KLog.I(TAG, "ReDrawInitHandCard: " + reDrawCard.cardInfo.chineseName);
+            initHandRowAreaModel.RemoveCard(reDrawCard);
+            backupCardList.Add(reDrawCard);
+        }
+        List<CardModel> handCardList = new List<CardModel>();
+        foreach (CardModel card in initHandRowAreaModel.cardList) {
+            handCardList.Add(card);
+        }
+        foreach (CardModel handCard in handCardList) {
+            initHandRowAreaModel.RemoveCard(handCard);
+            handRowAreaModel.AddCard(handCard);
+        }
+        DrawHandCards(initHandRowAreaModel.selectedCardList.Count);
+    }
+
     public void DrawHandCards(int num)
     {
-        List<CardModel> newCardList = new List<CardModel>();
-        for (int i = 0; i < num; i++) {
-            if (backupCardList.Count <= 0) {
-                KLog.W(TAG, "GetCards: backupCardList not enough, missing " + (num - newCardList.Count).ToString());
-                break;
-            }
-            System.Random ran = new System.Random();
-            CardModel newCard = backupCardList[ran.Next(0, backupCardList.Count)];
-            newCardList.Add(newCard);
-            backupCardList.Remove(newCard);
-        }
+        List<CardModel> newCardList = DrawRandomHandCardList(num);
         handRowAreaModel.AddCardList(newCardList);
     }
 
@@ -187,6 +206,36 @@ public class SinglePlayerAreaModel
         }
         card = discardAreaModel.cardList.Find(o => { return o.cardInfo.id == id; });
         return card;
+    }
+
+
+    // 小局结束，将对战区的牌移至弃牌区
+    public void RemoveAllBattleCard()
+    {
+        List<CardModel> allBattleCardList = new List<CardModel>();
+        allBattleCardList.AddRange(woodRowAreaModel.cardList);
+        allBattleCardList.AddRange(brassRowAreaModel.cardList);
+        allBattleCardList.AddRange(percussionRowAreaModel.cardList);
+        foreach (CardModel card in allBattleCardList) {
+            discardAreaModel.AddCard(card);
+        }
+    }
+
+    // 从备选卡牌中随机抽取一些牌
+    private List<CardModel> DrawRandomHandCardList(int num)
+    {
+        List<CardModel> newCardList = new List<CardModel>();
+        for (int i = 0; i < num; i++) {
+            if (backupCardList.Count <= 0) {
+                KLog.W(TAG, "GetCards: backupCardList not enough, missing " + (num - newCardList.Count).ToString());
+                break;
+            }
+            System.Random ran = new System.Random();
+            CardModel newCard = backupCardList[ran.Next(0, backupCardList.Count)];
+            newCardList.Add(newCard);
+            backupCardList.Remove(newCard);
+        }
+        return newCardList;
     }
 
     // 应用Tunning技能
