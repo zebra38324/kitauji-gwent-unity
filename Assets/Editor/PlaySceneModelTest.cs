@@ -104,11 +104,6 @@ public class PlaySceneModelTest
             Assert.AreEqual(true, hostModel.IsTurn(true));
             Assert.AreEqual(false, hostModel.IsTurn(false));
             hostModel.Pass();
-            // 等待player pass。双方pass，结束本局
-            CheckCurState(hostModel, PlayStateTracker.State.SET_FINFISH);
-            // 本局结束，都不能出牌
-            Assert.AreEqual(false, hostModel.IsTurn(true));
-            Assert.AreEqual(false, hostModel.IsTurn(false));
         });
         Thread playerThread = new Thread(() => {
             HandRowAreaModel selfHandRowAreaModel = playerModel.selfSinglePlayerAreaModel.handRowAreaModel;
@@ -141,11 +136,6 @@ public class PlaySceneModelTest
             Assert.AreEqual(true, playerModel.IsTurn(true));
             Assert.AreEqual(false, playerModel.IsTurn(false));
             playerModel.Pass();
-            // 双方pass，结束本局
-            CheckCurState(hostModel, PlayStateTracker.State.SET_FINFISH);
-            // 本局结束，都不能出牌
-            Assert.AreEqual(false, playerModel.IsTurn(true));
-            Assert.AreEqual(false, playerModel.IsTurn(false));
         });
         hostThread.Start();
         playerThread.Start();
@@ -187,11 +177,6 @@ public class PlaySceneModelTest
             Assert.AreEqual(true, hostModel.IsTurn(true));
             Assert.AreEqual(false, hostModel.IsTurn(false));
             hostModel.Pass();
-            // 等待player pass。双方pass，结束本局
-            CheckCurState(hostModel, PlayStateTracker.State.SET_FINFISH);
-            // 本局结束，都不能出牌
-            Assert.AreEqual(false, hostModel.IsTurn(true));
-            Assert.AreEqual(false, hostModel.IsTurn(false));
         });
         Thread playerThread = new Thread(() => {
             HandRowAreaModel selfHandRowAreaModel = playerModel.selfSinglePlayerAreaModel.handRowAreaModel;
@@ -220,11 +205,6 @@ public class PlaySceneModelTest
             Assert.AreEqual(true, playerModel.IsTurn(true));
             Assert.AreEqual(false, playerModel.IsTurn(false));
             playerModel.Pass();
-            // 双方pass，结束本局
-            CheckCurState(hostModel, PlayStateTracker.State.SET_FINFISH);
-            // 本局结束，都不能出牌
-            Assert.AreEqual(false, playerModel.IsTurn(true));
-            Assert.AreEqual(false, playerModel.IsTurn(false));
         });
         hostThread.Start();
         playerThread.Start();
@@ -809,6 +789,410 @@ public class PlaySceneModelTest
             playerModel.ChooseCard(tunningCard);
             Assert.AreEqual(12, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
             Assert.AreEqual(10, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        hostThread.Start();
+        playerThread.Start();
+        hostThread.Join();
+        playerThread.Join();
+    }
+
+    // 测试单局结算
+    [Test]
+    public void SetFinish()
+    {
+        // host先手
+        SetIsHostFirst(true);
+        Thread hostThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // Tunning牌（7）
+            List<int> hostInfoIdList = new List<int> { 2001 };
+            // backup
+            hostModel.SetBackupCardInfoIdList(hostInfoIdList);
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            // draw card
+            hostModel.DrawInitHandCard();
+            hostModel.ReDrawInitHandCard();
+            // 开始对局
+            // host出牌
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            hostModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
+            // 等待player出牌
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // host pass
+            hostModel.Pass();
+            Thread.Sleep(100);
+            // 等待player pass。host赢第一局，第二局player先手
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_ENEMY_ACTION);
+            Assert.AreEqual(1, hostModel.tracker.setRecordList[0].result);
+            Assert.AreEqual(7, hostModel.tracker.setRecordList[0].selfScore);
+            Assert.AreEqual(5, hostModel.tracker.setRecordList[0].enemyScore);
+            Assert.AreEqual(false, hostModel.tracker.setRecordList[1].selfFirst);
+        });
+        Thread playerThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = playerModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = playerModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 普通牌（5）
+            List<int> playerInfoIdList = new List<int> { 2002 };
+            playerModel.SetBackupCardInfoIdList(playerInfoIdList);
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            playerModel.DrawInitHandCard();
+            playerModel.ReDrawInitHandCard();
+            // 开始对局
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // player出牌
+            playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
+            // 等待host pass
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // player pass
+            playerModel.Pass();
+            Thread.Sleep(100);
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(-1, playerModel.tracker.setRecordList[0].result);
+            Assert.AreEqual(5, playerModel.tracker.setRecordList[0].selfScore);
+            Assert.AreEqual(7, playerModel.tracker.setRecordList[0].enemyScore);
+            Assert.AreEqual(true, playerModel.tracker.setRecordList[1].selfFirst);
+        });
+        hostThread.Start();
+        playerThread.Start();
+        hostThread.Join();
+        playerThread.Join();
+    }
+
+    // 测试decoy技能：无目标
+    [Test]
+    public void DecoyNoTarget()
+    {
+        // host先手
+        SetIsHostFirst(true);
+        Thread hostThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 英雄牌（10），大号君
+            List<int> hostInfoIdList = new List<int> { 2005, 5001 };
+            // backup
+            hostModel.SetBackupCardInfoIdList(hostInfoIdList);
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            // draw card
+            hostModel.DrawInitHandCard();
+            hostModel.ReDrawInitHandCard();
+            CardModel roleCard;
+            CardModel decoyCard;
+            if (selfHandRowAreaModel.cardList[0].cardInfo.ability == CardAbility.Decoy) {
+                roleCard = selfHandRowAreaModel.cardList[1];
+                decoyCard = selfHandRowAreaModel.cardList[0];
+            } else {
+                roleCard = selfHandRowAreaModel.cardList[0];
+                decoyCard = selfHandRowAreaModel.cardList[1];
+            }
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // 开始对局
+            // host出牌，打出英雄牌
+            hostModel.ChooseCard(roleCard);
+            // 等待player出牌
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // host出牌，打出decoy牌，但无目标，相当于打出一张虚空牌
+            hostModel.ChooseCard(decoyCard);
+            Assert.AreEqual(CardLocation.None, decoyCard.cardLocation);
+            Assert.AreEqual(PlayStateTracker.ActionState.None, hostModel.tracker.actionState);
+            Assert.AreEqual(PlayStateTracker.State.WAIT_ENEMY_ACTION, hostModel.tracker.curState);
+            Assert.AreEqual(10, hostModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(5, hostModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        Thread playerThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = playerModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = playerModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 能力5，非英雄牌
+            List<int> playerInfoIdList = new List<int> { 2002 };
+            playerModel.SetBackupCardInfoIdList(playerInfoIdList);
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            playerModel.DrawInitHandCard();
+            playerModel.ReDrawInitHandCard();
+            // 开始对局
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // player出牌，打出普通牌
+            playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(5, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(10, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        hostThread.Start();
+        playerThread.Start();
+        hostThread.Join();
+        playerThread.Join();
+    }
+
+    // 测试decoy技能：撤回普通牌
+    [Test]
+    public void DecoyNormal()
+    {
+        // host先手
+        SetIsHostFirst(true);
+        Thread hostThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 普通牌（5），大号君
+            List<int> hostInfoIdList = new List<int> { 2002, 5001 };
+            // backup
+            hostModel.SetBackupCardInfoIdList(hostInfoIdList);
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            // draw card
+            hostModel.DrawInitHandCard();
+            hostModel.ReDrawInitHandCard();
+            CardModel roleCard;
+            CardModel decoyCard;
+            if (selfHandRowAreaModel.cardList[0].cardInfo.ability == CardAbility.Decoy) {
+                roleCard = selfHandRowAreaModel.cardList[1];
+                decoyCard = selfHandRowAreaModel.cardList[0];
+            } else {
+                roleCard = selfHandRowAreaModel.cardList[0];
+                decoyCard = selfHandRowAreaModel.cardList[1];
+            }
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // 开始对局
+            // host出牌，打出英雄牌
+            hostModel.ChooseCard(roleCard);
+            // 等待player出牌
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // host出牌，打出decoy牌
+            hostModel.ChooseCard(decoyCard);
+            hostModel.ChooseCard(roleCard);
+            Assert.AreEqual(1, selfHandRowAreaModel.cardList.Count);
+            Assert.AreEqual(CardLocation.HandArea, roleCard.cardLocation);
+            Assert.AreEqual(CardLocation.BattleArea, decoyCard.cardLocation);
+            Assert.AreEqual(PlayStateTracker.ActionState.None, hostModel.tracker.actionState);
+            Assert.AreEqual(PlayStateTracker.State.WAIT_ENEMY_ACTION, hostModel.tracker.curState);
+            Assert.AreEqual(0, hostModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(5, hostModel.enemySinglePlayerAreaModel.GetCurrentPower());
+            // 等待player pass
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // host pass
+            hostModel.Pass();
+            Thread.Sleep(100);
+            Assert.AreEqual(0, hostModel.selfSinglePlayerAreaModel.discardAreaModel.cardList.Count); // decoy不进入弃牌区
+        });
+        Thread playerThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = playerModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = playerModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 能力5，非英雄牌
+            List<int> playerInfoIdList = new List<int> { 2002 };
+            playerModel.SetBackupCardInfoIdList(playerInfoIdList);
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            playerModel.DrawInitHandCard();
+            playerModel.ReDrawInitHandCard();
+            // 开始对局
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // player出牌，打出普通牌
+            playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(1, enemyHandRowAreaModel.cardList.Count);
+            Assert.AreEqual(5, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(0, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
+            // player pass
+            playerModel.Pass();
+            Thread.Sleep(100);
+            Assert.AreEqual(0, playerModel.enemySinglePlayerAreaModel.discardAreaModel.cardList.Count); // decoy不进入弃牌区
+        });
+        hostThread.Start();
+        playerThread.Start();
+        hostThread.Join();
+        playerThread.Join();
+    }
+
+    // 测试decoy技能中断
+    [Test]
+    public void DecoyInterrupt()
+    {
+        // host先手
+        SetIsHostFirst(true);
+        Thread hostThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 普通牌（5），大号君
+            List<int> hostInfoIdList = new List<int> { 2002, 5001 };
+            // backup
+            hostModel.SetBackupCardInfoIdList(hostInfoIdList);
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            // draw card
+            hostModel.DrawInitHandCard();
+            hostModel.ReDrawInitHandCard();
+            CardModel roleCard;
+            CardModel decoyCard;
+            if (selfHandRowAreaModel.cardList[0].cardInfo.ability == CardAbility.Decoy) {
+                roleCard = selfHandRowAreaModel.cardList[1];
+                decoyCard = selfHandRowAreaModel.cardList[0];
+            } else {
+                roleCard = selfHandRowAreaModel.cardList[0];
+                decoyCard = selfHandRowAreaModel.cardList[1];
+            }
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // 开始对局
+            // host出牌，打出英雄牌
+            hostModel.ChooseCard(roleCard);
+            // 等待player出牌
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // host出牌，打出decoy牌
+            hostModel.ChooseCard(decoyCard);
+            hostModel.InterruptAction();
+            Assert.AreEqual(0, selfHandRowAreaModel.cardList.Count);
+            Assert.AreEqual(CardLocation.BattleArea, roleCard.cardLocation);
+            Assert.AreEqual(CardLocation.None, decoyCard.cardLocation);
+            Assert.AreEqual(PlayStateTracker.ActionState.None, hostModel.tracker.actionState);
+            Assert.AreEqual(PlayStateTracker.State.WAIT_ENEMY_ACTION, hostModel.tracker.curState);
+            Assert.AreEqual(5, hostModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(5, hostModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        Thread playerThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = playerModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = playerModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 能力5，非英雄牌
+            List<int> playerInfoIdList = new List<int> { 2002 };
+            playerModel.SetBackupCardInfoIdList(playerInfoIdList);
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            playerModel.DrawInitHandCard();
+            playerModel.ReDrawInitHandCard();
+            // 开始对局
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // player出牌，打出普通牌
+            playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(0, enemyHandRowAreaModel.cardList.Count);
+            Assert.AreEqual(5, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(5, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        hostThread.Start();
+        playerThread.Start();
+        hostThread.Join();
+        playerThread.Join();
+    }
+
+    // 测试退部技能：无目标
+    [Test]
+    public void ScorchNoTarget()
+    {
+        // host先手
+        SetIsHostFirst(true);
+        Thread hostThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 英雄牌（10），退部
+            List<int> hostInfoIdList = new List<int> { 2005, 5002 };
+            // backup
+            hostModel.SetBackupCardInfoIdList(hostInfoIdList);
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            // draw card
+            hostModel.DrawInitHandCard();
+            hostModel.ReDrawInitHandCard();
+            CardModel roleCard;
+            CardModel scorchCard;
+            if (selfHandRowAreaModel.cardList[0].cardInfo.ability == CardAbility.Scorch) {
+                roleCard = selfHandRowAreaModel.cardList[1];
+                scorchCard = selfHandRowAreaModel.cardList[0];
+            } else {
+                roleCard = selfHandRowAreaModel.cardList[0];
+                scorchCard = selfHandRowAreaModel.cardList[1];
+            }
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // 开始对局
+            // host出牌
+            hostModel.ChooseCard(roleCard);
+            // 等待player出牌
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // host出牌，打出scorch牌，但无目标，相当于打出一张虚空牌
+            hostModel.ChooseCard(scorchCard);
+            Assert.AreEqual(CardLocation.None, scorchCard.cardLocation);
+            Assert.AreEqual(10, hostModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(10, hostModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        Thread playerThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = playerModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = playerModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 英雄牌（10）
+            List<int> playerInfoIdList = new List<int> { 2005 };
+            playerModel.SetBackupCardInfoIdList(playerInfoIdList);
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            playerModel.DrawInitHandCard();
+            playerModel.ReDrawInitHandCard();
+            // 开始对局
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // player出牌
+            playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(10, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(10, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        hostThread.Start();
+        playerThread.Start();
+        hostThread.Join();
+        playerThread.Join();
+    }
+
+    // 测试退部技能：移除卡牌
+    [Test]
+    public void ScorchNormal()
+    {
+        // host先手
+        SetIsHostFirst(true);
+        Thread hostThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 普通牌（5），退部
+            List<int> hostInfoIdList = new List<int> { 2002, 5002 };
+            // backup
+            hostModel.SetBackupCardInfoIdList(hostInfoIdList);
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            // draw card
+            hostModel.DrawInitHandCard();
+            hostModel.ReDrawInitHandCard();
+            CardModel roleCard;
+            CardModel scorchCard;
+            if (selfHandRowAreaModel.cardList[0].cardInfo.ability == CardAbility.Scorch) {
+                roleCard = selfHandRowAreaModel.cardList[1];
+                scorchCard = selfHandRowAreaModel.cardList[0];
+            } else {
+                roleCard = selfHandRowAreaModel.cardList[0];
+                scorchCard = selfHandRowAreaModel.cardList[1];
+            }
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // 开始对局
+            // host出牌
+            hostModel.ChooseCard(roleCard);
+            // 等待player出牌
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // host出牌，打出scorch牌
+            hostModel.ChooseCard(scorchCard);
+            Assert.AreEqual(CardLocation.None, scorchCard.cardLocation);
+            Assert.AreEqual(CardLocation.DiscardArea, roleCard.cardLocation);
+            Assert.AreEqual(0, hostModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(10, hostModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        Thread playerThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = playerModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = playerModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 英雄牌（10）
+            List<int> playerInfoIdList = new List<int> { 2005 };
+            playerModel.SetBackupCardInfoIdList(playerInfoIdList);
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            playerModel.DrawInitHandCard();
+            playerModel.ReDrawInitHandCard();
+            // 开始对局
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // player出牌
+            playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(10, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(0, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
         });
         hostThread.Start();
         playerThread.Start();

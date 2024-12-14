@@ -39,7 +39,7 @@ public class CardDisplay : MonoBehaviour,
     // 边框
     public GameObject frame;
 
-    private CardModel cardModel;
+    public CardModel cardModel { get; private set; }
 
     // ui交互
     private static int hoverUpDistance = 10; // 悬停时卡片上移距离
@@ -75,14 +75,16 @@ public class CardDisplay : MonoBehaviour,
     public void UpdateUI()
     {
         UpdateDisplayPower();
-        bool frameVisible = cardModel.selectType == CardSelectType.WithstandAttack || (cardModel.cardLocation == CardLocation.InitHandArea && cardModel.isSelected);
+        bool frameVisible = cardModel.selectType == CardSelectType.WithstandAttack ||
+            cardModel.selectType == CardSelectType.DecoyWithdraw ||
+            (cardModel.cardLocation == CardLocation.InitHandArea && cardModel.isSelected);
         SetFrameVisible(frameVisible);
     }
 
     private void Init()
     {
         // Image
-        originImage.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/origin-image/KumikoSecondYear/" + cardModel.cardInfo.imageName);
+        originImage.GetComponent<Image>().sprite = Resources.Load<Sprite>(GetImageName());
 
         // Dialog
         dialogBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/dialog/dialog");
@@ -90,35 +92,15 @@ public class CardDisplay : MonoBehaviour,
         quote.GetComponent<TextMeshProUGUI>().text = cardModel.cardInfo.quote;
         chineseName.GetComponent<TextMeshProUGUI>().text = cardModel.cardInfo.chineseName;
 
-        // Belt
-        belt.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/belt/" + GetBeltName());
-
-        // Power
-        if (cardModel.cardInfo.cardType == CardType.Hero) {
-            powerBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/power/power-hero");
-            powerNum.GetComponent<TextMeshProUGUI>().color = new Color(1, 1, 1, 1);
-        } else {
-            powerBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/power/power-normal");
-        }
-        powerNum.GetComponent<TextMeshProUGUI>().text = cardModel.cardInfo.originPower.ToString();
-        powerType.GetComponent<Image>().color = new Color(0, 0, 0, 0); // TODO: 未考虑非角色牌
-
-        // Badge
-        badgeBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/badge/badge");
-        badgeType.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/badge/type/" + GetBadgeTypeName());
-
-        // Ability
-        if (cardModel.cardInfo.ability != CardAbility.None) {
-            abilityBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/ability/ability-background");
-            ability.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/ability/" + GetAbilityName());
-        } else {
-            abilityBackground.SetActive(false);
-            ability.SetActive(false);
-        }
-
         // frame
         if (frame != null) {
             frame.SetActive(false);
+        }
+
+        if (cardModel.cardInfo.cardType == CardType.Util) {
+            InitUtilCardUI();
+        } else {
+            InitRoleCardUI();
         }
     }
 
@@ -140,6 +122,76 @@ public class CardDisplay : MonoBehaviour,
             powerNum.GetComponent<TextMeshProUGUI>().color = new Color(0, 0, 0, 1);
         } else {
             powerNum.GetComponent<TextMeshProUGUI>().color = new Color(0.8f, 0, 0, 1);
+        }
+    }
+
+    private void InitRoleCardUI()
+    {
+        // Belt
+        belt.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/belt/" + GetBeltName());
+
+        // Power
+        if (cardModel.cardInfo.cardType == CardType.Hero) {
+            powerBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/power/power-hero");
+            powerNum.GetComponent<TextMeshProUGUI>().color = new Color(1, 1, 1, 1);
+        } else if (cardModel.cardInfo.cardType == CardType.Normal) {
+            powerBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/power/power-normal");
+        }
+        powerNum.GetComponent<TextMeshProUGUI>().text = cardModel.cardInfo.originPower.ToString();
+        powerType.SetActive(false);
+
+        // Badge
+        badgeBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/badge/badge");
+        badgeType.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/badge/type/" + GetBadgeTypeName());
+
+        // Ability
+        if (cardModel.cardInfo.ability != CardAbility.None) {
+            abilityBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/ability/ability-background");
+            ability.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/ability/" + GetAbilityName());
+        } else {
+            abilityBackground.SetActive(false);
+            ability.SetActive(false);
+        }
+    }
+
+    private void InitUtilCardUI()
+    {
+        // Dialog
+        // 没有belt，需要居中名字
+        Vector3 position = cardName.transform.position;
+        position.x = dialogBackground.transform.position.x;
+        cardName.transform.position = position;
+        position = chineseName.transform.position;
+        position.x = dialogBackground.transform.position.x;
+        chineseName.transform.position = position;
+
+        // Belt
+        belt.SetActive(false);
+
+        // Power
+        powerBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/power/power-normal");
+        powerNum.SetActive(false);
+        powerType.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/ability/" + GetAbilityName());
+
+        // Badge
+        badgeBackground.SetActive(false);
+        badgeType.SetActive(false);
+
+        // Ability
+        abilityBackground.SetActive(false);
+        ability.SetActive(false);
+    }
+
+    private string GetImageName()
+    {
+        string prefix = @"Image/origin-image/";
+        switch (cardModel.cardInfo.group) {
+            case CardGroup.KumikoSecondYear:
+                return prefix + "KumikoSecondYear/" + cardModel.cardInfo.imageName;
+            case CardGroup.Neutral:
+                return prefix + "Neutral/" + cardModel.cardInfo.imageName;
+            default:
+                return "";
         }
     }
 
@@ -188,6 +240,16 @@ public class CardDisplay : MonoBehaviour,
                 return "medic";
             case CardAbility.Horn:
                 return "horn";
+            case CardAbility.Decoy:
+                return "decoy";
+            case CardAbility.Scorch:
+                return "scorch";
+            case CardAbility.SunFes:
+                return "sunfes";
+            case CardAbility.Daisangakushou:
+                return "daisangakushou";
+            case CardAbility.Drumstick:
+                return "drumstick";
             default: // None
                 return "none";
         }

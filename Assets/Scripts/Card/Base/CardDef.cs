@@ -4,6 +4,7 @@ public enum CardGroup
     KumikoFirstYearS1 = 0,
     KumikoFirstYearS2,
     KumikoSecondYear,
+    Neutral,
 }
 
 public enum CardBadgeType
@@ -26,12 +27,18 @@ public enum CardAbility // TODO: 完善
     Morale, // 士气: 高喊“北宇治Fight！”，使同一行内除自己以外的部员吹奏能力+1。
     Medic, // 复活: 令一名退部/毕业的部员（天王除外）回归吹奏部，并立即加入演奏。
     Horn, // 支援: 使同一行内除自己之外的部员吹奏实力翻倍。
+    Decoy, // 大号君: 换下场上一名部员，使其可以继续参加后面的比赛。
+    Scorch, // 退部申请书: 令场上双方部员中实力最强的部员直接退部。
+    SunFes, // 日升祭：参加SunFes，令双方所有木管乐器吹奏能力降为1。
+    Daisangakushou, // 第三乐章：演奏《利兹与青鸟》第三乐章，令双方所有铜管乐器吹奏能力降为1。
+    Drumstick, // 忘带鼓槌：令双方所有打击乐器吹奏能力降为1。
 }
 
 public enum CardType
 {
     Normal = 0,
-    Hero
+    Hero,
+    Util,
 }
 
 public struct CardInfo
@@ -81,6 +88,7 @@ public enum CardSelectType
     ReDrawHandCard, // 初始时等待重新抽取的手牌
     PlayCard, // 打出卡牌
     WithstandAttack, // 准备被攻击
+    DecoyWithdraw, // decoy撤回
 }
 
 // 卡牌当前所在区域

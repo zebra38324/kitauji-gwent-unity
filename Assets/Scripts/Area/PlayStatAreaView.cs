@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class PlayStatAreaView : MonoBehaviour
@@ -51,6 +52,7 @@ public class PlayStatAreaView : MonoBehaviour
             frame.SetActive(false);
             countDown.SetActive(false);
         }
+        UpdateSetScore();
     }
 
     private void UpdateCountDown()
@@ -60,5 +62,16 @@ public class PlayStatAreaView : MonoBehaviour
         }
         long remainSecond = (PlayStateTracker.TURN_TIME - (KTime.CurrentMill() - playSceneModel.tracker.stateChangeTs)) / 1000;
         countDown.GetComponent<TextMeshProUGUI>().text = remainSecond.ToString();
+    }
+
+    private void UpdateSetScore()
+    {
+        int setScore = isSelf ? playSceneModel.tracker.selfSetScore : playSceneModel.tracker.enemySetScore;
+        if (setScore >= 1) {
+            live1.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/background/player_live_red");
+        }
+        if (setScore >= 2) {
+            live2.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/background/player_live_red");
+        }
     }
 }

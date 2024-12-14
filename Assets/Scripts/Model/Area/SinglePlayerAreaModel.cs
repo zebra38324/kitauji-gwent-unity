@@ -216,7 +216,13 @@ public class SinglePlayerAreaModel
         allBattleCardList.AddRange(woodRowAreaModel.cardList);
         allBattleCardList.AddRange(brassRowAreaModel.cardList);
         allBattleCardList.AddRange(percussionRowAreaModel.cardList);
+        woodRowAreaModel.RemoveAllCard();
+        brassRowAreaModel.RemoveAllCard();
+        percussionRowAreaModel.RemoveAllCard();
         foreach (CardModel card in allBattleCardList) {
+            if (card.cardInfo.cardType == CardType.Util) {
+                continue; // 工具牌不进入弃牌区
+            }
             discardAreaModel.AddCard(card);
         }
     }

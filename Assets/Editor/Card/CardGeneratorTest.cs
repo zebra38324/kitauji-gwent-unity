@@ -20,7 +20,7 @@ public class CardGeneratorTest
     public void GetCard()
     {
         CardModel cardModel1 = cardGenerator.GetCard(2001);
-        CardModel cardModel2 = cardGenerator.GetCard(2002);
+        CardModel cardModel2 = cardGenerator.GetCard(5001);
         Assert.AreNotEqual(cardModel1.cardInfo.id, cardModel2.cardInfo.id);
 
         CardModel cardModel3 = cardGenerator.GetCard(2001, 12);

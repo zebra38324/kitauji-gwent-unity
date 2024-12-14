@@ -19,10 +19,16 @@ public class PlayStateTracker
 
     public bool enemyPass = false; // enemy本局已pass
 
+    public bool isSelfWinner { get; private set; }
+
+    public int selfSetScore { get; private set; }
+
+    public int enemySetScore { get; private set; }
+
     public static int SET_NUM = 3; // 每场比赛最多三局
 
     // 记录一局的先后手、结果等
-    private class SetRecord
+    public class SetRecord
     {
         public bool selfFirst; // self先手
         public int selfScore;
@@ -31,9 +37,9 @@ public class PlayStateTracker
     }
 
     // 每局比赛的结果记录
-    private List<SetRecord> setRecordList;
+    public List<SetRecord> setRecordList { get; private set; }
 
-    private int curSet = 0; // 当前是第几局
+    public int curSet { get; private set; } // 当前是第几局
 
     /**
      * 状态机
@@ -72,17 +78,27 @@ public class PlayStateTracker
         None = 0, // 无特殊状态
         ATTACKING, // 正在使用攻击技能中
         MEDICING, // 正在使用复活技能中
+        DECOYING, // 正在使用大号君技能中
     }
 
     public ActionState actionState { get; private set; }
 
-    public PlayStateTracker(bool isHost = true)
+    public string selfName { get; private set; }
+
+    public string enemyName { get; private set; }
+
+    public PlayStateTracker(bool isHost = true, string selfName_ = "", string enemyName_ = "")
     {
         TAG += isHost ? "-Host" : "-Player";
         curState = State.WAIT_BACKUP_INFO;
         actionState = ActionState.None;
         stateChangeTs = 0;
         setRecordList = Enumerable.Repeat(new SetRecord(), SET_NUM).ToList();
+        curSet = 0;
+        selfSetScore = 0;
+        enemySetScore = 0;
+        selfName = selfName_;
+        enemyName = enemyName_;
     }
 
     // host调用
@@ -172,24 +188,30 @@ public class PlayStateTracker
         KLog.I(TAG, "SetFinish: curSet = " + curSet + ", selfScore = " + selfScore + ", enemyScore = " + enemyScore);
         setRecordList[curSet].selfScore = selfScore;
         setRecordList[curSet].enemyScore = enemyScore;
+        // 局分：赢一小局加一分，平局双方各加一分
         if (selfScore > enemyScore) {
             setRecordList[curSet].result = 1;
+            selfSetScore += 1;
         } else if (selfScore < enemyScore) {
             setRecordList[curSet].result = -1;
+            enemySetScore += 1;
         } else {
             setRecordList[curSet].result = 0;
+            selfSetScore += 1;
+            enemySetScore += 1;
         }
-        if (curSet >= SET_NUM - 1) {
-            // TODO: finish game
+        if (IsGameFinish()) {
+            TransState(State.STOP);
             return;
         }
         curSet += 1;
+        int lastSet = curSet - 1;
         setRecordList[curSet] = new SetRecord();
         // 上一局胜者，下一局先手。若平局则交换先后手
-        if (setRecordList[curSet].result == 1) {
-            setRecordList[curSet].selfFirst = true;
-        } else if (setRecordList[curSet].result == -1) {
+        if (setRecordList[lastSet].result == 1) {
             setRecordList[curSet].selfFirst = false;
+        } else if (setRecordList[lastSet].result == -1) {
+            setRecordList[curSet].selfFirst = true;
         } else {
             setRecordList[curSet].selfFirst = !setRecordList[curSet - 1].selfFirst;
         }
@@ -273,13 +295,9 @@ public class PlayStateTracker
             case ActionState.None: {
                 break;
             }
-            case ActionState.ATTACKING: {
-                if (newActionState != ActionState.None) {
-                    valid = false;
-                }
-                break;
-            }
-            case ActionState.MEDICING: {
+            case ActionState.ATTACKING:
+            case ActionState.MEDICING:
+            case ActionState.DECOYING: {
                 if (newActionState != ActionState.None) {
                     valid = false;
                 }
@@ -316,5 +334,46 @@ public class PlayStateTracker
             enemyPass = false;
         }
         stateChangeTs = KTime.CurrentMill();
+    }
+
+    private bool IsGameFinish()
+    {
+        int selfCount = 0;
+        int enemyCount = 0;
+        int selfFirstCount = 0;
+        bool isGameFinish = false;
+        for (int i = 0; i <= curSet; i++) {
+            if (setRecordList[i].result == 1) {
+                selfCount += 1;
+            } else if (setRecordList[i].result == -1) {
+                enemyCount += 1;
+            } else {
+                selfCount += 1;
+                enemyCount += 1;
+            }
+            if (setRecordList[i].selfFirst) {
+                selfFirstCount += 1;
+            }
+        }
+        if (selfCount != enemyCount) {
+            // 双方局分不同，有达到2及以上的，游戏结束
+            isGameFinish = selfCount >= 2 || enemyCount >= 2;
+            if (isGameFinish) {
+                // 双方局分不同，局分高的胜利
+                isSelfWinner = selfCount >= enemyCount;
+            }
+        } else {
+            // 双方局分相同，打完三局后结束
+            isGameFinish = curSet == 2;
+            if (isGameFinish) {
+                // 三局后双方局分相同，先手局数多的一方获胜（先手劣势）
+                isSelfWinner = selfFirstCount >= 2;
+            }
+        }
+        KLog.I(TAG, "IsGameFinish: ret = " + isGameFinish + ", selfCount = " + selfCount + ", enemyCount = " + enemyCount);
+        if (isGameFinish) {
+            KLog.I(TAG, "IsGameFinish: isSelfWinner = " + isSelfWinner);
+        }
+        return isGameFinish;
     }
 }

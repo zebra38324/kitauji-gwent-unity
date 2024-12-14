@@ -36,6 +36,17 @@ public class RowAreaView : MonoBehaviour
     // 每次操作完，更新ui
     public void UpdateUI()
     {
+        List<GameObject> removeList = new List<GameObject>();
+        for (int i = 0; i < gameObject.transform.childCount; i++) {
+            GameObject child = gameObject.transform.GetChild(i).gameObject;
+            if (child.GetComponent<CardDisplay>().cardModel.cardLocation == CardLocation.None) {
+                removeList.Add(child);
+            }
+        }
+        foreach (GameObject card in removeList) {
+            // location为null，需要从ui上移除
+            card.transform.SetParent(null);
+        }
         foreach (CardModel cardModel in rowAreaModel.cardList) {
             GameObject card = CardViewCollection.Instance.Get(cardModel);
             card.transform.SetParent(gameObject.transform);

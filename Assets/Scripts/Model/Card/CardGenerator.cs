@@ -23,12 +23,16 @@ public class CardGenerator
             if (allCardInfoList_ != null) {
                 return allCardInfoList_;
             }
-            TextAsset cardInfoAsset = Resources.Load<TextAsset>(@"Statistic\KumikoSecondYear");
-            if (cardInfoAsset == null) {
-                KLog.E(TAG, "cardInfoAsset is null");
-                return allCardInfoList_;
+            allCardInfoList_ = new List<CardInfo>();
+            string[] assetNameList = { @"Statistic\KumikoSecondYear", @"Statistic\NeutralCard" };
+            foreach (string assetName in assetNameList) {
+                TextAsset cardInfoAsset = Resources.Load<TextAsset>(assetName);
+                if (cardInfoAsset == null) {
+                    KLog.E(TAG, "cardInfoAsset: " + assetName + " is null");
+                    return allCardInfoList_;
+                }
+                allCardInfoList_.AddRange(StatisticJsonParse.GetCardInfo(cardInfoAsset.text));
             }
-            allCardInfoList_ = StatisticJsonParse.GetCardInfo(cardInfoAsset.text);
             return allCardInfoList_;
         }
         set {

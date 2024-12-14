@@ -43,7 +43,9 @@ public class StatisticJsonParse
             info.group = (CardGroup)Enum.Parse(typeof(CardGroup), jsonInfo.group, true);
             info.grade = jsonInfo.grade;
             info.originPower = jsonInfo.originPower;
-            info.badgeType = (CardBadgeType)Enum.Parse(typeof(CardBadgeType), jsonInfo.badgeType, true);
+            if (jsonInfo.badgeType != null) {
+                info.badgeType = (CardBadgeType)Enum.Parse(typeof(CardBadgeType), jsonInfo.badgeType, true); // 可能为null
+            }
             info.ability = (CardAbility)Enum.Parse(typeof(CardAbility), jsonInfo.ability, true);
             info.bondType = jsonInfo.bondType;
             info.musterType = jsonInfo.musterType;

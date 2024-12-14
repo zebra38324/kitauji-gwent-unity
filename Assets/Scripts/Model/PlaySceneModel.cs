@@ -26,7 +26,10 @@ public class PlaySceneModel
         enemySinglePlayerAreaModel = new SinglePlayerAreaModel(isHost);
         battleModel = new BattleModel(isHost);
         battleModel.EnemyMsgCallback += EnemyMsgCallback;
-        tracker = new PlayStateTracker(isHost);
+        string selfName = isHost ? "Host" : "Player";
+        string enemyName = isHost ? "Player" : "Host";
+        tracker = new PlayStateTracker(isHost, selfName, enemyName);
+        actionTextModel = new ActionTextModel(selfName, enemyName);
     }
 
     public SinglePlayerAreaModel selfSinglePlayerAreaModel { get; private set; }
@@ -43,7 +46,11 @@ public class PlaySceneModel
 
     private CardModel attackCard = null; // ActionState.ATTACKING时，记录发动攻击的牌
 
+    private CardModel decoyCard = null; // ActionState.DECOYING时，记录大号君的牌
+
     public PlayStateTracker tracker { get; private set; }
+
+    public ActionTextModel actionTextModel { get; private set; }
 
     private bool isHost;
 
@@ -64,6 +71,7 @@ public class PlaySceneModel
             case BattleModel.ActionType.DrawHandCard: {
                 List<int> idList = (List<int>)list[0];
                 enemySinglePlayerAreaModel.DrawHandCards(idList);
+                actionTextModel.FinishInitHandCard(false);
                 lock (this) { // 多线程问题加锁
                     if (selfSinglePlayerAreaModel.handRowAreaModel.cardList.Count > 0) {
                         WillWaitStartGame();
@@ -158,6 +166,7 @@ public class PlaySceneModel
             return;
         };
         SendSelfInitHandCardInfo();
+        actionTextModel.FinishInitHandCard(true);
         lock (this) { // 多线程问题加锁
             if (enemySinglePlayerAreaModel.handRowAreaModel.cardList.Count > 0) {
                 WillWaitStartGame();
@@ -172,6 +181,10 @@ public class PlaySceneModel
         if (isSelf) {
             // 发送本方pass动作
             battleModel.AddSelfActionMsg(BattleModel.ActionType.Pass);
+        }
+        actionTextModel.Pass(isSelf);
+        if (tracker.curState == PlayStateTracker.State.SET_FINFISH) {
+            SetFinish();
         }
     }
 
@@ -205,6 +218,7 @@ public class PlaySceneModel
         // 从选择卡牌方的视角来看
         SinglePlayerAreaModel selfArea = isSelf ? selfSinglePlayerAreaModel : enemySinglePlayerAreaModel;
         SinglePlayerAreaModel enemyArea = isSelf ? enemySinglePlayerAreaModel : selfSinglePlayerAreaModel;
+        CardSelectType originSelectType = card.selectType;
         KLog.I(TAG, "ChooseCard: " + card.cardInfo.chineseName + ", isSelf = " + isSelf);
         switch (card.selectType) {
             case CardSelectType.None: {
@@ -239,6 +253,12 @@ public class PlaySceneModel
                 tracker.TransActionState(PlayStateTracker.ActionState.None); // 攻击技能，先完成再置空
                 break;
             }
+            case CardSelectType.DecoyWithdraw: {
+                ApplyBeWithdraw(card, selfArea);
+                FinishDecoy(selfArea);
+                tracker.TransActionState(PlayStateTracker.ActionState.None);
+                break;
+            }
         }
         if (isSelf && tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION) {
             // 发送本方选择牌动作
@@ -252,6 +272,7 @@ public class PlaySceneModel
                 tracker.TransState(PlayStateTracker.State.WAIT_SELF_ACTION);
             }
         }
+        actionTextModel.ChooseCard(isSelf, card, originSelectType);
     }
 
     // actionState不为None时，一些特殊情况，中止技能流程并流转curState
@@ -272,6 +293,8 @@ public class PlaySceneModel
             FinishAttack(enemyArea);
         } else if (tracker.actionState == PlayStateTracker.ActionState.MEDICING) {
             FinishMedic(selfArea);
+        } else if (tracker.actionState == PlayStateTracker.ActionState.DECOYING) {
+            FinishDecoy(selfArea);
         }
         tracker.TransActionState(PlayStateTracker.ActionState.None);
         if (isSelf) {
@@ -280,6 +303,7 @@ public class PlaySceneModel
         } else {
             tracker.TransState(PlayStateTracker.State.WAIT_SELF_ACTION);
         }
+        actionTextModel.InterruptAction(isSelf);
     }
 
     private void WillWaitStartGame()
@@ -289,6 +313,7 @@ public class PlaySceneModel
             tracker.StartGameHost();
             battleModel.AddSelfActionMsg(BattleModel.ActionType.StartGame, tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION);
         }
+        actionTextModel.SetStart(tracker.setRecordList[tracker.curSet].selfFirst);
     }
 
     /**
@@ -341,6 +366,15 @@ public class PlaySceneModel
                 ApplyMedic(selfArea);
                 break;
             }
+            case CardAbility.Decoy: {
+                ApplyDecoy(card, selfArea);
+                break;
+            }
+            case CardAbility.Scorch: {
+                ApplyScorch(selfArea, enemyArea);
+                card.cardLocation = CardLocation.None; // 用完了直接丢入虚空
+                break;
+            }
             default: {
                 selfArea.AddBattleAreaCard(card);
                 break;
@@ -356,9 +390,11 @@ public class PlaySceneModel
             return targetCard.cardInfo.cardType == CardType.Normal;
         });
         if (count == 0) {
+            UpdateActionToast(null, enemyArea, "无可攻击目标");
             KLog.I(TAG, "ApplyAttack: no target card");
             return;
         }
+        UpdateActionToast(null, enemyArea, "请选择攻击目标");
         // 目标卡牌准备被攻击
         enemyArea.ApplyBattleAreaAction((CardModel targetCard) => {
             return targetCard.cardInfo.cardType == CardType.Normal;
@@ -422,9 +458,11 @@ public class PlaySceneModel
     private void ApplyMedic(SinglePlayerAreaModel selfArea)
     {
         if (selfArea.discardAreaModel.normalCardList.Count == 0) {
+            UpdateActionToast(selfArea, null, "无可复活目标");
             KLog.I(TAG, "ApplyMedic: no target card");
             return;
         }
+        UpdateActionToast(selfArea, null, "请选择复活目标");
         foreach (CardModel card in selfArea.discardAreaModel.normalCardList) {
             card.selectType = CardSelectType.PlayCard;
         }
@@ -439,5 +477,146 @@ public class PlaySceneModel
             card.selectType = CardSelectType.None;
         }
         selfArea.discardAreaModel.ClearRow();
+    }
+
+    // 应用大号君技能
+    private void ApplyDecoy(CardModel card, SinglePlayerAreaModel selfArea)
+    {
+        // 统计可被撤回的牌数量
+        int count = selfArea.CountBattleAreaCard((CardModel targetCard) => {
+            return targetCard.cardInfo.cardType == CardType.Normal;
+        });
+        if (count == 0) {
+            card.cardLocation = CardLocation.None; // 直接丢入虚空
+            UpdateActionToast(selfArea, null, "无可使用大号君的目标");
+            KLog.I(TAG, "ApplyDecoy: no target card");
+            return;
+        }
+        UpdateActionToast(selfArea, null, "请选择使用大号君的目标");
+        // 目标卡牌准备被撤回
+        selfArea.ApplyBattleAreaAction((CardModel targetCard) => {
+            return targetCard.cardInfo.cardType == CardType.Normal;
+        }, (CardModel targetCard) => {
+            targetCard.selectType = CardSelectType.DecoyWithdraw;
+        });
+        decoyCard = card;
+        tracker.TransActionState(PlayStateTracker.ActionState.DECOYING);
+    }
+
+    // 将decoy目标撤回手牌区
+    private void ApplyBeWithdraw(CardModel card, SinglePlayerAreaModel selfArea)
+    {
+        if (decoyCard == null) {
+            KLog.E(TAG, "ApplyBeWithdraw: attackCard is null");
+            return;
+        }
+        if (card.cardInfo.badgeType == CardBadgeType.Wood) {
+            selfArea.woodRowAreaModel.AddCard(decoyCard);
+            selfArea.woodRowAreaModel.RemoveCard(card);
+        } else if (card.cardInfo.badgeType == CardBadgeType.Brass) {
+            selfArea.brassRowAreaModel.AddCard(decoyCard);
+            selfArea.brassRowAreaModel.RemoveCard(card);
+        } else {
+            selfArea.percussionRowAreaModel.AddCard(decoyCard);
+            selfArea.percussionRowAreaModel.RemoveCard(card);
+        }
+        selfArea.handRowAreaModel.AddCard(card);
+    }
+
+    // 应用退部技能
+    private void ApplyScorch(SinglePlayerAreaModel selfArea, SinglePlayerAreaModel enemyArea)
+    {
+        // 场上非英雄牌最高点数
+        int maxPower = 0;
+        selfArea.CountBattleAreaCard((CardModel targetCard) => {
+            if (targetCard.cardInfo.cardType == CardType.Normal && targetCard.currentPower > maxPower) {
+                maxPower = targetCard.currentPower;
+            }
+            return true;
+        });
+        enemyArea.CountBattleAreaCard((CardModel targetCard) => {
+            if (targetCard.cardInfo.cardType == CardType.Normal && targetCard.currentPower > maxPower) {
+                maxPower = targetCard.currentPower;
+            }
+            return true;
+        });
+        // 统计需要移除的牌
+        List<CardModel> cardList = new List<CardModel>();
+        selfArea.CountBattleAreaCard((CardModel targetCard) => {
+            if (targetCard.cardInfo.cardType == CardType.Normal && targetCard.currentPower == maxPower) {
+                cardList.Add(targetCard);
+            }
+            return true;
+        });
+        enemyArea.CountBattleAreaCard((CardModel targetCard) => {
+            if (targetCard.cardInfo.cardType == CardType.Normal && targetCard.currentPower == maxPower) {
+                cardList.Add(targetCard);
+            }
+            return true;
+        });
+        actionTextModel.ApplyScorch(cardList);
+        if (cardList.Count == 0) {
+            UpdateActionToast(selfArea, enemyArea, "无退部目标");
+            KLog.I(TAG, "ApplyScorch: no target card");
+            return;
+        }
+        // 移除卡牌，比较丑陋，但是凑合着吧
+        foreach (CardModel card in cardList) {
+            KLog.I(TAG, "ApplyScorch: remove card: " + card.cardInfo.chineseName);
+            if (selfArea.woodRowAreaModel.cardList.Contains(card)) {
+                selfArea.woodRowAreaModel.RemoveCard(card);
+                selfArea.discardAreaModel.AddCard(card);
+            } else if (selfArea.brassRowAreaModel.cardList.Contains(card)) {
+                selfArea.brassRowAreaModel.RemoveCard(card);
+                selfArea.discardAreaModel.AddCard(card);
+            } else if (selfArea.percussionRowAreaModel.cardList.Contains(card)) {
+                selfArea.percussionRowAreaModel.RemoveCard(card);
+                selfArea.discardAreaModel.AddCard(card);
+            } else if (enemyArea.woodRowAreaModel.cardList.Contains(card)) {
+                enemyArea.woodRowAreaModel.RemoveCard(card);
+                enemyArea.discardAreaModel.AddCard(card);
+            } else if (enemyArea.brassRowAreaModel.cardList.Contains(card)) {
+                enemyArea.brassRowAreaModel.RemoveCard(card);
+                enemyArea.discardAreaModel.AddCard(card);
+            } else if (enemyArea.percussionRowAreaModel.cardList.Contains(card)) {
+                enemyArea.percussionRowAreaModel.RemoveCard(card);
+                enemyArea.discardAreaModel.AddCard(card);
+            }
+        }
+    }
+
+    // 结束大号君技能的流程
+    private void FinishDecoy(SinglePlayerAreaModel selfArea)
+    {
+        selfArea.ApplyBattleAreaAction((CardModel card) => {
+            return card.cardInfo.cardType == CardType.Normal;
+        }, (CardModel card) => {
+            card.selectType = CardSelectType.None;
+        });
+        decoyCard = null;
+    }
+
+    private void SetFinish()
+    {
+        int selfScore = selfSinglePlayerAreaModel.GetCurrentPower();
+        int enemyScore = enemySinglePlayerAreaModel.GetCurrentPower();
+        selfSinglePlayerAreaModel.RemoveAllBattleCard();
+        enemySinglePlayerAreaModel.RemoveAllBattleCard();
+        int lastSet = tracker.curSet;
+        tracker.SetFinish(selfScore, enemyScore);
+        actionTextModel.SetFinish(tracker.setRecordList[lastSet].result);
+        if (tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION ||
+            tracker.curState == PlayStateTracker.State.WAIT_ENEMY_ACTION) {
+            actionTextModel.SetStart(tracker.setRecordList[tracker.curSet].selfFirst);
+        }
+    }
+
+    private void UpdateActionToast(SinglePlayerAreaModel selfArea, SinglePlayerAreaModel enemyArea, string toastText)
+    {
+        if (!(selfArea == selfSinglePlayerAreaModel || enemyArea == enemySinglePlayerAreaModel)) {
+            // 仅self时显示toast
+            return;
+        }
+        actionTextModel.toastText = toastText;
     }
 }

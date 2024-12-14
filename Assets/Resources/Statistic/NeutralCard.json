@@ -1,0 +1,59 @@
+{
+    "Info": [
+        {
+            "CardNumber": 1
+        }
+    ],
+    "Cards": [
+        {
+            "infoId": 5001,
+            "imageName": "origin-image-tubakun",
+            "chineseName": "大号君",
+            "englishName": "Tubakun",
+            "group": "Neutral",
+            "ability": "Decoy",
+            "cardType": "Util",
+            "quote": "被骗了。。。"
+        },
+        {
+            "infoId": 5002,
+            "imageName": "origin-image-taibu",
+            "chineseName": "退部申请书",
+            "englishName": "Taibu",
+            "group": "Neutral",
+            "ability": "Scorch",
+            "cardType": "Util",
+            "quote": "“明日香，\n你现在就给我说要退部。”"
+        },
+        {
+            "infoId": 5003,
+            "imageName": "origin-image-sunfes",
+            "chineseName": "日升祭",
+            "englishName": "Sunrise Festival",
+            "group": "Neutral",
+            "ability": "SunFes",
+            "cardType": "Util",
+            "quote": "“我去年负责的是谜之舞步。”"
+        },
+        {
+            "infoId": 5004,
+            "imageName": "origin-image-daisangakushou",
+            "chineseName": "第三乐章",
+            "englishName": "Daisangakushou",
+            "group": "Neutral",
+            "ability": "Daisangakushou",
+            "cardType": "Util",
+            "quote": "“这里最重要的，\n就是双簧管和长笛的彼此呼应。”"
+        },
+        {
+            "infoId": 5005,
+            "imageName": "origin-image-drumstick",
+            "chineseName": "忘带鼓槌",
+            "englishName": "Drumstick",
+            "group": "Neutral",
+            "ability": "Drumstick",
+            "cardType": "Util",
+            "quote": "“说是把最大的鼓槌忘在活动室了。”"
+        }
+    ]
+}

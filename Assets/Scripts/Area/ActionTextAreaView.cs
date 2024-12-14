@@ -2,32 +2,43 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class ActionTextAreaView : MonoBehaviour
 {
     public GameObject actionText;
 
-    private Coroutine scrollCoroutine;
+    public GameObject scrollBar;
+
+    public ActionTextModel actionTextModel { get; set; }
 
     // Start is called before the first frame update
     void Start()
     {
-        actionText.GetComponent<TextMeshProUGUI>().text = "test";
-        scrollCoroutine = StartCoroutine(ScrollText());
+        actionText.GetComponent<TextMeshProUGUI>().text = "";
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    // 滚动条在最下时，要保持最下
-    private IEnumerator ScrollText()
+    public void UpdateUI()
     {
-        while (true) {
-            yield return new WaitForSeconds(3); // 每隔3秒添加新文本
-            actionText.GetComponent<TextMeshProUGUI>().text = actionText.GetComponent<TextMeshProUGUI>().text + "\n test\n test\n test";
+        if (actionText == null) {
+            return;
         }
+        actionText.GetComponent<TextMeshProUGUI>().text = actionTextModel.totalText;
+        // 滚动条滑到最下处
+        StartCoroutine(SetSrollBarBottom());
+    }
+
+    private IEnumerator SetSrollBarBottom()
+    {
+        // 不等待两帧的话，可能设置不生效
+        yield return null;
+        yield return null;
+        scrollBar.GetComponent<Scrollbar>().value = 0;
     }
 }

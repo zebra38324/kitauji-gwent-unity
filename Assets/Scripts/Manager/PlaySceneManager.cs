@@ -1,21 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.UIElements;
 
 // PlayScene统一管理器
 public class PlaySceneManager : MonoBehaviour
 {
     private static string TAG = "PlaySceneManager";
-
-    static PlaySceneManager() { }
-
-    private PlaySceneManager() { }
 
     public static PlaySceneManager Instance;
 
@@ -36,6 +28,9 @@ public class PlaySceneManager : MonoBehaviour
     private GameObject enemyPlayArea;
     private GameObject cardInfoArea;
     private GameObject initReDrawHandCardAreaView;
+    private GameObject actionTextAreaView;
+    private GameObject actionToastAreaView;
+    private GameObject gameFinishAreaView;
 
     private GameObject cardPrefab;
 
@@ -49,6 +44,22 @@ public class PlaySceneManager : MonoBehaviour
         Instance = this;
         Init();
         KLog.I(TAG, "finish init PlaySceneManager");
+    }
+
+    public void Reset()
+    {
+        discardArea = null;
+        selfPlayArea = null;
+        enemyPlayArea = null;
+        cardInfoArea = null;
+        initReDrawHandCardAreaView = null;
+        actionTextAreaView = null;
+        actionToastAreaView = null;
+        gameFinishAreaView = null;
+        cardPrefab = null;
+        playSceneModel = null;
+        playSceneAI = null;
+        CardViewCollection.Instance.Clear();
     }
 
     // 每场比赛初始化
@@ -72,6 +83,15 @@ public class PlaySceneManager : MonoBehaviour
         }
         if (initReDrawHandCardAreaView == null) {
             initReDrawHandCardAreaView = GameObject.Find("Canvas/Background/InitReDrawHandCardArea");
+        }
+        if (actionTextAreaView == null) {
+            actionTextAreaView = GameObject.Find("Canvas/Background/ActionTextScrollView");
+        }
+        if (actionToastAreaView == null) {
+            actionToastAreaView = GameObject.Find("Canvas/Background/ActionToastArea");
+        }
+        if (gameFinishAreaView  == null) {
+            gameFinishAreaView = GameObject.Find("Canvas/Background/GameFinishArea");
         }
 
         // 配置AI模块
@@ -116,7 +136,7 @@ public class PlaySceneManager : MonoBehaviour
             }
             case PlaySceneMsg.ChooseCard: {
                 CardModel cardModel = (CardModel)list[0];
-                if (playSceneModel.EnableChooseCard(true)) {
+                if (playSceneModel.EnableChooseCard(true) && cardModel.selectType != CardSelectType.None) {
                     // self turn时才允许选择
                     playSceneModel.ChooseCard(cardModel);
                     // 复活技能流程
@@ -171,6 +191,9 @@ public class PlaySceneManager : MonoBehaviour
         selfPlayArea.GetComponent<SinglePlayerAreaView>().playStat.GetComponent<PlayStatAreaView>().Init(playSceneModel, true);
         enemyPlayArea.GetComponent<SinglePlayerAreaView>().playStat.GetComponent<PlayStatAreaView>().Init(playSceneModel, false);
         initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().model = playSceneModel.selfSinglePlayerAreaModel;
+        actionTextAreaView.GetComponent<ActionTextAreaView>().actionTextModel = playSceneModel.actionTextModel;
+        actionToastAreaView.GetComponent<ActionToastAreaView>().actionTextModel = playSceneModel.actionTextModel;
+        gameFinishAreaView.GetComponent<GameFinishAreaView>().tracker = playSceneModel.tracker;
         UpdateUI();
     }
 
@@ -184,13 +207,15 @@ public class PlaySceneManager : MonoBehaviour
             playSceneModel.tracker.curState != PlayStateTracker.State.DOING_INIT_HAND_CARD) {
             initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().Close();
         }
+        actionTextAreaView.GetComponent<ActionTextAreaView>().UpdateUI();
     }
 
     // 监听playSceneModel的状态，状态变化时更新UI
     private IEnumerator ListenModel()
     {
         while (playSceneModel.tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION ||
-            playSceneModel.tracker.curState == PlayStateTracker.State.WAIT_ENEMY_ACTION) {
+            playSceneModel.tracker.curState == PlayStateTracker.State.WAIT_ENEMY_ACTION ||
+            playSceneModel.tracker.curState == PlayStateTracker.State.SET_FINFISH) {
             if (playSceneModel.hasEnemyUpdate) {
                 playSceneModel.hasEnemyUpdate = false;
                 UpdateUI();
@@ -213,5 +238,13 @@ public class PlaySceneManager : MonoBehaviour
             }
             yield return null;
         }
+        // 此时state理论上必为stop
+        if (playSceneModel.tracker.curState != PlayStateTracker.State.STOP) {
+            KLog.E(TAG, "ListenModel: break loop, state invalid = " + playSceneModel.tracker.curState);
+        }
+        // 展示结算页面
+        KLog.I(TAG, "ListenModel: game finish");
+        UpdateUI();
+        gameFinishAreaView.SetActive(true);
     }
 }
