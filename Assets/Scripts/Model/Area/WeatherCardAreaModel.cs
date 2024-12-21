@@ -5,21 +5,44 @@ using UnityEngine;
  */
 public class WeatherCardAreaModel
 {
-    public RowAreaModel woodArea { get; private set; }
+    private static string TAG = "WeatherCardAreaModel";
 
-    public RowAreaModel brassArea { get; private set; }
+    public SingleCardRowAreaModel woodArea { get; private set; }
 
-    public RowAreaModel percussionArea { get; private set; }
+    public SingleCardRowAreaModel brassArea { get; private set; }
+
+    public SingleCardRowAreaModel percussionArea { get; private set; }
 
     public WeatherCardAreaModel()
     {
-        woodArea = new RowAreaModel();
-        brassArea = new RowAreaModel();
-        percussionArea = new RowAreaModel();
+        woodArea = new SingleCardRowAreaModel();
+        brassArea = new SingleCardRowAreaModel();
+        percussionArea = new SingleCardRowAreaModel();
     }
 
     public void AddCard(CardModel card)
     {
+        if (card.cardInfo.ability == CardAbility.SunFes) {
+            AddCardToRowArea(woodArea, card);
+        } else if (card.cardInfo.ability == CardAbility.Daisangakushou) {
+            AddCardToRowArea(brassArea, card);
+        } else if (card.cardInfo.ability == CardAbility.Drumstick) {
+            AddCardToRowArea(percussionArea, card);
+        } else {
+            KLog.E(TAG, "AddCard: invalid ability: " + card.cardInfo.ability);
+        }
+    }
 
+    public void RemoveAllCard()
+    {
+        woodArea.RemoveAllCard();
+        brassArea.RemoveAllCard();
+        percussionArea.RemoveAllCard();
+    }
+
+    private void AddCardToRowArea(SingleCardRowAreaModel rowArea, CardModel card)
+    {
+        card.cardLocation = CardLocation.WeatherCardArea;
+        rowArea.AddCard(card);
     }
 }

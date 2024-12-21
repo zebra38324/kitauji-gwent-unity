@@ -377,7 +377,7 @@
             "englishName": "Keina Iwata",
             "group": "KumikoSecondYear",
             "grade": 3,
-            "originPower":5,
+            "originPower": 5,
             "badgeType": "Brass",
             "ability": "Medic",
             "cardType": "Normal",
@@ -693,6 +693,16 @@
             "relatedCard": "前田苍太",
             "cardType": "Normal",
             "quote": "与双胞胎哥哥——前田苍太\n一起备受期待成为打击乐的双人王牌。"
+        },
+        {
+            "infoId": 2080,
+            "imageName": "origin-image-oumae_kumiko",
+            "chineseName": "黄前久美子",
+            "englishName": "Kumiko Oumae",
+            "group": "KumikoSecondYear",
+            "ability": "HornBrass",
+            "cardType": "Leader",
+            "quote": "“一年生。。。\n看来得解决一下了。”"
         }
     ]
 }

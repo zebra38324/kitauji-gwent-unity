@@ -1,7 +1,10 @@
 ﻿using NUnit.Framework;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using UnityEngine;
+using UnityEngine.TestTools;
 
 public class PlaySceneModelTest
 {
@@ -30,6 +33,8 @@ public class PlaySceneModelTest
     {
         KLog.I(TAG, "Teardown");
         ResetHostFirstRandom();
+        hostModel.Release();
+        playerModel.Release();
     }
 
     // 检测curState，不满足时等待一段时间
@@ -64,8 +69,8 @@ public class PlaySceneModelTest
     }
 
     // 测试双方打出普通牌的一局流程
-    [Test]
-    public void Normal()
+    [UnityTest]
+    public IEnumerator Normal()
     {
         Assert.AreEqual(false, hostModel.hasEnemyUpdate);
         Assert.AreEqual(false, playerModel.hasEnemyUpdate);
@@ -139,13 +144,17 @@ public class PlaySceneModelTest
         });
         hostThread.Start();
         playerThread.Start();
-        hostThread.Join();
-        playerThread.Join();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
     }
 
     // 测试双方打出间谍牌
-    [Test]
-    public void Spy()
+    [UnityTest]
+    public IEnumerator Spy()
     {
         // host先手
         SetIsHostFirst(true);
@@ -208,13 +217,17 @@ public class PlaySceneModelTest
         });
         hostThread.Start();
         playerThread.Start();
-        hostThread.Join();
-        playerThread.Join();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
     }
 
     // 测试伞击技能。主要测试已在BattleRowAreaModelTest中完成，此处简单测试整体流程
-    [Test]
-    public void ScorchWood()
+    [UnityTest]
+    public IEnumerator ScorchWood()
     {
         // player先手
         SetIsHostFirst(false);
@@ -276,13 +289,17 @@ public class PlaySceneModelTest
         });
         hostThread.Start();
         playerThread.Start();
-        hostThread.Join();
-        playerThread.Join();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
     }
 
     // 测试复活牌技能：无复活目标
-    [Test]
-    public void MedicNoTarget()
+    [UnityTest]
+    public IEnumerator MedicNoTarget()
     {
         // host先手
         SetIsHostFirst(true);
@@ -329,13 +346,17 @@ public class PlaySceneModelTest
         });
         hostThread.Start();
         playerThread.Start();
-        hostThread.Join();
-        playerThread.Join();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
     }
 
     // 测试复活牌技能：复活一张普通牌
-    [Test]
-    public void MedicNormal()
+    [UnityTest]
+    public IEnumerator MedicNormal()
     {
         // host先手
         SetIsHostFirst(true);
@@ -393,13 +414,17 @@ public class PlaySceneModelTest
         });
         hostThread.Start();
         playerThread.Start();
-        hostThread.Join();
-        playerThread.Join();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
     }
 
     // 测试复活牌技能：复活一张复活牌
-    [Test]
-    public void MedicMedic()
+    [UnityTest]
+    public IEnumerator MedicMedic()
     {
         // host先手
         SetIsHostFirst(true);
@@ -454,13 +479,17 @@ public class PlaySceneModelTest
         });
         hostThread.Start();
         playerThread.Start();
-        hostThread.Join();
-        playerThread.Join();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
     }
     
     // 测试复活牌技能：中止复活技能
-    [Test]
-    public void MedicInterrupt()
+    [UnityTest]
+    public IEnumerator MedicInterrupt()
     {
         // host先手
         SetIsHostFirst(true);
@@ -508,13 +537,17 @@ public class PlaySceneModelTest
         });
         hostThread.Start();
         playerThread.Start();
-        hostThread.Join();
-        playerThread.Join();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
     }
 
     // 测试攻击牌技能：无可攻击目标
-    [Test]
-    public void AttckNoTarget()
+    [UnityTest]
+    public IEnumerator AttckNoTarget()
     {
         // player先手
         SetIsHostFirst(false);
@@ -559,13 +592,17 @@ public class PlaySceneModelTest
         });
         hostThread.Start();
         playerThread.Start();
-        hostThread.Join();
-        playerThread.Join();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
     }
 
     // 测试攻击牌技能：攻击普通牌
-    [Test]
-    public void AttackNormal()
+    [UnityTest]
+    public IEnumerator AttackNormal()
     {
         // player先手
         SetIsHostFirst(false);
@@ -621,13 +658,17 @@ public class PlaySceneModelTest
         });
         hostThread.Start();
         playerThread.Start();
-        hostThread.Join();
-        playerThread.Join();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
     }
 
     // 测试攻击牌技能：攻击导致卡牌被移除
-    [Test]
-    public void AttackDead()
+    [UnityTest]
+    public IEnumerator AttackDead()
     {
         // player先手
         SetIsHostFirst(false);
@@ -677,13 +718,17 @@ public class PlaySceneModelTest
         });
         hostThread.Start();
         playerThread.Start();
-        hostThread.Join();
-        playerThread.Join();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
     }
 
     // 测试攻击牌技能：攻击技能中断
-    [Test]
-    public void AttackInterrupt()
+    [UnityTest]
+    public IEnumerator AttackInterrupt()
     {
         // player先手
         SetIsHostFirst(false);
@@ -729,13 +774,17 @@ public class PlaySceneModelTest
         });
         hostThread.Start();
         playerThread.Start();
-        hostThread.Join();
-        playerThread.Join();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
     }
 
     // 测试Tunning技能
-    [Test]
-    public void Tunning()
+    [UnityTest]
+    public IEnumerator Tunning()
     {
         // player先手
         SetIsHostFirst(false);
@@ -792,13 +841,17 @@ public class PlaySceneModelTest
         });
         hostThread.Start();
         playerThread.Start();
-        hostThread.Join();
-        playerThread.Join();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
     }
 
     // 测试单局结算
-    [Test]
-    public void SetFinish()
+    [UnityTest]
+    public IEnumerator SetFinish()
     {
         // host先手
         SetIsHostFirst(true);
@@ -856,13 +909,17 @@ public class PlaySceneModelTest
         });
         hostThread.Start();
         playerThread.Start();
-        hostThread.Join();
-        playerThread.Join();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
     }
 
     // 测试decoy技能：无目标
-    [Test]
-    public void DecoyNoTarget()
+    [UnityTest]
+    public IEnumerator DecoyNoTarget()
     {
         // host先手
         SetIsHostFirst(true);
@@ -921,13 +978,17 @@ public class PlaySceneModelTest
         });
         hostThread.Start();
         playerThread.Start();
-        hostThread.Join();
-        playerThread.Join();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
     }
 
     // 测试decoy技能：撤回普通牌
-    [Test]
-    public void DecoyNormal()
+    [UnityTest]
+    public IEnumerator DecoyNormal()
     {
         // host先手
         SetIsHostFirst(true);
@@ -1000,13 +1061,17 @@ public class PlaySceneModelTest
         });
         hostThread.Start();
         playerThread.Start();
-        hostThread.Join();
-        playerThread.Join();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
     }
 
     // 测试decoy技能中断
-    [Test]
-    public void DecoyInterrupt()
+    [UnityTest]
+    public IEnumerator DecoyInterrupt()
     {
         // host先手
         SetIsHostFirst(true);
@@ -1069,13 +1134,17 @@ public class PlaySceneModelTest
         });
         hostThread.Start();
         playerThread.Start();
-        hostThread.Join();
-        playerThread.Join();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
     }
 
     // 测试退部技能：无目标
-    [Test]
-    public void ScorchNoTarget()
+    [UnityTest]
+    public IEnumerator ScorchNoTarget()
     {
         // host先手
         SetIsHostFirst(true);
@@ -1132,13 +1201,17 @@ public class PlaySceneModelTest
         });
         hostThread.Start();
         playerThread.Start();
-        hostThread.Join();
-        playerThread.Join();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
     }
 
     // 测试退部技能：移除卡牌
-    [Test]
-    public void ScorchNormal()
+    [UnityTest]
+    public IEnumerator ScorchNormal()
     {
         // host先手
         SetIsHostFirst(true);
@@ -1196,7 +1269,487 @@ public class PlaySceneModelTest
         });
         hostThread.Start();
         playerThread.Start();
-        hostThread.Join();
-        playerThread.Join();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
+    }
+
+    // 测试天气牌
+    [UnityTest]
+    public IEnumerator Weather()
+    {
+        // host先手
+        SetIsHostFirst(true);
+        Thread hostThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 普通木管牌（5），sunfes
+            List<int> hostInfoIdList = new List<int> { 2002, 5003 };
+            // backup
+            hostModel.SetBackupCardInfoIdList(hostInfoIdList);
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            // draw card
+            hostModel.DrawInitHandCard();
+            hostModel.ReDrawInitHandCard();
+            CardModel roleCard;
+            CardModel sunfesCard;
+            if (selfHandRowAreaModel.cardList[0].cardInfo.ability == CardAbility.SunFes) {
+                roleCard = selfHandRowAreaModel.cardList[1];
+                sunfesCard = selfHandRowAreaModel.cardList[0];
+            } else {
+                roleCard = selfHandRowAreaModel.cardList[0];
+                sunfesCard = selfHandRowAreaModel.cardList[1];
+            }
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // 开始对局
+            // host出牌
+            hostModel.ChooseCard(roleCard);
+            // 等待player出牌
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // host出牌，打出天气牌
+            hostModel.ChooseCard(sunfesCard);
+            Assert.AreEqual(CardLocation.WeatherCardArea, sunfesCard.cardLocation);
+            Assert.AreEqual(1, hostModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(10, hostModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        Thread playerThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = playerModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = playerModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 木管英雄牌（10）
+            List<int> playerInfoIdList = new List<int> { 2005 };
+            playerModel.SetBackupCardInfoIdList(playerInfoIdList);
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            playerModel.DrawInitHandCard();
+            playerModel.ReDrawInitHandCard();
+            // 开始对局
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // player出牌
+            playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(10, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(1, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        hostThread.Start();
+        playerThread.Start();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
+    }
+
+    // 测试天气牌：单局结束后需要清除
+    [UnityTest]
+    public IEnumerator WeatherSetFinish()
+    {
+        // host 先手
+        SetIsHostFirst(true);
+        Thread hostThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 普通木管牌（5），sunfes
+            List<int> hostInfoIdList = new List<int> { 2002, 5003 };
+            // backup
+            hostModel.SetBackupCardInfoIdList(hostInfoIdList);
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            // draw card
+            hostModel.DrawInitHandCard();
+            hostModel.ReDrawInitHandCard();
+            CardModel roleCard;
+            CardModel sunfesCard;
+            if (selfHandRowAreaModel.cardList[0].cardInfo.ability == CardAbility.SunFes) {
+                roleCard = selfHandRowAreaModel.cardList[1];
+                sunfesCard = selfHandRowAreaModel.cardList[0];
+            } else {
+                roleCard = selfHandRowAreaModel.cardList[0];
+                sunfesCard = selfHandRowAreaModel.cardList[1];
+            }
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // 开始对局
+            // host出牌，打出天气牌
+            hostModel.ChooseCard(sunfesCard);
+            // 等待player pass与出牌
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            hostModel.Pass();
+            // host出牌
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            hostModel.ChooseCard(roleCard);
+            Assert.AreEqual(CardLocation.None, sunfesCard.cardLocation);
+            Assert.AreEqual(5, hostModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(10, hostModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        Thread playerThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = playerModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = playerModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 木管英雄牌（10）
+            List<int> playerInfoIdList = new List<int> { 2005 };
+            playerModel.SetBackupCardInfoIdList(playerInfoIdList);
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            playerModel.DrawInitHandCard();
+            playerModel.ReDrawInitHandCard();
+            // 开始对局
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            playerModel.Pass();
+            // player出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(10, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(5, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        hostThread.Start();
+        playerThread.Start();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
+    }
+
+    // 测试清除天气
+    [UnityTest]
+    public IEnumerator WeatherClear()
+    {
+        // host 先手
+        SetIsHostFirst(true);
+        Thread hostThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 普通木管牌（5），sunfes
+            List<int> hostInfoIdList = new List<int> { 2002, 5003 };
+            // backup
+            hostModel.SetBackupCardInfoIdList(hostInfoIdList);
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            // draw card
+            hostModel.DrawInitHandCard();
+            hostModel.ReDrawInitHandCard();
+            CardModel roleCard;
+            CardModel sunfesCard;
+            if (selfHandRowAreaModel.cardList[0].cardInfo.ability == CardAbility.SunFes) {
+                roleCard = selfHandRowAreaModel.cardList[1];
+                sunfesCard = selfHandRowAreaModel.cardList[0];
+            } else {
+                roleCard = selfHandRowAreaModel.cardList[0];
+                sunfesCard = selfHandRowAreaModel.cardList[1];
+            }
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // 开始对局
+            // host出牌，打出天气牌
+            hostModel.ChooseCard(sunfesCard);
+            // 等待player出牌
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // host出牌
+            hostModel.ChooseCard(roleCard);
+            Assert.AreEqual(CardLocation.None, sunfesCard.cardLocation);
+            Assert.AreEqual(5, hostModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(0, hostModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        Thread playerThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = playerModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = playerModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 清除天气牌
+            List<int> playerInfoIdList = new List<int> { 5006 };
+            playerModel.SetBackupCardInfoIdList(playerInfoIdList);
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            playerModel.DrawInitHandCard();
+            playerModel.ReDrawInitHandCard();
+            // 开始对局
+            // player出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(0, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(5, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        hostThread.Start();
+        playerThread.Start();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
+    }
+
+    // 测试指导老师
+    [UnityTest]
+    public IEnumerator HornUtil()
+    {
+        // host先手
+        SetIsHostFirst(true);
+        Thread hostThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 普通木管牌（5），horn util
+            List<int> hostInfoIdList = new List<int> { 2002, 5008 };
+            // backup
+            hostModel.SetBackupCardInfoIdList(hostInfoIdList);
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            // draw card
+            hostModel.DrawInitHandCard();
+            hostModel.ReDrawInitHandCard();
+            CardModel roleCard;
+            CardModel hornUtilCard;
+            if (selfHandRowAreaModel.cardList[0].cardInfo.ability == CardAbility.HornUtil) {
+                roleCard = selfHandRowAreaModel.cardList[1];
+                hornUtilCard = selfHandRowAreaModel.cardList[0];
+            } else {
+                roleCard = selfHandRowAreaModel.cardList[0];
+                hornUtilCard = selfHandRowAreaModel.cardList[1];
+            }
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // 开始对局
+            // host出牌
+            hostModel.ChooseCard(roleCard);
+            // 等待player出牌
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // host出牌
+            hostModel.ChooseCard(hornUtilCard);
+            hostModel.ChooseHornUtilArea(hostModel.selfSinglePlayerAreaModel.woodRowAreaModel);
+            Assert.AreEqual(CardLocation.BattleArea, hornUtilCard.cardLocation);
+            Assert.AreEqual(10, hostModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(10, hostModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        Thread playerThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = playerModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = playerModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 木管英雄牌（10）
+            List<int> playerInfoIdList = new List<int> { 2005 };
+            playerModel.SetBackupCardInfoIdList(playerInfoIdList);
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            playerModel.DrawInitHandCard();
+            playerModel.ReDrawInitHandCard();
+            // 开始对局
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // player出牌
+            playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(10, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(10, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        hostThread.Start();
+        playerThread.Start();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
+    }
+
+    // 测试指导老师：单局结束后需要清除
+    [UnityTest]
+    public IEnumerator HornUtilSetFinish()
+    {
+        // host先手
+        SetIsHostFirst(true);
+        Thread hostThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 普通木管牌（5），horn util
+            List<int> hostInfoIdList = new List<int> { 2002, 5008 };
+            // backup
+            hostModel.SetBackupCardInfoIdList(hostInfoIdList);
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            // draw card
+            hostModel.DrawInitHandCard();
+            hostModel.ReDrawInitHandCard();
+            CardModel roleCard;
+            CardModel hornUtilCard;
+            if (selfHandRowAreaModel.cardList[0].cardInfo.ability == CardAbility.HornUtil) {
+                roleCard = selfHandRowAreaModel.cardList[1];
+                hornUtilCard = selfHandRowAreaModel.cardList[0];
+            } else {
+                roleCard = selfHandRowAreaModel.cardList[0];
+                hornUtilCard = selfHandRowAreaModel.cardList[1];
+            }
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // 开始对局
+            // host出牌
+            hostModel.ChooseCard(hornUtilCard);
+            hostModel.ChooseHornUtilArea(hostModel.selfSinglePlayerAreaModel.woodRowAreaModel);
+            // host pass
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            hostModel.Pass();
+            // host出牌
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            hostModel.ChooseCard(roleCard);
+            Assert.AreEqual(CardLocation.None, hornUtilCard.cardLocation);
+            Assert.AreEqual(5, hostModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(10, hostModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        Thread playerThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = playerModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = playerModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 木管英雄牌（10）
+            List<int> playerInfoIdList = new List<int> { 2005 };
+            playerModel.SetBackupCardInfoIdList(playerInfoIdList);
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            playerModel.DrawInitHandCard();
+            playerModel.ReDrawInitHandCard();
+            // 开始对局
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // player pass
+            playerModel.Pass();
+            // player出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(10, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(5, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        hostThread.Start();
+        playerThread.Start();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
+    }
+
+    // 测试指导老师，技能流程中断
+    [UnityTest]
+    public IEnumerator HornUtilInterrupt()
+    {
+        // host先手
+        SetIsHostFirst(true);
+        Thread hostThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 普通木管牌（5），horn util
+            List<int> hostInfoIdList = new List<int> { 2002, 5008 };
+            // backup
+            hostModel.SetBackupCardInfoIdList(hostInfoIdList);
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            // draw card
+            hostModel.DrawInitHandCard();
+            hostModel.ReDrawInitHandCard();
+            CardModel roleCard;
+            CardModel hornUtilCard;
+            if (selfHandRowAreaModel.cardList[0].cardInfo.ability == CardAbility.HornUtil) {
+                roleCard = selfHandRowAreaModel.cardList[1];
+                hornUtilCard = selfHandRowAreaModel.cardList[0];
+            } else {
+                roleCard = selfHandRowAreaModel.cardList[0];
+                hornUtilCard = selfHandRowAreaModel.cardList[1];
+            }
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // 开始对局
+            // host出牌
+            hostModel.ChooseCard(roleCard);
+            // 等待player出牌
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // host出牌
+            hostModel.ChooseCard(hornUtilCard);
+            hostModel.InterruptAction();
+            Assert.AreEqual(CardLocation.None, hornUtilCard.cardLocation);
+            Assert.AreEqual(PlayStateTracker.State.WAIT_ENEMY_ACTION, hostModel.tracker.curState);
+            Assert.AreEqual(PlayStateTracker.ActionState.None, hostModel.tracker.actionState);
+            Assert.AreEqual(5, hostModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(10, hostModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        Thread playerThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = playerModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = playerModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 木管英雄牌（10）
+            List<int> playerInfoIdList = new List<int> { 2005 };
+            playerModel.SetBackupCardInfoIdList(playerInfoIdList);
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            playerModel.DrawInitHandCard();
+            playerModel.ReDrawInitHandCard();
+            // 开始对局
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // player出牌
+            playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(10, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(5, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        hostThread.Start();
+        playerThread.Start();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
+    }
+
+    // 测试指挥牌
+    [UnityTest]
+    public IEnumerator Leader()
+    {
+        // host先手
+        SetIsHostFirst(true);
+        Thread hostThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 普通木管牌（5），sunfes指挥牌
+            List<int> hostInfoIdList = new List<int> { 2002, 5010 };
+            // backup
+            hostModel.SetBackupCardInfoIdList(hostInfoIdList);
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            // draw card
+            hostModel.DrawInitHandCard();
+            hostModel.ReDrawInitHandCard();
+            CardModel roleCard = selfHandRowAreaModel.cardList[0];
+            CardModel leaderCard = hostModel.selfSinglePlayerAreaModel.leaderCardAreaModel.cardList[0];
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(CardLocation.LeaderCardArea, leaderCard.cardLocation);
+            // 开始对局
+            // host出牌
+            hostModel.ChooseCard(roleCard);
+            // 等待player出牌
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // host出牌，打出天气牌
+            hostModel.ChooseCard(leaderCard);
+            Assert.AreEqual(CardLocation.WeatherCardArea, leaderCard.cardLocation);
+            Assert.AreEqual(1, hostModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(10, hostModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        Thread playerThread = new Thread(() => {
+            HandRowAreaModel selfHandRowAreaModel = playerModel.selfSinglePlayerAreaModel.handRowAreaModel;
+            HandRowAreaModel enemyHandRowAreaModel = playerModel.enemySinglePlayerAreaModel.handRowAreaModel;
+            // 木管英雄牌（10）
+            List<int> playerInfoIdList = new List<int> { 2005 };
+            playerModel.SetBackupCardInfoIdList(playerInfoIdList);
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+            playerModel.DrawInitHandCard();
+            playerModel.ReDrawInitHandCard();
+            // 开始对局
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            // player出牌
+            playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
+            // 等待host出牌
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(10, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(1, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
+        });
+        hostThread.Start();
+        playerThread.Start();
+        while (hostThread.IsAlive) {
+            yield return null;
+        }
+        while (playerThread.IsAlive) {
+            yield return null;
+        }
     }
 }

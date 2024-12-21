@@ -32,6 +32,9 @@ public enum CardAbility // TODO: 完善
     SunFes, // 日升祭：参加SunFes，令双方所有木管乐器吹奏能力降为1。
     Daisangakushou, // 第三乐章：演奏《利兹与青鸟》第三乐章，令双方所有铜管乐器吹奏能力降为1。
     Drumstick, // 忘带鼓槌：令双方所有打击乐器吹奏能力降为1。
+    ClearWeather, // 清除天气：消除所有天气影响。
+    HornUtil, // 指导老师: 使同一行内所有部员吹奏实力翻倍。
+    HornBrass, // 铜管指导：使铜管乐器部员吹奏实力翻倍
 }
 
 public enum CardType
@@ -39,6 +42,7 @@ public enum CardType
     Normal = 0,
     Hero,
     Util,
+    Leader,
 }
 
 public struct CardInfo
@@ -99,8 +103,8 @@ public enum CardLocation
     HandArea, // 手牌区
     DiscardArea, // 弃牌区
     BattleArea, // 对战区
-    SelfBattleArea, // 本方对战区
-    EnemyBattleArea, // 对方对战区
+    WeatherCardArea, // 天气牌区域
+    LeaderCardArea, // 指挥牌区
 }
 
 // buff类型，明确记录增减益效果来源

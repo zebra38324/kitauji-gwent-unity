@@ -6,7 +6,6 @@ using TMPro;
 
 public class PlayStatAreaView : MonoBehaviour
 {
-    private static string TAG = "PlayStatAreaView";
     public GameObject frame;
     public GameObject playerName;
     public GameObject handCardNum;
@@ -57,7 +56,7 @@ public class PlayStatAreaView : MonoBehaviour
 
     private void UpdateCountDown()
     {
-        if (!playSceneModel.IsTurn(isSelf)) {
+        if (playSceneModel == null || playSceneModel.tracker == null || !playSceneModel.IsTurn(isSelf)) {
             return;
         }
         long remainSecond = (PlayStateTracker.TURN_TIME - (KTime.CurrentMill() - playSceneModel.tracker.stateChangeTs)) / 1000;

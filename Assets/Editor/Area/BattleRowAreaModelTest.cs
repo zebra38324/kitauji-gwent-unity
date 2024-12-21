@@ -254,4 +254,32 @@ public class BattleRowAreaModelTest
         Assert.AreEqual(brassMoraleCard.cardInfo.originPower, brassMoraleCard.currentPower);
         Assert.AreEqual(brassHornCard.cardInfo.originPower, brassHornCard.currentPower);
     }
+
+    // 测试horn util
+    [Test]
+    public void HornUtil()
+    {
+        BattleRowAreaModel battleRowAreaModel = new BattleRowAreaModel(CardBadgeType.Brass);
+        CardModel brassHeroCard = TestGenCards.GetCard(2040); // medic hero(9)
+        CardModel brassNormalCard = TestGenCards.GetCard(2024); // normal(4)
+        CardModel brassHornCard = TestGenCards.GetCard(2036); // horn(2)
+        CardModel hornUtilCard = TestGenCards.GetCard(5008); // horn util
+
+        battleRowAreaModel.AddCard(brassHeroCard);
+        battleRowAreaModel.AddCard(brassNormalCard);
+        battleRowAreaModel.AddCard(brassHornCard);
+        battleRowAreaModel.AddCard(hornUtilCard);
+        int expectPower = brassHeroCard.cardInfo.originPower +
+            brassNormalCard.cardInfo.originPower * 3 +
+            brassHornCard.cardInfo.originPower * 2;
+        Assert.AreEqual(expectPower, battleRowAreaModel.GetCurrentPower());
+
+        // 移除所有牌
+        battleRowAreaModel.RemoveAllCard();
+        Assert.AreEqual(0, battleRowAreaModel.GetCurrentPower());
+        Assert.AreEqual(0, battleRowAreaModel.hornUtilCardArea.cardList.Count);
+        Assert.AreEqual(brassHeroCard.cardInfo.originPower, brassHeroCard.currentPower);
+        Assert.AreEqual(brassNormalCard.cardInfo.originPower, brassNormalCard.currentPower);
+        Assert.AreEqual(brassHornCard.cardInfo.originPower, brassHornCard.currentPower);
+    }
 }

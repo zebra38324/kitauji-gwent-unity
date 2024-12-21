@@ -22,6 +22,9 @@ public class SinglePlayerAreaModel
 
     public BattleRowAreaModel percussionRowAreaModel { get; private set; }
 
+    // 指挥牌
+    public SingleCardRowAreaModel leaderCardAreaModel { get; private set; }
+
     private CardGenerator cardGenerator;
 
     public SinglePlayerAreaModel(bool isHost = true)
@@ -33,6 +36,7 @@ public class SinglePlayerAreaModel
         woodRowAreaModel = new BattleRowAreaModel(CardBadgeType.Wood);
         brassRowAreaModel = new BattleRowAreaModel(CardBadgeType.Brass);
         percussionRowAreaModel = new BattleRowAreaModel(CardBadgeType.Percussion);
+        leaderCardAreaModel = new SingleCardRowAreaModel();
         cardGenerator = new CardGenerator(isHost); // TODO: 应有个统一管理处，设置是server还是client
     }
 
@@ -42,10 +46,17 @@ public class SinglePlayerAreaModel
     {
         for (int i = 0; i < infoIdList.Count; i++) {
             // 所有备选卡牌生成CardModel并存储
+            CardModel card = null;
             if (idList != null) {
-                backupCardList.Add(cardGenerator.GetCard(infoIdList[i], idList[i]));
+                card = cardGenerator.GetCard(infoIdList[i], idList[i]);
             } else {
-                backupCardList.Add(cardGenerator.GetCard(infoIdList[i]));
+                card = cardGenerator.GetCard(infoIdList[i]);
+            }
+            if (card.cardInfo.cardType == CardType.Leader) {
+                card.cardLocation = CardLocation.LeaderCardArea;
+                leaderCardAreaModel.AddCard(card);
+            } else {
+                backupCardList.Add(card);
             }
         }
     }
@@ -130,6 +141,10 @@ public class SinglePlayerAreaModel
                 ApplyMuster(card.cardInfo.musterType);
                 break;
             }
+            case CardAbility.HornBrass: {
+                brassRowAreaModel.AddCard(card);
+                break;
+            }
             default: {
                 break;
             }
@@ -205,6 +220,10 @@ public class SinglePlayerAreaModel
             return card;
         }
         card = discardAreaModel.cardList.Find(o => { return o.cardInfo.id == id; });
+        if (card != null) {
+            return card;
+        }
+        card = leaderCardAreaModel.cardList.Find(o => { return o.cardInfo.id == id; });
         return card;
     }
 

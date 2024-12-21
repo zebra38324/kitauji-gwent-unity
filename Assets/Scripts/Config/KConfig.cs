@@ -24,7 +24,11 @@ public class KConfig
     public List<int> GetBattleCardInfoIdList()
     {
         // List<int> cardInfoIdList = new List<int>();
-        List<int> cardInfoIdList = Enumerable.Range(2001, 15).ToList();
+        List<int> cardInfoIdList = Enumerable.Range(2001, 7).ToList();
+        cardInfoIdList.Add(2036);
+        cardInfoIdList.Add(2037);
+        cardInfoIdList.Add(5009);
+        cardInfoIdList.Add(2080);
         return cardInfoIdList;
     }
 }

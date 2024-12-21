@@ -1,7 +1,8 @@
 ﻿using NUnit.Framework;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
+using System.Collections;
+using UnityEngine.TestTools;
+using UnityEngine;
 
 public class BattleModelTest
 {
@@ -61,18 +62,18 @@ public class BattleModelTest
     }
 
     // 测试初始化
-    [Test]
-    public void Init()
+    [UnityTest]
+    public IEnumerator Init()
     {
         List<int> infoIdList = new List<int> { 2001, 2002 };
         List<int> idList = new List<int> { 11, 21 };
         battleModel.AddSelfActionMsg(BattleModel.ActionType.Init, infoIdList, idList);
-        Thread.Sleep(30); // 等待异步执行完成
+        yield return new WaitForSecondsRealtime(0.03f); // 等待异步执行完成
 
         // 消息原路返回，测试序列化、反序列化是否正常
         Assert.AreNotEqual(null, testActionMsgStr);
         battleModel.AddEnemyActionMsg(testActionMsgStr);
-        Thread.Sleep(30); // 等待异步执行完成
+        yield return new WaitForSecondsRealtime(0.03f); // 等待异步执行完成
         Assert.AreEqual(2, testInfoIdList.Count);
         Assert.AreEqual(infoIdList[0], testInfoIdList[0]);
         Assert.AreEqual(infoIdList[1], testInfoIdList[1]);

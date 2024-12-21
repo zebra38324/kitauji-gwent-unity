@@ -79,6 +79,7 @@ public class PlayStateTracker
         ATTACKING, // 正在使用攻击技能中
         MEDICING, // 正在使用复活技能中
         DECOYING, // 正在使用大号君技能中
+        HORN_UTILING, // 正在使用HornUtil技能中
     }
 
     public ActionState actionState { get; private set; }
@@ -297,7 +298,8 @@ public class PlayStateTracker
             }
             case ActionState.ATTACKING:
             case ActionState.MEDICING:
-            case ActionState.DECOYING: {
+            case ActionState.DECOYING:
+            case ActionState.HORN_UTILING: {
                 if (newActionState != ActionState.None) {
                     valid = false;
                 }

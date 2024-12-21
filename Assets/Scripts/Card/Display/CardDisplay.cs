@@ -97,7 +97,7 @@ public class CardDisplay : MonoBehaviour,
             frame.SetActive(false);
         }
 
-        if (cardModel.cardInfo.cardType == CardType.Util) {
+        if (cardModel.cardInfo.cardType == CardType.Util || cardModel.cardInfo.cardType == CardType.Leader) {
             InitUtilCardUI();
         } else {
             InitRoleCardUI();
@@ -250,6 +250,12 @@ public class CardDisplay : MonoBehaviour,
                 return "daisangakushou";
             case CardAbility.Drumstick:
                 return "drumstick";
+            case CardAbility.ClearWeather:
+                return "clear-weather";
+            case CardAbility.HornUtil:
+                return "horn";
+            case CardAbility.HornBrass:
+                return "horn";
             default: // None
                 return "none";
         }

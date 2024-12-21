@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 /**
@@ -18,6 +18,7 @@ using UnityEngine;
  *              2) pass。将信息发送至对方
  *              3) 抽取手牌。将抽到手牌的id发送至对方
  *              4) 由于各种原因，中止了技能流程，不pass但流转出牌方
+ *              5) 选择horn util牌的区域
  *      消息发送方式：
  *          1. 调用BattleModel接口，将信息设置到发送队列中
  *          2. BattleModel的发送线程定期轮询，将发送队列的信息发送出去
@@ -39,6 +40,14 @@ public class BattleModel
         ChooseCard, // 选择卡牌。data: id
         Pass, // 过牌。data: null
         InterruptAction, // 中断技能流程。data: null
+        ChooseHornUtilArea, // 选择horn util区域。data: hornUtilAreaType
+    }
+
+    public enum HornUtilAreaType
+    {
+        Wood = 0,
+        Brass,
+        Percussion,
     }
 
     private struct ActionMsg
@@ -47,6 +56,7 @@ public class BattleModel
         public List<int> infoIdList;
         public List<int> idList;
         public bool hostFirst; // 第一局游戏，是否由host先手
+        public HornUtilAreaType hornUtilAreaType;
     }
 
     public BattleModel(bool isHost = true)
@@ -54,32 +64,17 @@ public class BattleModel
         TAG += isHost ? "-Host" : "-Player";
         sendQueue = new ConcurrentQueue<ActionMsg>();
         receiveQueue = new ConcurrentQueue<ActionMsg>();
-        sendThread = new Thread(() => {
-            SendThreadFunc();
-        });
-        sendThread.Start();
-        receiveThread = new Thread(() => {
-            ReceiveThreadFunc();
-        });
-        receiveThread.Start();
+        SendCoroutine();
+        ReceiveCoroutine();
     }
 
-    ~BattleModel()
+    public void Release()
     {
+        KLog.I(TAG, "Release");
         isAbort = true;
-        if (sendThread.IsAlive) {
-            sendThread.Join();
-            sendThread = null;
-        }
-        if (receiveThread.IsAlive) {
-            receiveThread.Join();
-            receiveThread = null;
-        }
     }
 
     private bool isAbort = false;
-    private Thread sendThread = null;
-    private Thread receiveThread = null;
 
     private ConcurrentQueue<ActionMsg> sendQueue; // 发送队列
     public delegate void SendToEnemyFuncHandler(string actionMsgStr);
@@ -116,6 +111,10 @@ public class BattleModel
             case ActionType.Pass: {
                 break;
             }
+            case ActionType.ChooseHornUtilArea: {
+                actionMsg.hornUtilAreaType = (HornUtilAreaType)list[0];
+                break;
+            }
         }
         sendQueue.Enqueue(actionMsg);
     }
@@ -127,11 +126,12 @@ public class BattleModel
         KLog.I(TAG, "AddEnemyActionMsg: " + actionMsgStr);
     }
 
-    private void SendThreadFunc()
+    private async void SendCoroutine()
     {
+        KLog.I(TAG, "SendCoroutine start");
         while (!isAbort) {
             if (sendQueue.Count == 0) {
-                Thread.Sleep(10);
+                await UniTask.Delay(1);
                 continue;
             }
             ActionMsg actionMsg;
@@ -144,13 +144,15 @@ public class BattleModel
                 SendToEnemyFunc(actionMsgStr);
             }
         }
+        KLog.I(TAG, "SendCoroutine end");
     }
 
-    private void ReceiveThreadFunc()
+    private async void ReceiveCoroutine()
     {
+        KLog.I(TAG, "ReceiveCoroutine start");
         while (!isAbort) {
             if (receiveQueue.Count == 0) {
-                Thread.Sleep(10);
+                await UniTask.Delay(1);
                 continue;
             }
             ActionMsg actionMsg;
@@ -180,8 +182,13 @@ public class BattleModel
                         EnemyMsgCallback(actionMsg.actionType);
                         break;
                     }
+                    case ActionType.ChooseHornUtilArea: {
+                        EnemyMsgCallback(actionMsg.actionType, actionMsg.hornUtilAreaType);
+                        break;
+                    }
                 }
             }
         }
+        KLog.I(TAG, "ReceiveCoroutine end");
     }
 }

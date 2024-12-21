@@ -20,6 +20,9 @@ public class PlaySceneManager : MonoBehaviour
         ChooseCard, // 选择卡牌
         ClickPass, // 点击pass按钮
         ReDrawInitHandCard, // 重抽初始手牌
+        ClickHornAreaViewButton, // 选择horn area
+        ShowHornAreaViewButton,
+        HideHornAreaViewButton,
     }
 
     private GameObject discardArea;
@@ -31,6 +34,7 @@ public class PlaySceneManager : MonoBehaviour
     private GameObject actionTextAreaView;
     private GameObject actionToastAreaView;
     private GameObject gameFinishAreaView;
+    private GameObject weatherCardAreaView;
 
     private GameObject cardPrefab;
 
@@ -56,8 +60,11 @@ public class PlaySceneManager : MonoBehaviour
         actionTextAreaView = null;
         actionToastAreaView = null;
         gameFinishAreaView = null;
+        weatherCardAreaView = null;
         cardPrefab = null;
+        playSceneModel.Release();
         playSceneModel = null;
+        playSceneAI.Release();
         playSceneAI = null;
         CardViewCollection.Instance.Clear();
     }
@@ -93,6 +100,10 @@ public class PlaySceneManager : MonoBehaviour
         if (gameFinishAreaView  == null) {
             gameFinishAreaView = GameObject.Find("Canvas/Background/GameFinishArea");
         }
+        if (weatherCardAreaView == null) {
+            weatherCardAreaView = GameObject.Find("Canvas/Background/WeatherCardArea");
+        }
+
 
         // 配置AI模块
         playSceneAI = new PlaySceneAI();
@@ -145,6 +156,11 @@ public class PlaySceneManager : MonoBehaviour
                     } else if (discardArea.GetComponent<DiscardAreaView>().model != null) {
                         HandleMessage(PlaySceneMsg.HideDiscardArea);
                     }
+                    // 选择指导老师的行
+                    if (playSceneModel.tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION &&
+                        playSceneModel.tracker.actionState == PlayStateTracker.ActionState.HORN_UTILING) {
+                        HandleMessage(PlaySceneMsg.ShowHornAreaViewButton);
+                    }
                     UpdateUI();
                 }
                 break;
@@ -159,6 +175,27 @@ public class PlaySceneManager : MonoBehaviour
             }
             case PlaySceneMsg.ReDrawInitHandCard: {
                 playSceneModel.ReDrawInitHandCard();
+                break;
+            }
+            case PlaySceneMsg.ClickHornAreaViewButton: {
+                BattleRowAreaModel battleRowAreaModel = (BattleRowAreaModel)list[0];
+                playSceneModel.ChooseHornUtilArea(battleRowAreaModel);
+                HandleMessage(PlaySceneMsg.HideHornAreaViewButton);
+                UpdateUI();
+                break;
+            }
+            case PlaySceneMsg.ShowHornAreaViewButton: {
+                // 显示按钮
+                selfPlayArea.GetComponent<SinglePlayerAreaView>().woodRow.GetComponent<BattleRowAreaView>().ShowHornAreaViewButton();
+                selfPlayArea.GetComponent<SinglePlayerAreaView>().brassRow.GetComponent<BattleRowAreaView>().ShowHornAreaViewButton();
+                selfPlayArea.GetComponent<SinglePlayerAreaView>().percussionRow.GetComponent<BattleRowAreaView>().ShowHornAreaViewButton();
+                break;
+            }
+            case PlaySceneMsg.HideHornAreaViewButton: {
+                // 隐藏按钮
+                selfPlayArea.GetComponent<SinglePlayerAreaView>().woodRow.GetComponent<BattleRowAreaView>().HideHornAreaViewButton();
+                selfPlayArea.GetComponent<SinglePlayerAreaView>().brassRow.GetComponent<BattleRowAreaView>().HideHornAreaViewButton();
+                selfPlayArea.GetComponent<SinglePlayerAreaView>().percussionRow.GetComponent<BattleRowAreaView>().HideHornAreaViewButton();
                 break;
             }
         }
@@ -194,6 +231,7 @@ public class PlaySceneManager : MonoBehaviour
         actionTextAreaView.GetComponent<ActionTextAreaView>().actionTextModel = playSceneModel.actionTextModel;
         actionToastAreaView.GetComponent<ActionToastAreaView>().actionTextModel = playSceneModel.actionTextModel;
         gameFinishAreaView.GetComponent<GameFinishAreaView>().tracker = playSceneModel.tracker;
+        weatherCardAreaView.GetComponent<WeatherCardAreaView>().weatherCardAreaModel = playSceneModel.weatherCardAreaModel;
         UpdateUI();
     }
 
@@ -208,6 +246,7 @@ public class PlaySceneManager : MonoBehaviour
             initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().Close();
         }
         actionTextAreaView.GetComponent<ActionTextAreaView>().UpdateUI();
+        weatherCardAreaView.GetComponent<WeatherCardAreaView>().UpdateUI();
     }
 
     // 监听playSceneModel的状态，状态变化时更新UI
@@ -231,7 +270,11 @@ public class PlaySceneManager : MonoBehaviour
                     playSceneModel.Pass();
                 } else if (playSceneModel.tracker.actionState == PlayStateTracker.ActionState.MEDICING) {
                     HandleMessage(PlaySceneMsg.HideDiscardArea);
-                } else if (playSceneModel.tracker.actionState == PlayStateTracker.ActionState.ATTACKING) {
+                } else if (playSceneModel.tracker.actionState == PlayStateTracker.ActionState.HORN_UTILING) {
+                    HandleMessage(PlaySceneMsg.HideHornAreaViewButton);
+                    playSceneModel.InterruptAction();
+                }  else if (playSceneModel.tracker.actionState == PlayStateTracker.ActionState.ATTACKING ||
+                    playSceneModel.tracker.actionState == PlayStateTracker.ActionState.DECOYING) {
                     playSceneModel.InterruptAction();
                 }
                 UpdateUI();

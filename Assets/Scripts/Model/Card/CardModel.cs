@@ -22,7 +22,7 @@ public class CardModel
         }
         set {
             cardLocation_ = value;
-            if (cardLocation_ == CardLocation.HandArea) {
+            if (cardLocation_ == CardLocation.HandArea || cardLocation_ == CardLocation.LeaderCardArea) {
                 selectType = CardSelectType.PlayCard;
             } else if (cardLocation_ == CardLocation.InitHandArea) {
                 selectType = CardSelectType.ReDrawHandCard;

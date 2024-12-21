@@ -5,7 +5,8 @@
 原项目使用js构建，本项目为其unity重置版，目前属于自娱自乐的阶段。
 
 ## 环境配置
-Windows, Unity 2021.3.25f1c1
+Windows, Unity 2022.3.50f1c1
+
 
 
 

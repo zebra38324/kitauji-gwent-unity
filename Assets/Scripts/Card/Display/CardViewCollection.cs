@@ -6,8 +6,6 @@ using UnityEngine;
  */
 public class CardViewCollection
 {
-    private static string TAG = "CardViewCollection";
-
     private static readonly CardViewCollection instance = new CardViewCollection();
 
     static CardViewCollection() { }

@@ -9,4 +9,10 @@ public class KTime
         long ts = ((DateTimeOffset)(DateTime.Now)).ToUnixTimeMilliseconds();
         return ts;
     }
+
+    // 获取当前毫秒时间，格式"yyyy-MM-dd HH:mm:ss.fff"
+    public static string CurrentFormatMill()
+    {
+        return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+    }
 }

@@ -6,7 +6,6 @@ using UnityEngine.EventSystems;
 // 打出的牌所在区域，一个RowArea为一排，包括这一排的分数、指挥牌、普通牌
 public class DiscardAreaView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    private static string TAG = "DiscardAreaView";
     public GameObject row0;
     public GameObject row1;
     public GameObject row2;

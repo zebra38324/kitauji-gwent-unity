@@ -54,6 +54,76 @@
             "ability": "Drumstick",
             "cardType": "Util",
             "quote": "“说是把最大的鼓槌忘在活动室了。”"
+        },
+        {
+            "infoId": 5006,
+            "imageName": "origin-image-daikichiyama",
+            "chineseName": "大吉山",
+            "englishName": "Daikichiyama",
+            "group": "Neutral",
+            "ability": "ClearWeather",
+            "cardType": "Util",
+            "quote": "“地面看起来好像星空！”"
+        },
+        {
+            "infoId": 5007,
+            "imageName": "origin-image-pool",
+            "chineseName": "泳池",
+            "englishName": "Pool",
+            "group": "Neutral",
+            "ability": "ClearWeather",
+            "cardType": "Util",
+            "quote": "“去了好多学姐，紧张死了！”"
+        },
+        {
+            "infoId": 5008,
+            "imageName": "origin-image-niiyama",
+            "chineseName": "新山老师",
+            "englishName": "Niiyama",
+            "group": "Neutral",
+            "ability": "HornUtil",
+            "cardType": "Util",
+            "quote": "“要不再来一次吧？”"
+        },
+        {
+            "infoId": 5009,
+            "imageName": "origin-image-hashimoto",
+            "chineseName": "桥本老师",
+            "englishName": "Hashimoto",
+            "group": "Neutral",
+            "ability": "HornUtil",
+            "cardType": "Util",
+            "quote": "“想了解阿泷的话，\n就尽管来问我吧！”"
+        },
+        {
+            "infoId": 5010,
+            "imageName": "origin-image-matsumoto_michie",
+            "chineseName": "松本美知惠",
+            "englishName": "Matsumoto Michie",
+            "group": "Neutral",
+            "ability": "SunFes",
+            "cardType": "Leader",
+            "quote": "“这裙子长度是怎么回事，\n赶快弄回原样！”"
+        },
+        {
+            "infoId": 5011,
+            "imageName": "origin-image-taki_noboru",
+            "chineseName": "泷升",
+            "englishName": "Taki Noboru",
+            "group": "Neutral",
+            "ability": "Daisangakushou",
+            "cardType": "Leader",
+            "quote": "“这是什么情况？”"
+        },
+        {
+            "infoId": 5012,
+            "imageName": "origin-image-taki_chihiro",
+            "chineseName": "泷千寻",
+            "englishName": "Taki Chihiro",
+            "group": "Neutral",
+            "ability": "ClearWeather",
+            "cardType": "Leader",
+            "quote": "意大利白向日葵的花语是：\n我一直思念着你"
         }
     ]
 }

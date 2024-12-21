@@ -5,11 +5,27 @@ using UnityEngine;
  */
 public class BattleRowAreaModel : RowAreaModel
 {
+    private bool hasWeatherBuff_;
+    public bool hasWeatherBuff {
+        get {
+            return hasWeatherBuff_;
+        }
+        set {
+            hasWeatherBuff_ = value;
+            UpdateWeatherBuff();
+        }
+    }
+
+    // 指导老师牌
+    public SingleCardRowAreaModel hornUtilCardArea { get; private set; }
+
     CardBadgeType rowType = CardBadgeType.None;
 
     public BattleRowAreaModel(CardBadgeType rowType)
     {
         this.rowType = rowType;
+        hasWeatherBuff = false;
+        hornUtilCardArea = new SingleCardRowAreaModel();
     }
 
     public override void AddCardList(List<CardModel> newCardList)
@@ -23,8 +39,12 @@ public class BattleRowAreaModel : RowAreaModel
 
     public override void AddCard(CardModel card)
     {
+        if (card.cardInfo.ability == CardAbility.HornUtil || card.cardInfo.ability == CardAbility.HornBrass) {
+            hornUtilCardArea.AddCard(card);
+        } else {
+            base.AddCard(card);
+        }
         card.cardLocation = CardLocation.BattleArea;
-        base.AddCard(card);
         UpdateBuff();
     }
 
@@ -41,6 +61,7 @@ public class BattleRowAreaModel : RowAreaModel
             card.RemoveAllBuff();
         }
         base.RemoveAllCard();
+        hornUtilCardArea.RemoveAllCard();
         UpdateBuff();
     }
 
@@ -85,6 +106,7 @@ public class BattleRowAreaModel : RowAreaModel
     {
         UpdateMoraleBuff();
         UpdateHornBuff();
+        UpdateWeatherBuff();
     }
 
     private void UpdateMoraleBuff()
@@ -112,11 +134,25 @@ public class BattleRowAreaModel : RowAreaModel
                 hornCount++;
             }
         }
+        if (hornUtilCardArea.cardList.Count > 0) {
+            hornCount += 1;
+        }
         foreach (CardModel card in cardList) {
             if (card.cardInfo.ability != CardAbility.Horn) {
                 card.SetBuff(CardBuffType.Horn, hornCount);
             } else if (hornCount > 0) {
                 card.SetBuff(CardBuffType.Horn, hornCount - 1);
+            }
+        }
+    }
+
+    private void UpdateWeatherBuff()
+    {
+        foreach (CardModel card in cardList) {
+            if (hasWeatherBuff) {
+                card.SetBuff(CardBuffType.Weather, 1);
+            } else {
+                card.RemoveBuff(CardBuffType.Weather);
             }
         }
     }

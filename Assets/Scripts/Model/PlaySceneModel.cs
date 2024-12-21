@@ -30,6 +30,19 @@ public class PlaySceneModel
         string enemyName = isHost ? "Player" : "Host";
         tracker = new PlayStateTracker(isHost, selfName, enemyName);
         actionTextModel = new ActionTextModel(selfName, enemyName);
+        weatherCardAreaModel = new WeatherCardAreaModel();
+    }
+
+    public void Release()
+    {
+        KLog.I(TAG, "Release");
+        selfSinglePlayerAreaModel = null;
+        enemySinglePlayerAreaModel = null;
+        battleModel.Release();
+        battleModel = null;
+        tracker = null;
+        actionTextModel = null;
+        weatherCardAreaModel = null;
     }
 
     public SinglePlayerAreaModel selfSinglePlayerAreaModel { get; private set; }
@@ -48,9 +61,13 @@ public class PlaySceneModel
 
     private CardModel decoyCard = null; // ActionState.DECOYING时，记录大号君的牌
 
+    private CardModel hornUtilCard = null; // ActionState.HORN_UTILING时，记录指导老师的牌
+
     public PlayStateTracker tracker { get; private set; }
 
     public ActionTextModel actionTextModel { get; private set; }
+
+    public WeatherCardAreaModel weatherCardAreaModel { get; private set; }
 
     private bool isHost;
 
@@ -106,6 +123,22 @@ public class PlaySceneModel
                 InterruptAction(false);
                 break;
             }
+            case BattleModel.ActionType.ChooseHornUtilArea: {
+                BattleModel.HornUtilAreaType hornUtilAreaType = (BattleModel.HornUtilAreaType)list[0];
+                BattleRowAreaModel battleRowAreaModel;
+                if (hornUtilAreaType == BattleModel.HornUtilAreaType.Wood) {
+                    battleRowAreaModel = enemySinglePlayerAreaModel.woodRowAreaModel;
+                } else if (hornUtilAreaType == BattleModel.HornUtilAreaType.Brass) {
+                    battleRowAreaModel = enemySinglePlayerAreaModel.brassRowAreaModel;
+                } else if (hornUtilAreaType == BattleModel.HornUtilAreaType.Percussion) {
+                    battleRowAreaModel = enemySinglePlayerAreaModel.percussionRowAreaModel;
+                } else {
+                    KLog.E(TAG, "EnemyMsgCallback: ChooseHornUtilArea: invalid hornUtilAreaType: " + hornUtilAreaType);
+                    break;
+                }
+                ChooseHornUtilArea(battleRowAreaModel, false);
+                break;
+            }
         }
         hasEnemyUpdate = true;
     }
@@ -125,6 +158,10 @@ public class PlaySceneModel
             foreach (CardModel card in selfSinglePlayerAreaModel.backupCardList) {
                 infoIdList.Add(card.cardInfo.infoId);
                 idList.Add(card.cardInfo.id);
+            }
+            if (selfSinglePlayerAreaModel.leaderCardAreaModel.cardList.Count > 0) {
+                infoIdList.Add(selfSinglePlayerAreaModel.leaderCardAreaModel.cardList[0].cardInfo.infoId);
+                idList.Add(selfSinglePlayerAreaModel.leaderCardAreaModel.cardList[0].cardInfo.id);
             }
             battleModel.AddSelfActionMsg(BattleModel.ActionType.Init, infoIdList, idList);
             return;
@@ -295,6 +332,8 @@ public class PlaySceneModel
             FinishMedic(selfArea);
         } else if (tracker.actionState == PlayStateTracker.ActionState.DECOYING) {
             FinishDecoy(selfArea);
+        } else if (tracker.actionState == PlayStateTracker.ActionState.HORN_UTILING) {
+            FinishHornUtil(selfArea);
         }
         tracker.TransActionState(PlayStateTracker.ActionState.None);
         if (isSelf) {
@@ -304,6 +343,35 @@ public class PlaySceneModel
             tracker.TransState(PlayStateTracker.State.WAIT_SELF_ACTION);
         }
         actionTextModel.InterruptAction(isSelf);
+    }
+
+    public void ChooseHornUtilArea(BattleRowAreaModel battleRowAreaModel, bool isSelf = true)
+    {
+        if (tracker.actionState != PlayStateTracker.ActionState.HORN_UTILING) {
+            KLog.E(TAG, "ChooseHornUtilArea: actionState invalid: " + tracker.actionState + ", isSelf = " + isSelf);
+            return;
+        }
+        SinglePlayerAreaModel selfArea = isSelf ? selfSinglePlayerAreaModel : enemySinglePlayerAreaModel;
+        SinglePlayerAreaModel enemyArea = isSelf ? enemySinglePlayerAreaModel : selfSinglePlayerAreaModel;
+        BattleModel.HornUtilAreaType hornUtilAreaType = BattleModel.HornUtilAreaType.Wood;
+        if (battleRowAreaModel == selfArea.woodRowAreaModel) {
+            selfArea.woodRowAreaModel.AddCard(hornUtilCard);
+            hornUtilAreaType = BattleModel.HornUtilAreaType.Wood;
+        } else if (battleRowAreaModel == selfArea.brassRowAreaModel) {
+            selfArea.brassRowAreaModel.AddCard(hornUtilCard);
+            hornUtilAreaType = BattleModel.HornUtilAreaType.Brass;
+        } else if (battleRowAreaModel == selfArea.percussionRowAreaModel) {
+            selfArea.percussionRowAreaModel.AddCard(hornUtilCard);
+            hornUtilAreaType = BattleModel.HornUtilAreaType.Percussion;
+        }
+        FinishHornUtil(selfArea);
+        tracker.TransActionState(PlayStateTracker.ActionState.None);
+        if (isSelf) {
+            battleModel.AddSelfActionMsg(BattleModel.ActionType.ChooseHornUtilArea, hornUtilAreaType);
+            tracker.TransState(PlayStateTracker.State.WAIT_ENEMY_ACTION);
+        } else {
+            tracker.TransState(PlayStateTracker.State.WAIT_SELF_ACTION);
+        }
     }
 
     private void WillWaitStartGame()
@@ -335,6 +403,10 @@ public class PlaySceneModel
             }
             case CardLocation.DiscardArea: {
                 selfArea.discardAreaModel.RemoveCard(card);
+                break;
+            }
+            case CardLocation.LeaderCardArea: {
+                selfArea.leaderCardAreaModel.RemoveCard(card);
                 break;
             }
             default: {
@@ -373,6 +445,21 @@ public class PlaySceneModel
             case CardAbility.Scorch: {
                 ApplyScorch(selfArea, enemyArea);
                 card.cardLocation = CardLocation.None; // 用完了直接丢入虚空
+                break;
+            }
+            case CardAbility.SunFes:
+            case CardAbility.Daisangakushou:
+            case CardAbility.Drumstick: {
+                ApplyWeather(card);
+                break;
+            }
+            case CardAbility.ClearWeather: {
+                card.cardLocation = CardLocation.None; // 用完了直接丢入虚空
+                RemoveWeather();
+                break;
+            }
+            case CardAbility.HornUtil: {
+                ApplyHornUtil(card, selfArea);
                 break;
             }
             default: {
@@ -596,12 +683,58 @@ public class PlaySceneModel
         decoyCard = null;
     }
 
+    // 应用天气技能
+    private void ApplyWeather(CardModel card)
+    {
+        KLog.I(TAG, "ApplyWeather");
+        weatherCardAreaModel.AddCard(card);
+        // 添加天气buff
+        if (card.cardInfo.ability == CardAbility.SunFes) {
+            selfSinglePlayerAreaModel.woodRowAreaModel.hasWeatherBuff = true;
+            enemySinglePlayerAreaModel.woodRowAreaModel.hasWeatherBuff = true;
+        } else if (card.cardInfo.ability == CardAbility.Daisangakushou) {
+            selfSinglePlayerAreaModel.brassRowAreaModel.hasWeatherBuff = true;
+            enemySinglePlayerAreaModel.brassRowAreaModel.hasWeatherBuff = true;
+        } else if (card.cardInfo.ability == CardAbility.Drumstick) {
+            selfSinglePlayerAreaModel.percussionRowAreaModel.hasWeatherBuff = true;
+            enemySinglePlayerAreaModel.percussionRowAreaModel.hasWeatherBuff = true;
+        }
+    }
+
+    // 移除所有天气牌
+    private void RemoveWeather()
+    {
+        KLog.I(TAG, "RemoveWeather");
+        weatherCardAreaModel.RemoveAllCard();
+        selfSinglePlayerAreaModel.woodRowAreaModel.hasWeatherBuff = false;
+        selfSinglePlayerAreaModel.brassRowAreaModel.hasWeatherBuff = false;
+        selfSinglePlayerAreaModel.percussionRowAreaModel.hasWeatherBuff = false;
+        enemySinglePlayerAreaModel.woodRowAreaModel.hasWeatherBuff = false;
+        enemySinglePlayerAreaModel.brassRowAreaModel.hasWeatherBuff = false;
+        enemySinglePlayerAreaModel.percussionRowAreaModel.hasWeatherBuff = false;
+    }
+
+    // 应用HornUtil技能
+    private void ApplyHornUtil(CardModel card, SinglePlayerAreaModel selfArea)
+    {
+        UpdateActionToast(selfArea, null, "请选择指导老师的目标行");
+        hornUtilCard = card;
+        tracker.TransActionState(PlayStateTracker.ActionState.HORN_UTILING);
+    }
+
+    // 结束HornUtil技能流程
+    private void FinishHornUtil(SinglePlayerAreaModel selfArea)
+    {
+        hornUtilCard = null;
+    }
+
     private void SetFinish()
     {
         int selfScore = selfSinglePlayerAreaModel.GetCurrentPower();
         int enemyScore = enemySinglePlayerAreaModel.GetCurrentPower();
         selfSinglePlayerAreaModel.RemoveAllBattleCard();
         enemySinglePlayerAreaModel.RemoveAllBattleCard();
+        RemoveWeather();
         int lastSet = tracker.curSet;
         tracker.SetFinish(selfScore, enemyScore);
         actionTextModel.SetFinish(tracker.setRecordList[lastSet].result);

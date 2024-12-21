@@ -7,7 +7,6 @@ using TMPro;
 
 public class GameFinishAreaView : MonoBehaviour
 {
-    private static string TAG = "GameFinishAreaView";
 
     public GameObject gameResultTable;
 
