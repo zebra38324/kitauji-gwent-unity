@@ -46,6 +46,7 @@ public class CardViewCollection
         }
         GameObject card = GameObject.Instantiate(cardPrefab);
         card.GetComponent<CardDisplay>().SetCardModel(model);
+        card.GetComponent<CardDisplay>().SendSceneMsgCallback += PlaySceneManager.Instance.HandleMessage;
         return card;
     }
 }

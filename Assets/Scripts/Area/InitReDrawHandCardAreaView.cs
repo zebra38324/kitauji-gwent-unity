@@ -6,6 +6,7 @@ using UnityEngine;
 // 初始化重抽手牌区域的ui展示
 public class InitReDrawHandCardAreaView: MonoBehaviour
 {
+    private static readonly string initTip = "加载中";
     private static readonly string defaultTip = "请在{0:D2}秒内选择0-2张手牌重新抽取";
     private static readonly string waitTip = "请等待对方完成选择";
     public static readonly int MAX_TIME = 30000; // 30秒内完成选择
@@ -21,13 +22,15 @@ public class InitReDrawHandCardAreaView: MonoBehaviour
         set {
             model_ = value;
             cardRow.GetComponent<RowAreaView>().rowAreaModel = model_.initHandRowAreaModel;
-            tipText.GetComponent<TextMeshProUGUI>().text = string.Format(defaultTip, 30);
-            startTs = KTime.CurrentMill();
+            tipText.GetComponent<TextMeshProUGUI>().text = initTip;
             gameObject.SetActive(true);
+            confirmButton.SetActive(false);
         }
     }
 
     public long startTs { get; private set; }
+
+    private bool initFinish = false;
 
     // Start is called before the first frame update
     void Start()
@@ -45,7 +48,15 @@ public class InitReDrawHandCardAreaView: MonoBehaviour
     {
         confirmButton.SetActive(false);
         tipText.GetComponent<TextMeshProUGUI>().text = waitTip;
-        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.ReDrawInitHandCard);
+        PlaySceneManager.Instance.HandleMessage(SceneMsg.ReDrawInitHandCard);
+    }
+
+    public void StartUI()
+    {
+        initFinish = true;
+        tipText.GetComponent<TextMeshProUGUI>().text = string.Format(defaultTip, 30);
+        startTs = KTime.CurrentMill();
+        confirmButton.SetActive(true);
     }
 
     public void UpdateUI()
@@ -63,7 +74,7 @@ public class InitReDrawHandCardAreaView: MonoBehaviour
 
     private void UpdateCountDown()
     {
-        if (!confirmButton.activeSelf) {
+        if (!confirmButton.activeSelf || !initFinish) {
             return;
         }
         long remainSecond = (MAX_TIME - (KTime.CurrentMill() - startTs)) / 1000;

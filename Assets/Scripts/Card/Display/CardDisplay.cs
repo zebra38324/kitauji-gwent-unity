@@ -41,6 +41,10 @@ public class CardDisplay : MonoBehaviour,
 
     public CardModel cardModel { get; private set; }
 
+    // msg handler
+    public delegate void SendSceneMsgDelegate(SceneMsg msg, params object[] list);
+    public SendSceneMsgDelegate SendSceneMsgCallback;
+
     // ui交互
     private static int hoverUpDistance = 10; // 悬停时卡片上移距离
 
@@ -284,7 +288,7 @@ public class CardDisplay : MonoBehaviour,
     public void OnPointerClick(PointerEventData eventData)
     {
         KLog.I(TAG, "on click " + cardModel.cardInfo.chineseName);
-        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.ChooseCard, cardModel);
+        SendSceneMsg(SceneMsg.ChooseCard, cardModel);
     }
 
     public void UpdatePosition(Vector3 position)
@@ -323,7 +327,7 @@ public class CardDisplay : MonoBehaviour,
             transform.Translate(0, hoverUpDistance, 0); // 卡片上移
         }
         isCardInfoShowing = true;
-        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.ShowCardInfo, cardModel.cardInfo);
+        SendSceneMsg(SceneMsg.ShowCardInfo, cardModel.cardInfo);
     }
 
     // 判断是否需要隐藏info
@@ -336,6 +340,13 @@ public class CardDisplay : MonoBehaviour,
             transform.Translate(0, -hoverUpDistance, 0); // 卡片下移恢复
         }
         isCardInfoShowing = false;
-        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.HideCardInfo);
+        SendSceneMsg(SceneMsg.HideCardInfo);
+    }
+
+    private void SendSceneMsg(SceneMsg msg, params object[] list)
+    {
+        if (SendSceneMsgCallback != null) {
+            SendSceneMsgCallback(msg, list);
+        }
     }
 }

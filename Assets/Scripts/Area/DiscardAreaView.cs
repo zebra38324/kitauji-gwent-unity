@@ -43,7 +43,7 @@ public class DiscardAreaView : MonoBehaviour, IPointerEnterHandler, IPointerExit
     {
         if(Input.GetMouseButtonDown(0)) {
             if (!isPointerInside) {
-                PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.HideDiscardArea);
+                PlaySceneManager.Instance.HandleMessage(SceneMsg.HideDiscardArea);
             }
         }
     }

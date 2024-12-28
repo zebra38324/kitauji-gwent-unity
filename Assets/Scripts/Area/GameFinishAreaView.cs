@@ -31,7 +31,7 @@ public class GameFinishAreaView : MonoBehaviour
     public void ExitButton()
     {
         PlaySceneManager.Instance.Reset();
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("MainMenuScene");
     }
 
     private void UpdateUI()

@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,20 +11,6 @@ public class PlaySceneManager : MonoBehaviour
     private static string TAG = "PlaySceneManager";
 
     public static PlaySceneManager Instance;
-
-    public enum PlaySceneMsg
-    {
-        ShowCardInfo, // 显示卡牌信息
-        HideCardInfo, // 隐藏卡牌信息
-        ShowDiscardArea, // 显示弃牌区
-        HideDiscardArea, // 隐藏弃牌区
-        ChooseCard, // 选择卡牌
-        ClickPass, // 点击pass按钮
-        ReDrawInitHandCard, // 重抽初始手牌
-        ClickHornAreaViewButton, // 选择horn area
-        ShowHornAreaViewButton,
-        HideHornAreaViewButton,
-    }
 
     private GameObject discardArea;
 
@@ -42,11 +29,11 @@ public class PlaySceneManager : MonoBehaviour
 
     private PlaySceneAI playSceneAI;
 
-    void Awake()
+    async void Awake()
     {
         KLog.I(TAG, "will init PlaySceneManager");
         Instance = this;
-        Init();
+        await Init();
         KLog.I(TAG, "finish init PlaySceneManager");
     }
 
@@ -70,7 +57,7 @@ public class PlaySceneManager : MonoBehaviour
     }
 
     // 每场比赛初始化
-    public void Init()
+    public async UniTask Init()
     {
         playSceneModel = new PlaySceneModel();
         if (selfPlayArea == null) {
@@ -111,33 +98,38 @@ public class PlaySceneManager : MonoBehaviour
         playSceneModel.battleModel.SendToEnemyFunc += playSceneAI.playSceneModel.battleModel.AddEnemyActionMsg;
         playSceneAI.Start();
 
-        // playSceneModel初始化
-        List<int> selfInfoIdList = KConfig.Instance.GetBattleCardInfoIdList();
-        playSceneModel.SetBackupCardInfoIdList(selfInfoIdList);
         InitViewModel();
+
+        // playSceneModel初始化
+        while (KConfig.Instance.deckInfoIdList == null) {
+            await UniTask.Delay(1);
+        }
+        List<int> selfInfoIdList = KConfig.Instance.deckInfoIdList;
+        playSceneModel.SetBackupCardInfoIdList(selfInfoIdList);
+        initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().StartUI();
         StartCoroutine(StartGame());
     }
 
-    public void HandleMessage(PlaySceneMsg msg, params object[] list)
+    public void HandleMessage(SceneMsg msg, params object[] list)
     {
         switch (msg)
         {
-            case PlaySceneMsg.ShowCardInfo: {
+            case SceneMsg.ShowCardInfo: {
                 CardInfo info = (CardInfo)list[0];
                 cardInfoArea.GetComponent<CardInfoAreaView>().ShowInfo(info);
                 break;
             }
-            case PlaySceneMsg.HideCardInfo: {
+            case SceneMsg.HideCardInfo: {
                 cardInfoArea.GetComponent<CardInfoAreaView>().HideInfo();
                 break;
             }
-            case PlaySceneMsg.ShowDiscardArea: {
+            case SceneMsg.ShowDiscardArea: {
                 DiscardAreaModel discardAreaModel = (DiscardAreaModel)list[0];
                 bool isMedic = (bool)list[1];
                 discardArea.GetComponent<DiscardAreaView>().ShowArea(discardAreaModel, isMedic);
                 break;
             }
-            case PlaySceneMsg.HideDiscardArea: {
+            case SceneMsg.HideDiscardArea: {
                 if (playSceneModel.tracker.actionState == PlayStateTracker.ActionState.MEDICING && playSceneModel.tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION) {
                     // medic时，不复活直接关闭需要通知转状态
                     playSceneModel.InterruptAction();
@@ -145,27 +137,27 @@ public class PlaySceneManager : MonoBehaviour
                 discardArea.GetComponent<DiscardAreaView>().HideArea();
                 break;
             }
-            case PlaySceneMsg.ChooseCard: {
+            case SceneMsg.ChooseCard: {
                 CardModel cardModel = (CardModel)list[0];
                 if (playSceneModel.EnableChooseCard(true) && cardModel.selectType != CardSelectType.None) {
                     // self turn时才允许选择
                     playSceneModel.ChooseCard(cardModel);
                     // 复活技能流程
                     if (playSceneModel.tracker.actionState == PlayStateTracker.ActionState.MEDICING) {
-                        HandleMessage(PlaySceneMsg.ShowDiscardArea, playSceneModel.selfSinglePlayerAreaModel.discardAreaModel, true);
+                        HandleMessage(SceneMsg.ShowDiscardArea, playSceneModel.selfSinglePlayerAreaModel.discardAreaModel, true);
                     } else if (discardArea.GetComponent<DiscardAreaView>().model != null) {
-                        HandleMessage(PlaySceneMsg.HideDiscardArea);
+                        HandleMessage(SceneMsg.HideDiscardArea);
                     }
                     // 选择指导老师的行
                     if (playSceneModel.tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION &&
                         playSceneModel.tracker.actionState == PlayStateTracker.ActionState.HORN_UTILING) {
-                        HandleMessage(PlaySceneMsg.ShowHornAreaViewButton);
+                        HandleMessage(SceneMsg.ShowHornAreaViewButton);
                     }
                     UpdateUI();
                 }
                 break;
             }
-            case PlaySceneMsg.ClickPass: {
+            case SceneMsg.ClickPass: {
                 if (playSceneModel.IsTurn(true)) {
                     // self turn时才允许选择
                     playSceneModel.Pass();
@@ -173,25 +165,25 @@ public class PlaySceneManager : MonoBehaviour
                 }
                 break;
             }
-            case PlaySceneMsg.ReDrawInitHandCard: {
+            case SceneMsg.ReDrawInitHandCard: {
                 playSceneModel.ReDrawInitHandCard();
                 break;
             }
-            case PlaySceneMsg.ClickHornAreaViewButton: {
+            case SceneMsg.ClickHornAreaViewButton: {
                 BattleRowAreaModel battleRowAreaModel = (BattleRowAreaModel)list[0];
                 playSceneModel.ChooseHornUtilArea(battleRowAreaModel);
-                HandleMessage(PlaySceneMsg.HideHornAreaViewButton);
+                HandleMessage(SceneMsg.HideHornAreaViewButton);
                 UpdateUI();
                 break;
             }
-            case PlaySceneMsg.ShowHornAreaViewButton: {
+            case SceneMsg.ShowHornAreaViewButton: {
                 // 显示按钮
                 selfPlayArea.GetComponent<SinglePlayerAreaView>().woodRow.GetComponent<BattleRowAreaView>().ShowHornAreaViewButton();
                 selfPlayArea.GetComponent<SinglePlayerAreaView>().brassRow.GetComponent<BattleRowAreaView>().ShowHornAreaViewButton();
                 selfPlayArea.GetComponent<SinglePlayerAreaView>().percussionRow.GetComponent<BattleRowAreaView>().ShowHornAreaViewButton();
                 break;
             }
-            case PlaySceneMsg.HideHornAreaViewButton: {
+            case SceneMsg.HideHornAreaViewButton: {
                 // 隐藏按钮
                 selfPlayArea.GetComponent<SinglePlayerAreaView>().woodRow.GetComponent<BattleRowAreaView>().HideHornAreaViewButton();
                 selfPlayArea.GetComponent<SinglePlayerAreaView>().brassRow.GetComponent<BattleRowAreaView>().HideHornAreaViewButton();
@@ -269,9 +261,9 @@ public class PlaySceneManager : MonoBehaviour
                 if (playSceneModel.tracker.actionState == PlayStateTracker.ActionState.None) {
                     playSceneModel.Pass();
                 } else if (playSceneModel.tracker.actionState == PlayStateTracker.ActionState.MEDICING) {
-                    HandleMessage(PlaySceneMsg.HideDiscardArea);
+                    HandleMessage(SceneMsg.HideDiscardArea);
                 } else if (playSceneModel.tracker.actionState == PlayStateTracker.ActionState.HORN_UTILING) {
-                    HandleMessage(PlaySceneMsg.HideHornAreaViewButton);
+                    HandleMessage(SceneMsg.HideHornAreaViewButton);
                     playSceneModel.InterruptAction();
                 }  else if (playSceneModel.tracker.actionState == PlayStateTracker.ActionState.ATTACKING ||
                     playSceneModel.tracker.actionState == PlayStateTracker.ActionState.DECOYING) {

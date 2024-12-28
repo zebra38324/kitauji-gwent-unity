@@ -38,7 +38,7 @@ public class BattleRowAreaView : MonoBehaviour
     public void HornAreaViewButtonOnClick()
     {
         KLog.I(TAG, "HornAreaViewButtonOnClick");
-        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.ClickHornAreaViewButton, battleRowAreaModel);
+        PlaySceneManager.Instance.HandleMessage(SceneMsg.ClickHornAreaViewButton, battleRowAreaModel);
     }
 
     public void ShowHornAreaViewButton()

@@ -119,3 +119,18 @@ public enum CardBuffType
     Attack4, // -4
     Weather, // 基础数值降为1
 }
+
+// 消息类型
+public enum SceneMsg
+{
+    ShowCardInfo, // 显示卡牌信息
+    HideCardInfo, // 隐藏卡牌信息
+    ShowDiscardArea, // 显示弃牌区
+    HideDiscardArea, // 隐藏弃牌区
+    ChooseCard, // 选择卡牌
+    ClickPass, // 点击pass按钮
+    ReDrawInitHandCard, // 重抽初始手牌
+    ClickHornAreaViewButton, // 选择horn area
+    ShowHornAreaViewButton,
+    HideHornAreaViewButton,
+}

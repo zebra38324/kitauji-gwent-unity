@@ -21,6 +21,6 @@ public class PassButton : MonoBehaviour
     public void ClickPass()
     {
         KLog.I(TAG, "ClickPass");
-        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.ClickPass);
+        PlaySceneManager.Instance.HandleMessage(SceneMsg.ClickPass);
     }
 }

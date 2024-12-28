@@ -23,7 +23,7 @@ public class OffFieldCardsAreaView : MonoBehaviour
 
     public void UpdateDiscardAreaView()
     {
-        PlaySceneManager.Instance.HandleMessage(PlaySceneManager.PlaySceneMsg.ShowDiscardArea, model.discardAreaModel, false);
+        PlaySceneManager.Instance.HandleMessage(SceneMsg.ShowDiscardArea, model.discardAreaModel, false);
     }
 
     public void UpdateUI()
