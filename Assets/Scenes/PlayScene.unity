@@ -2776,7 +2776,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1693619417}
   m_HandleRect: {fileID: 1693619416}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -4054,7 +4054,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u6CE8\uFF1A\n1. \u4E0B\u5212\u7EBF\u8868\u793A\u672C\u5C40\u5148\u624B\n2.
     \u5E73\u5C40\u6216\u80DC\u5C40\u65F6\u663E\u793A\u7EFF\u8272\uFF08\u8BB0\u5165\u5927\u6BD4\u5206\uFF09\uFF0C\u8D1F\u5C40\u663E\u793A\u7EA2\u8272\n3.
-    \u5927\u6BD4\u5206\u76F8\u540C\u65F6\uFF0C\u5148\u624B\u5C40\u6570\u5C11\u7684\u4E00\u65B9\u83B7\u80DC"
+    \u5927\u6BD4\u5206\u76F8\u540C\u65F6\uFF0C\u5148\u624B\u5C40\u6570\u591A\u7684\u4E00\u65B9\u83B7\u80DC"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 68496b202f66a2f4597597076ce67a0d, type: 2}
   m_sharedMaterial: {fileID: 1755339581428627022, guid: 68496b202f66a2f4597597076ce67a0d, type: 2}

@@ -32,7 +32,7 @@ public class LoginSceneTouristButton : MonoBehaviour
         KLog.I(TAG, "Click");
         bool loginRet = false;
         bool loginFinish = false;
-        KConfig.Instance.Login(false, (bool ret) => {
+        KConfig.Instance.Login(true, (bool ret) => {
             loginRet = ret;
             loginFinish = true;
         });

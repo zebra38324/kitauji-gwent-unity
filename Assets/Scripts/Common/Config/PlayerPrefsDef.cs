@@ -1,0 +1,8 @@
+﻿public enum PlayerPrefsKey
+{
+    PLAY_SCENE_SELF_NAME = 0,
+    PLAY_SCENE_ENEMY_NAME,
+    PLAY_SCENE_SELF_GROUP,
+    PLAY_SCENE_ENEMY_GROUP,
+    PLAY_SCENE_IS_HOST,
+}

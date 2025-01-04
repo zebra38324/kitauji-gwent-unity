@@ -162,7 +162,7 @@ public class PlaySceneModelTest
             HandRowAreaModel selfHandRowAreaModel = hostModel.selfSinglePlayerAreaModel.handRowAreaModel;
             HandRowAreaModel enemyHandRowAreaModel = hostModel.enemySinglePlayerAreaModel.handRowAreaModel;
             // 铜管间谍牌，能力4
-            List<int> hostInfoIdList = Enumerable.Repeat(2030, 20).ToList();
+            List<int> hostInfoIdList = Enumerable.Repeat(2030, 13).ToList();
             // backup
             hostModel.SetBackupCardInfoIdList(hostInfoIdList);
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
@@ -174,24 +174,27 @@ public class PlaySceneModelTest
             // host出牌
             Assert.AreEqual(true, hostModel.IsTurn(true));
             Assert.AreEqual(false, hostModel.IsTurn(false));
+            List<CardModel> tempList = new List<CardModel>(hostModel.selfSinglePlayerAreaModel.backupCardList);
             CardModel selectedCard = selfHandRowAreaModel.cardList[0];
             hostModel.ChooseCard(selectedCard);
+            CardModel newCard = tempList.Find(card => !hostModel.selfSinglePlayerAreaModel.backupCardList.Contains(card));
             Assert.AreEqual(9 + 2, selfHandRowAreaModel.cardList.Count);
             Assert.AreEqual(10, enemyHandRowAreaModel.cardList.Count);
             Assert.AreEqual(0, hostModel.selfSinglePlayerAreaModel.GetCurrentPower());
             Assert.AreEqual(4, hostModel.enemySinglePlayerAreaModel.GetCurrentPower());
             // 等待player出牌
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
-            // host pass
-            Assert.AreEqual(true, hostModel.IsTurn(true));
-            Assert.AreEqual(false, hostModel.IsTurn(false));
-            hostModel.Pass();
+            // host打出新抽的牌
+            hostModel.ChooseCard(newCard);
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(8, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(8, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
         });
         Thread playerThread = new Thread(() => {
             HandRowAreaModel selfHandRowAreaModel = playerModel.selfSinglePlayerAreaModel.handRowAreaModel;
             HandRowAreaModel enemyHandRowAreaModel = playerModel.enemySinglePlayerAreaModel.handRowAreaModel;
             // 铜管间谍牌，能力4
-            List<int> playerInfoIdList = Enumerable.Repeat(2030, 20).ToList();
+            List<int> playerInfoIdList = Enumerable.Repeat(2030, 13).ToList();
             playerModel.SetBackupCardInfoIdList(playerInfoIdList);
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_INIT_HAND_CARD);
             playerModel.DrawInitHandCard();
@@ -202,18 +205,20 @@ public class PlaySceneModelTest
             // player出牌
             Assert.AreEqual(true, playerModel.IsTurn(true)); // playerModel视角
             Assert.AreEqual(false, playerModel.IsTurn(false));
+            List<CardModel> tempList = new List<CardModel>(playerModel.selfSinglePlayerAreaModel.backupCardList);
             CardModel selectedCard = selfHandRowAreaModel.cardList[0];
             playerModel.ChooseCard(selectedCard);
+            CardModel newCard = tempList.Find(card => !playerModel.selfSinglePlayerAreaModel.backupCardList.Contains(card));
             Assert.AreEqual(9 + 2, selfHandRowAreaModel.cardList.Count);
             Assert.AreEqual(9 + 2, enemyHandRowAreaModel.cardList.Count);
             Assert.AreEqual(4, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
             Assert.AreEqual(4, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
             // 等待host
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
-            // player pass
-            Assert.AreEqual(true, playerModel.IsTurn(true));
-            Assert.AreEqual(false, playerModel.IsTurn(false));
-            playerModel.Pass();
+            // player打出新抽的牌
+            playerModel.ChooseCard(newCard);
+            Assert.AreEqual(8, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
+            Assert.AreEqual(8, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
         });
         hostThread.Start();
         playerThread.Start();
@@ -875,12 +880,12 @@ public class PlaySceneModelTest
             // host pass
             hostModel.Pass();
             Thread.Sleep(100);
-            // 等待player pass。host赢第一局，第二局player先手
-            CheckCurState(hostModel, PlayStateTracker.State.WAIT_ENEMY_ACTION);
+            // 等待player pass。host赢第一局，第二局host先手
+            CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             Assert.AreEqual(1, hostModel.tracker.setRecordList[0].result);
             Assert.AreEqual(7, hostModel.tracker.setRecordList[0].selfScore);
             Assert.AreEqual(5, hostModel.tracker.setRecordList[0].enemyScore);
-            Assert.AreEqual(false, hostModel.tracker.setRecordList[1].selfFirst);
+            Assert.AreEqual(true, hostModel.tracker.setRecordList[1].selfFirst);
         });
         Thread playerThread = new Thread(() => {
             HandRowAreaModel selfHandRowAreaModel = playerModel.selfSinglePlayerAreaModel.handRowAreaModel;
@@ -901,11 +906,11 @@ public class PlaySceneModelTest
             // player pass
             playerModel.Pass();
             Thread.Sleep(100);
-            CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            CheckCurState(playerModel, PlayStateTracker.State.WAIT_ENEMY_ACTION);
             Assert.AreEqual(-1, playerModel.tracker.setRecordList[0].result);
             Assert.AreEqual(5, playerModel.tracker.setRecordList[0].selfScore);
             Assert.AreEqual(7, playerModel.tracker.setRecordList[0].enemyScore);
-            Assert.AreEqual(true, playerModel.tracker.setRecordList[1].selfFirst);
+            Assert.AreEqual(false, playerModel.tracker.setRecordList[1].selfFirst);
         });
         hostThread.Start();
         playerThread.Start();

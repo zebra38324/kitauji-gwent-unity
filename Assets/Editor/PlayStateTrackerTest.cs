@@ -74,7 +74,7 @@ public class PlayStateTrackerTest
         Assert.AreEqual(1, tracker.setRecordList[0].result);
         Assert.AreEqual(10, tracker.setRecordList[0].selfScore);
         Assert.AreEqual(5, tracker.setRecordList[0].enemyScore);
-        Assert.AreEqual(false, tracker.setRecordList[1].selfFirst);
+        Assert.AreEqual(true, tracker.setRecordList[1].selfFirst);
         Assert.AreEqual(1, tracker.curSet);
         Assert.AreEqual(1, tracker.selfSetScore);
         Assert.AreEqual(0, tracker.enemySetScore);
@@ -89,7 +89,7 @@ public class PlayStateTrackerTest
         Assert.AreEqual(-1, tracker.setRecordList[0].result);
         Assert.AreEqual(5, tracker.setRecordList[0].selfScore);
         Assert.AreEqual(10, tracker.setRecordList[0].enemyScore);
-        Assert.AreEqual(true, tracker.setRecordList[1].selfFirst);
+        Assert.AreEqual(false, tracker.setRecordList[1].selfFirst);
         Assert.AreEqual(1, tracker.curSet);
         Assert.AreEqual(0, tracker.selfSetScore);
         Assert.AreEqual(1, tracker.enemySetScore);
@@ -108,6 +108,51 @@ public class PlayStateTrackerTest
         Assert.AreEqual(1, tracker.curSet);
         Assert.AreEqual(1, tracker.selfSetScore);
         Assert.AreEqual(1, tracker.enemySetScore);
+    }
+
+    // 测试久二年牌组技能
+    [Test]
+    public void SetFinishDrawKumikoSecondYear()
+    {
+        // self久二年，enemy久一年，平局self赢
+        tracker = new PlayStateTracker(true, "self", "enemy", CardGroup.KumikoSecondYear, CardGroup.KumikoFirstYearS1);
+        // player视角，方便测试
+        tracker.TransState(PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+        tracker.TransState(PlayStateTracker.State.DOING_INIT_HAND_CARD);
+        tracker.TransState(PlayStateTracker.State.WAIT_START);
+        tracker.StartGamePlayer(false); // 设置的是host first
+        tracker.Pass(true);
+        tracker.Pass(false);
+        tracker.SetFinish(5, 5);
+
+        Assert.AreEqual(true, tracker.setRecordList[0].selfFirst);
+        Assert.AreEqual(1, tracker.setRecordList[0].result);
+        Assert.AreEqual(5, tracker.setRecordList[0].selfScore);
+        Assert.AreEqual(5, tracker.setRecordList[0].enemyScore);
+        Assert.AreEqual(1, tracker.curSet);
+        Assert.AreEqual(1, tracker.selfSetScore);
+        Assert.AreEqual(0, tracker.enemySetScore);
+        Assert.AreEqual(true, tracker.setRecordList[1].selfFirst);
+
+        // 两边都是久二年，还是平局
+        tracker = new PlayStateTracker(true, "self", "enemy", CardGroup.KumikoSecondYear, CardGroup.KumikoSecondYear);
+        // player视角，方便测试
+        tracker.TransState(PlayStateTracker.State.WAIT_INIT_HAND_CARD);
+        tracker.TransState(PlayStateTracker.State.DOING_INIT_HAND_CARD);
+        tracker.TransState(PlayStateTracker.State.WAIT_START);
+        tracker.StartGamePlayer(false); // 设置的是host first
+        tracker.Pass(true);
+        tracker.Pass(false);
+        tracker.SetFinish(5, 5);
+
+        Assert.AreEqual(true, tracker.setRecordList[0].selfFirst);
+        Assert.AreEqual(0, tracker.setRecordList[0].result);
+        Assert.AreEqual(5, tracker.setRecordList[0].selfScore);
+        Assert.AreEqual(5, tracker.setRecordList[0].enemyScore);
+        Assert.AreEqual(1, tracker.curSet);
+        Assert.AreEqual(1, tracker.selfSetScore);
+        Assert.AreEqual(1, tracker.enemySetScore);
+        Assert.AreEqual(false, tracker.setRecordList[1].selfFirst);
     }
 
     // 以下测试后缀：W胜，L负，D平

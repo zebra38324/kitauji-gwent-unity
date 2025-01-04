@@ -1,0 +1,15 @@
+{
+  "type": "module",
+  "dependencies": {
+    "express": "^4.21.2",
+    "express-ws": "^5.0.2",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "chai": "^5.1.2",
+    "mocha": "^11.0.1"
+  },
+  "scripts": {
+    "test": "mocha"
+  }
+}
