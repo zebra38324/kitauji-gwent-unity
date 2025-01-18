@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
@@ -37,51 +38,40 @@ public class KConfig
     private class LoginReq
     {
         public bool isTourist;
-        public string name;
+        public string username;
         public string password;
-    }
-
-    [Serializable]
-    private class LoginRes
-    {
-        public bool result;
-        public int userId;
     }
 
     /**
      * 登录
      * isTourist: 以游客身份登录
      * callback: 返回登录结果
-     * name: isTourist为false时设置
+     * username: isTourist为false时设置
      * password: isTourist为false时设置
      */
-    public async void Login(bool isTouristParam, Action<bool> callback, string name = null, string password = null)
+    public async void Login(bool isTouristParam, Action<bool> callback, string username = null, string password = null)
     {
         isTourist = isTouristParam;
         LoginReq loginReq = new LoginReq();
         loginReq.isTourist = isTourist;
-        loginReq.name = name;
+        loginReq.username = username;
         loginReq.password = password;
         string loginReqStr = JsonUtility.ToJson(loginReq);
         KLog.I(TAG, "Login: loginReqStr = " + loginReqStr);
         int sessionId = KRPC.Instance.CreateSession();
-        KRPC.Instance.Send(sessionId, KRPC.ApiType.Login, loginReqStr);
+        KRPC.Instance.Send(sessionId, KRPC.ApiType.auth_login, loginReqStr);
         while (true) {
             string receiveStr = KRPC.Instance.Receive(sessionId);
             if (receiveStr != null) {
-                LoginRes loginRes = JsonUtility.FromJson<LoginRes>(receiveStr);
-                KLog.I(TAG, "Receive: " + JsonUtility.ToJson(loginRes));
+                JObject loginResJson = JObject.Parse(receiveStr);
+                KLog.I(TAG, "Login: Receive: " + receiveStr);
+                bool apiSuccess = loginResJson["status"]?.ToString() == KRPC.ApiRetStatus.success.ToString();
                 if (callback != null) {
-                    callback(loginRes.result);
+                    callback(apiSuccess);
                 }
-                if (loginRes.result) {
-                    if (isTourist) {
-                        playerName = GetRandomTouristName();
-                        InitTouristInfoIdList();
-                    } else {
-                        playerName = name;
-                        GetDeckInfoIdList(loginRes.userId);
-                    }
+                if (apiSuccess) {
+                    playerName = loginResJson["username"]?.ToString();
+                    GetDeckInfoIdList();
                 }
                 break;
             }
@@ -96,41 +86,20 @@ public class KConfig
         deckCardGroup = cardGroup;
     }
 
-    [Serializable]
-    private class DeckConfigReq
+    private async void GetDeckInfoIdList()
     {
-        public int userId;
-    }
-
-    [Serializable]
-    private class DeckConfig
-    {
-        public List<int> infoIdList;
-    }
-
-    private void InitTouristInfoIdList()
-    {
-        deckInfoIdList = Enumerable.Range(2001, 5).ToList();
-        deckInfoIdList.AddRange(Enumerable.Range(2021, 5).ToList());
-        deckInfoIdList.AddRange(Enumerable.Range(2041, 5).ToList());
-        deckInfoIdList.Add(2080);
-        deckCardGroup = CardGroup.KumikoSecondYear;
-    }
-
-    private async void GetDeckInfoIdList(int userId)
-    {
-        DeckConfigReq deckConfigReq = new DeckConfigReq();
-        deckConfigReq.userId = 1234;
-        string deckConfigReqStr = JsonUtility.ToJson(deckConfigReq);
+        string deckConfigReqStr = "{}";
         int sessionId = KRPC.Instance.CreateSession();
-        KRPC.Instance.Send(sessionId, KRPC.ApiType.GetDeckConfig, deckConfigReqStr);
+        KRPC.Instance.Send(sessionId, KRPC.ApiType.config_deck_get, deckConfigReqStr);
         while (true) {
             string receiveStr = KRPC.Instance.Receive(sessionId);
             if (receiveStr != null) {
-                DeckConfig deckConfig = new DeckConfig();
-                deckConfig = JsonUtility.FromJson<DeckConfig>(receiveStr);
-                deckInfoIdList = deckConfig.infoIdList;
-                KLog.I(TAG, "Receive: " + JsonUtility.ToJson(deckConfig));
+                KLog.I(TAG, "GetDeckInfoIdList: Receive: " + receiveStr);
+                JObject deckConfigJson = JObject.Parse(receiveStr);
+                bool apiSuccess = deckConfigJson["status"]?.ToString() == KRPC.ApiRetStatus.success.ToString();
+                deckInfoIdList = ((JArray)deckConfigJson["deck"])?.ToObject<List<int>>();
+                JudgeDeckGroup();
+                KLog.I(TAG, "GetDeckInfoIdList: deckInfoIdList: " + deckInfoIdList.Count);
                 break;
             }
             await UniTask.Delay(1);
@@ -138,9 +107,8 @@ public class KConfig
         KNetwork.Instance.CloseSession(sessionId);
     }
 
-    private string GetRandomTouristName()
+    private void JudgeDeckGroup()
     {
-        System.Random ran = new System.Random();
-        return touristNameList[ran.Next(0, touristNameList.Length)];
+        deckCardGroup = CardGroup.KumikoSecondYear;
     }
 }

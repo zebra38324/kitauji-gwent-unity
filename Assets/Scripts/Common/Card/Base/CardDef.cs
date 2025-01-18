@@ -133,4 +133,5 @@ public enum SceneMsg
     ClickHornAreaViewButton, // 选择horn area
     ShowHornAreaViewButton,
     HideHornAreaViewButton,
+    PVPEnemyExit, // PVP，对面已退出
 }

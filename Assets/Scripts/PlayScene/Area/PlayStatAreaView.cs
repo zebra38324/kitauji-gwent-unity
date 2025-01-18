@@ -14,6 +14,8 @@ public class PlayStatAreaView : MonoBehaviour
     public GameObject scoreNum;
     public GameObject countDown;
 
+    public bool isAbort = false;
+
     private PlaySceneModel playSceneModel { get; set; }
 
     private bool isSelf = true;
@@ -59,6 +61,9 @@ public class PlayStatAreaView : MonoBehaviour
 
     private void UpdateCountDown()
     {
+        if (isAbort) {
+            return;
+        }
         if (playSceneModel == null || playSceneModel.tracker == null || !playSceneModel.IsTurn(isSelf)) {
             return;
         }

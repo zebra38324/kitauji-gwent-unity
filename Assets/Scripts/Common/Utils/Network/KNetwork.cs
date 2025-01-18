@@ -32,7 +32,7 @@ public class KNetwork : MonoBehaviour
     public class NetMsg
     {
         public int sessionId; // 网络会话id
-        public byte[] data;
+        public byte[] sessionData;
     }
 
     void Start()

@@ -28,12 +28,6 @@ public class GameFinishAreaView : MonoBehaviour
 
     }
 
-    public void ExitButton()
-    {
-        PlaySceneManager.Instance.Reset();
-        SceneManager.LoadScene("MainMenuScene");
-    }
-
     private void UpdateUI()
     {
         // 绘制表格

@@ -95,6 +95,12 @@ public class ActionTextModel
         totalText += string.Format("<b>退部申请书</b>移除卡牌：{0}\n", cardName);
     }
 
+    public void EnemyExit()
+    {
+        string name = GetName(false);
+        totalText += string.Format("{0} 退出房间\n", name);
+    }
+
     // 返回带颜色的玩家名
     private string GetName(bool isSelf)
     {

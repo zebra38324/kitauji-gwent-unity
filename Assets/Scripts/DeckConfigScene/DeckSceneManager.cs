@@ -43,7 +43,9 @@ public class DeckSceneManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        long startTs = KTime.CurrentMill();
         Init();
+        KLog.I(TAG, "Init cost " + (KTime.CurrentMill() - startTs) + " ms");
     }
 
     // Update is called once per frame
@@ -117,6 +119,8 @@ public class DeckSceneManager : MonoBehaviour
         selectedCardGroup = KConfig.Instance.deckCardGroup;
         CardGenerator cardGenerator = new CardGenerator();
         List<CardModel> allCardModelList = cardGenerator.GetAllCardList();
+        List<GameObject> backupList = new List<GameObject>();
+        List<GameObject> selectedList = new List<GameObject>();
         foreach (CardModel cardModel in allCardModelList) {
             GameObject card = GameObject.Instantiate(cardPrefeb, null);
             card.GetComponent<CardDisplay>().SetCardModel(cardModel);
@@ -125,12 +129,14 @@ public class DeckSceneManager : MonoBehaviour
                 if (cardModel.cardInfo.cardType == CardType.Leader) {
                     leaderCardContainer.GetComponent<SingleCardAreaView>().AddCard(card);
                 } else {
-                    selectedArea.GetComponent<DeckCardAreaView>().AddCard(card);
+                    selectedList.Add(card);
                 }
             } else {
-                backupArea.GetComponent<DeckCardAreaView>().AddCard(card);
+                backupList.Add(card);
             }
         }
+        selectedArea.GetComponent<DeckCardAreaView>().AddCardList(selectedList);
+        backupArea.GetComponent<DeckCardAreaView>().AddCardList(backupList);
         UpdateInfoText();
         cardGroupSelect.GetComponent<TMP_Dropdown>().value = (int)selectedCardGroup;
         cardGroupAbilityText.GetComponent<TextMeshProUGUI>().text = CardText.cardGroupAbilityText[(int)selectedCardGroup];

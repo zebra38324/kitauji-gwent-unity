@@ -13,17 +13,32 @@ public class DeckCardAreaView : MonoBehaviour
 
     private List<GameObject> cellList;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         cardList = new List<GameObject>();
         cellList = new List<GameObject>();
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+
     }
 
     // Update is called once per frame
     void Update()
     {
 
+    }
+
+    public void AddCardList(List<GameObject> newCardList)
+    {
+        if (newCardList.Count == 0) {
+            return;
+        }
+        cardList.AddRange(newCardList);
+        cardList.Sort((GameObject x, GameObject y) => x.GetComponent<CardDisplay>().cardModel.cardInfo.infoId.CompareTo(y.GetComponent<CardDisplay>().cardModel.cardInfo.infoId));
+        UpdateUI();
     }
 
     public void AddCard(GameObject card)

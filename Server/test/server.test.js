@@ -117,6 +117,40 @@ describe('WebSocket Server', function () {
         });
     });
 
+    it('ConfigDeckGet', async () => {
+        const ws = new WebSocket(`ws://localhost:${port}/kitauji_api`);
+        await new Promise((resolve, reject) => {
+            ws.on('open', () => {
+                DefaultTouristLogin(ws);
+            });
+
+            ws.on('message', (response) => {
+                const {sessionId, sessionDataJson} = ParseMsg(response);
+                if (sessionId == 1) {
+                    expect(sessionDataJson.status).to.equal("success");
+                    ws.send(JSON.stringify({
+                        sessionId: 2,
+                        sessionData: Array.from(Buffer.from(JSON.stringify({
+                            apiType: "config_deck_get",
+                            apiArgs: "{}"
+                        }))),
+                    }));
+                    return;
+                } else if (sessionId == 2) {
+                    expect(sessionDataJson.status).to.equal("success");
+                    expect(sessionDataJson.deck[0]).to.equal(2005);
+                    expect(sessionDataJson.deck.length).to.equal(17);
+                    ws.close();
+                    resolve();
+                }
+            });
+
+            ws.on('error', (err) => {
+                reject(err);
+            });
+        });
+    });
+
     it('PVPMatch', async () => {
         const ws1 = new WebSocket(`ws://localhost:${port}/kitauji_api`);
         const ws2 = new WebSocket(`ws://localhost:${port}/kitauji_api`);

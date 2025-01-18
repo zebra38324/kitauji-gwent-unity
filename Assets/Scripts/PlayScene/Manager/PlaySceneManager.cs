@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 // PlayScene统一管理器
 public class PlaySceneManager : MonoBehaviour
@@ -22,12 +23,19 @@ public class PlaySceneManager : MonoBehaviour
     private GameObject actionToastAreaView;
     private GameObject gameFinishAreaView;
     private GameObject weatherCardAreaView;
+    private GameObject toastView; // 普通toast
 
     private GameObject cardPrefab;
 
     private PlaySceneModel playSceneModel;
 
     private PlaySceneAI playSceneAI;
+    private PlayScenePVP playScenePVP;
+
+    private bool isPVP = false;
+    private bool isAbort = false;
+    private bool isModelCoroutineFinish = false;
+    private bool hasClickExitPlaySceneButton = false;
 
     async void Awake()
     {
@@ -39,6 +47,10 @@ public class PlaySceneManager : MonoBehaviour
 
     public void Reset()
     {
+        isPVP = false;
+        isAbort = false;
+        isModelCoroutineFinish = false;
+        hasClickExitPlaySceneButton = false;
         discardArea = null;
         selfPlayArea = null;
         enemyPlayArea = null;
@@ -48,12 +60,39 @@ public class PlaySceneManager : MonoBehaviour
         actionToastAreaView = null;
         gameFinishAreaView = null;
         weatherCardAreaView = null;
+        toastView = null;
         cardPrefab = null;
         playSceneModel.Release();
         playSceneModel = null;
-        playSceneAI.Release();
-        playSceneAI = null;
+        if (playSceneAI != null) {
+            playSceneAI.Release();
+            playSceneAI = null;
+        }
+        if (playScenePVP != null) {
+            playScenePVP.Release();
+            playScenePVP = null;
+        }
         CardViewCollection.Instance.Clear();
+    }
+
+    public async void ExitPlaySceneButton()
+    {
+        // 两个退出按钮都走这里逻辑
+        if (hasClickExitPlaySceneButton) {
+            return;
+        }
+        KLog.I(TAG, "Click ExitPlaySceneButton");
+        hasClickExitPlaySceneButton = true;
+        isAbort = true;
+        if (isPVP) {
+            // 发送退出消息
+            playScenePVP.SendStopMsg();
+        }
+        while (!isModelCoroutineFinish) {
+            await UniTask.Delay(1);
+        }
+        Reset();
+        SceneManager.LoadScene("MainMenuScene");
     }
 
     // 每场比赛初始化
@@ -94,13 +133,22 @@ public class PlaySceneManager : MonoBehaviour
         if (weatherCardAreaView == null) {
             weatherCardAreaView = GameObject.Find("Canvas/Background/WeatherCardArea");
         }
+        if (toastView == null) {
+            toastView = GameObject.Find("Canvas/Background/ToastView");
+        }
 
-
-        // 配置AI模块
-        playSceneAI = new PlaySceneAI();
-        playSceneAI.playSceneModel.battleModel.SendToEnemyFunc += playSceneModel.battleModel.AddEnemyActionMsg;
-        playSceneModel.battleModel.SendToEnemyFunc += playSceneAI.playSceneModel.battleModel.AddEnemyActionMsg;
-        playSceneAI.Start();
+        isPVP = Convert.ToBoolean(PlayerPrefs.GetInt(PlayerPrefsKey.PLAY_SCENE_IS_PVP.ToString()));
+        if (isPVP) {
+            int sessionId = PlayerPrefs.GetInt(PlayerPrefsKey.PLAY_SCENE_PVP_SESSION_ID.ToString());
+            playScenePVP = new PlayScenePVP(playSceneModel.battleModel, sessionId);
+            playScenePVP.Start();
+        } else {
+            // 配置AI模块
+            playSceneAI = new PlaySceneAI();
+            playSceneAI.playSceneModel.battleModel.SendToEnemyFunc += playSceneModel.battleModel.AddEnemyActionMsg;
+            playSceneModel.battleModel.SendToEnemyFunc += playSceneAI.playSceneModel.battleModel.AddEnemyActionMsg;
+            playSceneAI.Start();
+        }
 
         InitViewModel();
 
@@ -194,6 +242,16 @@ public class PlaySceneManager : MonoBehaviour
                 selfPlayArea.GetComponent<SinglePlayerAreaView>().percussionRow.GetComponent<BattleRowAreaView>().HideHornAreaViewButton();
                 break;
             }
+            case SceneMsg.PVPEnemyExit: {
+                // 对方退出，弹toast提示。并暂停各种倒计时
+                playSceneModel.actionTextModel.EnemyExit();
+                UpdateUI();
+                isAbort = true;
+                selfPlayArea.GetComponent<SinglePlayerAreaView>().playStat.GetComponent<PlayStatAreaView>().isAbort = true;
+                enemyPlayArea.GetComponent<SinglePlayerAreaView>().playStat.GetComponent<PlayStatAreaView>().isAbort = true;
+                toastView.GetComponent<ToastView>().ShowToast("对方已退出房间，请退出");
+                break;
+            }
         }
     }
 
@@ -214,7 +272,7 @@ public class PlaySceneManager : MonoBehaviour
             yield return null;
         }
         UpdateUI();
-        StartCoroutine(ListenModel());
+        StartCoroutine(ModelCoroutine());
     }
 
     private void InitViewModel()
@@ -246,11 +304,16 @@ public class PlaySceneManager : MonoBehaviour
     }
 
     // 监听playSceneModel的状态，状态变化时更新UI
-    private IEnumerator ListenModel()
+    private IEnumerator ModelCoroutine()
     {
         while (playSceneModel.tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION ||
             playSceneModel.tracker.curState == PlayStateTracker.State.WAIT_ENEMY_ACTION ||
             playSceneModel.tracker.curState == PlayStateTracker.State.SET_FINFISH) {
+            if (isAbort) {
+                isModelCoroutineFinish = true;
+                KLog.I(TAG, "ModelCoroutine: isAbort, break loop");
+                yield break;
+            }
             if (playSceneModel.hasEnemyUpdate) {
                 playSceneModel.hasEnemyUpdate = false;
                 UpdateUI();
@@ -279,11 +342,12 @@ public class PlaySceneManager : MonoBehaviour
         }
         // 此时state理论上必为stop
         if (playSceneModel.tracker.curState != PlayStateTracker.State.STOP) {
-            KLog.E(TAG, "ListenModel: break loop, state invalid = " + playSceneModel.tracker.curState);
+            KLog.E(TAG, "ModelCoroutine: break loop, state invalid = " + playSceneModel.tracker.curState);
         }
         // 展示结算页面
-        KLog.I(TAG, "ListenModel: game finish");
+        KLog.I(TAG, "ModelCoroutine: game finish");
         UpdateUI();
         gameFinishAreaView.SetActive(true);
+        isModelCoroutineFinish = true;
     }
 }

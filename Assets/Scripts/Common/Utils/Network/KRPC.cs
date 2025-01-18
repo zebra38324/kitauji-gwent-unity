@@ -21,16 +21,28 @@ public class KRPC : MonoBehaviour
 
     public static KRPC Instance;
 
+    // 请求格式：{"apiType":"","apiArgs":""}
     public enum ApiType
     {
-        Login = 1, // 登录
-        GetDeckConfig, // 获取配置的牌组
+        auth_login = 1, // 登录。请求格式：{"isTourist":true,"username":"","password":""}
+        config_deck_get, // 获取配置的牌组。请求格式：{}
+        pvp_match_start, // 请求格式：{}
+        pvp_match_cancel, // 请求格式：{}
+        pvp_match_action, // 请求格式：{"action":""}
+        pvp_match_stop, // 请求格式：{}
+    }
+
+    public enum ApiRetStatus
+    {
+        success = 1,
+        error,
+        waiting,
     }
 
     private class ApiData
     {
-        public int apiType;
-        public string msg;
+        public string apiType;
+        public string apiArgs;
     }
 
     void Start()
@@ -50,17 +62,17 @@ public class KRPC : MonoBehaviour
         return KNetwork.Instance.CreateSession();
     }
 
-    public void Send(int sessionId, ApiType apiType, string msg)
+    public void Send(int sessionId, ApiType apiType, string apiArgs)
     {
         ApiData apiData = new ApiData();
-        apiData.apiType = (int)apiType;
-        apiData.msg = msg;
+        apiData.apiType = apiType.ToString();
+        apiData.apiArgs = apiArgs;
         string jsonStr = JsonUtility.ToJson(apiData);
         byte[] byteArray = Encoding.Default.GetBytes(jsonStr);
 
         KNetwork.NetMsg netMsg = new KNetwork.NetMsg();
         netMsg.sessionId = sessionId;
-        netMsg.data = byteArray;
+        netMsg.sessionData = byteArray;
         KNetwork.Instance.Send(netMsg);
     }
 
@@ -70,7 +82,7 @@ public class KRPC : MonoBehaviour
         if (netMsg == null) {
             return null;
         }
-        string receiveStr = Encoding.Default.GetString(netMsg.data);
+        string receiveStr = Encoding.Default.GetString(netMsg.sessionData);
         return receiveStr;
     }
 
