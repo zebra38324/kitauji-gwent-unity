@@ -87,17 +87,20 @@ public class CardDisplay : MonoBehaviour,
 
     private void Init()
     {
+        // mask
+        KResources.Instance.Load<Sprite>(gameObject.GetComponent<Image>(), @"Image/texture/background/card_round_rect_mask.png");
         // Image
-        originImage.GetComponent<Image>().sprite = Resources.Load<Sprite>(GetImageName());
+        KResources.Instance.Load<Sprite>(originImage.GetComponent<Image>(), GetImageName());
 
         // Dialog
-        dialogBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/dialog/dialog");
+        KResources.Instance.Load<Sprite>(dialogBackground.GetComponent<Image>(), @"Image/texture/dialog/dialog.png");
         cardName.GetComponent<TextMeshProUGUI>().text = cardModel.cardInfo.englishName;
         quote.GetComponent<TextMeshProUGUI>().text = cardModel.cardInfo.quote;
         chineseName.GetComponent<TextMeshProUGUI>().text = cardModel.cardInfo.chineseName;
 
         // frame
         if (frame != null) {
+            KResources.Instance.Load<Sprite>(frame.GetComponent<Image>(), @"Image/texture/background/frame.png");
             frame.SetActive(false);
         }
 
@@ -132,26 +135,26 @@ public class CardDisplay : MonoBehaviour,
     private void InitRoleCardUI()
     {
         // Belt
-        belt.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/belt/" + GetBeltName());
+        KResources.Instance.Load<Sprite>(belt.GetComponent<Image>(), @"Image/texture/belt/" + GetBeltName());
 
         // Power
         if (cardModel.cardInfo.cardType == CardType.Hero) {
-            powerBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/power/power-hero");
+            KResources.Instance.Load<Sprite>(powerBackground.GetComponent<Image>(), @"Image/texture/power/power-hero.png");
             powerNum.GetComponent<TextMeshProUGUI>().color = new Color(1, 1, 1, 1);
         } else if (cardModel.cardInfo.cardType == CardType.Normal) {
-            powerBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/power/power-normal");
+            KResources.Instance.Load<Sprite>(powerBackground.GetComponent<Image>(), @"Image/texture/power/power-normal.png");
         }
         powerNum.GetComponent<TextMeshProUGUI>().text = cardModel.cardInfo.originPower.ToString();
         powerType.SetActive(false);
 
         // Badge
-        badgeBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/badge/badge");
-        badgeType.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/badge/type/" + GetBadgeTypeName());
+        KResources.Instance.Load<Sprite>(badgeBackground.GetComponent<Image>(), @"Image/texture/badge/badge.png");
+        KResources.Instance.Load<Sprite>(badgeType.GetComponent<Image>(), @"Image/texture/badge/type/" + GetBadgeTypeName());
 
         // Ability
         if (cardModel.cardInfo.ability != CardAbility.None) {
-            abilityBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/ability/ability-background");
-            ability.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/ability/" + GetAbilityName());
+            KResources.Instance.Load<Sprite>(abilityBackground.GetComponent<Image>(), @"Image/texture/ability/ability-background.png");
+            KResources.Instance.Load<Sprite>(ability.GetComponent<Image>(), @"Image/texture/ability/" + GetAbilityName());
         } else {
             abilityBackground.SetActive(false);
             ability.SetActive(false);
@@ -173,9 +176,9 @@ public class CardDisplay : MonoBehaviour,
         belt.SetActive(false);
 
         // Power
-        powerBackground.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/power/power-normal");
+        KResources.Instance.Load<Sprite>(powerBackground.GetComponent<Image>(), @"Image/texture/power/power-normal.png");
         powerNum.SetActive(false);
-        powerType.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/ability/" + GetAbilityName());
+        KResources.Instance.Load<Sprite>(powerType.GetComponent<Image>(), @"Image/texture/ability/" + GetAbilityName());
 
         // Badge
         badgeBackground.SetActive(false);
@@ -199,7 +202,7 @@ public class CardDisplay : MonoBehaviour,
         }
     }
 
-    static string[] beltNames = { "belt-red", "belt-blue", "belt-green" };
+    static string[] beltNames = { "belt-red.png", "belt-blue.png", "belt-green.png" };
     private string GetBeltName()
     {
         switch (cardModel.cardInfo.group) {
@@ -215,11 +218,11 @@ public class CardDisplay : MonoBehaviour,
     {
         switch (cardModel.cardInfo.badgeType) {
             case CardBadgeType.Wood:
-                return "wood";
+                return "wood.png";
             case CardBadgeType.Brass:
-                return "brass";
+                return "brass.png";
             default:
-                return "perc";
+                return "perc.png";
         }
     }
 
@@ -227,39 +230,39 @@ public class CardDisplay : MonoBehaviour,
     {
         switch (cardModel.cardInfo.ability) {
             case CardAbility.Attack:
-                return "attack";
+                return "attack.png";
             case CardAbility.Spy:
-                return "spy";
+                return "spy.png";
             case CardAbility.Tunning:
-                return "tunning";
+                return "tunning.png";
             case CardAbility.Bond:
-                return "bond";
+                return "bond.png";
             case CardAbility.ScorchWood:
-                return "umbrella";
+                return "umbrella.png";
             case CardAbility.Muster:
-                return "muster";
+                return "muster.png";
             case CardAbility.Morale:
-                return "morale";
+                return "morale.png";
             case CardAbility.Medic:
-                return "medic";
+                return "medic.png";
             case CardAbility.Horn:
-                return "horn";
+                return "horn.png";
             case CardAbility.Decoy:
-                return "decoy";
+                return "decoy.png";
             case CardAbility.Scorch:
-                return "scorch";
+                return "scorch.png";
             case CardAbility.SunFes:
-                return "sunfes";
+                return "sunfes.png";
             case CardAbility.Daisangakushou:
-                return "daisangakushou";
+                return "daisangakushou.png";
             case CardAbility.Drumstick:
-                return "drumstick";
+                return "drumstick.png";
             case CardAbility.ClearWeather:
-                return "clear-weather";
+                return "clear-weather.png";
             case CardAbility.HornUtil:
-                return "horn";
+                return "horn.png";
             case CardAbility.HornBrass:
-                return "horn";
+                return "horn.png";
             default: // None
                 return "none";
         }

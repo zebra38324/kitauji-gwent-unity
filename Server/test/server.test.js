@@ -12,7 +12,7 @@ describe('WebSocket Server', function () {
     this.timeout(3000);
 
     before(async () => {
-        server = startServer(port);
+        server = startServer(false, port);
         await new Promise((resolve) => server.on('listening', resolve));
     });
 

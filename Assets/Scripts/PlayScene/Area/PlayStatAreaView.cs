@@ -75,10 +75,10 @@ public class PlayStatAreaView : MonoBehaviour
     {
         int setScore = isSelf ? playSceneModel.tracker.selfSetScore : playSceneModel.tracker.enemySetScore;
         if (setScore >= 1) {
-            live1.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/background/player_live_red");
+            live1.GetComponent<Image>().sprite = KResources.Load<Sprite>(@"Image/texture/background/player_live_red");
         }
         if (setScore >= 2) {
-            live2.GetComponent<Image>().sprite = Resources.Load<Sprite>(@"Image/texture/background/player_live_red");
+            live2.GetComponent<Image>().sprite = KResources.Load<Sprite>(@"Image/texture/background/player_live_red");
         }
     }
 }

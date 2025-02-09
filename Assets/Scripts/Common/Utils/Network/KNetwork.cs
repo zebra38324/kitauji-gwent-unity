@@ -103,7 +103,7 @@ public class KNetwork : MonoBehaviour
     {
         sendQueue = new ConcurrentQueue<NetMsg>();
         receiveQueueDict = new Dictionary<int, ConcurrentQueue<NetMsg>>();
-        websocket = new WebSocket("ws://localhost:12323/kitauji_api");
+        websocket = new WebSocket("wss://www.kitauji-gwent.com:12323/kitauji_api");
 
         websocket.OnOpen += () => {
             KLog.I(TAG, "Connection open");

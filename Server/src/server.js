@@ -1,5 +1,7 @@
 import express from 'express';
 import expressWs from 'express-ws';
+import fs from 'fs';
+import https from 'https';
 import { AuthRoutes } from "./routes/auth.js";
 import { ConfigRoutes } from "./routes/config.js";
 import { PVPMatchRoutes, DisConnectPVPMatchClear } from "./routes/pvp_match.js";
@@ -53,16 +55,29 @@ app.ws('/kitauji_api', function connection(ws) {
 let server; // 保存服务器实例，用于关闭
 
 // 启动服务器的函数
-function startServer(customPort = port) {
-    server = app.listen(customPort, () => {
-        KLog.I(TAG, `listening at http://localhost:${customPort}`);
-    });
+function startServer(isSsl, customPort = port) {
+    if (isSsl) {
+        // 加载 SSL/TLS 证书
+        const privateKey = fs.readFileSync('/etc/nginx/ssl/kitauji-gwent.com.key', 'utf8');
+        const certificate = fs.readFileSync('/etc/nginx/ssl/kitauji-gwent.com_bundle.crt', 'utf8');
+        const ca = fs.readFileSync('/etc/nginx/ssl/kitauji-gwent.com_bundle.pem', 'utf8');
+        const credentials = { key: privateKey, cert: certificate, ca: ca };
+        const httpsServer = https.createServer(credentials, app);
+        expressWs(app, httpsServer);
+        server = httpsServer.listen(customPort, () => {
+            KLog.I(TAG, `listening at port:${customPort}`);
+        });
+    } else {
+        server = app.listen(customPort, () => {
+            KLog.I(TAG, `listening at port:${customPort}`);
+        });
+    }
     return server;
 }
 
 // 检测是否直接运行
-if (process.argv[1] && process.argv[1].endsWith('\\server.js')) {
-    startServer();
+if (process.argv[1] && process.argv[1].endsWith('server.js')) {
+    startServer(true);
 }
 
 export { startServer };

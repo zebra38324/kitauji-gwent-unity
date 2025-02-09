@@ -26,7 +26,7 @@ public class CardGenerator
             allCardInfoList_ = new List<CardInfo>();
             string[] assetNameList = { @"Statistic\KumikoSecondYear", @"Statistic\NeutralCard" };
             foreach (string assetName in assetNameList) {
-                TextAsset cardInfoAsset = Resources.Load<TextAsset>(assetName);
+                TextAsset cardInfoAsset = KResources.Load<TextAsset>(assetName);
                 if (cardInfoAsset == null) {
                     KLog.E(TAG, "cardInfoAsset: " + assetName + " is null");
                     return allCardInfoList_;

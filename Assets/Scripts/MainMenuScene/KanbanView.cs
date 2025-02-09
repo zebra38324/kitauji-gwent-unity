@@ -9,17 +9,18 @@ public class KanbanView : MonoBehaviour
 
     private long lastUpdateTs = 0;
 
-    private Sprite[] kanbanImgList = null;
+    private int kanbanImgNameIndex = 0;
 
-    private int kanbanImgIndex = 0;
+    private static string[] kanbanImgNameList = { "kanban.kanade.hisaishi.png", "kanban.kumiko.oumae.png",
+        "kanban.mizore.yoroizuka.png", "kanban.nozomi.kasaki.png",
+        "kanban.reina.kousaka.png", "kanban.ririka.kenzaki.png" };
 
     // Start is called before the first frame update
     void Start()
     {
-        kanbanImgList = Resources.LoadAll<Sprite>(@"Image/texture/kanban");
-        lastUpdateTs = KTime.CurrentMill();
-        kanban.GetComponent<Image>().sprite = kanbanImgList[kanbanImgIndex];
-        kanbanImgIndex = (kanbanImgIndex + 1) % kanbanImgList.Length;
+        Image image = kanban.GetComponent<Image>();
+        image.color = new Color(image.color.r, image.color.g, image.color.b, 0f);
+        image.sprite = null;
     }
 
     // Update is called once per frame
@@ -40,14 +41,19 @@ public class KanbanView : MonoBehaviour
         float duration = 1000f;
         long startTs = KTime.CurrentMill();
         while (elapsed < duration) {
-            image.color = new Color(image.color.r, image.color.g, image.color.b, Mathf.Lerp(0f, 1f, (duration - elapsed) / duration));
+            float alpha = image.sprite == null ? 0f : Mathf.Lerp(0f, 1f, (duration - elapsed) / duration);
+            image.color = new Color(image.color.r, image.color.g, image.color.b, alpha);
             elapsed = KTime.CurrentMill() - startTs;
             yield return null;
         }
         elapsed = 0f;
+        Sprite oldSprite = image.sprite;
+        KResources.Instance.Load<Sprite>(image, @"Image/texture/kanban/" + kanbanImgNameList[kanbanImgNameIndex]);
+        kanbanImgNameIndex = (kanbanImgNameIndex + 1) % kanbanImgNameList.Length;
+        while (image.sprite == oldSprite) {
+            yield return null;
+        }
         startTs = KTime.CurrentMill();
-        image.sprite = kanbanImgList[kanbanImgIndex];
-        kanbanImgIndex = (kanbanImgIndex + 1) % kanbanImgList.Length;
         while (elapsed < duration) {
             image.color = new Color(image.color.r, image.color.g, image.color.b, Mathf.Lerp(0f, 1f, elapsed / duration));
             elapsed = KTime.CurrentMill() - startTs;

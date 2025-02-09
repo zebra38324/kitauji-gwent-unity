@@ -7,7 +7,7 @@
     "Cards": [
         {
             "infoId": 5001,
-            "imageName": "origin-image-tubakun",
+            "imageName": "origin-image-tubakun.png",
             "chineseName": "大号君",
             "englishName": "Tubakun",
             "group": "Neutral",
@@ -17,7 +17,7 @@
         },
         {
             "infoId": 5002,
-            "imageName": "origin-image-taibu",
+            "imageName": "origin-image-taibu.png",
             "chineseName": "退部申请书",
             "englishName": "Taibu",
             "group": "Neutral",
@@ -27,7 +27,7 @@
         },
         {
             "infoId": 5003,
-            "imageName": "origin-image-sunfes",
+            "imageName": "origin-image-sunfes.png",
             "chineseName": "日升祭",
             "englishName": "Sunrise Festival",
             "group": "Neutral",
@@ -37,7 +37,7 @@
         },
         {
             "infoId": 5004,
-            "imageName": "origin-image-daisangakushou",
+            "imageName": "origin-image-daisangakushou.png",
             "chineseName": "第三乐章",
             "englishName": "Daisangakushou",
             "group": "Neutral",
@@ -47,7 +47,7 @@
         },
         {
             "infoId": 5005,
-            "imageName": "origin-image-drumstick",
+            "imageName": "origin-image-drumstick.png",
             "chineseName": "忘带鼓槌",
             "englishName": "Drumstick",
             "group": "Neutral",
@@ -57,7 +57,7 @@
         },
         {
             "infoId": 5006,
-            "imageName": "origin-image-daikichiyama",
+            "imageName": "origin-image-daikichiyama.png",
             "chineseName": "大吉山",
             "englishName": "Daikichiyama",
             "group": "Neutral",
@@ -67,7 +67,7 @@
         },
         {
             "infoId": 5007,
-            "imageName": "origin-image-pool",
+            "imageName": "origin-image-pool.png",
             "chineseName": "泳池",
             "englishName": "Pool",
             "group": "Neutral",
@@ -77,7 +77,7 @@
         },
         {
             "infoId": 5008,
-            "imageName": "origin-image-niiyama",
+            "imageName": "origin-image-niiyama.png",
             "chineseName": "新山老师",
             "englishName": "Niiyama",
             "group": "Neutral",
@@ -87,7 +87,7 @@
         },
         {
             "infoId": 5009,
-            "imageName": "origin-image-hashimoto",
+            "imageName": "origin-image-hashimoto.png",
             "chineseName": "桥本老师",
             "englishName": "Hashimoto",
             "group": "Neutral",
@@ -97,7 +97,7 @@
         },
         {
             "infoId": 5010,
-            "imageName": "origin-image-matsumoto_michie",
+            "imageName": "origin-image-matsumoto_michie.png",
             "chineseName": "松本美知惠",
             "englishName": "Matsumoto Michie",
             "group": "Neutral",
@@ -107,7 +107,7 @@
         },
         {
             "infoId": 5011,
-            "imageName": "origin-image-taki_noboru",
+            "imageName": "origin-image-taki_noboru.png",
             "chineseName": "泷升",
             "englishName": "Taki Noboru",
             "group": "Neutral",
@@ -117,7 +117,7 @@
         },
         {
             "infoId": 5012,
-            "imageName": "origin-image-taki_chihiro",
+            "imageName": "origin-image-taki_chihiro.png",
             "chineseName": "泷千寻",
             "englishName": "Taki Chihiro",
             "group": "Neutral",

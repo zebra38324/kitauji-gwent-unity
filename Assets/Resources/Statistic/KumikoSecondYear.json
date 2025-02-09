@@ -7,7 +7,7 @@
     "Cards": [
         {
             "infoId": 2001,
-            "imageName": "01.rie.shima-portrait",
+            "imageName": "01.rie.shima-portrait.jpg",
             "chineseName": "岛理惠",
             "englishName": "Rie Shima",
             "group": "KumikoSecondYear",
@@ -20,7 +20,7 @@
         },
         {
             "infoId": 2002,
-            "imageName": "02.hiyoko.ueda-portrait",
+            "imageName": "02.hiyoko.ueda-portrait.jpg",
             "chineseName": "植田日和子",
             "englishName": "Hiyoko Ueda",
             "group": "KumikoSecondYear",
@@ -33,7 +33,7 @@
         },
         {
             "infoId": 2003,
-            "imageName": "04.chieri.takahisa-portrait",
+            "imageName": "04.chieri.takahisa-portrait.jpg",
             "chineseName": "高久智惠理",
             "englishName": "Chieri Takahisa",
             "group": "KumikoSecondYear",
@@ -48,7 +48,7 @@
         },
         {
             "infoId": 2004,
-            "imageName": "09.tairu.kitayama-portrait",
+            "imageName": "09.tairu.kitayama-portrait.jpg",
             "chineseName": "北山泰瑠",
             "englishName": "Tairu Kitayama",
             "group": "KumikoSecondYear",
@@ -61,7 +61,7 @@
         },
         {
             "infoId": 2005,
-            "imageName": "13.mizore.yoroizuka-portrait",
+            "imageName": "13.mizore.yoroizuka-portrait.jpg",
             "chineseName": "铠冢霙",
             "englishName": "Mizore Yoroizuka",
             "group": "KumikoSecondYear",
@@ -74,7 +74,7 @@
         },
         {
             "infoId": 2006,
-            "imageName": "14.ririka.kenzaki-portrait",
+            "imageName": "14.ririka.kenzaki-portrait.jpg",
             "chineseName": "剑崎梨梨花",
             "englishName": "Ririka Kenzaki",
             "group": "KumikoSecondYear",
@@ -89,7 +89,7 @@
         },
         {
             "infoId": 2007,
-            "imageName": "15.eru.kabutodani-portrait",
+            "imageName": "15.eru.kabutodani-portrait.jpg",
             "chineseName": "兜谷爱瑠",
             "englishName": "Eru Kabutodani",
             "group": "KumikoSecondYear",
@@ -104,7 +104,7 @@
         },
         {
             "infoId": 2008,
-            "imageName": "16.suruga.koteyama-portrait",
+            "imageName": "16.suruga.koteyama-portrait.jpg",
             "chineseName": "笼手山骏河",
             "englishName": "Suruga Koteyama",
             "group": "KumikoSecondYear",
@@ -119,7 +119,7 @@
         },
         {
             "infoId": 2009,
-            "imageName": "17.shirabe.inoue-portrait",
+            "imageName": "17.shirabe.inoue-portrait.jpg",
             "chineseName": "井上调",
             "englishName": "Shirabe Inoue",
             "group": "KumikoSecondYear",
@@ -132,7 +132,7 @@
         },
         {
             "infoId": 2010,
-            "imageName": "18.nozomi.kasaki-portrait",
+            "imageName": "18.nozomi.kasaki-portrait.jpg",
             "chineseName": "伞木希美",
             "englishName": "Nozomi Kasaki",
             "group": "KumikoSecondYear",
@@ -145,7 +145,7 @@
         },
         {
             "infoId": 2011,
-            "imageName": "19.meiko.oda-portrait",
+            "imageName": "19.meiko.oda-portrait.jpg",
             "chineseName": "小田芽衣子",
             "englishName": "Meiko Oda",
             "group": "KumikoSecondYear",
@@ -160,7 +160,7 @@
         },
         {
             "infoId": 2012,
-            "imageName": "20.sari.takahashi-portrait",
+            "imageName": "20.sari.takahashi-portrait.jpg",
             "chineseName": "高桥沙里",
             "englishName": "Sari Takahashi",
             "group": "KumikoSecondYear",
@@ -175,7 +175,7 @@
         },
         {
             "infoId": 2013,
-            "imageName": "21.tsubomi.nakano-portrait",
+            "imageName": "21.tsubomi.nakano-portrait.jpg",
             "chineseName": "中野蕾实",
             "englishName": "Tsubomi Nakano",
             "group": "KumikoSecondYear",
@@ -190,7 +190,7 @@
         },
         {
             "infoId": 2014,
-            "imageName": "22.kana.etou-portrait",
+            "imageName": "22.kana.etou-portrait.jpg",
             "chineseName": "江藤香奈",
             "englishName": "Kana Etou",
             "group": "KumikoSecondYear",
@@ -205,7 +205,7 @@
         },
         {
             "infoId": 2015,
-            "imageName": "23.narumi.hiraishi-portrait",
+            "imageName": "23.narumi.hiraishi-portrait.jpg",
             "chineseName": "平石成美",
             "englishName": "Narumi Hiraishi",
             "group": "KumikoSecondYear",
@@ -220,7 +220,7 @@
         },
         {
             "infoId": 2016,
-            "imageName": "24.tsumiki.yamane-portrait",
+            "imageName": "24.tsumiki.yamane-portrait.jpg",
             "chineseName": "山根都美贵",
             "englishName": "Tsumiki Yamane",
             "group": "KumikoSecondYear",
@@ -235,7 +235,7 @@
         },
         {
             "infoId": 2017,
-            "imageName": "25.sumiko.hirao-portrait",
+            "imageName": "25.sumiko.hirao-portrait.jpg",
             "chineseName": "平尾澄子",
             "englishName": "Sumiko Hirao",
             "group": "KumikoSecondYear",
@@ -248,7 +248,7 @@
         },
         {
             "infoId": 2018,
-            "imageName": "27.chikao.takigawa-portrait",
+            "imageName": "27.chikao.takigawa-portrait.jpg",
             "chineseName": "泷川近夫",
             "englishName": "Chikao Takigawa",
             "group": "KumikoSecondYear",
@@ -263,7 +263,7 @@
         },
         {
             "infoId": 2019,
-            "imageName": "28.chikai.maki-portrait",
+            "imageName": "28.chikai.maki-portrait.jpg",
             "chineseName": "牧誓",
             "englishName": "Chikai Maki",
             "group": "KumikoSecondYear",
@@ -276,7 +276,7 @@
         },
         {
             "infoId": 2020,
-            "imageName": "38.yuko.yoshikawa-portrait",
+            "imageName": "38.yuko.yoshikawa-portrait.jpg",
             "chineseName": "吉川优子",
             "englishName": "Yuko Yoshikawa",
             "group": "KumikoSecondYear",
@@ -289,7 +289,7 @@
         },
         {
             "infoId": 2021,
-            "imageName": "39.tomoe.kabe-portrait",
+            "imageName": "39.tomoe.kabe-portrait.jpg",
             "chineseName": "加部友惠",
             "englishName": "Tomoe Kabe",
             "group": "KumikoSecondYear",
@@ -302,7 +302,7 @@
         },
         {
             "infoId": 2022,
-            "imageName": "40.junichi.takino-portrait",
+            "imageName": "40.junichi.takino-portrait.jpg",
             "chineseName": "泷野纯一",
             "englishName": "Junichi Takino",
             "group": "KumikoSecondYear",
@@ -317,7 +317,7 @@
         },
         {
             "infoId": 2023,
-            "imageName": "41.reina.kousaka-portrait",
+            "imageName": "41.reina.kousaka-portrait.jpg",
             "chineseName": "高坂丽奈",
             "englishName": "Reina Kousaka",
             "group": "KumikoSecondYear",
@@ -331,7 +331,7 @@
         },
         {
             "infoId": 2024,
-            "imageName": "42.akiko.yoshizawa-portrait",
+            "imageName": "42.akiko.yoshizawa-portrait.jpg",
             "chineseName": "吉泽秋子",
             "englishName": "Akiko Yoshizawa",
             "group": "KumikoSecondYear",
@@ -344,7 +344,7 @@
         },
         {
             "infoId": 2025,
-            "imageName": "44.yume.kohinata-portrait",
+            "imageName": "44.yume.kohinata-portrait.jpg",
             "chineseName": "小日向梦",
             "englishName": "Yume Kohinata",
             "group": "KumikoSecondYear",
@@ -357,7 +357,7 @@
         },
         {
             "infoId": 2026,
-            "imageName": "46.sayaka.takino-portrait",
+            "imageName": "46.sayaka.takino-portrait.jpg",
             "chineseName": "泷野沙耶香",
             "englishName": "Sayaka Takino",
             "group": "KumikoSecondYear",
@@ -372,7 +372,7 @@
         },
         {
             "infoId": 2027,
-            "imageName": "47.keina.iwata-portrait",
+            "imageName": "47.keina.iwata-portrait.jpg",
             "chineseName": "岩田慧菜",
             "englishName": "Keina Iwata",
             "group": "KumikoSecondYear",
@@ -385,7 +385,7 @@
         },
         {
             "infoId": 2028,
-            "imageName": "49.shuichi.tsukamoto-portrait",
+            "imageName": "49.shuichi.tsukamoto-portrait.jpg",
             "chineseName": "冢本秀一",
             "englishName": "Shuichi Tsukamoto",
             "group": "KumikoSecondYear",
@@ -398,7 +398,7 @@
         },
         {
             "infoId": 2029,
-            "imageName": "50.sayaka.fukui-portrait",
+            "imageName": "50.sayaka.fukui-portrait.jpg",
             "chineseName": "福井沙耶香",
             "englishName": "Sayaka Fukui",
             "group": "KumikoSecondYear",
@@ -411,7 +411,7 @@
         },
         {
             "infoId": 2030,
-            "imageName": "52.michiru.hakase-portrait",
+            "imageName": "52.michiru.hakase-portrait.jpg",
             "chineseName": "叶加濑满",
             "englishName": "Michiru Hakase",
             "group": "KumikoSecondYear",
@@ -424,7 +424,7 @@
         },
         {
             "infoId": 2031,
-            "imageName": "54.miru.kishibe-portrait",
+            "imageName": "54.miru.kishibe-portrait.jpg",
             "chineseName": "岸部海松",
             "englishName": "Miru Kishibe",
             "group": "KumikoSecondYear",
@@ -437,7 +437,7 @@
         },
         {
             "infoId": 2032,
-            "imageName": "55.lala.hitomi-portrait",
+            "imageName": "55.lala.hitomi-portrait.jpg",
             "chineseName": "瞳拉拉",
             "englishName": "Lala Hitomi",
             "group": "KumikoSecondYear",
@@ -450,7 +450,7 @@
         },
         {
             "infoId": 2033,
-            "imageName": "56.michiyo.morimoto-portrait",
+            "imageName": "56.michiyo.morimoto-portrait.jpg",
             "chineseName": "森本美千代",
             "englishName": "Michiyo Morimoto",
             "group": "KumikoSecondYear",
@@ -463,7 +463,7 @@
         },
         {
             "infoId": 2034,
-            "imageName": "61.takuya.gotou-portrait",
+            "imageName": "61.takuya.gotou-portrait.jpg",
             "chineseName": "后藤卓也",
             "englishName": "Takuya Gotou",
             "group": "KumikoSecondYear",
@@ -478,7 +478,7 @@
         },
         {
             "infoId": 2035,
-            "imageName": "62.riko.nagase-portrait",
+            "imageName": "62.riko.nagase-portrait.jpg",
             "chineseName": "长濑梨子",
             "englishName": "Riko Nagase",
             "group": "KumikoSecondYear",
@@ -493,7 +493,7 @@
         },
         {
             "infoId": 2036,
-            "imageName": "63.hazuki.katou-portrait",
+            "imageName": "63.hazuki.katou-portrait.jpg",
             "chineseName": "加藤叶月",
             "englishName": "Hazuki Katou",
             "group": "KumikoSecondYear",
@@ -506,7 +506,7 @@
         },
         {
             "infoId": 2037,
-            "imageName": "64.satsuki.suzuki-portrait",
+            "imageName": "64.satsuki.suzuki-portrait.jpg",
             "chineseName": "铃木皋月",
             "englishName": "Satsuki Suzuki",
             "group": "KumikoSecondYear",
@@ -519,7 +519,7 @@
         },
         {
             "infoId": 2038,
-            "imageName": "65.mirei.suzuki-portrait",
+            "imageName": "65.mirei.suzuki-portrait.jpg",
             "chineseName": "铃木美玲",
             "englishName": "Mirei Suzuki",
             "group": "KumikoSecondYear",
@@ -532,7 +532,7 @@
         },
         {
             "infoId": 2039,
-            "imageName": "66.natsuki.nakagawa-portrait",
+            "imageName": "66.natsuki.nakagawa-portrait.jpg",
             "chineseName": "中川夏纪",
             "englishName": "Natsuki Nakagawa",
             "group": "KumikoSecondYear",
@@ -545,7 +545,7 @@
         },
         {
             "infoId": 2040,
-            "imageName": "67.kumiko.oumae-portrait",
+            "imageName": "67.kumiko.oumae-portrait.jpg",
             "chineseName": "黄前久美子",
             "englishName": "Kumiko Oumae",
             "group": "KumikoSecondYear",
@@ -558,7 +558,7 @@
         },
         {
             "infoId": 2041,
-            "imageName": "68.kanade.hisaishi-portrait",
+            "imageName": "68.kanade.hisaishi-portrait.jpg",
             "chineseName": "久石奏",
             "englishName": "Kanade Hisaishi",
             "group": "KumikoSecondYear",
@@ -571,7 +571,7 @@
         },
         {
             "infoId": 2042,
-            "imageName": "69.sapphire.kawashima-portrait",
+            "imageName": "69.sapphire.kawashima-portrait.jpg",
             "chineseName": "川岛绿辉",
             "englishName": "Sapphire Kawashima",
             "group": "KumikoSecondYear",
@@ -584,7 +584,7 @@
         },
         {
             "infoId": 2043,
-            "imageName": "70.motomu.tsukinaga-portrait",
+            "imageName": "70.motomu.tsukinaga-portrait.jpg",
             "chineseName": "月永求",
             "englishName": "Motomu Tsukinaga",
             "group": "KumikoSecondYear",
@@ -597,7 +597,7 @@
         },
         {
             "infoId": 2044,
-            "imageName": "71.miyoko.ono-portrait",
+            "imageName": "71.miyoko.ono-portrait.jpg",
             "chineseName": "大野美代子",
             "englishName": "Miyoko Ono",
             "group": "KumikoSecondYear",
@@ -610,7 +610,7 @@
         },
         {
             "infoId": 2045,
-            "imageName": "72.junna.inoue-portrait",
+            "imageName": "72.junna.inoue-portrait.jpg",
             "chineseName": "井上顺菜",
             "englishName": "Junna Inoue",
             "group": "KumikoSecondYear",
@@ -625,7 +625,7 @@
         },
         {
             "infoId": 2046,
-            "imageName": "73.tsubame.kamaya-portrait",
+            "imageName": "73.tsubame.kamaya-portrait.jpg",
             "chineseName": "釜屋燕",
             "englishName": "Tsubame Kamaya",
             "group": "KumikoSecondYear",
@@ -638,7 +638,7 @@
         },
         {
             "infoId": 2047,
-            "imageName": "74.masako.sakai-portrait",
+            "imageName": "74.masako.sakai-portrait.jpg",
             "chineseName": "堺万纱子",
             "englishName": "Masako Sakai",
             "group": "KumikoSecondYear",
@@ -653,7 +653,7 @@
         },
         {
             "infoId": 2048,
-            "imageName": "77.motoko.higashiura-portrait",
+            "imageName": "77.motoko.higashiura-portrait.jpg",
             "chineseName": "东浦心子",
             "englishName": "Motoko Higashiura",
             "group": "KumikoSecondYear",
@@ -666,7 +666,7 @@
         },
         {
             "infoId": 2049,
-            "imageName": "78.aota.maeda-portrait",
+            "imageName": "78.aota.maeda-portrait.jpg",
             "chineseName": "前田苍太",
             "englishName": "Aota Maeda",
             "group": "KumikoSecondYear",
@@ -681,7 +681,7 @@
         },
         {
             "infoId": 2050,
-            "imageName": "79.sosuke.maeda-portrait",
+            "imageName": "79.sosuke.maeda-portrait.jpg",
             "chineseName": "前田飒介",
             "englishName": "Sosuke Maeda",
             "group": "KumikoSecondYear",
@@ -696,7 +696,7 @@
         },
         {
             "infoId": 2080,
-            "imageName": "origin-image-oumae_kumiko",
+            "imageName": "origin-image-oumae_kumiko.png",
             "chineseName": "黄前久美子",
             "englishName": "Kumiko Oumae",
             "group": "KumikoSecondYear",

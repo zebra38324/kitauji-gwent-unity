@@ -113,7 +113,7 @@ public class PlaySceneManager : MonoBehaviour
             cardInfoArea = GameObject.Find("CardInfoArea");
         }
         if (cardPrefab == null) {
-            cardPrefab = Resources.Load<GameObject>("Prefabs/HalfCard");
+            cardPrefab = KResources.Load<GameObject>("Prefabs/HalfCard");
         }
         if (discardArea == null) {
             discardArea = GameObject.Find("Canvas/Background/DiscardArea");

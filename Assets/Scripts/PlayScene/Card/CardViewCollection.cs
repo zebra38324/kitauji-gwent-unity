@@ -42,7 +42,7 @@ public class CardViewCollection
     private GameObject GenCard(CardModel model)
     {
         if (cardPrefab == null) {
-            cardPrefab = Resources.Load<GameObject>("Prefabs/HalfCard");
+            cardPrefab = KResources.Load<GameObject>("Prefabs/HalfCard");
         }
         GameObject card = GameObject.Instantiate(cardPrefab);
         card.GetComponent<CardDisplay>().SetCardModel(model);

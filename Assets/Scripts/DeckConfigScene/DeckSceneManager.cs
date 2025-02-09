@@ -115,7 +115,7 @@ public class DeckSceneManager : MonoBehaviour
 
     private void Init()
     {
-        selectedInfoIdList = KConfig.Instance.deckInfoIdList;
+        selectedInfoIdList = new List<int>(KConfig.Instance.deckInfoIdList);
         selectedCardGroup = KConfig.Instance.deckCardGroup;
         CardGenerator cardGenerator = new CardGenerator();
         List<CardModel> allCardModelList = cardGenerator.GetAllCardList();
