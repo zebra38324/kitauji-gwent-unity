@@ -103,6 +103,7 @@ public class PlaySceneManager : MonoBehaviour
             PlayerPrefs.GetString(PlayerPrefsKey.PLAY_SCENE_ENEMY_NAME.ToString()),
             (CardGroup)PlayerPrefs.GetInt(PlayerPrefsKey.PLAY_SCENE_SELF_GROUP.ToString()),
             (CardGroup)PlayerPrefs.GetInt(PlayerPrefsKey.PLAY_SCENE_ENEMY_GROUP.ToString()));
+        playSceneModel.SfxCallback += AudioManager.Instance.PlaySFX;
         if (selfPlayArea == null) {
             selfPlayArea = GameObject.Find("SelfPlayArea");
         }

@@ -29,6 +29,7 @@ app.ws('/kitauji_api', function connection(ws) {
             }
             if (AuthRoutes[apiType]) {
                 AuthRoutes[apiType](ws, activeConns, sessionId, apiArgs);
+                KLog.I(TAG, `New client connected, active conns: ${activeConns.size}`);
             } else if (ConfigRoutes[apiType]) {
                 ConfigRoutes[apiType](ws, sessionId);
             } else if (PVPMatchRoutes[apiType]) {
@@ -49,6 +50,7 @@ app.ws('/kitauji_api', function connection(ws) {
             KLog.I(TAG, `remove active conn: ${ws.user.username}`);
             activeConns.delete(ws.user.username);
         }
+        KLog.I(TAG, `Client disconnected, active conns: ${activeConns.size}`);
     });
 });
 
@@ -76,7 +78,7 @@ function startServer(isSsl, customPort = port) {
 }
 
 // 检测是否直接运行
-if (process.argv[1] && process.argv[1].endsWith('server.js')) {
+if (process.argv[1] && (process.argv[1].includes('server.js') || process.argv[1].includes('pm2'))) {
     startServer(true);
 }
 

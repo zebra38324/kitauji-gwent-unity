@@ -11,8 +11,7 @@ using System.Collections.Generic;
  * 5. EnemyMsgCallback，收到对方手牌信息
  * 6. StartGame，开始整场比赛（不需要外部调用，内部自动流转）
  * 7. ChooseCard，双方出牌
- * 8. Pass，跳过本局出牌。双方都pass后，结束本局。
- * 9. Stop，结束整场比赛。TODO
+ * 8. Pass，跳过本局出牌。双方都pass后，结束本局。满足结束条件时，结束整场游戏
  */
 public class PlaySceneModel
 {
@@ -70,6 +69,10 @@ public class PlaySceneModel
     public ActionTextModel actionTextModel { get; private set; }
 
     public WeatherCardAreaModel weatherCardAreaModel { get; private set; }
+
+    // 需要音效播放时，回调
+    public delegate void SfxCallbackDelegate(AudioManager.SFXType type);
+    public SfxCallbackDelegate SfxCallback;
 
     private bool isHost;
 
@@ -446,6 +449,11 @@ public class PlaySceneModel
                 ApplyAttack(card, enemyArea);
                 break;
             }
+            case CardAbility.Tunning: {
+                selfArea.AddBattleAreaCard(card);
+                PlaySfx(AudioManager.SFXType.Tunning);
+                break;
+            }
             case CardAbility.ScorchWood: {
                 selfArea.AddBattleAreaCard(card);
                 ApplyScorchWood(enemyArea);
@@ -526,6 +534,7 @@ public class PlaySceneModel
         // 攻击可能导致卡牌被移除
         if (card.IsDead()) {
             KLog.I(TAG, "ApplyBeAttacked: remove " + card.cardInfo.chineseName);
+            PlaySfx(AudioManager.SFXType.Scorch);
             if (card.cardInfo.badgeType == CardBadgeType.Wood) {
                 enemyArea.woodRowAreaModel.RemoveCard(card);
             } else if (card.cardInfo.badgeType == CardBadgeType.Wood) {
@@ -534,6 +543,9 @@ public class PlaySceneModel
                 enemyArea.percussionRowAreaModel.RemoveCard(card);
             }
             enemyArea.discardAreaModel.AddCard(card);
+        } else {
+            // 卡牌没被移除时，才播放攻击音效
+            PlaySfx(AudioManager.SFXType.Attack);
         }
     }
 
@@ -552,6 +564,9 @@ public class PlaySceneModel
     private void ApplyScorchWood(SinglePlayerAreaModel enemyArea)
     {
         List<CardModel> targetCardList = enemyArea.woodRowAreaModel.ApplyScorchWood();
+        if (targetCardList.Count > 0) {
+            PlaySfx(AudioManager.SFXType.Scorch);
+        }
         foreach (CardModel card in targetCardList) {
             enemyArea.woodRowAreaModel.RemoveCard(card);
             enemyArea.discardAreaModel.AddCard(card);
@@ -666,6 +681,9 @@ public class PlaySceneModel
             return;
         }
         // 移除卡牌，比较丑陋，但是凑合着吧
+        if (cardList.Count > 0) {
+            PlaySfx(AudioManager.SFXType.Scorch);
+        }
         foreach (CardModel card in cardList) {
             KLog.I(TAG, "ApplyScorch: remove card: " + card.cardInfo.chineseName);
             if (selfArea.woodRowAreaModel.cardList.Contains(card)) {
@@ -758,7 +776,10 @@ public class PlaySceneModel
         actionTextModel.SetFinish(tracker.setRecordList[lastSet].result);
         if (tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION ||
             tracker.curState == PlayStateTracker.State.WAIT_ENEMY_ACTION) {
+            PlaySfx(AudioManager.SFXType.SetFinish);
             actionTextModel.SetStart(tracker.setRecordList[tracker.curSet].selfFirst);
+        } else if (tracker.isSelfWinner) {
+            PlaySfx(AudioManager.SFXType.Win);
         }
     }
 
@@ -769,5 +790,12 @@ public class PlaySceneModel
             return;
         }
         actionTextModel.toastText = toastText;
+    }
+
+    private void PlaySfx(AudioManager.SFXType type)
+    {
+        if (SfxCallback != null) {
+            SfxCallback(type);
+        }
     }
 }

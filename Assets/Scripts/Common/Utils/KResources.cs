@@ -16,11 +16,14 @@ public class KResources : MonoBehaviour
 
     private Dictionary<string, Sprite> imageCache;
 
-    private static string cdnUrl = @"https://kitauji-gwent-1336421851.cos.ap-shanghai.myqcloud.com/kitauji-gwent-unity-res/v1.0.0/";
+    private Dictionary<string, AudioClip> audioCache;
+
+    private static string cdnUrl = @"https://static.kitauji-gwent.com/kitauji-gwent-unity-res/v1.0.0/";
 
     void Start()
     {
         imageCache = new Dictionary<string, Sprite>();
+        audioCache = new Dictionary<string, AudioClip>();
         Instance = this;
         StartCoroutine(PreloadRes());
     }
@@ -44,8 +47,11 @@ public class KResources : MonoBehaviour
         } else if (target is AudioSource audioSource) {
             if (localRes != null) {
                 audioSource.clip = localRes as AudioClip;
+            } else if (audioCache.ContainsKey(filename)) {
+                audioSource.clip = audioCache[filename];
+            } else {
+                StartCoroutine(DownloadAudioFromCdn(audioSource, filename));
             }
-            // TODO: 在线下载
         }
     }
 
@@ -84,6 +90,24 @@ public class KResources : MonoBehaviour
         imageCache[filename] = sprite;
         if (image != null) {
             image.sprite = sprite;
+        }
+    }
+
+    private IEnumerator DownloadAudioFromCdn(AudioSource audioSource, string filename)
+    {
+        string url = cdnUrl + filename;
+        var uwr = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.MPEG);
+        yield return uwr.SendWebRequest();
+        if (uwr.result == UnityWebRequest.Result.Success) {
+            AudioClip audioClip = DownloadHandlerAudioClip.GetContent(uwr);
+            if (audioClip != null) {
+                audioCache[filename] = audioClip;
+                audioSource.clip = audioClip;
+            } else {
+                KLog.W(TAG, "DownloadAudioFromCdn: " + filename + " audioClip is null");
+            }
+        } else {
+            KLog.W(TAG, "DownloadAudioFromCdn: " + filename + " fail");
         }
     }
 

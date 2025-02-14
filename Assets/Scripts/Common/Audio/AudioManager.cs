@@ -13,9 +13,19 @@ public class AudioManager : MonoBehaviour
     public enum SFXType
     {
         Scorch = 0, // 因卡牌技能被移出
+        Attack, // 攻击卡牌
+        Tunning, // 调音
+        SetFinish, // 单局结束
+        Win, // 获得胜利
     }
 
     private Dictionary<SFXType, AudioClip> sfxCache;
+
+    private static string[] bgmNameList = { "dream_solister.mp3", "普罗旺斯之风.mp3" };
+
+    private int bgmIndex;
+
+    private bool isAbort = false;
 
     // Start is called before the first frame update
     void Start()
@@ -30,7 +40,12 @@ public class AudioManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
+    }
+
+    private void OnApplicationQuit()
+    {
+        isAbort = true;
     }
 
     public void SetBGMVolume(float value)
@@ -64,16 +79,30 @@ public class AudioManager : MonoBehaviour
     private IEnumerator PlayBGM()
     {
         bgmPlayer.volume = 0.5f; // 初始默认音量
-        KResources.Instance.Load<AudioClip>(bgmPlayer, @"Audio/bgm/dream_solister.mp3");
-        while (bgmPlayer.clip == null) {
-            yield return null; // TODO: 加载失败死循环？
+        string filePrefix = @"Audio/bgm/";
+        bgmIndex = 0;
+        while (!isAbort) {
+            if (bgmPlayer.isPlaying) {
+                yield return null;
+                continue;
+            }
+            bgmPlayer.clip = null;
+            KResources.Instance.Load<AudioClip>(bgmPlayer, filePrefix + bgmNameList[bgmIndex]);
+            bgmIndex = (bgmIndex + 1) % bgmNameList.Length;
+            while (bgmPlayer.clip == null && !isAbort) {
+                yield return null;
+            }
+            bgmPlayer.Play();
         }
-        bgmPlayer.Play();
     }
 
     private void InitSFX()
     {
         sfxPlayer.volume = 0.5f; // 初始默认音量
         sfxCache[SFXType.Scorch] = KResources.Instance.LoadLocal<AudioClip>(@"Audio/sfx/scorch");
+        sfxCache[SFXType.Attack] = KResources.Instance.LoadLocal<AudioClip>(@"Audio/sfx/attack");
+        sfxCache[SFXType.Tunning] = KResources.Instance.LoadLocal<AudioClip>(@"Audio/sfx/tunning");
+        sfxCache[SFXType.SetFinish] = KResources.Instance.LoadLocal<AudioClip>(@"Audio/sfx/set_finish");
+        sfxCache[SFXType.Win] = KResources.Instance.LoadLocal<AudioClip>(@"Audio/sfx/win");
     }
 }

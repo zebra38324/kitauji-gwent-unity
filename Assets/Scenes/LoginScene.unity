@@ -179,7 +179,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u6E38\u5BA2\u8BBF\u95EE"
+  m_text: "\u8FDB\u5165"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 81b689e8712710a4e8d26c0ce41dfd29, type: 2}
   m_sharedMaterial: {fileID: 67576259127510927, guid: 81b689e8712710a4e8d26c0ce41dfd29, type: 2}
@@ -339,9 +339,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 487147503}
-  - component: {fileID: 487147502}
-  - component: {fileID: 487147501}
-  - component: {fileID: 487147500}
   - component: {fileID: 487147499}
   m_Layer: 5
   m_Name: AudioManager
@@ -364,42 +361,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bgmPlayer: {fileID: 758449439}
   sfxPlayer: {fileID: 1038671691}
---- !u!114 &487147500
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 487147498}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c51bc94062e9e2439631dcb8d9a1c91, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &487147501
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 487147498}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9ec49bfee8eeda4cb65fd347ea18812, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &487147502
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 487147498}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 748879429abc2c447bacd0a5510d8dff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &487147503
 RectTransform:
   m_ObjectHideFlags: 0

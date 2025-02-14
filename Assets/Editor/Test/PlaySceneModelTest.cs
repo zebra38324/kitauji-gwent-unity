@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,10 @@ public class PlaySceneModelTest
 
     private PlaySceneModel playerModel;
 
+    private Dictionary<AudioManager.SFXType, int> hostSfxPlayCount;
+
+    private Dictionary<AudioManager.SFXType, int> playerSfxPlayCount;
+
     [SetUp]
     public void SetUp()
     {
@@ -26,6 +31,19 @@ public class PlaySceneModelTest
         playerModel = new PlaySceneModel(false);
         hostModel.battleModel.SendToEnemyFunc += playerModel.battleModel.AddEnemyActionMsg;
         playerModel.battleModel.SendToEnemyFunc += hostModel.battleModel.AddEnemyActionMsg;
+
+        hostSfxPlayCount = new Dictionary<AudioManager.SFXType, int>();
+        playerSfxPlayCount = new Dictionary<AudioManager.SFXType, int>();
+        foreach (AudioManager.SFXType type in Enum.GetValues(typeof(AudioManager.SFXType))) {
+            hostSfxPlayCount[type] = 0;
+            playerSfxPlayCount[type] = 0;
+        }
+        hostModel.SfxCallback += (AudioManager.SFXType type) => {
+            hostSfxPlayCount[type] += 1;
+        };
+        playerModel.SfxCallback += (AudioManager.SFXType type) => {
+            playerSfxPlayCount[type] += 1;
+        };
     }
 
     [TearDown]
@@ -265,6 +283,7 @@ public class PlaySceneModelTest
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // host出牌
             hostModel.ChooseCard(scorchCard); // 打出伞击牌，移除对面能力为7的牌
+            Assert.AreEqual(1, hostSfxPlayCount[AudioManager.SFXType.Scorch]);
             Assert.AreEqual(12, hostModel.selfSinglePlayerAreaModel.GetCurrentPower());
             Assert.AreEqual(5, hostModel.enemySinglePlayerAreaModel.GetCurrentPower());
             Assert.AreEqual(1, hostModel.enemySinglePlayerAreaModel.discardAreaModel.cardList.Count);
@@ -288,6 +307,7 @@ public class PlaySceneModelTest
             playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
             // 等待host出牌
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(1, playerSfxPlayCount[AudioManager.SFXType.Scorch]);
             Assert.AreEqual(5, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
             Assert.AreEqual(12, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
             Assert.AreEqual(1, playerModel.selfSinglePlayerAreaModel.discardAreaModel.cardList.Count);
@@ -638,6 +658,8 @@ public class PlaySceneModelTest
             hostModel.ChooseCard(attackCard);
             hostModel.ChooseCard(normalCard); // 此时点击普通牌，无事发生
             hostModel.ChooseCard(hostModel.enemySinglePlayerAreaModel.woodRowAreaModel.cardList[0]); // 选择攻击目标
+            Assert.AreEqual(0, hostSfxPlayCount[AudioManager.SFXType.Scorch]);
+            Assert.AreEqual(1, hostSfxPlayCount[AudioManager.SFXType.Attack]);
             Assert.AreEqual(10, hostModel.selfSinglePlayerAreaModel.GetCurrentPower());
             Assert.AreEqual(1, hostModel.enemySinglePlayerAreaModel.GetCurrentPower());
             Assert.AreEqual(false, hostModel.IsTurn(true));
@@ -658,6 +680,8 @@ public class PlaySceneModelTest
             playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
             // 等待host出牌
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(0, playerSfxPlayCount[AudioManager.SFXType.Scorch]);
+            Assert.AreEqual(1, playerSfxPlayCount[AudioManager.SFXType.Attack]);
             Assert.AreEqual(1, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
             Assert.AreEqual(10, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
         });
@@ -694,6 +718,8 @@ public class PlaySceneModelTest
             // host出牌，打出攻击牌
             hostModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
             hostModel.ChooseCard(hostModel.enemySinglePlayerAreaModel.woodRowAreaModel.cardList[0]);
+            Assert.AreEqual(1, hostSfxPlayCount[AudioManager.SFXType.Scorch]);
+            Assert.AreEqual(0, hostSfxPlayCount[AudioManager.SFXType.Attack]);
             Assert.AreEqual(10, hostModel.selfSinglePlayerAreaModel.GetCurrentPower());
             Assert.AreEqual(0, hostModel.enemySinglePlayerAreaModel.GetCurrentPower());
             Assert.AreEqual(0, hostModel.enemySinglePlayerAreaModel.woodRowAreaModel.cardList.Count);
@@ -716,6 +742,8 @@ public class PlaySceneModelTest
             playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
             // 等待host出牌
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(1, playerSfxPlayCount[AudioManager.SFXType.Scorch]);
+            Assert.AreEqual(0, playerSfxPlayCount[AudioManager.SFXType.Attack]);
             Assert.AreEqual(0, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
             Assert.AreEqual(10, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
             Assert.AreEqual(0, playerModel.selfSinglePlayerAreaModel.woodRowAreaModel.cardList.Count);
@@ -812,6 +840,7 @@ public class PlaySceneModelTest
             hostModel.ChooseCard(hostModel.enemySinglePlayerAreaModel.woodRowAreaModel.cardList[0]);
             // 等待player出牌
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(1, hostSfxPlayCount[AudioManager.SFXType.Tunning]);
             Assert.AreEqual(10, hostModel.selfSinglePlayerAreaModel.GetCurrentPower());
             Assert.AreEqual(12, hostModel.enemySinglePlayerAreaModel.GetCurrentPower());
         });
@@ -841,6 +870,7 @@ public class PlaySceneModelTest
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // player出牌，Tunning
             playerModel.ChooseCard(tunningCard);
+            Assert.AreEqual(1, playerSfxPlayCount[AudioManager.SFXType.Tunning]);
             Assert.AreEqual(12, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
             Assert.AreEqual(10, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
         });
@@ -882,6 +912,7 @@ public class PlaySceneModelTest
             Thread.Sleep(100);
             // 等待player pass。host赢第一局，第二局host先手
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(1, hostSfxPlayCount[AudioManager.SFXType.SetFinish]);
             Assert.AreEqual(1, hostModel.tracker.setRecordList[0].result);
             Assert.AreEqual(7, hostModel.tracker.setRecordList[0].selfScore);
             Assert.AreEqual(5, hostModel.tracker.setRecordList[0].enemyScore);
@@ -907,6 +938,7 @@ public class PlaySceneModelTest
             playerModel.Pass();
             Thread.Sleep(100);
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_ENEMY_ACTION);
+            Assert.AreEqual(1, playerSfxPlayCount[AudioManager.SFXType.SetFinish]);
             Assert.AreEqual(-1, playerModel.tracker.setRecordList[0].result);
             Assert.AreEqual(5, playerModel.tracker.setRecordList[0].selfScore);
             Assert.AreEqual(7, playerModel.tracker.setRecordList[0].enemyScore);
@@ -1181,6 +1213,7 @@ public class PlaySceneModelTest
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // host出牌，打出scorch牌，但无目标，相当于打出一张虚空牌
             hostModel.ChooseCard(scorchCard);
+            Assert.AreEqual(0, hostSfxPlayCount[AudioManager.SFXType.Scorch]);
             Assert.AreEqual(CardLocation.None, scorchCard.cardLocation);
             Assert.AreEqual(10, hostModel.selfSinglePlayerAreaModel.GetCurrentPower());
             Assert.AreEqual(10, hostModel.enemySinglePlayerAreaModel.GetCurrentPower());
@@ -1201,6 +1234,7 @@ public class PlaySceneModelTest
             playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
             // 等待host出牌
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(0, playerSfxPlayCount[AudioManager.SFXType.Scorch]);
             Assert.AreEqual(10, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
             Assert.AreEqual(10, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
         });
@@ -1248,6 +1282,7 @@ public class PlaySceneModelTest
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // host出牌，打出scorch牌
             hostModel.ChooseCard(scorchCard);
+            Assert.AreEqual(1, hostSfxPlayCount[AudioManager.SFXType.Scorch]);
             Assert.AreEqual(CardLocation.None, scorchCard.cardLocation);
             Assert.AreEqual(CardLocation.DiscardArea, roleCard.cardLocation);
             Assert.AreEqual(0, hostModel.selfSinglePlayerAreaModel.GetCurrentPower());
@@ -1269,6 +1304,7 @@ public class PlaySceneModelTest
             playerModel.ChooseCard(selfHandRowAreaModel.cardList[0]);
             // 等待host出牌
             CheckCurState(playerModel, PlayStateTracker.State.WAIT_SELF_ACTION);
+            Assert.AreEqual(1, playerSfxPlayCount[AudioManager.SFXType.Scorch]);
             Assert.AreEqual(10, playerModel.selfSinglePlayerAreaModel.GetCurrentPower());
             Assert.AreEqual(0, playerModel.enemySinglePlayerAreaModel.GetCurrentPower());
         });
