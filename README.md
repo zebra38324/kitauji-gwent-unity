@@ -14,6 +14,21 @@ pc端使用chrome或edge浏览器，访问：https://kitauji-gwent.com/
 ## 开发环境配置
 Windows, Unity 2022.3.50f1c1
 
+### 文件结构
+- Assets
+    - CdnRes：图片等资源
+    - Editor
+        - Test：单元测试，针对`Scripts/PlayScene/Model`中的逻辑代码进行测试
+    - Resources：图片等资源
+    - Scripts：客户端主要代码
+        - Common：各场景通用代码
+        - DeckConfigScene：牌组配置场景
+        - LoginScene：登录场景
+        - MainMenuScene：主菜单
+        - PlayScene：对战场景
+            - Model：与UI剥离的对战逻辑
+- Server：服务端模块
+
 ## 效果实例
 ![对局场景](docs/play_scene.png "对局场景")
 
