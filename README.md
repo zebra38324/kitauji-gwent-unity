@@ -18,7 +18,7 @@ Windows, Unity 2022.3.50f1c1
 - Assets
     - CdnRes：图片等资源
     - Editor
-        - Test：单元测试，针对`Scripts/PlayScene/Model`中的逻辑代码进行测试
+        - Test：单元测试，针对`Scripts/PlayScene/Model`中的逻辑代码进行测试。使用unity editor的test runner运行
     - Resources：图片等资源
     - Scripts：客户端主要代码
         - Common：各场景通用代码
