@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: RemoteAudio
+  m_EditorClassIdentifier: 
+  m_GroupName: RemoteAudio
+  m_Data:
+    m_SerializedData: []
+  m_GUID: ec8ed61fca326424b8611c3c62851cd3
+  m_SerializeEntries:
+  - m_GUID: 7da8c3c575971f140aea86ecf1ae428d
+    m_Address: Assets/RemoteRes/Audio/bgm/dream_solister.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c3674ef3e89844946bae121bdd05299d
+    m_Address: "Assets/RemoteRes/Audio/bgm/\u666E\u7F57\u65FA\u65AF\u4E4B\u98CE.mp3"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: a0611c52f639b8145b25d7fc1e3ec1d2, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 33a92570aafd43843a17b9622b25266a, type: 2}
+    - {fileID: 11400000, guid: bf59591739c23ae46b184b504bc8cd3b, type: 2}

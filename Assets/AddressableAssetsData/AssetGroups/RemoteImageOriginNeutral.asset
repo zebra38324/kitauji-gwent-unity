@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: RemoteImageOriginNeutral
+  m_EditorClassIdentifier: 
+  m_GroupName: RemoteImageOriginNeutral
+  m_Data:
+    m_SerializedData: []
+  m_GUID: a196bdca5abc9004fbccc7ce11d4caa8
+  m_SerializeEntries:
+  - m_GUID: 0f9c56097c2fa98439752aee4999677d
+    m_Address: Assets/RemoteRes/Image/origin-image/Neutral/origin-image-sunfes.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3a0cbdbbdf6f29d48b12986df6ef1020
+    m_Address: Assets/RemoteRes/Image/origin-image/Neutral/origin-image-hashimoto.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ec0b973b69d12043b42eb5ac5063a53
+    m_Address: Assets/RemoteRes/Image/origin-image/Neutral/origin-image-daisangakushou.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 640511377e1e2614cab99ab5ef65dec1
+    m_Address: Assets/RemoteRes/Image/origin-image/Neutral/origin-image-taibu.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 751b4d2727f92954cbc11617078b840d
+    m_Address: Assets/RemoteRes/Image/origin-image/Neutral/origin-image-taki_noboru.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 839af235be2a8d64093429bfc7e98baa
+    m_Address: Assets/RemoteRes/Image/origin-image/Neutral/origin-image-drumstick.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89adb10f888ea0f49835e657cec1847e
+    m_Address: Assets/RemoteRes/Image/origin-image/Neutral/origin-image-niiyama.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ddeda107ff575e4abd6285c86360197
+    m_Address: Assets/RemoteRes/Image/origin-image/Neutral/origin-image-matsumoto_michie.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bee4d78799c0ed54ab02e76aa1f72c4b
+    m_Address: Assets/RemoteRes/Image/origin-image/Neutral/origin-image-tubakun.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1de9ec68061f5b43b90ddc4e1584d1d
+    m_Address: Assets/RemoteRes/Image/origin-image/Neutral/origin-image-taki_chihiro.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e65b50d23b13f094ca18c106b5ef74cb
+    m_Address: Assets/RemoteRes/Image/origin-image/Neutral/origin-image-pool.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f8baeedbd186fd847a55a634007d39a9
+    m_Address: Assets/RemoteRes/Image/origin-image/Neutral/origin-image-daikichiyama.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: a0611c52f639b8145b25d7fc1e3ec1d2, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 44aba8f0340337e49bc03ce2dab80f73, type: 2}
+    - {fileID: 11400000, guid: bd11c357788738e43b709197eefadded, type: 2}

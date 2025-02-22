@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-using TMPro;
+using UnityEngine.AddressableAssets;
 using Newtonsoft.Json.Linq;
 using System.IO;
 
@@ -14,18 +14,11 @@ public class KResources : MonoBehaviour
 
     public static KResources Instance;
 
-    private Dictionary<string, Sprite> imageCache;
-
-    private Dictionary<string, AudioClip> audioCache;
-
-    private static string cdnUrl = @"https://static.kitauji-gwent.com/kitauji-gwent-unity-res/v1.0.0/";
+    private static string addressablesPrefix = @"Assets/RemoteRes/";
 
     void Start()
     {
-        imageCache = new Dictionary<string, Sprite>();
-        audioCache = new Dictionary<string, AudioClip>();
         Instance = this;
-        StartCoroutine(PreloadRes());
     }
 
     public static T Load<T>(string filename) where T : Object
@@ -35,22 +28,33 @@ public class KResources : MonoBehaviour
 
     public void Load<T>(Object target, string filename) where T : Object
     {
+        // TODO: 这块代码太丑陋了
         T localRes = TryLoadLocal<T>(filename);
         if (target is Image image) {
             if (localRes != null) {
                 image.sprite = localRes as Sprite;
-            } else if (imageCache.ContainsKey(filename)) {
-                image.sprite = imageCache[filename];
             } else {
-                StartCoroutine(DownloadImageFromCdn(image, filename));
+                StartCoroutine(TryLoadAddressables<Sprite>(filename, (sprite) => {
+                    if (sprite != null) {
+                        if (image != null) {
+                            image.sprite = sprite;
+                        }
+                    } else {
+                        KLog.W(TAG, "Load: " + filename + " fail");
+                    }
+                }));
             }
         } else if (target is AudioSource audioSource) {
             if (localRes != null) {
                 audioSource.clip = localRes as AudioClip;
-            } else if (audioCache.ContainsKey(filename)) {
-                audioSource.clip = audioCache[filename];
             } else {
-                StartCoroutine(DownloadAudioFromCdn(audioSource, filename));
+                StartCoroutine(TryLoadAddressables<AudioClip>(filename, (clip) => {
+                    if (clip != null) {
+                        audioSource.clip = clip;
+                    } else {
+                        KLog.W(TAG, "Load: " + filename + " fail");
+                    }
+                }));
             }
         }
     }
@@ -68,111 +72,10 @@ public class KResources : MonoBehaviour
         return Resources.Load<T>(filename);
     }
 
-    private IEnumerator DownloadImageFromCdn(Image image, string filename)
+    private IEnumerator TryLoadAddressables<T>(string filename, System.Action<T> loadComplete) where T : Object
     {
-        byte[] imageBytes = null;
-        yield return DownloadResFromCdn(filename, (readBytes) => {
-            if (readBytes != null) {
-                imageBytes = (byte[])readBytes.Clone();
-            }
-        });
-        if (imageBytes == null) {
-            KLog.W(TAG, "DownloadImageFromCdn: " + filename + " fail");
-            yield break;
-        }
-        
-        Texture2D texture = new Texture2D(2, 2, TextureFormat.RGB24, false); // 创建一个临时的 Texture2D 对象
-        texture.LoadImage(imageBytes); // 加载字节数据到纹理
-        // 一些影响画质的设置
-        texture.filterMode = FilterMode.Bilinear;
-        texture.anisoLevel = 1;
-        Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-        imageCache[filename] = sprite;
-        if (image != null) {
-            image.sprite = sprite;
-        }
-    }
-
-    private IEnumerator DownloadAudioFromCdn(AudioSource audioSource, string filename)
-    {
-        string url = cdnUrl + filename;
-        var uwr = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.MPEG);
-        yield return uwr.SendWebRequest();
-        if (uwr.result == UnityWebRequest.Result.Success) {
-            AudioClip audioClip = DownloadHandlerAudioClip.GetContent(uwr);
-            if (audioClip != null) {
-                audioCache[filename] = audioClip;
-                audioSource.clip = audioClip;
-            } else {
-                KLog.W(TAG, "DownloadAudioFromCdn: " + filename + " audioClip is null");
-            }
-        } else {
-            KLog.W(TAG, "DownloadAudioFromCdn: " + filename + " fail");
-        }
-    }
-
-    private IEnumerator DownloadResFromCdn(string filename, System.Action<byte[]> downloadComplete)
-    {
-        string url = cdnUrl + filename;
-        byte[] downloadBytes = null;
-        int maxRetryTimes = 3;
-        for (int i = 0; i < maxRetryTimes; i++) {
-            yield return TryDownload(url, (readBytes) => {
-                downloadBytes = readBytes;
-            });
-        }
-        if (downloadBytes == null) {
-            KLog.W(TAG, "DownloadResFromCdn: " + filename + " fail");
-        }
-        downloadComplete(downloadBytes);
-        yield break;
-    }
-
-    private IEnumerator TryDownload(string url, System.Action<byte[]> downloadComplete)
-    {
-        UnityWebRequest request = UnityWebRequest.Get(url);
-        yield return request.SendWebRequest();
-        try {
-            if (request.result == UnityWebRequest.Result.Success) {
-                byte[] readBytes = request.downloadHandler.data;
-                downloadComplete(readBytes);
-                yield break;
-            } else {
-                KLog.W(TAG, "TryDownload: " + url + " fail");
-            }
-        } catch (System.Exception e) {
-            KLog.W(TAG, "TryDownload: " + url + " fail, Exception: " + e.Message);
-        }
-        downloadComplete(null);
-    }
-
-    private IEnumerator PreloadRes()
-    {
-        TextAsset preloadResAsset = Load<TextAsset>(@"PreloadRes");
-        JObject preloadResJson = JObject.Parse(preloadResAsset.text);
-        yield return TryRecursionPreload(preloadResJson, "");
-    }
-
-    // json格式：{"folder1":[{"folder2": ["file1"]}, "file2"]}
-    private IEnumerator TryRecursionPreload(JObject preloadResJson, string prefix)
-    {
-        foreach (var property in preloadResJson.Properties()) {
-            if (property.Name != "PreloadRes") {
-                prefix = prefix == "" ? property.Name : $"{prefix}/{property.Name}";
-            }
-            // 所有的JObject，value都是数组。数组元素可能是JObject或string
-            if (property.Value is JArray array) {
-                foreach (var item in array) {
-                    if (item is JObject obj) {
-                        StartCoroutine(TryRecursionPreload(obj, prefix));
-                    } else {
-                        string filename = $"{prefix}/{item}";
-                        KLog.I(TAG, "preload " + filename);
-                        StartCoroutine(DownloadImageFromCdn(null, filename));
-                    }
-                }
-            }
-        }
-        yield break;
+        var loadHandle = Addressables.LoadAssetAsync<T>(addressablesPrefix + filename);
+        yield return loadHandle;
+        loadComplete(loadHandle.Result);
     }
 }
