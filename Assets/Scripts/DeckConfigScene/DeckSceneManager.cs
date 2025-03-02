@@ -77,6 +77,11 @@ public class DeckSceneManager : MonoBehaviour
     public void Save()
     {
         KLog.I(TAG, "Save");
+        if (selectedCardGroup != CardGroup.KumikoSecondYear) {
+            KLog.W(TAG, "card group not support");
+            toastView.GetComponent<ToastView>().ShowToast("此牌组尚未制作完成，无法使用");
+            return;
+        }
         int selectedCardNum = 0;
         foreach (GameObject card in selectedArea.GetComponent<DeckCardAreaView>().cardList) {
             if (card.GetComponent<CardDisplay>().cardModel.cardInfo.cardType == CardType.Normal ||
@@ -110,15 +115,32 @@ public class DeckSceneManager : MonoBehaviour
         int value = cardGroupSelect.GetComponent<TMP_Dropdown>().value;
         KLog.I(TAG, "CardGroupChange: value = " + value);
         selectedCardGroup = (CardGroup)value;
+        // TODO: 区分牌组
+        selectedInfoIdList = new List<int>();
+        if (selectedCardGroup == CardGroup.KumikoSecondYear) {
+            selectedInfoIdList = new List<int>(KConfig.Instance.deckInfoIdList);
+        }
         cardGroupAbilityText.GetComponent<TextMeshProUGUI>().text = CardText.cardGroupAbilityText[value];
+        LoadSelectedCardGroup();
     }
 
     private void Init()
     {
         selectedInfoIdList = new List<int>(KConfig.Instance.deckInfoIdList);
         selectedCardGroup = KConfig.Instance.deckCardGroup;
+        LoadSelectedCardGroup();
+    }
+
+    // 加载显示selectedCardGroup的牌组
+    private void LoadSelectedCardGroup()
+    {
+        selectedArea.GetComponent<DeckCardAreaView>().RemoveAllCard();
+        backupArea.GetComponent<DeckCardAreaView>().RemoveAllCard();
+        leaderCardContainer.GetComponent<SingleCardAreaView>().RemoveCard();
+
         CardGenerator cardGenerator = new CardGenerator();
-        List<CardModel> allCardModelList = cardGenerator.GetAllCardList();
+        List<CardModel> allCardModelList = cardGenerator.GetGroupCardList(selectedCardGroup);
+        allCardModelList.AddRange(cardGenerator.GetGroupCardList(CardGroup.Neutral)); // 所有牌组都可以直接用中立牌组
         List<GameObject> backupList = new List<GameObject>();
         List<GameObject> selectedList = new List<GameObject>();
         foreach (CardModel cardModel in allCardModelList) {

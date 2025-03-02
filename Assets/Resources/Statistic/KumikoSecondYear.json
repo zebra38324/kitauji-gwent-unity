@@ -57,7 +57,8 @@
             "badgeType": "Wood",
             "ability": "None",
             "cardType": "Normal",
-            "quote": "去年南中吹奏部的部长。\n才华横溢，演奏技术高超。"
+            "quote": "去年南中吹奏部的部长。\n才华横溢，演奏技术高超。",
+            "isMale": true
         },
         {
             "infoId": 2005,
@@ -259,7 +260,8 @@
             "bondType": "bg",
             "relatedCard": "高久智惠理",
             "cardType": "Normal",
-            "quote": "和负责高音单簧管的高久智惠理，\n刚刚开始交往不久。"
+            "quote": "和负责高音单簧管的高久智惠理，\n刚刚开始交往不久。",
+            "isMale": true
         },
         {
             "infoId": 2019,
@@ -313,7 +315,8 @@
             "bondType": "siblings",
             "relatedCard": "泷野沙耶香",
             "cardType": "Normal",
-            "quote": "小号担当，\n不擅长应对新入部的妹妹泷野沙耶香。"
+            "quote": "小号担当，\n不擅长应对新入部的妹妹泷野沙耶香。",
+            "isMale": true
         },
         {
             "infoId": 2023,
@@ -394,7 +397,8 @@
             "badgeType": "Brass",
             "ability": "None",
             "cardType": "Normal",
-            "quote": "“高坂。。算了，\n你这人挺可怕的。”"
+            "quote": "“高坂。。算了，\n你这人挺可怕的。”",
+            "isMale": true
         },
         {
             "infoId": 2029,
@@ -474,7 +478,8 @@
             "bondType": "tuba",
             "relatedCard": "长濑梨子",
             "cardType": "Normal",
-            "quote": "“虽然没有优点却拼命努力，\n这就是大号的优点。”"
+            "quote": "“虽然没有优点却拼命努力，\n这就是大号的优点。”",
+            "isMale": true
         },
         {
             "infoId": 2035,
@@ -593,7 +598,8 @@
             "badgeType": "Percussion",
             "ability": "None",
             "cardType": "Normal",
-            "quote": "“可以叫我求吗？”"
+            "quote": "“可以叫我求吗？”",
+            "isMale": true
         },
         {
             "infoId": 2044,
@@ -677,7 +683,8 @@
             "bondType": "perc2",
             "relatedCard": "前田飒介",
             "cardType": "Normal",
-            "quote": "小学的时候就和弟弟\n前田飒介一起学习鼓。"
+            "quote": "小学的时候就和弟弟\n前田飒介一起学习鼓。",
+            "isMale": true
         },
         {
             "infoId": 2050,
@@ -692,7 +699,8 @@
             "bondType": "perc2",
             "relatedCard": "前田苍太",
             "cardType": "Normal",
-            "quote": "与双胞胎哥哥——前田苍太\n一起备受期待成为打击乐的双人王牌。"
+            "quote": "与双胞胎哥哥——前田苍太\n一起备受期待成为打击乐的双人王牌。",
+            "isMale": true
         },
         {
             "infoId": 2080,

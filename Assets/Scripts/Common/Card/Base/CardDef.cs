@@ -1,9 +1,9 @@
 
 public enum CardGroup
 {
-    KumikoFirstYearS1 = 0,
-    KumikoFirstYearS2,
+    KumikoFirstYear = 0,
     KumikoSecondYear,
+    KumikoThirdYear,
     Neutral,
 }
 
@@ -35,6 +35,10 @@ public enum CardAbility // TODO: 完善
     ClearWeather, // 清除天气：消除所有天气影响。
     HornUtil, // 指导老师: 使同一行内所有部员吹奏实力翻倍。
     HornBrass, // 铜管指导：使铜管乐器部员吹奏实力翻倍
+    Lip, // 迷唇: 使对方所有男性部员吹奏能力降低2。
+    Guard, // 卫队: 守卫的目标部员在（任意一方）场上时，使指定对方一名部员吹奏能力降低4。
+    Monaka, // Monaka: 给己方一名场上部员赠送护身符，使其吹奏能力+2。
+    Kasa, // 伞: 消除本方铠冢霙的不良影响，并使其吹奏能力+5。
 }
 
 public enum CardType
@@ -63,6 +67,7 @@ public struct CardInfo
     public int attackNum; // 攻击牌的攻击数值
     public CardType cardType; // 是否为英雄牌
     public string quote; // 卡牌最下方的台词引用
+    public bool isMale; // 是否为男性部员
 
     public CardInfo(CardInfo other)
     {
@@ -82,6 +87,7 @@ public struct CardInfo
         attackNum = other.attackNum;
         cardType = other.cardType;
         quote = other.quote;
+        isMale = other.isMale;
     }
 }
 

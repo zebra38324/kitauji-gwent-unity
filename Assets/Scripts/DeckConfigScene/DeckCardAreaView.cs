@@ -54,6 +54,18 @@ public class DeckCardAreaView : MonoBehaviour
         UpdateUI();
     }
 
+    public void RemoveAllCard()
+    {
+        foreach (GameObject cell in cellList) {
+            Destroy(cell);
+        }
+        foreach (GameObject card in cardList) {
+            Destroy(card);
+        }
+        cellList.Clear();
+        cardList.Clear();
+    }
+
     private void UpdateUI()
     {
         while (cellList.Count < cardList.Count) {

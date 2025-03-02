@@ -1,0 +1,290 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: RemoteImageOriginK1
+  m_EditorClassIdentifier: 
+  m_GroupName: RemoteImageOriginK1
+  m_Data:
+    m_SerializedData: []
+  m_GUID: ea830d6d2ccf52a49ba7ed475cb556cd
+  m_SerializeEntries:
+  - m_GUID: 0374e53e07886914ea2a11924c854047
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_MeikoOda.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 084f900e3b9e4ad4fa377c7102d7d05b
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_TsubameKamaya.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0941912925b8af247b50f2f9c4c3341d
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_KotokoHimegami.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0bd1665ca14a9ca43b08e83536aafcc1
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_ChikaoTakigawa.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0d9c2484385abe84aa11208e9c2a68ae
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_HiyokoUeda.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e46add219eefd843815af474da21d0e
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_KaoriNakaseko.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 17f6223a4ee255f448f2b6bb0c06bb29
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_MiruKishibe.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ba4676ef04902346b7a1f30fa6ad6dd
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_WataruHorie.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1da05dc99d5f08749bed6ca98f12f437
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_SayakaFukui.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 238dbc630c7f45148aae085a59c2bb7a
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_MasakoSakai.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2486b1f2c9e4e764e8b4ea4e941e76a1
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_YukoYoshikawa.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a9f7d2bfe677b34cac7316ddec0f6a5
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_NaraiTanabe.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b28efcd85699494b8768ec0d92590a0
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_MainaKase.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d94dc20b1d25534ca8eaa1edc3b4a92
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_ChikaiMaki.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f193887abdd9094d820b6c829388556
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_RainaKitamura.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3452f7bd09816af4bba0d6434c7a05a2
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_RikoNagase.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 351822e4f84ded844bd215f3a3115ad7
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_SariTakahashi.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 381ceb57c15d9fc478e3a65934475fe9
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_TsuneWatanabe.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 38cedcdcd76f1d648a6756aad2e82850
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_TomoeKabe.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3a06a37090655984f8507e05535efc97
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_AoiSaitou.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3bf57ec1c649b604f8c20f782bb4eff4
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_ChieriTakahisa.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3de814bbd95658a4098b3399eb32c949
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_MikinoOka.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4028c8cc1e6e33c45977772e9883f74d
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_AsukaTanaka.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 449304e6dc32dc946a321be48b30a8f7
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_NozomiKasaki.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5546d8fcea45ab844833a3b5dce1134d
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_SumikoHirao.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 56187fd0884b74d45804d3193451274a
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_JuriSawada.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5761934a0960bfc458835feff55ee330
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_SakiKayama.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 619c2c352bca85a4dac6c1d1c06f9460
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_HideriNoguchi.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a13612cd941f694e98a35b8bf68cf0b
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_RaimuOkamoto.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6f54066d81962814991b0d5a7cb7b762
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_HazukiKatou.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7cbc8e66a79cef74ab78d93ce2371066
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_TakuyaGotou.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e84400dfc5288b4989647b8f5e6101a
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_SapphireKawashima.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 92fc39785d99e8e45957d223f324614a
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_ShinobuMorita.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 969a83060251db14d97428c4a719d6bd
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_HiroKahashi.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9a71750be7335a54cadf61f9a59c7a70
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_NatsukiNakagawa.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9afeb0e3caebc5746859bc1bd653334f
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_SakikoSuzuka.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d4272d6447d099458d93a2d4ea44d57
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_YorikoSouga.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a9f5050e93672cc4ab6897a133245b7b
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_JunnaInoue.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad2375cdd364e7740badb792fd3d6ac7
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_RieShima.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bad6ffa744da22e409b36211edfc6d11
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_AkikoYoshizawa.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cde04c199b66a484b8a3efbc5565e771
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_KirikoMiya.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d635350c4d8f2224eb99768c1cfbd2eb
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_MizoreYoroizuka.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7367a45be4334347a283016926ebdf6
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_HarukaOgasawara.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d8f5836f13efeac48a2c5039009c84d2
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_LalaHitomi.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: daa64f94ce3eab1449e5917aa0a8d513
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_Leader_AsukaTanaka.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ddcfc8846c7bf7a4fa3903c15252a9c5
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_KumikoOumae.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e2b1a5cb217987448906a624921c764d
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_MeiTaura.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e7dba5a868646d143aee609033f2b265
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_HironeTorizuka.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed1045aaa9a94c848b302fe65eba5c4c
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_KeinaIwata.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f76e30020760d5a4a864ccc7e2a8f983
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_MichiyoMorimoto.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fabdfcb5e215a094498d11558f60403d
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_ReinaKousaka.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fbecd691ec437a541af1a96e0ffc658a
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_ShuuichiTsukamoto.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fdf0d239a759b2b409313b3cea3a4033
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoFirstYear/K1_MiyokoOno.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: a0611c52f639b8145b25d7fc1e3ec1d2, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: bb18f2e8cf3b8934db6f1ceb4469f3a5, type: 2}
+    - {fileID: 11400000, guid: e1fcb164d8342124ba651fd5e5a84f15, type: 2}

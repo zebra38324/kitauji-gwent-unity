@@ -23,6 +23,7 @@ public class StatisticJsonParse
         public int attackNum; // 攻击牌的攻击数值
         public string cardType; // 是否为英雄牌
         public string quote; // 卡牌最下方的台词引用
+        public bool isMale; // 是否为男性部员
     }
 
     private class CardsInfo
@@ -53,6 +54,7 @@ public class StatisticJsonParse
             info.attackNum = jsonInfo.attackNum;
             info.cardType = (CardType)Enum.Parse(typeof(CardType), jsonInfo.cardType, true);
             info.quote = jsonInfo.quote;
+            info.isMale = jsonInfo.isMale;
             result.Add(info);
         }
         return result;

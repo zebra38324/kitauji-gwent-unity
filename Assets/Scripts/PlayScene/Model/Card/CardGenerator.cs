@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 /**
  * 卡牌生成管理器
@@ -24,7 +25,7 @@ public class CardGenerator
                 return allCardInfoList_;
             }
             allCardInfoList_ = new List<CardInfo>();
-            string[] assetNameList = { @"Statistic\KumikoSecondYear", @"Statistic\NeutralCard" };
+            string[] assetNameList = { @"Statistic\KumikoFirstYear", @"Statistic\KumikoSecondYear", @"Statistic\NeutralCard" };
             foreach (string assetName in assetNameList) {
                 TextAsset cardInfoAsset = KResources.Load<TextAsset>(assetName);
                 if (cardInfoAsset == null) {
@@ -66,11 +67,13 @@ public class CardGenerator
     }
 
     // deck config调用，不关注cardId
-    public List<CardModel> GetAllCardList()
+    public List<CardModel> GetGroupCardList(CardGroup cardGroup)
     {
         List<CardModel> list = new List<CardModel>();
         foreach (CardInfo cardInfo in allCardInfoList) {
-            list.Add(new CardModel(cardInfo));
+            if (cardInfo.group == cardGroup) {
+                list.Add(new CardModel(cardInfo));
+            }
         }
         return list;
     }

@@ -115,7 +115,7 @@ public class PlayStateTrackerTest
     public void SetFinishDrawKumikoSecondYear()
     {
         // self久二年，enemy久一年，平局self赢
-        tracker = new PlayStateTracker(true, "self", "enemy", CardGroup.KumikoSecondYear, CardGroup.KumikoFirstYearS1);
+        tracker = new PlayStateTracker(true, "self", "enemy", CardGroup.KumikoSecondYear, CardGroup.KumikoFirstYear);
         // player视角，方便测试
         tracker.TransState(PlayStateTracker.State.WAIT_INIT_HAND_CARD);
         tracker.TransState(PlayStateTracker.State.DOING_INIT_HAND_CARD);

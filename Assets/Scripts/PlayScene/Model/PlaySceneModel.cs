@@ -20,8 +20,8 @@ public class PlaySceneModel
     public PlaySceneModel(bool isHost_ = true,
         string selfName = "",
         string enemyName = "",
-        CardGroup selfGroup = CardGroup.KumikoFirstYearS1,
-        CardGroup enemyGroup = CardGroup.KumikoFirstYearS1)
+        CardGroup selfGroup = CardGroup.KumikoFirstYear,
+        CardGroup enemyGroup = CardGroup.KumikoFirstYear)
     {
         isHost = isHost_;
         TAG += isHost ? "-Host" : "-Player";
@@ -488,6 +488,16 @@ public class PlaySceneModel
                 ApplyHornUtil(card, selfArea);
                 break;
             }
+            case CardAbility.Lip: {
+                selfArea.AddBattleAreaCard(card);
+                ApplyLip(enemyArea);
+                break;
+            }
+            case CardAbility.Guard: {
+                selfArea.AddBattleAreaCard(card);
+                ApplyGuard(card, selfArea, enemyArea);
+                break;
+            }
             default: {
                 selfArea.AddBattleAreaCard(card);
                 break;
@@ -495,7 +505,7 @@ public class PlaySceneModel
         }
     }
 
-    // 实施攻击牌技能
+    // 实施攻击牌技能。Gurad技能也复用这部分逻辑
     private void ApplyAttack(CardModel card, SinglePlayerAreaModel enemyArea)
     {
         // 统计可被攻击的牌数量
@@ -529,20 +539,13 @@ public class PlaySceneModel
         if (attackNum == 2) {
             card.AddBuff(CardBuffType.Attack2, 1);
         } else {
+            // 注意，此处guard技能也会走到
             card.AddBuff(CardBuffType.Attack4, 1);
         }
         // 攻击可能导致卡牌被移除
         if (card.IsDead()) {
-            KLog.I(TAG, "ApplyBeAttacked: remove " + card.cardInfo.chineseName);
             PlaySfx(AudioManager.SFXType.Scorch);
-            if (card.cardInfo.badgeType == CardBadgeType.Wood) {
-                enemyArea.woodRowAreaModel.RemoveCard(card);
-            } else if (card.cardInfo.badgeType == CardBadgeType.Wood) {
-                enemyArea.brassRowAreaModel.RemoveCard(card);
-            } else {
-                enemyArea.percussionRowAreaModel.RemoveCard(card);
-            }
-            enemyArea.discardAreaModel.AddCard(card);
+            RemoveDeadCard(enemyArea, new List<CardModel>{ card });
         } else {
             // 卡牌没被移除时，才播放攻击音效
             PlaySfx(AudioManager.SFXType.Attack);
@@ -567,11 +570,7 @@ public class PlaySceneModel
         if (targetCardList.Count > 0) {
             PlaySfx(AudioManager.SFXType.Scorch);
         }
-        foreach (CardModel card in targetCardList) {
-            enemyArea.woodRowAreaModel.RemoveCard(card);
-            enemyArea.discardAreaModel.AddCard(card);
-            KLog.I(TAG, "ApplyScorchWood: remove " + card.cardInfo.chineseName);
-        }
+        RemoveDeadCard(enemyArea, targetCardList);
     }
 
     // 应用复活技能
@@ -627,7 +626,7 @@ public class PlaySceneModel
     private void ApplyBeWithdraw(CardModel card, SinglePlayerAreaModel selfArea)
     {
         if (decoyCard == null) {
-            KLog.E(TAG, "ApplyBeWithdraw: attackCard is null");
+            KLog.E(TAG, "ApplyBeWithdraw: decoyCard is null");
             return;
         }
         if (card.cardInfo.badgeType == CardBadgeType.Wood) {
@@ -662,15 +661,19 @@ public class PlaySceneModel
         });
         // 统计需要移除的牌
         List<CardModel> cardList = new List<CardModel>();
+        List<CardModel> selfCardList = new List<CardModel>();
+        List<CardModel> enemyCardList = new List<CardModel>();
         selfArea.CountBattleAreaCard((CardModel targetCard) => {
             if (targetCard.cardInfo.cardType == CardType.Normal && targetCard.currentPower == maxPower) {
                 cardList.Add(targetCard);
+                selfCardList.Add(targetCard);
             }
             return true;
         });
         enemyArea.CountBattleAreaCard((CardModel targetCard) => {
             if (targetCard.cardInfo.cardType == CardType.Normal && targetCard.currentPower == maxPower) {
                 cardList.Add(targetCard);
+                enemyCardList.Add(targetCard);
             }
             return true;
         });
@@ -684,28 +687,8 @@ public class PlaySceneModel
         if (cardList.Count > 0) {
             PlaySfx(AudioManager.SFXType.Scorch);
         }
-        foreach (CardModel card in cardList) {
-            KLog.I(TAG, "ApplyScorch: remove card: " + card.cardInfo.chineseName);
-            if (selfArea.woodRowAreaModel.cardList.Contains(card)) {
-                selfArea.woodRowAreaModel.RemoveCard(card);
-                selfArea.discardAreaModel.AddCard(card);
-            } else if (selfArea.brassRowAreaModel.cardList.Contains(card)) {
-                selfArea.brassRowAreaModel.RemoveCard(card);
-                selfArea.discardAreaModel.AddCard(card);
-            } else if (selfArea.percussionRowAreaModel.cardList.Contains(card)) {
-                selfArea.percussionRowAreaModel.RemoveCard(card);
-                selfArea.discardAreaModel.AddCard(card);
-            } else if (enemyArea.woodRowAreaModel.cardList.Contains(card)) {
-                enemyArea.woodRowAreaModel.RemoveCard(card);
-                enemyArea.discardAreaModel.AddCard(card);
-            } else if (enemyArea.brassRowAreaModel.cardList.Contains(card)) {
-                enemyArea.brassRowAreaModel.RemoveCard(card);
-                enemyArea.discardAreaModel.AddCard(card);
-            } else if (enemyArea.percussionRowAreaModel.cardList.Contains(card)) {
-                enemyArea.percussionRowAreaModel.RemoveCard(card);
-                enemyArea.discardAreaModel.AddCard(card);
-            }
-        }
+        RemoveDeadCard(selfArea, selfCardList);
+        RemoveDeadCard(enemyArea, enemyCardList);
     }
 
     // 结束大号君技能的流程
@@ -762,6 +745,67 @@ public class PlaySceneModel
     private void FinishHornUtil(SinglePlayerAreaModel selfArea)
     {
         hornUtilCard = null;
+    }
+
+    // 应用Lip技能
+    private void ApplyLip(SinglePlayerAreaModel enemyArea)
+    {
+        int attackCardCount = 0;
+        List<CardModel> deadCardList = new List<CardModel>();
+        enemyArea.ApplyBattleAreaAction((CardModel card) => {
+            return card.cardInfo.isMale;
+        }, (CardModel card) => {
+            attackCardCount += 1;
+            card.AddBuff(CardBuffType.Attack2, 1);
+            if (card.IsDead()) {
+                deadCardList.Add(card);
+            }
+        });
+        if (deadCardList.Count > 0) {
+            PlaySfx(AudioManager.SFXType.Scorch);
+        } else if (attackCardCount > 0) {
+            PlaySfx(AudioManager.SFXType.Attack);
+        }
+        RemoveDeadCard(enemyArea, deadCardList);
+    }
+
+    // 应用Guard技能
+    private void ApplyGuard(CardModel card, SinglePlayerAreaModel selfArea, SinglePlayerAreaModel enemyArea)
+    {
+        int relatedCardNum = 0; // 统计场上的Guard目标卡牌数量
+        relatedCardNum += selfArea.CountBattleAreaCard((CardModel targetCard) => {
+            return targetCard.cardInfo.chineseName == card.cardInfo.relatedCard;
+        });
+        relatedCardNum += enemyArea.CountBattleAreaCard((CardModel targetCard) => {
+            return targetCard.cardInfo.chineseName == card.cardInfo.relatedCard;
+        });
+        if (selfArea.leaderCardAreaModel.cardList.Find(x => x.cardInfo.chineseName == card.cardInfo.chineseName) != null) {
+            relatedCardNum += 1;
+        }
+        if (enemyArea.leaderCardAreaModel.cardList.Find(x => x.cardInfo.chineseName == card.cardInfo.chineseName) != null) {
+            relatedCardNum += 1;
+        }
+        if (relatedCardNum == 0) {
+            UpdateActionToast(null, enemyArea, "守卫目标不在场上，无法攻击");
+            KLog.I(TAG, "ApplyAttack: no target card");
+            return;
+        }
+        ApplyAttack(card, enemyArea);
+    }
+
+    private void RemoveDeadCard(SinglePlayerAreaModel playArea, List<CardModel> cardList)
+    {
+        foreach (CardModel card in cardList) {
+            KLog.I(TAG, "RemoveDeadCard: remove card: " + card.cardInfo.chineseName);
+            if (playArea.woodRowAreaModel.cardList.Contains(card)) {
+                playArea.woodRowAreaModel.RemoveCard(card);
+            } else if (playArea.brassRowAreaModel.cardList.Contains(card)) {
+                playArea.brassRowAreaModel.RemoveCard(card);
+            } else if (playArea.percussionRowAreaModel.cardList.Contains(card)) {
+                playArea.percussionRowAreaModel.RemoveCard(card);
+            }
+            playArea.discardAreaModel.AddCard(card);
+        }
     }
 
     private void SetFinish()

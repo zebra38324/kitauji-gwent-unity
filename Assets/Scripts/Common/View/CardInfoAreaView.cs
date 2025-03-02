@@ -26,6 +26,9 @@ public class CardInfoAreaView : MonoBehaviour
     private string GetCardInfoText(CardInfo cardInfo)
     {
         string result = "";
+        if (cardInfo.cardType == CardType.Leader) {
+            result += "指挥牌\n";
+        }
         if (cardInfo.cardType == CardType.Hero) {
             result += "天王：吹奏实力不受其他因素影响。\n\n";
         }
@@ -34,7 +37,7 @@ public class CardInfoAreaView : MonoBehaviour
             if (cardInfo.ability == CardAbility.Attack) {
                 result += "攻击能力：" + cardInfo.attackNum;
             }
-            if (cardInfo.ability == CardAbility.Bond || cardInfo.ability == CardAbility.Muster) {
+            if (cardInfo.relatedCard != null) {
                 result += "相关卡牌：" + cardInfo.relatedCard + "\n";
             }
         }

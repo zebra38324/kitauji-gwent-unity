@@ -677,14 +677,14 @@ MonoBehaviour:
   m_Placeholder: {fileID: 0}
   m_ItemText: {fileID: 1788469719}
   m_ItemImage: {fileID: 0}
-  m_Value: 2
+  m_Value: 1
   m_Options:
     m_Options:
-    - m_Text: "\u4E45\u4E00\u5E74S1"
-      m_Image: {fileID: 0}
-    - m_Text: "\u4E45\u4E00\u5E74S2"
+    - m_Text: "\u4E45\u4E00\u5E74"
       m_Image: {fileID: 0}
     - m_Text: "\u4E45\u4E8C\u5E74"
+      m_Image: {fileID: 0}
+    - m_Text: "\u4E45\u4E09\u5E74"
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:

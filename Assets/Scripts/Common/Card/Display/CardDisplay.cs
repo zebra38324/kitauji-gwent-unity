@@ -193,6 +193,8 @@ public class CardDisplay : MonoBehaviour,
     {
         string prefix = @"Image/origin-image/";
         switch (cardModel.cardInfo.group) {
+            case CardGroup.KumikoFirstYear:
+                return prefix + "KumikoFirstYear/" + cardModel.cardInfo.imageName;
             case CardGroup.KumikoSecondYear:
                 return prefix + "KumikoSecondYear/" + cardModel.cardInfo.imageName;
             case CardGroup.Neutral:
@@ -206,8 +208,7 @@ public class CardDisplay : MonoBehaviour,
     private string GetBeltName()
     {
         switch (cardModel.cardInfo.group) {
-            case CardGroup.KumikoFirstYearS1:
-            case CardGroup.KumikoFirstYearS2:
+            case CardGroup.KumikoFirstYear:
                 return beltNames[(cardModel.cardInfo.grade - 1 + 3) % 3];
             default:
                 return beltNames[(cardModel.cardInfo.grade - 2 + 3) % 3];
@@ -263,6 +264,14 @@ public class CardDisplay : MonoBehaviour,
                 return "horn.png";
             case CardAbility.HornBrass:
                 return "horn.png";
+            case CardAbility.Lip:
+                return "lip.png";
+            case CardAbility.Guard:
+                return "guard.png";
+            case CardAbility.Monaka:
+                return "monaka.png";
+            case CardAbility.Kasa:
+                return "kasa.png";
             default: // None
                 return "none";
         }

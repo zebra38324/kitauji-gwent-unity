@@ -2,33 +2,33 @@
     "Cards": [
         {
             "infoId": 1001,
-            "imageName": "K1_YorikoSouga.png",
+            "imageName": "K1_YorikoSouga.jpg",
             "chineseName": "杂贺赖子",
             "englishName": "Yoriko Souga",
-            "group": "KumikoFirstYear",
-            "grade": 3,
-            "originPower": 7,
-            "badgeType": "Wood",
-            "ability": "None",
-            "cardType": "Normal",
-            "quote": ""
-        },
-        {
-            "infoId": 1002,
-            "imageName": "",
-            "chineseName": "姬神琴子",
-            "englishName": "Kotoko Himegami",
             "group": "KumikoFirstYear",
             "grade": 3,
             "originPower": 6,
             "badgeType": "Wood",
             "ability": "None",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "擅长钢琴的森女系，\n希望将来在欧洲的乡村居住。"
+        },
+        {
+            "infoId": 1002,
+            "imageName": "K1_KotokoHimegami.jpg",
+            "chineseName": "姬神琴子",
+            "englishName": "Kotoko Himegami",
+            "group": "KumikoFirstYear",
+            "grade": 3,
+            "originPower": 7,
+            "badgeType": "Wood",
+            "ability": "None",
+            "cardType": "Normal",
+            "quote": "组长，面不改色完成任务的类型，\n讨厌麻烦的事情。"
         },
         {
             "infoId": 1003,
-            "imageName": "",
+            "imageName": "K1_RainaKitamura.jpg",
             "chineseName": "喜多村来南",
             "englishName": "Raina Kitamura",
             "group": "KumikoFirstYear",
@@ -39,11 +39,11 @@
             "bondType": "kita_oka",
             "relatedCard": "冈美贵乃",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "巴松担当，\n双簧管&巴松组的声部长。"
         },
         {
             "infoId": 1004,
-            "imageName": "",
+            "imageName": "K1_MikinoOka.jpg",
             "chineseName": "冈美贵乃",
             "englishName": "Mikino Oka",
             "group": "KumikoFirstYear",
@@ -54,11 +54,11 @@
             "bondType": "kita_oka",
             "relatedCard": "喜多村来南",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "巴松双人组之一。"
         },
         {
             "infoId": 1005,
-            "imageName": "",
+            "imageName": "K1_MainaKase.jpg",
             "chineseName": "加濑舞菜",
             "englishName": "Maina Kase",
             "group": "KumikoFirstYear",
@@ -69,26 +69,26 @@
             "bondType": "no_eye",
             "relatedCard": "高久智惠理",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "与一年级的高久智惠理意气相投，\n经常在一起窃窃私语。"
         },
         {
             "infoId": 1006,
-            "imageName": "",
+            "imageName": "K1_ChieriTakahisa.jpg",
             "chineseName": "高久智惠理",
             "englishName": "Chieri Takahisa",
             "group": "KumikoFirstYear",
-            "grade": 3,
+            "grade": 1,
             "originPower": 5,
             "badgeType": "Wood",
             "ability": "Bond",
             "bondType": "no_eye",
             "relatedCard": "加濑舞菜",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "与三年级的加濑舞菜意气相投，\n经常在一起窃窃私语。"
         },
         {
             "infoId": 1007,
-            "imageName": "",
+            "imageName": "K1_HironeTorizuka.jpg",
             "chineseName": "鸟冢弘音",
             "englishName": "Hirone Torizuka",
             "group": "KumikoFirstYear",
@@ -97,11 +97,11 @@
             "badgeType": "Wood",
             "ability": "Tunning",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "单簧管声部长，乐团首席。\n会对音没调准的人投以无声的凝视。"
         },
         {
             "infoId": 1008,
-            "imageName": "",
+            "imageName": "K1_SakikoSuzuka.jpg",
             "chineseName": "铃鹿咲子",
             "englishName": "Sakiko Suzuka",
             "group": "KumikoFirstYear",
@@ -110,24 +110,24 @@
             "badgeType": "Wood",
             "ability": "Spy",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "以和谐气氛为座右铭，\n擅长照顾人，温柔地指导着一年级。"
         },
         {
             "infoId": 1009,
-            "imageName": "",
+            "imageName": "K1_RaimuOkamoto.jpg",
             "chineseName": "冈本来梦",
             "englishName": "Raimu Okamoto",
             "group": "KumikoFirstYear",
             "grade": 3,
             "originPower": 6,
             "badgeType": "Wood",
-            "ability": "None", // TODO: lips
+            "ability": "Lip",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "Saxophone is fashion!"
         },
         {
             "infoId": 1010,
-            "imageName": "",
+            "imageName": "K1_KirikoMiya.jpg",
             "chineseName": "宫桐子",
             "englishName": "Kiriko Miya",
             "group": "KumikoFirstYear",
@@ -138,11 +138,11 @@
             "musterType": "idol",
             "relatedCard": "桥弘江、平尾澄子",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "“那个黏着恶魔，\n总是让我们反复做同一件事。”"
         },
         {
             "infoId": 1011,
-            "imageName": "",
+            "imageName": "K1_WataruHorie.jpg",
             "chineseName": "桥弘江",
             "englishName": "Wataru Horie",
             "group": "KumikoFirstYear",
@@ -153,26 +153,26 @@
             "musterType": "idol",
             "relatedCard": "宫桐子、平尾澄子",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "与宫桐子、平尾澄子关系很好，\n三人间关于偶像的话题讨论热火朝天。"
         },
         {
             "infoId": 1012,
-            "imageName": "",
+            "imageName": "K1_SumikoHirao.jpg",
             "chineseName": "平尾澄子",
             "englishName": "Sumiko Hirao",
             "group": "KumikoFirstYear",
-            "grade": 3,
+            "grade": 2,
             "originPower": 4,
             "badgeType": "Wood",
             "ability": "Muster",
             "musterType": "idol",
             "relatedCard": "宫桐子、桥弘江",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "与宫桐子、桥弘江关系很好，\n三人间关于偶像的话题讨论热火朝天。"
         },
         {
             "infoId": 1013,
-            "imageName": "",
+            "imageName": "K1_AoiSaitou.jpg",
             "chineseName": "斋藤葵",
             "englishName": "Aoi Saitou",
             "group": "KumikoFirstYear",
@@ -181,11 +181,11 @@
             "badgeType": "Wood",
             "ability": "Scorch",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "“久美子你也多多注意，\n三年也就一眨眼而已。”"
         },
         {
             "infoId": 1014,
-            "imageName": "",
+            "imageName": "K1_TsuneWatanabe.jpg",
             "chineseName": "渡边恒",
             "englishName": "Tsune Watanabe",
             "group": "KumikoFirstYear",
@@ -194,11 +194,11 @@
             "badgeType": "Wood",
             "ability": "None",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "喜欢摸头发，\n一直在编别人的头发。"
         },
         {
             "infoId": 1015,
-            "imageName": "",
+            "imageName": "K1_HiroKahashi.jpg",
             "chineseName": "加桥比吕",
             "englishName": "Hiro Kahashi",
             "group": "KumikoFirstYear",
@@ -208,11 +208,11 @@
             "ability": "Attack",
             "attackNum": 2,
             "cardType": "Normal",
-            "quote": ""
+            "quote": "“他要是敢多说一句，\n我就把吹口扔他脸上。”"
         },
         {
             "infoId": 1016,
-            "imageName": "",
+            "imageName": "K1_JuriSawada.jpg",
             "chineseName": "泽田树理",
             "englishName": "Juri Sawada",
             "group": "KumikoFirstYear",
@@ -221,11 +221,11 @@
             "badgeType": "Brass",
             "ability": "Spy",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "组长，因为一直都是组内最优秀，\n所以没怎么努力过。"
         },
         {
             "infoId": 1017,
-            "imageName": "",
+            "imageName": "K1_MeiTaura.jpg",
             "chineseName": "田浦爱衣",
             "englishName": "Mei Taura",
             "group": "KumikoFirstYear",
@@ -236,11 +236,11 @@
             "bondType": "tronbone_cp",
             "relatedCard": "野口日照",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "最近开始与野口日照交往，\n以至于两人难以投入身心练习吹奏。"
         },
         {
             "infoId": 1018,
-            "imageName": "",
+            "imageName": "K1_HideriNoguchi.jpg",
             "chineseName": "野口日照",
             "englishName": "Hideri Noguchi",
             "group": "KumikoFirstYear",
@@ -251,11 +251,12 @@
             "bondType": "tronbone_cp",
             "relatedCard": "田浦爱衣",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "组长，最近开始与田浦爱衣交往，\n以至于两人难以投入身心练习吹奏。",
+            "isMale": true
         },
         {
             "infoId": 1019,
-            "imageName": "",
+            "imageName": "K1_NaraiTanabe.jpg",
             "chineseName": "田边名来",
             "englishName": "Narai Tanabe",
             "group": "KumikoFirstYear",
@@ -264,11 +265,12 @@
             "badgeType": "Percussion",
             "ability": "Morale",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "组长，以\"music is heart\"为座右铭，\n为了让组内人人都能享受演奏而努力。",
+            "isMale": true
         },
         {
             "infoId": 1020,
-            "imageName": "",
+            "imageName": "K1_SakiKayama.jpg",
             "chineseName": "加山沙希",
             "englishName": "Saki Kayama",
             "group": "KumikoFirstYear",
@@ -277,11 +279,11 @@
             "badgeType": "Percussion",
             "ability": "None",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "组里的努力人士，\n掌舵防止组长田边名来失控暴走。"
         },
         {
             "infoId": 1021,
-            "imageName": "",
+            "imageName": "K1_AsukaTanaka.jpg",
             "chineseName": "田中明日香",
             "englishName": "Asuka Tanaka",
             "group": "KumikoFirstYear",
@@ -290,11 +292,11 @@
             "badgeType": "Brass",
             "ability": "Morale",
             "cardType": "Hero",
-            "quote": ""
+            "quote": "“我想让全国都能\n听到我们北宇治的演奏。”"
         },
         {
             "infoId": 1022,
-            "imageName": "",
+            "imageName": "K1_HarukaOgasawara.jpg",
             "chineseName": "小笠原晴香",
             "englishName": "Haruka Ogasawara",
             "group": "KumikoFirstYear",
@@ -303,24 +305,24 @@
             "badgeType": "Wood",
             "ability": "Morale",
             "cardType": "Hero",
-            "quote": ""
+            "quote": "“温柔这种词，\n是说给一无是处的人听的。”"
         },
         {
             "infoId": 1023,
-            "imageName": "",
+            "imageName": "K1_KaoriNakaseko.jpg",
             "chineseName": "中世古香织",
-            "englishName": "Haruka Ogasawara",
+            "englishName": "Kaori Nakaseko",
             "group": "KumikoFirstYear",
             "grade": 3,
             "originPower": 7,
             "badgeType": "Brass",
             "ability": "Medic",
             "cardType": "Hero",
-            "quote": ""
+            "quote": "“吹得不好，只是喜欢。”"
         },
         {
             "infoId": 1024,
-            "imageName": "",
+            "imageName": "K1_LalaHitomi.jpg",
             "chineseName": "瞳拉拉",
             "englishName": "Lala Hitomi",
             "group": "KumikoFirstYear",
@@ -329,11 +331,11 @@
             "badgeType": "Brass",
             "ability": "Spy",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "“是的，\n拉拉我听到了。”"
         },
         {
             "infoId": 1025,
-            "imageName": "",
+            "imageName": "K1_MeikoOda.jpg",
             "chineseName": "小田芽衣子",
             "englishName": "Meiko Oda",
             "group": "KumikoFirstYear",
@@ -344,11 +346,11 @@
             "bondType": "flute_k1",
             "relatedCard": "高桥沙里",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "和高桥沙里同班，\n两人关系很好。"
         },
         {
             "infoId": 1026,
-            "imageName": "",
+            "imageName": "K1_SariTakahashi.jpg",
             "chineseName": "高桥沙里",
             "englishName": "Sari Takahashi",
             "group": "KumikoFirstYear",
@@ -359,11 +361,11 @@
             "bondType": "flute_k1",
             "relatedCard": "小田芽衣子",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "和小田芽衣子同班，\n两人关系很好。"
         },
         {
             "infoId": 1027,
-            "imageName": "",
+            "imageName": "K1_HazukiKatou.jpg",
             "chineseName": "加藤叶月",
             "englishName": "Hazuki Katou",
             "group": "KumikoFirstYear",
@@ -372,11 +374,11 @@
             "badgeType": "Brass",
             "ability": "Horn",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "“大号的职责就是在背后支持乐队。”"
         },
         {
             "infoId": 1028,
-            "imageName": "",
+            "imageName": "K1_KumikoOumae.jpg",
             "chineseName": "黄前久美子",
             "englishName": "Kumiko Oumae",
             "group": "KumikoFirstYear",
@@ -385,11 +387,11 @@
             "badgeType": "Brass",
             "ability": "None",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "“想演奏得更好。”"
         },
         {
             "infoId": 1029,
-            "imageName": "",
+            "imageName": "K1_JunnaInoue.jpg",
             "chineseName": "井上顺菜",
             "englishName": "Junna Inoue",
             "group": "KumikoFirstYear",
@@ -400,11 +402,11 @@
             "bondType": "perc_k1",
             "relatedCard": "堺万纱子",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "初中时便是打击乐担当，\n演奏技术很高"
         },
         {
             "infoId": 1030,
-            "imageName": "",
+            "imageName": "K1_MasakoSakai.jpg",
             "chineseName": "堺万纱子",
             "englishName": "Masako Sakai",
             "group": "KumikoFirstYear",
@@ -415,11 +417,11 @@
             "bondType": "perc_k1",
             "relatedCard": "井上顺菜",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "非常喜欢音乐，\n认为最有意思的乐器是打击乐器。"
         },
         {
             "infoId": 1031,
-            "imageName": "",
+            "imageName": "K1_ChikaoTakigawa.jpg",
             "chineseName": "泷川近夫",
             "englishName": "Chikao Takigawa",
             "group": "KumikoFirstYear",
@@ -430,11 +432,12 @@
             "musterType": "boys",
             "relatedCard": "冢本秀一",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "与冢本秀一关系很好，\n放学经常一起走。",
+            "isMale": true
         },
         {
             "infoId": 1032,
-            "imageName": "",
+            "imageName": "K1_ShuuichiTsukamoto.jpg",
             "chineseName": "冢本秀一",
             "englishName": "Shuuichi Tsukamoto",
             "group": "KumikoFirstYear",
@@ -445,11 +448,12 @@
             "musterType": "boys",
             "relatedCard": "泷川近夫",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "与泷川近夫关系很好，\n放学经常一起走。",
+            "isMale": true
         },
         {
             "infoId": 1033,
-            "imageName": "",
+            "imageName": "K1_HiyokoUeda.jpg",
             "chineseName": "植田日和子",
             "englishName": "Hiyoko Ueda",
             "group": "KumikoFirstYear",
@@ -458,11 +462,11 @@
             "badgeType": "Wood",
             "ability": "None",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "“心醉于泷老师带来的风潮中，\n两眼发出闪闪发光的视线。”"
         },
         {
             "infoId": 1034,
-            "imageName": "",
+            "imageName": "K1_SayakaFukui.jpg",
             "chineseName": "福井沙耶香",
             "englishName": "Sayaka Fukui",
             "group": "KumikoFirstYear",
@@ -471,11 +475,11 @@
             "badgeType": "Brass",
             "ability": "None",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "高中开始加入吹奏部，\n憧憬着明日香而入部，喜欢海豹。"
         },
         {
             "infoId": 1035,
-            "imageName": "",
+            "imageName": "K1_AkikoYoshizawa.jpg",
             "chineseName": "吉泽秋子",
             "englishName": "Akiko Yoshizawa",
             "group": "KumikoFirstYear",
@@ -484,11 +488,11 @@
             "badgeType": "Brass",
             "ability": "None",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "注视着明日香和香织的关系，\n正在“嗯哈.....”中。"
         },
         {
             "infoId": 1036,
-            "imageName": "",
+            "imageName": "K1_KeinaIwata.jpg",
             "chineseName": "岩田慧菜",
             "englishName": "Keina Iwata",
             "group": "KumikoFirstYear",
@@ -497,11 +501,11 @@
             "badgeType": "Brass",
             "ability": "Medic",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "家中是祖传的医生世家，\n将来想致力于音乐疗法。"
         },
         {
             "infoId": 1037,
-            "imageName": "",
+            "imageName": "K1_ChikaiMaki.jpg",
             "chineseName": "牧誓",
             "englishName": "Chikai Maki",
             "group": "KumikoFirstYear",
@@ -510,11 +514,11 @@
             "badgeType": "Wood",
             "ability": "None",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "憧憬着上低音萨克斯而入部。"
         },
         {
             "infoId": 1038,
-            "imageName": "",
+            "imageName": "K1_MichiyoMorimoto.jpg",
             "chineseName": "森本美千代",
             "englishName": "Michiyo Morimoto",
             "group": "KumikoFirstYear",
@@ -523,11 +527,11 @@
             "badgeType": "Brass",
             "ability": "None",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "中学时就吹圆号，\n教瞳拉拉基础。"
         },
         {
             "infoId": 1039,
-            "imageName": "",
+            "imageName": "K1_TsubameKamaya.jpg",
             "chineseName": "釜屋燕",
             "englishName": "Tsubame Kamaya",
             "group": "KumikoFirstYear",
@@ -536,11 +540,11 @@
             "badgeType": "Percussion",
             "ability": "None",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "因为想敲鼓而加入吹奏部，\n但是本人没什么节奏感。"
         },
         {
             "infoId": 1040,
-            "imageName": "",
+            "imageName": "K1_ReinaKousaka.jpg",
             "chineseName": "高坂丽奈",
             "englishName": "Reina Kousaka",
             "group": "KumikoFirstYear",
@@ -549,11 +553,11 @@
             "badgeType": "Brass",
             "ability": "None",
             "cardType": "Hero",
-            "quote": ""
+            "quote": "“我想成为特别的人。”"
         },
         {
             "infoId": 1041,
-            "imageName": "",
+            "imageName": "K1_SapphireKawashima.jpg",
             "chineseName": "川岛绿辉",
             "englishName": "Sapphire Kawashima",
             "group": "KumikoFirstYear",
@@ -562,11 +566,11 @@
             "badgeType": "Percussion",
             "ability": "None",
             "cardType": "Hero",
-            "quote": ""
+            "quote": "“爱与死亡是音乐永恒的主题。”"
         },
         {
             "infoId": 1042,
-            "imageName": "",
+            "imageName": "K1_RikoNagase.jpg",
             "chineseName": "长濑梨子",
             "englishName": "Riko Nagase",
             "group": "KumikoFirstYear",
@@ -577,11 +581,11 @@
             "bondType": "tuba_k1",
             "relatedCard": "后藤卓也",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "“该说我们在交往呢，\n还是没在交往呢。。”"
         },
         {
             "infoId": 1043,
-            "imageName": "",
+            "imageName": "K1_TakuyaGotou.jpg",
             "chineseName": "后藤卓也",
             "englishName": "Takuya Gotou",
             "group": "KumikoFirstYear",
@@ -592,63 +596,65 @@
             "bondType": "tuba_k1",
             "relatedCard": "长濑梨子",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "“虽然没有优点却拼命努力，\n这就是大号的优点。”",
+            "isMale": true
         },
         {
             "infoId": 1044,
-            "imageName": "",
+            "imageName": "K1_YukoYoshikawa.jpg",
             "chineseName": "吉川优子",
             "englishName": "Yuko Yoshikawa",
             "group": "KumikoFirstYear",
             "grade": 2,
             "originPower": 4,
             "badgeType": "Brass",
-            "ability": "None", // TODO: guard
+            "ability": "Guard",
+            "relatedCard": "中世古香织",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "“香织学姐，简直是天使！”"
         },
         {
             "infoId": 1045,
-            "imageName": "",
+            "imageName": "K1_NatsukiNakagawa.jpg",
             "chineseName": "中川夏纪",
             "englishName": "Natsuki Nakagawa",
             "group": "KumikoFirstYear",
             "grade": 2,
             "originPower": 2,
             "badgeType": "Brass",
-            "ability": "None", // TODO: monaka
+            "ability": "Monaka",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "“一定要拿金奖，明年一起吹吧。”"
         },
         {
             "infoId": 1046,
-            "imageName": "",
+            "imageName": "K1_TomoeKabe.jpg",
             "chineseName": "加部友惠",
             "englishName": "Tomoe Kabe",
             "group": "KumikoFirstYear",
             "grade": 2,
             "originPower": 2,
             "badgeType": "Brass",
-            "ability": "None", // TODO: monaka
+            "ability": "Monaka",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "Team Monaka的一员，\n不太擅长吹小号。"
         },
         {
             "infoId": 1047,
-            "imageName": "",
+            "imageName": "K1_ShinobuMorita.jpg",
             "chineseName": "森田忍",
             "englishName": "Shinobu Morita",
             "group": "KumikoFirstYear",
             "grade": 2,
             "originPower": 2,
             "badgeType": "Wood",
-            "ability": "None", // TODO: monaka
+            "ability": "Monaka",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "Team Monaka的一员，\n在比赛前为全员制作护身符。"
         },
         {
             "infoId": 1048,
-            "imageName": "",
+            "imageName": "K1_RieShima.jpg",
             "chineseName": "岛理惠",
             "englishName": "Rie Shima",
             "group": "KumikoFirstYear",
@@ -657,11 +663,11 @@
             "badgeType": "Wood",
             "ability": "None",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "狂热宇宙迷，痴迷于弘音前辈。"
         },
         {
             "infoId": 1049,
-            "imageName": "",
+            "imageName": "K1_MiyokoOno.jpg",
             "chineseName": "大野美代子",
             "englishName": "Miyoko Ono",
             "group": "KumikoFirstYear",
@@ -670,11 +676,11 @@
             "badgeType": "Percussion",
             "ability": "None",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "善于观察照顾别人，\n性格开朗能活跃大家的气氛。"
         },
         {
             "infoId": 1050,
-            "imageName": "",
+            "imageName": "K1_MiruKishibe.jpg",
             "chineseName": "岸部海松",
             "englishName": "Miru Kishibe",
             "group": "KumikoFirstYear",
@@ -683,11 +689,11 @@
             "badgeType": "Brass",
             "ability": "None",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "高中开始加入吹奏部，\n早已经习惯了懒散的气氛。"
         },
         {
             "infoId": 1051,
-            "imageName": "",
+            "imageName": "K1_MizoreYoroizuka.jpg",
             "chineseName": "铠冢霙",
             "englishName": "Mizore Yoroizuka",
             "group": "KumikoFirstYear",
@@ -696,30 +702,30 @@
             "badgeType": "Wood",
             "ability": "None",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "“我会为了希美而演奏。”"
         },
         {
             "infoId": 1052,
-            "imageName": "",
+            "imageName": "K1_NozomiKasaki.jpg",
             "chineseName": "伞木希美",
             "englishName": "Nozomi Kasaki",
             "group": "KumikoFirstYear",
             "grade": 2,
             "originPower": 7,
             "badgeType": "Wood",
-            "ability": "None", // TODO: kasa
+            "ability": "Kasa",
             "cardType": "Normal",
-            "quote": ""
+            "quote": "“我好想听你吹双簧管。”"
         },
         {
             "infoId": 1080,
-            "imageName": "",
+            "imageName": "K1_Leader_AsukaTanaka.jpg",
             "chineseName": "田中明日香",
             "englishName": "Asuka Tanaka",
             "group": "KumikoFirstYear",
-            "ability": "HornBrass", // TODO: emreis_leader4
+            "ability": "Medic",
             "cardType": "Leader",
-            "quote": ""
+            "quote": "“各位新生，\n欢迎来到北宇治高中。”"
         }
     ]
 }
