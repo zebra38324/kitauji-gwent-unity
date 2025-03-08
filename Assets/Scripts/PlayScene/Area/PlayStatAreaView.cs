@@ -39,9 +39,8 @@ public class PlayStatAreaView : MonoBehaviour
         playSceneModel = model;
         isSelf = isSelfModel;
         singlePlayerAreaModel = isSelf ? playSceneModel.selfSinglePlayerAreaModel : playSceneModel.enemySinglePlayerAreaModel;
-        playerName.GetComponent<TextMeshProUGUI>().text = string.Format("{0}（{1}）",
-            isSelf ? playSceneModel.tracker.selfName : playSceneModel.tracker.enemyName,
-            isSelf ? CardText.cardGroupText[(int)playSceneModel.tracker.selfGroup] : CardText.cardGroupText[(int)playSceneModel.tracker.enemyGroup]);
+        playerName.GetComponent<TextMeshProUGUI>().text = string.Format("{0}", isSelf ? playSceneModel.tracker.selfName : playSceneModel.tracker.enemyName);
+        StartCoroutine(InitPlayerName());
     }
 
     // 每次操作完，更新ui
@@ -57,6 +56,19 @@ public class PlayStatAreaView : MonoBehaviour
             countDown.SetActive(false);
         }
         UpdateSetScore();
+    }
+
+    private IEnumerator InitPlayerName()
+    {
+        while (!isAbort) {
+            if (playSceneModel.tracker.curState == PlayStateTracker.State.WAIT_BACKUP_INFO) {
+                yield return null;
+            }
+            playerName.GetComponent<TextMeshProUGUI>().text = string.Format("{0}（{1}）",
+                isSelf ? playSceneModel.tracker.selfName : playSceneModel.tracker.enemyName,
+                isSelf ? CardText.cardGroupText[(int)playSceneModel.tracker.selfGroup] : CardText.cardGroupText[(int)playSceneModel.tracker.enemyGroup]);
+            yield break;
+        }
     }
 
     private void UpdateCountDown()

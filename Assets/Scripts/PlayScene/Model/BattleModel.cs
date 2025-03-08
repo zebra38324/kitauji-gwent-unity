@@ -10,7 +10,7 @@ using UnityEngine;
  *      涉及方：host、player
  *      逻辑流程：
  *          1. host、player初始化PlaySceneModel，生成各自卡牌的id（包括备选卡牌）
- *          2. host、player将各自卡牌情况（infoId + id）发送至对方。接收对方的卡牌infoId+id组合后，生成CardModel
+ *          2. host、player将各自卡牌情况（牌组信息 + infoId + id）发送至对方。接收对方的卡牌infoId+id组合后，生成CardModel
  *          3. host、player各自抽取自己的手牌，并将手牌信息（id）发送至对方
  *          4. host向player发送开始整场游戏的信息，并附带先后手信息
  *          5. 用户可能的操作
@@ -34,7 +34,7 @@ public class BattleModel
 
     public enum ActionType
     {
-        Init = 0, // 初始卡牌信息。data: infoIdList, idList
+        Init = 0, // 初始卡牌信息。data: cardGroup, infoIdList, idList
         DrawHandCard, // 抽取手牌。data: idList
         StartGame, // 开始整场比赛，仅host向player发送。data: hostFirst
         ChooseCard, // 选择卡牌。data: id
@@ -53,6 +53,7 @@ public class BattleModel
     private struct ActionMsg
     {
         public ActionType actionType;
+        public CardGroup cardGroup;
         public List<int> infoIdList;
         public List<int> idList;
         public bool hostFirst; // 第一局游戏，是否由host先手
@@ -91,8 +92,9 @@ public class BattleModel
         actionMsg.actionType = actionType;
         switch (actionType) {
             case ActionType.Init: {
-                actionMsg.infoIdList = (List<int>)list[0];
-                actionMsg.idList = (List<int>)list[1];
+                actionMsg.cardGroup = (CardGroup)list[0];
+                actionMsg.infoIdList = (List<int>)list[1];
+                actionMsg.idList = (List<int>)list[2];
                 break;
             }
             case ActionType.DrawHandCard: {
@@ -162,7 +164,7 @@ public class BattleModel
             if (EnemyMsgCallback != null) {
                 switch (actionMsg.actionType) {
                     case ActionType.Init: {
-                        EnemyMsgCallback(actionMsg.actionType, actionMsg.infoIdList, actionMsg.idList);
+                        EnemyMsgCallback(actionMsg.actionType, actionMsg.cardGroup, actionMsg.infoIdList, actionMsg.idList);
                         break;
                     }
                     case ActionType.DrawHandCard: {

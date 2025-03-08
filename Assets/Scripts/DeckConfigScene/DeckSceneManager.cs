@@ -77,7 +77,8 @@ public class DeckSceneManager : MonoBehaviour
     public void Save()
     {
         KLog.I(TAG, "Save");
-        if (selectedCardGroup != CardGroup.KumikoSecondYear) {
+        if (selectedCardGroup != CardGroup.KumikoFirstYear &&
+            selectedCardGroup != CardGroup.KumikoSecondYear) {
             KLog.W(TAG, "card group not support");
             toastView.GetComponent<ToastView>().ShowToast("此牌组尚未制作完成，无法使用");
             return;
@@ -117,8 +118,9 @@ public class DeckSceneManager : MonoBehaviour
         selectedCardGroup = (CardGroup)value;
         // TODO: 区分牌组
         selectedInfoIdList = new List<int>();
-        if (selectedCardGroup == CardGroup.KumikoSecondYear) {
-            selectedInfoIdList = new List<int>(KConfig.Instance.deckInfoIdList);
+        if (selectedCardGroup == CardGroup.KumikoFirstYear ||
+            selectedCardGroup == CardGroup.KumikoSecondYear) {
+            selectedInfoIdList = new List<int>(KConfig.Instance.GetDeckInfoIdList(selectedCardGroup));
         }
         cardGroupAbilityText.GetComponent<TextMeshProUGUI>().text = CardText.cardGroupAbilityText[value];
         LoadSelectedCardGroup();
@@ -126,7 +128,7 @@ public class DeckSceneManager : MonoBehaviour
 
     private void Init()
     {
-        selectedInfoIdList = new List<int>(KConfig.Instance.deckInfoIdList);
+        selectedInfoIdList = new List<int>(KConfig.Instance.GetDeckInfoIdList(KConfig.Instance.deckCardGroup));
         selectedCardGroup = KConfig.Instance.deckCardGroup;
         LoadSelectedCardGroup();
     }

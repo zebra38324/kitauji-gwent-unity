@@ -80,6 +80,7 @@ public class PlayStateTracker
         MEDICING, // 正在使用复活技能中
         DECOYING, // 正在使用大号君技能中
         HORN_UTILING, // 正在使用HornUtil技能中
+        MONAKAING, // 正在使用monaka技能中
     }
 
     public ActionState actionState { get; private set; }
@@ -90,13 +91,12 @@ public class PlayStateTracker
 
     public CardGroup selfGroup { get; private set; }
 
-    public CardGroup enemyGroup { get; private set; }
+    public CardGroup enemyGroup { get; set; } // 开局后由battle model获取
 
     public PlayStateTracker(bool isHost = true,
         string selfName_ = "",
         string enemyName_ = "",
-        CardGroup selfGroup_ = CardGroup.KumikoSecondYear,
-        CardGroup enemyGroup_ = CardGroup.KumikoSecondYear)
+        CardGroup selfGroup_ = CardGroup.KumikoSecondYear)
     {
         TAG += isHost ? "-Host" : "-Player";
         curState = State.WAIT_BACKUP_INFO;
@@ -109,7 +109,7 @@ public class PlayStateTracker
         selfName = selfName_;
         enemyName = enemyName_;
         selfGroup = selfGroup_;
-        enemyGroup = enemyGroup_;
+        enemyGroup = CardGroup.KumikoSecondYear;
     }
 
     // host调用
@@ -319,7 +319,8 @@ public class PlayStateTracker
             case ActionState.ATTACKING:
             case ActionState.MEDICING:
             case ActionState.DECOYING:
-            case ActionState.HORN_UTILING: {
+            case ActionState.HORN_UTILING:
+            case ActionState.MONAKAING: {
                 if (newActionState != ActionState.None) {
                     valid = false;
                 }

@@ -115,7 +115,9 @@ public class CardModel
         if (times > 0) {
             power *= times;
         }
-        int diff = buffRecord[(int)CardBuffType.Morale] -
+        int diff = buffRecord[(int)CardBuffType.Morale] +
+            5 * buffRecord[(int)CardBuffType.Kasa] +
+            2 * buffRecord[(int)CardBuffType.Monaka] -
             2 * buffRecord[(int)CardBuffType.Attack2] -
             4 * buffRecord[(int)CardBuffType.Attack4];
         power += diff;

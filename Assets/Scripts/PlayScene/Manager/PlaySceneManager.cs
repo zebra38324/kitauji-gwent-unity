@@ -101,8 +101,7 @@ public class PlaySceneManager : MonoBehaviour
         playSceneModel = new PlaySceneModel(Convert.ToBoolean(PlayerPrefs.GetInt(PlayerPrefsKey.PLAY_SCENE_IS_HOST.ToString())),
             PlayerPrefs.GetString(PlayerPrefsKey.PLAY_SCENE_SELF_NAME.ToString()),
             PlayerPrefs.GetString(PlayerPrefsKey.PLAY_SCENE_ENEMY_NAME.ToString()),
-            (CardGroup)PlayerPrefs.GetInt(PlayerPrefsKey.PLAY_SCENE_SELF_GROUP.ToString()),
-            (CardGroup)PlayerPrefs.GetInt(PlayerPrefsKey.PLAY_SCENE_ENEMY_GROUP.ToString()));
+            (CardGroup)PlayerPrefs.GetInt(PlayerPrefsKey.PLAY_SCENE_SELF_GROUP.ToString()));
         playSceneModel.SfxCallback += AudioManager.Instance.PlaySFX;
         if (selfPlayArea == null) {
             selfPlayArea = GameObject.Find("SelfPlayArea");
@@ -144,8 +143,11 @@ public class PlaySceneManager : MonoBehaviour
             playScenePVP = new PlayScenePVP(playSceneModel.battleModel, sessionId);
             playScenePVP.Start();
         } else {
-            // 配置AI模块
-            playSceneAI = new PlaySceneAI();
+            // 配置AI模块，注意信息要和host反过来
+            playSceneAI = new PlaySceneAI(!Convert.ToBoolean(PlayerPrefs.GetInt(PlayerPrefsKey.PLAY_SCENE_IS_HOST.ToString())),
+                PlayerPrefs.GetString(PlayerPrefsKey.PLAY_SCENE_ENEMY_NAME.ToString()),
+                PlayerPrefs.GetString(PlayerPrefsKey.PLAY_SCENE_SELF_NAME.ToString()),
+                (PlaySceneAI.AIType)PlayerPrefs.GetInt(PlayerPrefsKey.PLAY_SCENE_PVE_AI_TYPE.ToString()));
             playSceneAI.playSceneModel.battleModel.SendToEnemyFunc += playSceneModel.battleModel.AddEnemyActionMsg;
             playSceneModel.battleModel.SendToEnemyFunc += playSceneAI.playSceneModel.battleModel.AddEnemyActionMsg;
             playSceneAI.Start();
@@ -154,10 +156,10 @@ public class PlaySceneManager : MonoBehaviour
         InitViewModel();
 
         // playSceneModel初始化
-        while (KConfig.Instance.deckInfoIdList == null) {
+        while (KConfig.Instance.GetDeckInfoIdList(KConfig.Instance.deckCardGroup) == null) {
             await UniTask.Delay(1);
         }
-        List<int> selfInfoIdList = KConfig.Instance.deckInfoIdList;
+        List<int> selfInfoIdList = KConfig.Instance.GetDeckInfoIdList(KConfig.Instance.deckCardGroup);
         playSceneModel.SetBackupCardInfoIdList(selfInfoIdList);
         initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().StartUI();
         StartCoroutine(StartGame());
@@ -333,8 +335,9 @@ public class PlaySceneManager : MonoBehaviour
                 } else if (playSceneModel.tracker.actionState == PlayStateTracker.ActionState.HORN_UTILING) {
                     HandleMessage(SceneMsg.HideHornAreaViewButton);
                     playSceneModel.InterruptAction();
-                }  else if (playSceneModel.tracker.actionState == PlayStateTracker.ActionState.ATTACKING ||
-                    playSceneModel.tracker.actionState == PlayStateTracker.ActionState.DECOYING) {
+                } else if (playSceneModel.tracker.actionState == PlayStateTracker.ActionState.ATTACKING ||
+                    playSceneModel.tracker.actionState == PlayStateTracker.ActionState.DECOYING ||
+                    playSceneModel.tracker.actionState == PlayStateTracker.ActionState.MONAKAING) {
                     playSceneModel.InterruptAction();
                 }
                 UpdateUI();

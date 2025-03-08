@@ -6,7 +6,6 @@ using Newtonsoft.Json.Linq;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
-
 // kitauji config
 // 全局配置读取
 public class KConfig
@@ -14,7 +13,7 @@ public class KConfig
     private string TAG = "KConfig";
     private static readonly KConfig instance = new KConfig();
 
-    public List<int> deckInfoIdList { get; private set; }
+    public Dictionary<CardGroup, List<int>> deckInfoIdListDic { get; private set; }
 
     public CardGroup deckCardGroup { get; private set; }
 
@@ -22,11 +21,10 @@ public class KConfig
 
     private bool isTourist = false;
 
-    private static string[] touristNameList = { "黄前久美子", "高坂丽奈" };
-
-    static KConfig() { }
-
-    private KConfig() { }
+    private KConfig()
+    {
+        deckInfoIdListDic = new Dictionary<CardGroup, List<int>>();
+    }
 
     public static KConfig Instance {
         get {
@@ -71,7 +69,7 @@ public class KConfig
                 }
                 if (apiSuccess) {
                     playerName = loginResJson["username"]?.ToString();
-                    GetDeckInfoIdList();
+                    GetDeckConfig();
                 }
                 break;
             }
@@ -82,33 +80,49 @@ public class KConfig
     public void UpdateDeckInfoIdList(List<int> infoIdList, CardGroup cardGroup)
     {
         KLog.I(TAG, "UpdateDeckInfoIdList");
-        deckInfoIdList = infoIdList;
+        deckInfoIdListDic[cardGroup] = infoIdList;
         deckCardGroup = cardGroup;
     }
 
-    private async void GetDeckInfoIdList()
+    public List<int> GetDeckInfoIdList(CardGroup cardGroup)
+    {
+        if (!deckInfoIdListDic.ContainsKey(cardGroup)) {
+            return null;
+        }
+        return deckInfoIdListDic[cardGroup];
+    }
+
+    private async void GetDeckConfig()
     {
         string deckConfigReqStr = "{}";
         int sessionId = KRPC.Instance.CreateSession();
         KRPC.Instance.Send(sessionId, KRPC.ApiType.config_deck_get, deckConfigReqStr);
         while (true) {
+            // 返回格式：{"status": "success", "deck": { "group": 0, "config": [[int数组], [int数组]]}}
             string receiveStr = KRPC.Instance.Receive(sessionId);
             if (receiveStr != null) {
                 KLog.I(TAG, "GetDeckInfoIdList: Receive: " + receiveStr);
-                JObject deckConfigJson = JObject.Parse(receiveStr);
-                bool apiSuccess = deckConfigJson["status"]?.ToString() == KRPC.ApiRetStatus.success.ToString();
-                deckInfoIdList = ((JArray)deckConfigJson["deck"])?.ToObject<List<int>>();
-                JudgeDeckGroup();
-                KLog.I(TAG, "GetDeckInfoIdList: deckInfoIdList: " + deckInfoIdList.Count);
+                JObject resJson = JObject.Parse(receiveStr);
+                bool apiSuccess = resJson["status"]?.ToString() == KRPC.ApiRetStatus.success.ToString();
+                if (!apiSuccess) {
+                    KLog.E(TAG, "GetDeckInfoIdList: fail");
+                    return;
+                }
+                JObject deckConfig = (JObject)resJson["deck"];
+                deckCardGroup = (CardGroup)(int)deckConfig["group"];
+                KLog.I(TAG, "GetDeckInfoIdList: deckCardGroup: " + deckCardGroup);
+                JArray configArray = (JArray)deckConfig["config"];
+                for (int i = 0; i < configArray.Count; i++) {
+                    CardGroup group = (CardGroup)i;
+                    JToken item = configArray[i];
+                    List<int> infoIdList = ((JArray)item).ToObject<List<int>>();
+                    deckInfoIdListDic[group] = infoIdList;
+                    KLog.I(TAG, "GetDeckInfoIdList: group: " + group + ", infoIdList: " + infoIdList.Count);
+                }
                 break;
             }
             await UniTask.Delay(1);
         }
         KNetwork.Instance.CloseSession(sessionId);
-    }
-
-    private void JudgeDeckGroup()
-    {
-        deckCardGroup = CardGroup.KumikoSecondYear;
     }
 }

@@ -137,9 +137,10 @@ describe('WebSocket Server', function () {
                     }));
                     return;
                 } else if (sessionId == 2) {
+                    // 返回格式：{"status": "success", "deck": { "group": 0, "config": [[int数组], [int数组]]}}
                     expect(sessionDataJson.status).to.equal("success");
-                    expect(sessionDataJson.deck[0]).to.equal(2005);
-                    expect(sessionDataJson.deck.length).to.equal(17);
+                    expect(sessionDataJson.deck.group).to.equal(0);
+                    expect(sessionDataJson.deck.config.length).to.equal(2);
                     ws.close();
                     resolve();
                 }

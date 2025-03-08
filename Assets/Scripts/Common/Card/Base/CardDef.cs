@@ -99,6 +99,7 @@ public enum CardSelectType
     PlayCard, // 打出卡牌
     WithstandAttack, // 准备被攻击
     DecoyWithdraw, // decoy撤回
+    Monaka, // 准备被monaka
 }
 
 // 卡牌当前所在区域
@@ -120,6 +121,8 @@ public enum CardBuffType
     Bond = 0, // 点数加倍
     Morale, // +1
     Horn, // 点数加倍
+    Kasa, // +5
+    Monaka, // +2
     // 减益buff
     Attack2, // -2
     Attack4, // -4

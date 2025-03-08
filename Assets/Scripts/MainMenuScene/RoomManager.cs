@@ -18,10 +18,10 @@ public class RoomManager
     {
         PlayerPrefs.SetString(PlayerPrefsKey.PLAY_SCENE_SELF_NAME.ToString(), KConfig.Instance.playerName);
         PlayerPrefs.SetString(PlayerPrefsKey.PLAY_SCENE_ENEMY_NAME.ToString(), "北宇治B编");
-        PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_SELF_GROUP.ToString(), (int)CardGroup.KumikoSecondYear);
-        PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_ENEMY_GROUP.ToString(), (int)CardGroup.KumikoSecondYear);
+        PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_SELF_GROUP.ToString(), (int)KConfig.Instance.deckCardGroup);
         PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_IS_HOST.ToString(), 1);
         PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_IS_PVP.ToString(), 0);
+        PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_PVE_AI_TYPE.ToString(), (int)PlaySceneAI.AIType.K2Basic);
         PlayerPrefs.Save();
         SceneManager.LoadScene("PlayScene");
     }
@@ -44,8 +44,7 @@ public class RoomManager
                 if (apiSuccess) {
                     PlayerPrefs.SetString(PlayerPrefsKey.PLAY_SCENE_SELF_NAME.ToString(), KConfig.Instance.playerName);
                     PlayerPrefs.SetString(PlayerPrefsKey.PLAY_SCENE_ENEMY_NAME.ToString(), receiveJson["opponent"]?.ToString());
-                    PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_SELF_GROUP.ToString(), (int)CardGroup.KumikoSecondYear);
-                    PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_ENEMY_GROUP.ToString(), (int)CardGroup.KumikoSecondYear); // TODO: 对方牌组
+                    PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_SELF_GROUP.ToString(), (int)KConfig.Instance.deckCardGroup);
                     PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_IS_HOST.ToString(), Convert.ToInt32(receiveJson["isHost"].ToObject<bool>()));
                     PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_IS_PVP.ToString(), 1);
                     PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_PVP_SESSION_ID.ToString(), sessionId);

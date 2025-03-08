@@ -16,7 +16,8 @@ Windows, Unity 2022.3.50f1c1
 
 ### 文件结构
 - Assets
-    - CdnRes：图片等资源
+    - RemoteRes：远程加载的图片等资源
+        - Image/origin-image：卡牌原始图片。此路径下README包含如何修改原始图片的说明
     - Editor
         - Test：单元测试，针对`Scripts/PlayScene/Model`中的逻辑代码进行测试。使用unity editor的test runner运行
     - Resources：图片等资源
@@ -28,6 +29,23 @@ Windows, Unity 2022.3.50f1c1
         - PlayScene：对战场景
             - Model：与UI剥离的对战逻辑
 - Server：服务端模块
+
+## feature list
+优先级从高到低
+- [ ] 账号系统，支持账号登录、牌组配置保存
+- [ ] 规则说明模块
+- [x] 牌组配置模块
+- [ ] 基础牌组
+   - [x] 久一年
+   - [x] 久二年
+   - [ ] 久三年
+- [ ] 人机对局
+   - [x] 简单的久二年ai
+   - [ ] 扩展更多牌组、难度的ai
+- [ ] 卡牌图鉴
+- [ ] 特殊模式
+   - [ ] 利兹与青鸟
+   - [ ] 合奏比赛
 
 ## 效果实例
 ![对局场景](docs/play_scene.png "对局场景")

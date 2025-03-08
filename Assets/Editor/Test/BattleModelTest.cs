@@ -10,6 +10,8 @@ public class BattleModelTest
 
     private BattleModel battleModel;
 
+    private CardGroup testCardGroup;
+
     private List<int> testInfoIdList;
 
     private List<int> testIdList;
@@ -43,8 +45,9 @@ public class BattleModelTest
     {
         switch (actionType) {
             case BattleModel.ActionType.Init: {
-                testInfoIdList = (List<int>)list[0];
-                testIdList = (List<int>)list[1];
+                testCardGroup = (CardGroup)list[0];
+                testInfoIdList = (List<int>)list[1];
+                testIdList = (List<int>)list[2];
                 break;
             }
             case BattleModel.ActionType.DrawHandCard: {
@@ -65,15 +68,17 @@ public class BattleModelTest
     [UnityTest]
     public IEnumerator Init()
     {
+        CardGroup cardGroup = CardGroup.KumikoSecondYear;
         List<int> infoIdList = new List<int> { 2001, 2002 };
         List<int> idList = new List<int> { 11, 21 };
-        battleModel.AddSelfActionMsg(BattleModel.ActionType.Init, infoIdList, idList);
+        battleModel.AddSelfActionMsg(BattleModel.ActionType.Init, cardGroup, infoIdList, idList);
         yield return new WaitForSecondsRealtime(0.03f); // 等待异步执行完成
 
         // 消息原路返回，测试序列化、反序列化是否正常
         Assert.AreNotEqual(null, testActionMsgStr);
         battleModel.AddEnemyActionMsg(testActionMsgStr);
         yield return new WaitForSecondsRealtime(0.03f); // 等待异步执行完成
+        Assert.AreEqual(cardGroup, testCardGroup);
         Assert.AreEqual(2, testInfoIdList.Count);
         Assert.AreEqual(infoIdList[0], testInfoIdList[0]);
         Assert.AreEqual(infoIdList[1], testInfoIdList[1]);

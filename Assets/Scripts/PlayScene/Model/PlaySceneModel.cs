@@ -20,8 +20,7 @@ public class PlaySceneModel
     public PlaySceneModel(bool isHost_ = true,
         string selfName = "",
         string enemyName = "",
-        CardGroup selfGroup = CardGroup.KumikoFirstYear,
-        CardGroup enemyGroup = CardGroup.KumikoFirstYear)
+        CardGroup selfGroup = CardGroup.KumikoFirstYear)
     {
         isHost = isHost_;
         TAG += isHost ? "-Host" : "-Player";
@@ -29,7 +28,7 @@ public class PlaySceneModel
         enemySinglePlayerAreaModel = new SinglePlayerAreaModel(isHost);
         battleModel = new BattleModel(isHost);
         battleModel.EnemyMsgCallback += EnemyMsgCallback;
-        tracker = new PlayStateTracker(isHost, selfName, enemyName, selfGroup, enemyGroup);
+        tracker = new PlayStateTracker(isHost, selfName, enemyName, selfGroup);
         actionTextModel = new ActionTextModel(selfName, enemyName);
         weatherCardAreaModel = new WeatherCardAreaModel();
     }
@@ -80,8 +79,10 @@ public class PlaySceneModel
     {
         switch (actionType) {
             case BattleModel.ActionType.Init: {
-                List<int> infoIdList = (List<int>)list[0];
-                List<int> idList = (List<int>)list[1];
+                CardGroup cardGroup = (CardGroup)list[0];
+                List<int> infoIdList = (List<int>)list[1];
+                List<int> idList = (List<int>)list[2];
+                tracker.enemyGroup = cardGroup;
                 enemySinglePlayerAreaModel.SetBackupCardInfoIdList(infoIdList, idList);
                 lock (this) {
                     if (selfSinglePlayerAreaModel.backupCardList.Count > 0) {
@@ -171,7 +172,7 @@ public class PlaySceneModel
                 infoIdList.Add(selfSinglePlayerAreaModel.leaderCardAreaModel.cardList[0].cardInfo.infoId);
                 idList.Add(selfSinglePlayerAreaModel.leaderCardAreaModel.cardList[0].cardInfo.id);
             }
-            battleModel.AddSelfActionMsg(BattleModel.ActionType.Init, infoIdList, idList);
+            battleModel.AddSelfActionMsg(BattleModel.ActionType.Init, tracker.selfGroup, infoIdList, idList);
             return;
         };
         SendSelfBackupCardInfo();
@@ -304,6 +305,12 @@ public class PlaySceneModel
                 tracker.TransActionState(PlayStateTracker.ActionState.None);
                 break;
             }
+            case CardSelectType.Monaka: {
+                ApplyBeMonaka(card);
+                FinishMonaka(selfArea);
+                tracker.TransActionState(PlayStateTracker.ActionState.None);
+                break;
+            }
         }
         if (isSelf && tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION) {
             // 发送本方选择牌动作
@@ -342,6 +349,8 @@ public class PlaySceneModel
             FinishDecoy(selfArea);
         } else if (tracker.actionState == PlayStateTracker.ActionState.HORN_UTILING) {
             FinishHornUtil(selfArea);
+        } else if (tracker.actionState == PlayStateTracker.ActionState.MONAKAING) {
+            FinishMonaka(selfArea);
         }
         tracker.TransActionState(PlayStateTracker.ActionState.None);
         if (isSelf) {
@@ -430,17 +439,7 @@ public class PlaySceneModel
                 enemyArea.AddBattleAreaCard(card);
                 // 仅self时需要实际抽牌
                 if (selfArea == selfSinglePlayerAreaModel) {
-                    List<CardModel> tempList = new List<CardModel>(selfArea.handRowAreaModel.cardList);
-                    selfArea.DrawHandCards(2);
-                    List<int> idList = new List<int>();
-                    foreach (CardModel handCard in selfSinglePlayerAreaModel.handRowAreaModel.cardList) {
-                        if (!tempList.Contains(handCard)) {
-                            idList.Add(handCard.cardInfo.id);
-                        }
-                    }
-                    if (idList.Count > 0) {
-                        battleModel.AddSelfActionMsg(BattleModel.ActionType.DrawHandCard, idList);
-                    }
+                    DrawHandCardAndSend(2);
                 }
                 break;
             }
@@ -460,7 +459,11 @@ public class PlaySceneModel
                 break;
             }
             case CardAbility.Medic: {
-                selfArea.AddBattleAreaCard(card);
+                if (card.cardInfo.cardType == CardType.Normal ||
+                    card.cardInfo.cardType == CardType.Hero) {
+                    // 指挥牌可能是medic，不放入对战区
+                    selfArea.AddBattleAreaCard(card);
+                }
                 ApplyMedic(selfArea);
                 break;
             }
@@ -470,7 +473,11 @@ public class PlaySceneModel
             }
             case CardAbility.Scorch: {
                 ApplyScorch(selfArea, enemyArea);
-                card.cardLocation = CardLocation.None; // 用完了直接丢入虚空
+                if (card.cardInfo.cardType == CardType.Normal ||
+                    card.cardInfo.cardType == CardType.Hero) {
+                    // 角色牌带Scorch
+                    selfArea.AddBattleAreaCard(card);
+                }
                 break;
             }
             case CardAbility.SunFes:
@@ -496,6 +503,11 @@ public class PlaySceneModel
             case CardAbility.Guard: {
                 selfArea.AddBattleAreaCard(card);
                 ApplyGuard(card, selfArea, enemyArea);
+                break;
+            }
+            case CardAbility.Monaka: {
+                ApplyMonaka(card, selfArea);
+                selfArea.AddBattleAreaCard(card); // 要先判断monaka，再把牌打出去。不然就加强自己了
                 break;
             }
             default: {
@@ -677,7 +689,6 @@ public class PlaySceneModel
             }
             return true;
         });
-        actionTextModel.ApplyScorch(cardList);
         if (cardList.Count == 0) {
             UpdateActionToast(selfArea, enemyArea, "无退部目标");
             KLog.I(TAG, "ApplyScorch: no target card");
@@ -706,6 +717,7 @@ public class PlaySceneModel
     private void ApplyWeather(CardModel card)
     {
         KLog.I(TAG, "ApplyWeather");
+        List<CardModel> deadCardList = new List<CardModel>();
         weatherCardAreaModel.AddCard(card);
         // 添加天气buff
         if (card.cardInfo.ability == CardAbility.SunFes) {
@@ -717,6 +729,29 @@ public class PlaySceneModel
         } else if (card.cardInfo.ability == CardAbility.Drumstick) {
             selfSinglePlayerAreaModel.percussionRowAreaModel.hasWeatherBuff = true;
             enemySinglePlayerAreaModel.percussionRowAreaModel.hasWeatherBuff = true;
+        }
+        // 可能造成卡牌移除
+        bool hasDeadCard = false;
+        selfSinglePlayerAreaModel.CountBattleAreaCard((CardModel targetCard) => {
+            if (targetCard.IsDead()) {
+                deadCardList.Add(targetCard);
+            }
+            return true;
+        });
+        hasDeadCard = hasDeadCard || deadCardList.Count > 0;
+        RemoveDeadCard(selfSinglePlayerAreaModel, deadCardList);
+
+        deadCardList = new List<CardModel>();
+        enemySinglePlayerAreaModel.CountBattleAreaCard((CardModel targetCard) => {
+            if (targetCard.IsDead()) {
+                deadCardList.Add(targetCard);
+            }
+            return true;
+        });
+        hasDeadCard = hasDeadCard || deadCardList.Count > 0;
+        RemoveDeadCard(enemySinglePlayerAreaModel, deadCardList);
+        if (hasDeadCard) {
+            PlaySfx(AudioManager.SFXType.Scorch);
         }
     }
 
@@ -793,8 +828,50 @@ public class PlaySceneModel
         ApplyAttack(card, enemyArea);
     }
 
+    // 应用monaka技能
+    private void ApplyMonaka(CardModel card, SinglePlayerAreaModel selfArea)
+    {
+        // 统计可选择的牌数量
+        int count = selfArea.CountBattleAreaCard((CardModel targetCard) => {
+            return targetCard.cardInfo.cardType == CardType.Normal;
+        });
+        if (count == 0) {
+            card.cardLocation = CardLocation.None; // 直接丢入虚空
+            UpdateActionToast(selfArea, null, "无可使用monaka的目标");
+            KLog.I(TAG, "ApplyMonaka: no target card");
+            return;
+        }
+        UpdateActionToast(selfArea, null, "请选择使用monaka的目标");
+        // 目标卡牌准备被monaka
+        selfArea.ApplyBattleAreaAction((CardModel targetCard) => {
+            return targetCard.cardInfo.cardType == CardType.Normal;
+        }, (CardModel targetCard) => {
+            targetCard.selectType = CardSelectType.Monaka;
+        });
+        tracker.TransActionState(PlayStateTracker.ActionState.MONAKAING);
+    }
+
+    // 生效monaka
+    private void ApplyBeMonaka(CardModel card)
+    {
+        card.AddBuff(CardBuffType.Monaka, 1);
+    }
+
+    // 结束monaka技能的流程
+    private void FinishMonaka(SinglePlayerAreaModel selfArea)
+    {
+        selfArea.ApplyBattleAreaAction((CardModel card) => {
+            return card.cardInfo.cardType == CardType.Normal;
+        }, (CardModel card) => {
+            card.selectType = CardSelectType.None;
+        });
+    }
+
     private void RemoveDeadCard(SinglePlayerAreaModel playArea, List<CardModel> cardList)
     {
+        if (cardList.Count > 0) {
+            actionTextModel.ApplyScorch(cardList);
+        }
         foreach (CardModel card in cardList) {
             KLog.I(TAG, "RemoveDeadCard: remove card: " + card.cardInfo.chineseName);
             if (playArea.woodRowAreaModel.cardList.Contains(card)) {
@@ -825,6 +902,9 @@ public class PlaySceneModel
         } else if (tracker.isSelfWinner) {
             PlaySfx(AudioManager.SFXType.Win);
         }
+        if (tracker.selfGroup == CardGroup.KumikoFirstYear && tracker.setRecordList[lastSet].result > 0) {
+            DrawHandCardAndSend(1);
+        }
     }
 
     private void UpdateActionToast(SinglePlayerAreaModel selfArea, SinglePlayerAreaModel enemyArea, string toastText)
@@ -840,6 +920,22 @@ public class PlaySceneModel
     {
         if (SfxCallback != null) {
             SfxCallback(type);
+        }
+    }
+
+    // 抽取备用卡牌，并发送消息
+    private void DrawHandCardAndSend(int count)
+    {
+        List<CardModel> tempList = new List<CardModel>(selfSinglePlayerAreaModel.handRowAreaModel.cardList);
+        selfSinglePlayerAreaModel.DrawHandCards(count);
+        List<int> idList = new List<int>();
+        foreach (CardModel handCard in selfSinglePlayerAreaModel.handRowAreaModel.cardList) {
+            if (!tempList.Contains(handCard)) {
+                idList.Add(handCard.cardInfo.id);
+            }
+        }
+        if (idList.Count > 0) {
+            battleModel.AddSelfActionMsg(BattleModel.ActionType.DrawHandCard, idList);
         }
     }
 }

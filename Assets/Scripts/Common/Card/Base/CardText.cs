@@ -33,7 +33,7 @@ public class CardText
 
     // 牌组能力
     public static readonly string[] cardGroupAbilityText = {
-        "每赢得一轮可以再抽一张牌（此牌组正在制作中，暂不能使用）",
+        "每赢得一轮可以再抽一张牌",
         "比分相同时算本方胜利",
         "每轮结束后随机一名部员留在场上（此牌组还未制作）"
     };

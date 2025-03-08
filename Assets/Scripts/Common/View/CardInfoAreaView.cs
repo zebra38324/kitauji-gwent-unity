@@ -27,7 +27,7 @@ public class CardInfoAreaView : MonoBehaviour
     {
         string result = "";
         if (cardInfo.cardType == CardType.Leader) {
-            result += "指挥牌\n";
+            result += "指挥牌\n\n";
         }
         if (cardInfo.cardType == CardType.Hero) {
             result += "天王：吹奏实力不受其他因素影响。\n\n";

@@ -5,16 +5,25 @@ using Cysharp.Threading.Tasks;
 // 对战ai管理器接口，由PlaySceneManager调用
 public class PlaySceneAI
 {
-    public PlaySceneModel playSceneModel {  get; private set; }
+    public PlaySceneModel playSceneModel { get; private set; }
+
+    public enum AIType
+    {
+        K1Basic = 0,
+        K2Basic,
+    }
 
     private bool isAbort = false;
 
     private AIModelInterface aiModelInterface;
 
-    public PlaySceneAI()
+    public PlaySceneAI(bool isHost_,
+        string selfName,
+        string enemyName,
+        AIType aiType)
     {
-        playSceneModel = new PlaySceneModel(false);
-        aiModelInterface = new AIModelK2Basic(playSceneModel);
+        playSceneModel = new PlaySceneModel(isHost_, selfName, enemyName, GetAIGroup(aiType));
+        aiModelInterface = GetAIImpl(aiType, playSceneModel);
     }
 
     public void Release()
@@ -45,6 +54,36 @@ public class PlaySceneAI
             }
             await UniTask.Delay(1000); // 延迟一秒
             aiModelInterface.DoPlayAction();
+        }
+    }
+
+    private CardGroup GetAIGroup(AIType aiType)
+    {
+        switch (aiType) {
+            case AIType.K1Basic: {
+                return CardGroup.KumikoFirstYear;
+            }
+            case AIType.K2Basic: {
+                return CardGroup.KumikoSecondYear;
+            }
+            default: {
+                return CardGroup.KumikoFirstYear;
+            }
+        }
+    }
+
+    private AIModelInterface GetAIImpl(AIType aiType, PlaySceneModel playSceneModel)
+    {
+        switch (aiType) {
+            case AIType.K1Basic: {
+                return null;
+            }
+            case AIType.K2Basic: {
+                return new AIModelK2Basic(playSceneModel);
+            }
+            default: {
+                return null;
+            }
         }
     }
 }

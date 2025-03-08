@@ -81,6 +81,7 @@ public class CardDisplay : MonoBehaviour,
         UpdateDisplayPower();
         bool frameVisible = cardModel.selectType == CardSelectType.WithstandAttack ||
             cardModel.selectType == CardSelectType.DecoyWithdraw ||
+            cardModel.selectType == CardSelectType.Monaka ||
             (cardModel.cardLocation == CardLocation.InitHandArea && cardModel.isSelected);
         SetFrameVisible(frameVisible);
     }

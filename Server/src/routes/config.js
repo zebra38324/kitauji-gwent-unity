@@ -1,32 +1,86 @@
 import { BuildRes, ApiTypeEnum } from '../util/message_util.js';
 
+const CardGroupEnum = Object.freeze({
+    K1: 0,
+    K2: 1,
+    K3: 2,
+});
+
 export const ConfigRoutes = {
     [ApiTypeEnum.CONFIG_DECK_GET]: (ws, sessionId) => {
         // 请求格式：{}
-        // 返回格式：{"status": "success", "deck": [int数组]}
-        let deckConfig = [];
-        // wood
-        deckConfig.push(2005);
-        deckConfig.push(2006);
-        deckConfig.push(2007);
-        deckConfig.push(2008);
-        deckConfig.push(2011);
-        deckConfig.push(2012);
-        deckConfig.push(2013);
-        // brass
-        deckConfig.push(2028);
-        deckConfig.push(2034);
-        deckConfig.push(2035);
-        // percussion
-        deckConfig.push(2042);
-        deckConfig.push(2047);
-        deckConfig.push(2048);
-        // util
-        deckConfig.push(5002);
-        deckConfig.push(5003);
-        deckConfig.push(5004);
-        // leader
-        deckConfig.push(2080);
-        ws.send(BuildRes(sessionId, {status:"success", deck:deckConfig}));
+        // 返回格式：{"status": "success", "deck": { "group": 0, "config": [[int数组], [int数组]]}}
+        // 目前config包含k1、k2
+        ws.send(BuildRes(sessionId, {
+            status:"success",
+            deck: {
+                group: CardGroupEnum.K1,
+                config: [
+                    GetK1DefaultConfig(),
+                    GetK2DefaultConfig()
+                ]
+            }
+        }));
     }
+}
+
+function GetK1DefaultConfig()
+{
+    let configList = [];
+    // wood
+    configList.push(1002);
+    configList.push(1003);
+    configList.push(1004);
+    configList.push(1007);
+    configList.push(1008);
+    configList.push(1009);
+    configList.push(1013);
+    configList.push(1051);
+    configList.push(1052);
+    // brass
+    configList.push(1016);
+    configList.push(1021);
+    configList.push(1022);
+    configList.push(1023);
+    configList.push(1024);
+    configList.push(1028);
+    configList.push(1040);
+    configList.push(1044);
+    // percussion
+    configList.push(1041);
+    // util
+    configList.push(5002);
+    configList.push(5003);
+    configList.push(5004);
+    // leader
+    configList.push(1080);
+    return configList;
+}
+
+function GetK2DefaultConfig()
+{
+    let configList = [];
+    // wood
+    configList.push(2005);
+    configList.push(2006);
+    configList.push(2007);
+    configList.push(2008);
+    configList.push(2011);
+    configList.push(2012);
+    configList.push(2013);
+    // brass
+    configList.push(2028);
+    configList.push(2034);
+    configList.push(2035);
+    // percussion
+    configList.push(2042);
+    configList.push(2047);
+    configList.push(2048);
+    // util
+    configList.push(5002);
+    configList.push(5003);
+    configList.push(5004);
+    // leader
+    configList.push(2080);
+    return configList;
 }

@@ -84,7 +84,6 @@ public class ActionTextModel
     public void ApplyScorch(List<CardModel> cardList)
     {
         if (cardList.Count == 0) {
-            totalText += string.Format("<b>退部申请书</b>未移除任何卡牌\n");
             return;
         }
         string cardName = "";
@@ -92,7 +91,7 @@ public class ActionTextModel
             cardName += string.Format("<b>{0}</b>、", card.cardInfo.chineseName);
         }
         cardName = cardName.Substring(0, cardName.Length - 1);
-        totalText += string.Format("<b>退部申请书</b>移除卡牌：{0}\n", cardName);
+        totalText += string.Format("移除卡牌：{0}\n", cardName);
     }
 
     public void EnemyExit()

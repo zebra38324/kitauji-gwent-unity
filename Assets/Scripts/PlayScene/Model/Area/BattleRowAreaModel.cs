@@ -42,6 +42,9 @@ public class BattleRowAreaModel : RowAreaModel
         if (card.cardInfo.ability == CardAbility.HornUtil || card.cardInfo.ability == CardAbility.HornBrass) {
             hornUtilCardArea.AddCard(card);
         } else {
+            if (card.cardInfo.ability == CardAbility.Kasa) {
+                ApplyKasa();
+            }
             base.AddCard(card);
         }
         card.cardLocation = CardLocation.BattleArea;
@@ -153,6 +156,17 @@ public class BattleRowAreaModel : RowAreaModel
                 card.SetBuff(CardBuffType.Weather, 1);
             } else {
                 card.RemoveBuff(CardBuffType.Weather);
+            }
+        }
+    }
+
+    private void ApplyKasa()
+    {
+        foreach (CardModel card in cardList) {
+            if (card.cardInfo.chineseName == "铠冢霙" && card.cardInfo.cardType == CardType.Normal) {
+                card.RemoveBuff(CardBuffType.Weather);
+                card.RemoveNormalDebuff();
+                card.AddBuff(CardBuffType.Kasa, 1);
             }
         }
     }

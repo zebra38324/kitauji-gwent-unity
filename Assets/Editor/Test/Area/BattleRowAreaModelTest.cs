@@ -282,4 +282,23 @@ public class BattleRowAreaModelTest
         Assert.AreEqual(brassNormalCard.cardInfo.originPower, brassNormalCard.currentPower);
         Assert.AreEqual(brassHornCard.cardInfo.originPower, brassHornCard.currentPower);
     }
+
+    // 测试kasa
+    [Test]
+    public void Kasa()
+    {
+        BattleRowAreaModel battleRowAreaModel = new BattleRowAreaModel(CardBadgeType.Wood);
+        CardModel k1MizoreCard1 = TestGenCards.GetCard(1051); // 铠冢霙，普通(8)
+        CardModel k1MizoreCard2 = TestGenCards.GetCard(1051); // 铠冢霙，普通(8)
+        CardModel k1NozomiCard = TestGenCards.GetCard(1052); // 伞木希美，kasa(7)
+
+        battleRowAreaModel.AddCard(k1MizoreCard1);
+        k1MizoreCard1.AddBuff(CardBuffType.Attack2, 1);
+        Assert.AreEqual(6, battleRowAreaModel.GetCurrentPower());
+        battleRowAreaModel.AddCard(k1MizoreCard2);
+        k1MizoreCard2.AddBuff(CardBuffType.Weather, 1);
+        Assert.AreEqual(7, battleRowAreaModel.GetCurrentPower()); // 6 + 1
+        battleRowAreaModel.AddCard(k1NozomiCard);
+        Assert.AreEqual(33, battleRowAreaModel.GetCurrentPower()); // 13 + 13 + 7
+    }
 }
