@@ -51,4 +51,14 @@ public class MainMenuSceneManager : MonoBehaviour
         KLog.I(TAG, "onClick SwtichToDeckConfigScene");
         SceneManager.LoadScene("DeckConfigScene");
     }
+
+    public void SwtichToGuideScene()
+    {
+        if (matchingArea.GetComponent<MatchingAreaView>().isMatching) {
+            toastView.GetComponent<ToastView>().ShowToast("匹配中不可选择");
+            return;
+        }
+        KLog.I(TAG, "onClick SwtichToGuideScene");
+        LoadingScene.Load("GuideScene");
+    }
 }

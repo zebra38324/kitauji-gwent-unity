@@ -34,7 +34,7 @@ public class CardText
     // 牌组能力
     public static readonly string[] cardGroupAbilityText = {
         "每赢得一轮可以再抽一张牌",
-        "比分相同时算本方胜利",
+        "小局结算时，比分相同算本方胜利",
         "每轮结束后随机一名部员留在场上（此牌组还未制作）"
     };
 }

@@ -86,6 +86,11 @@ public class CardDisplay : MonoBehaviour,
         SetFrameVisible(frameVisible);
     }
 
+    public static string GetAbilityImagePath(CardAbility cardAbility)
+    {
+        return @"Image/texture/ability/" + GetAbilityName(cardAbility);
+    }
+
     private void Init()
     {
         // mask
@@ -155,7 +160,7 @@ public class CardDisplay : MonoBehaviour,
         // Ability
         if (cardModel.cardInfo.ability != CardAbility.None) {
             KResources.Instance.Load<Sprite>(abilityBackground.GetComponent<Image>(), @"Image/texture/ability/ability-background.png");
-            KResources.Instance.Load<Sprite>(ability.GetComponent<Image>(), @"Image/texture/ability/" + GetAbilityName());
+            KResources.Instance.Load<Sprite>(ability.GetComponent<Image>(), GetAbilityImagePath(cardModel.cardInfo.ability));
         } else {
             abilityBackground.SetActive(false);
             ability.SetActive(false);
@@ -179,7 +184,7 @@ public class CardDisplay : MonoBehaviour,
         // Power
         KResources.Instance.Load<Sprite>(powerBackground.GetComponent<Image>(), @"Image/texture/power/power-normal.png");
         powerNum.SetActive(false);
-        KResources.Instance.Load<Sprite>(powerType.GetComponent<Image>(), @"Image/texture/ability/" + GetAbilityName());
+        KResources.Instance.Load<Sprite>(powerType.GetComponent<Image>(), GetAbilityImagePath(cardModel.cardInfo.ability));
 
         // Badge
         badgeBackground.SetActive(false);
@@ -228,9 +233,10 @@ public class CardDisplay : MonoBehaviour,
         }
     }
 
-    private string GetAbilityName()
+    // TODO: 抽出公共类
+    private static string GetAbilityName(CardAbility cardAbility)
     {
-        switch (cardModel.cardInfo.ability) {
+        switch (cardAbility) {
             case CardAbility.Attack:
                 return "attack.png";
             case CardAbility.Spy:

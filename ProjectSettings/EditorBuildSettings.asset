@@ -17,5 +17,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/DeckConfigScene.unity
     guid: 3504c674cd6d6a141b6425ed599b1555
+  - enabled: 1
+    path: Assets/Scenes/LoadingScene.unity
+    guid: a14ffe3d8bed63947b854f285f61781b
+  - enabled: 0
+    path: Assets/Scenes/GuideScene.unity
+    guid: c86a582316ca9dd4982460c5139dc052
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 14479bda0565eb141928698b3cff0d38, type: 2}
