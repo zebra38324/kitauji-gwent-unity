@@ -14,7 +14,7 @@ public class MainMenuSceneManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        KHeartbeat.Instance.SendHeartbeat(KHeartbeat.UserStatus.IDLE);
     }
 
     // Update is called once per frame

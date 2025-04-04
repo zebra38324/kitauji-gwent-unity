@@ -4,8 +4,12 @@
   },
   "type": "module",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "better-sqlite3": "^11.9.1",
+    "cross-env": "^7.0.3",
     "express": "^4.21.2",
     "express-ws": "^5.0.2",
+    "sensitive-word-filter": "^1.0.2",
     "ws": "^8.18.0"
   },
   "devDependencies": {
@@ -13,6 +17,12 @@
     "mocha": "^11.0.1"
   },
   "scripts": {
-    "test": "mocha"
+    "prod_pm2_ssl": "cross-env NODE_ENV=prod USE_SSL=true pm2 start src/server.js --name kitauji_server_prod",
+    "prod_ssl": "cross-env NODE_ENV=prod USE_SSL=true node src/server.js",
+    "prod": "cross-env NODE_ENV=prod node src/server.js",
+    "dev_pm2_ssl": "cross-env NODE_ENV=dev USE_SSL=true pm2 start src/server.js --name kitauji_server_dev",
+    "dev_ssl": "cross-env NODE_ENV=dev USE_SSL=true node src/server.js",
+    "dev": "cross-env NODE_ENV=dev node src/server.js",
+    "test": "cross-env NODE_ENV=test mocha"
   }
 }

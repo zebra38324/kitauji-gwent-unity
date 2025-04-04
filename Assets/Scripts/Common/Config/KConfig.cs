@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
@@ -33,11 +34,46 @@ public class KConfig
     }
 
     [Serializable]
+    private class RegisterReq
+    {
+        public string username;
+        public string password;
+    }
+
+    [Serializable]
     private class LoginReq
     {
         public bool isTourist;
         public string username;
         public string password;
+    }
+
+    /**
+     * 注册
+     * callback: 返回注册结果
+     */
+    public async void Register(Action<bool> callback, string username, string password)
+    {
+        RegisterReq registerReq = new RegisterReq();
+        registerReq.username = username;
+        registerReq.password = password;
+        string registerReqStr = JsonUtility.ToJson(registerReq);
+        KLog.I(TAG, "Register: registerReqStr = " + registerReqStr);
+        int sessionId = KRPC.Instance.CreateSession();
+        KRPC.Instance.Send(sessionId, KRPC.ApiType.register, registerReqStr);
+        while (true) {
+            string receiveStr = KRPC.Instance.Receive(sessionId);
+            if (receiveStr != null) {
+                JObject registerResJson = JObject.Parse(receiveStr);
+                KLog.I(TAG, "Register: Receive: " + registerResJson);
+                bool apiSuccess = registerResJson["status"]?.ToString() == KRPC.ApiRetStatus.success.ToString();
+                if (callback != null) {
+                    callback(apiSuccess);
+                }
+                break;
+            }
+            await UniTask.Delay(1);
+        }
     }
 
     /**
@@ -47,7 +83,7 @@ public class KConfig
      * username: isTourist为false时设置
      * password: isTourist为false时设置
      */
-    public async void Login(bool isTouristParam, Action<bool> callback, string username = null, string password = null)
+    public async void Login(bool isTouristParam, Action<bool, string> callback, string username = null, string password = null)
     {
         isTourist = isTouristParam;
         LoginReq loginReq = new LoginReq();
@@ -65,7 +101,7 @@ public class KConfig
                 KLog.I(TAG, "Login: Receive: " + receiveStr);
                 bool apiSuccess = loginResJson["status"]?.ToString() == KRPC.ApiRetStatus.success.ToString();
                 if (callback != null) {
-                    callback(apiSuccess);
+                    callback(apiSuccess, loginResJson["message"]?.ToString());
                 }
                 if (apiSuccess) {
                     playerName = loginResJson["username"]?.ToString();
@@ -82,6 +118,7 @@ public class KConfig
         KLog.I(TAG, "UpdateDeckInfoIdList");
         deckInfoIdListDic[cardGroup] = infoIdList;
         deckCardGroup = cardGroup;
+        UpdateDeckConfig();
     }
 
     public List<int> GetDeckInfoIdList(CardGroup cardGroup)
@@ -119,6 +156,50 @@ public class KConfig
                     deckInfoIdListDic[group] = infoIdList;
                     KLog.I(TAG, "GetDeckInfoIdList: group: " + group + ", infoIdList: " + infoIdList.Count);
                 }
+                break;
+            }
+            await UniTask.Delay(1);
+        }
+        KNetwork.Instance.CloseSession(sessionId);
+    }
+
+    [Serializable]
+    private class UpdateDeckConfigReqDeck
+    {
+        public int group;
+        public int[][] config;
+    }
+
+    [Serializable]
+    private class UpdateDeckConfigReq
+    {
+        public UpdateDeckConfigReqDeck deck;
+    }
+
+    // 请求格式：{"deck": { "group": 0, "config": [[int数组], [int数组]]}}
+    private async void UpdateDeckConfig()
+    {
+        if (isTourist) {
+            KLog.I(TAG, "UpdateDeckConfig: isTourist");
+            return;
+        }
+        UpdateDeckConfigReq updateDeckConfigReq = new UpdateDeckConfigReq();
+        updateDeckConfigReq.deck = new UpdateDeckConfigReqDeck();
+        updateDeckConfigReq.deck.group = (int)deckCardGroup;
+        updateDeckConfigReq.deck.config = new int[][] {
+            deckInfoIdListDic[CardGroup.KumikoFirstYear].ToArray(),
+            deckInfoIdListDic[CardGroup.KumikoSecondYear].ToArray()
+        };
+        string updateDeckConfigReqStr = JsonConvert.SerializeObject(updateDeckConfigReq);
+        KLog.I(TAG, "UpdateDeckConfig: updateDeckConfigReqStr = " + updateDeckConfigReqStr);
+        int sessionId = KRPC.Instance.CreateSession();
+        KRPC.Instance.Send(sessionId, KRPC.ApiType.config_deck_update, updateDeckConfigReqStr);
+        while (true) {
+            string receiveStr = KRPC.Instance.Receive(sessionId);
+            if (receiveStr != null) {
+                JObject registerResJson = JObject.Parse(receiveStr);
+                KLog.I(TAG, "UpdateDeckConfig: Receive: " + registerResJson);
+                bool apiSuccess = registerResJson["status"]?.ToString() == KRPC.ApiRetStatus.success.ToString();
                 break;
             }
             await UniTask.Delay(1);

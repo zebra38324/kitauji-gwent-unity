@@ -2,9 +2,12 @@ import express from 'express';
 import expressWs from 'express-ws';
 import fs from 'fs';
 import https from 'https';
+import { StatVisit, StatQuit } from "./database/database.js";
+import { RegisterRoutes } from "./routes/register.js";
 import { AuthRoutes } from "./routes/auth.js";
 import { ConfigRoutes } from "./routes/config.js";
 import { PVPMatchRoutes, DisConnectPVPMatchClear } from "./routes/pvp_match.js";
+import { HeartbeatRoutes } from "./routes/heartbeat.js";
 import { ParseReq, BuildRes, ApiTypeEnum } from './util/message_util.js';
 import { KLog } from './util/k_log.js';
 
@@ -12,28 +15,39 @@ const app = express();
 expressWs(app); // 将 WebSocket 功能附加到 Express 实例
 app.use(express.json());
 
-const port = 12323;
 const TAG = 'Server';
 const activeConns = new Map();
+let uniqueConnId = 1;
 
 app.ws('/kitauji_api', function connection(ws) {
     KLog.I(TAG, "New client connected");
+    ws.connId = uniqueConnId;
+    uniqueConnId += 1;
+    StatVisit(ws.connId);
+
     ws.on("message", (reqMsg) => {
         try {
             const {sessionId, apiType, apiArgs} = ParseReq(reqMsg);
+            // TODO: password log
             KLog.I(TAG, `username = ${ws.user?.username}, sessionId = ${sessionId}, apiType = ${apiType}, apiArgs = ${JSON.stringify(apiArgs)}`);
             // 判断是否已登录
-            if (apiType != ApiTypeEnum.AUTH_LOGIN && ws.user == undefined) {
+            if (apiType != ApiTypeEnum.REGISTER && apiType != ApiTypeEnum.AUTH_LOGIN && ws.user == undefined) {
                 ws.send(BuildRes(sessionId, {status:"error", message:"unauthorized"}));
                 return;
             }
-            if (AuthRoutes[apiType]) {
+            if (RegisterRoutes[apiType]) {
+                RegisterRoutes[apiType](ws, sessionId, apiArgs);
+            } else if (AuthRoutes[apiType]) {
                 AuthRoutes[apiType](ws, activeConns, sessionId, apiArgs);
-                KLog.I(TAG, `New client connected, active conns: ${activeConns.size}`);
+                if (ws.user !== undefined) {
+                    KLog.I(TAG, `New client connected, active conns: ${activeConns.size}`);
+                }
             } else if (ConfigRoutes[apiType]) {
-                ConfigRoutes[apiType](ws, sessionId);
+                ConfigRoutes[apiType](ws, sessionId, apiArgs);
             } else if (PVPMatchRoutes[apiType]) {
                 PVPMatchRoutes[apiType](ws, activeConns, sessionId, apiArgs);
+            } else if (HeartbeatRoutes[apiType]) {
+                HeartbeatRoutes[apiType](ws, activeConns, sessionId, apiArgs);
             } else {
                 ws.send(BuildRes(sessionId, {status:"error", message:"invalid api type"}));
             }
@@ -45,11 +59,15 @@ app.ws('/kitauji_api', function connection(ws) {
 
     ws.on("close", () => {
         KLog.I(TAG, "Client disconnected");
+        let username = "";
         if (ws.user !== undefined) {
+            ws.user.stop_heartbeat = true;
             DisConnectPVPMatchClear(ws, activeConns);
             KLog.I(TAG, `remove active conn: ${ws.user.username}`);
+            username = ws.user.username;
             activeConns.delete(ws.user.username);
         }
+        StatQuit(ws.connId, username, activeConns.size);
         KLog.I(TAG, `Client disconnected, active conns: ${activeConns.size}`);
     });
 });
@@ -57,7 +75,18 @@ app.ws('/kitauji_api', function connection(ws) {
 let server; // 保存服务器实例，用于关闭
 
 // 启动服务器的函数
-function startServer(isSsl, customPort = port) {
+function startServer(isSsl) {
+    let customPort = 0;
+    if (process.env.NODE_ENV == 'prod') {
+        customPort = 12323;
+    } else if (process.env.NODE_ENV == 'dev') {
+        customPort = 12325;
+    } else if (process.env.NODE_ENV == 'test') {
+        customPort = 12327;
+    } else {
+        KLog.E(TAG, `unknown process.env.NODE_ENV: ${process.env.NODE_ENV}`);
+        return;
+    }
     if (isSsl) {
         // 加载 SSL/TLS 证书
         const privateKey = fs.readFileSync('/etc/nginx/ssl/kitauji-gwent.com.key', 'utf8');
@@ -77,9 +106,9 @@ function startServer(isSsl, customPort = port) {
     return server;
 }
 
-// 检测是否直接运行
-if (process.argv[1] && (process.argv[1].includes('server.js') || process.argv[1].includes('pm2'))) {
-    startServer(true);
+// 检测是否为test TODO: pm2可不可用
+if (process.env.NODE_ENV != 'test') {
+    startServer(process.env.USE_SSL);
 }
 
 export { startServer };

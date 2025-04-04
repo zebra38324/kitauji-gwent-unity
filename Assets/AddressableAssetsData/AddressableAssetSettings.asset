@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: ea830d6d2ccf52a49ba7ed475cb556cd
   m_currentHash:
     serializedVersion: 2
-    Hash: 125ce58112d8d81b17c97843f2177165
+    Hash: b724acac236dc69e23889a229585b8cf
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -77,7 +77,7 @@ MonoBehaviour:
       m_ProfileName: Prod
       m_Values:
       - m_Id: 01611fd2df8bafb4596513a2a1913518
-        m_Value: https://kitauji-gwent.top/res
+        m_Value: https://kitauji-gwent.com/res
       - m_Id: 19d9dffe3836dc048a2a87139074111f
         m_Value: ServerData/[BuildTarget]
       - m_Id: 1a462a7fe61651245b2f44dbe324d81a
@@ -106,6 +106,9 @@ MonoBehaviour:
   m_LabelTable:
     m_LabelNames:
     - default
+    - image_k1
+    - image_k2
+    - image_neutral
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 5195f71278c9ec54eb640a151f581abc, type: 2}

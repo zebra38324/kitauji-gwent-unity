@@ -24,12 +24,15 @@ public class KRPC : MonoBehaviour
     // 请求格式：{"apiType":"","apiArgs":""}
     public enum ApiType
     {
-        auth_login = 1, // 登录。请求格式：{"isTourist":true,"username":"","password":""}
+        register = 1, // 注册。请求格式：{"username":"","password":""}
+        auth_login, // 登录。请求格式：{"isTourist":true,"username":"","password":""}
         config_deck_get, // 获取配置的牌组。请求格式：{}
+        config_deck_update, // 更新配置牌组。请求格式：{"deck": { "group": 0, "config": [[int数组], [int数组]]}}
         pvp_match_start, // 请求格式：{}
         pvp_match_cancel, // 请求格式：{}
         pvp_match_action, // 请求格式：{"action":""}
         pvp_match_stop, // 请求格式：{}
+        heartbeat, // 心跳，格式：{"user_status":0}
     }
 
     public enum ApiRetStatus

@@ -3,20 +3,22 @@ import WebSocket from 'ws';
 import { startServer } from '../src/server.js';
 import { KLog } from '../src/util/k_log.js';
 import { KSleep } from '../src/util/k_time.js';
+import { ResetDatabase } from '../src/database/database.js';
 
-const port = 12346; // 测试用的随机端口号
+const port = 12327; // 测试用的随机端口号
 const TAG = 'ServerTest';
 let server;
 
 describe('WebSocket Server', function () {
     this.timeout(3000);
 
-    before(async () => {
-        server = startServer(false, port);
+    beforeEach(async () => {
+        ResetDatabase();
+        server = startServer(false);
         await new Promise((resolve) => server.on('listening', resolve));
     });
 
-    after(async () => {
+    afterEach(async () => {
         if (server) {
             await new Promise((resolve, reject) => {
                 server.close((err) => {
@@ -64,6 +66,49 @@ describe('WebSocket Server', function () {
         });
     });
 
+    it('Register', async () => {
+        const ws = new WebSocket(`ws://localhost:${port}/kitauji_api`);
+        await new Promise((resolve, reject) => {
+            ws.on('open', () => {
+                ws.send(JSON.stringify({
+                    sessionId: 1,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "register",
+                        apiArgs: JSON.stringify({
+                            username: "久美子",
+                            password: "123456"
+                        })
+                    }))),
+                }));
+                ws.send(JSON.stringify({
+                    sessionId: 2,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "register",
+                        apiArgs: JSON.stringify({
+                            username: "久美子",
+                            password: "456789"
+                        })
+                    }))),
+                }));
+            });
+
+            ws.on('message', (response) => {
+                const {sessionId, sessionDataJson} = ParseMsg(response);
+                if (sessionId == 1) {
+                    expect(sessionDataJson.status).to.equal("success");
+                } else {
+                    expect(sessionDataJson.status).to.equal("error");
+                    ws.close();
+                    resolve();
+                }
+            });
+
+            ws.on('error', (err) => {
+                reject(err);
+            });
+        });
+    });
+
     it('LoginTourist', async () => {
         const ws = new WebSocket(`ws://localhost:${port}/kitauji_api`);
         await new Promise((resolve, reject) => {
@@ -78,6 +123,121 @@ describe('WebSocket Server', function () {
 
                 ws.close();
                 resolve();
+            });
+
+            ws.on('error', (err) => {
+                reject(err);
+            });
+        });
+    });
+
+    it('LoginUser', async () => {
+        const ws = new WebSocket(`ws://localhost:${port}/kitauji_api`);
+        await new Promise((resolve, reject) => {
+            ws.on('open', () => {
+                ws.send(JSON.stringify({
+                    sessionId: 1,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "auth_login",
+                        apiArgs: JSON.stringify({
+                            isTourist: false,
+                            username: "久美子",
+                            password: "123456"
+                        })
+                    }))),
+                }));
+                ws.send(JSON.stringify({
+                    sessionId: 2,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "register",
+                        apiArgs: JSON.stringify({
+                            username: "久美子",
+                            password: "123456"
+                        })
+                    }))),
+                }));
+                ws.send(JSON.stringify({
+                    sessionId: 3,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "auth_login",
+                        apiArgs: JSON.stringify({
+                            isTourist: false,
+                            username: "久美子",
+                            password: "123456"
+                        })
+                    }))),
+                }));
+            });
+
+            ws.on('message', (response) => {
+                const {sessionId, sessionDataJson} = ParseMsg(response);
+                if (sessionId == 1) {
+                    expect(sessionDataJson.status).to.equal("error");
+                } else if (sessionId == 2) {
+                    expect(sessionDataJson.status).to.equal("success");
+                } else {
+                    expect(sessionDataJson.status).to.equal("success");
+                    ws.close();
+                    resolve();
+                }
+            });
+
+            ws.on('error', (err) => {
+                reject(err);
+            });
+        });
+    });
+
+    // 禁止顶号
+    it('LoginUserDup', async () => {
+        const ws = new WebSocket(`ws://localhost:${port}/kitauji_api`);
+        await new Promise((resolve, reject) => {
+            ws.on('open', () => {
+                ws.send(JSON.stringify({
+                    sessionId: 1,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "register",
+                        apiArgs: JSON.stringify({
+                            username: "久美子",
+                            password: "123456"
+                        })
+                    }))),
+                }));
+                ws.send(JSON.stringify({
+                    sessionId: 2,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "auth_login",
+                        apiArgs: JSON.stringify({
+                            isTourist: false,
+                            username: "久美子",
+                            password: "123456"
+                        })
+                    }))),
+                }));
+                ws.send(JSON.stringify({
+                    sessionId: 3,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "auth_login",
+                        apiArgs: JSON.stringify({
+                            isTourist: false,
+                            username: "久美子",
+                            password: "123456"
+                        })
+                    }))),
+                }));
+            });
+
+            ws.on('message', (response) => {
+                const {sessionId, sessionDataJson} = ParseMsg(response);
+                if (sessionId == 1) {
+                    expect(sessionDataJson.status).to.equal("success");
+                } else if (sessionId == 2) {
+                    expect(sessionDataJson.status).to.equal("success");
+                } else {
+                    expect(sessionDataJson.status).to.equal("error");
+                    ws.close();
+                    resolve();
+                }
             });
 
             ws.on('error', (err) => {
@@ -141,6 +301,134 @@ describe('WebSocket Server', function () {
                     expect(sessionDataJson.status).to.equal("success");
                     expect(sessionDataJson.deck.group).to.equal(0);
                     expect(sessionDataJson.deck.config.length).to.equal(2);
+                    ws.close();
+                    resolve();
+                }
+            });
+
+            ws.on('error', (err) => {
+                reject(err);
+            });
+        });
+    });
+
+    it('ConfigDeckGetUser', async () => {
+        const ws = new WebSocket(`ws://localhost:${port}/kitauji_api`);
+        await new Promise((resolve, reject) => {
+            ws.on('open', () => {
+                ws.send(JSON.stringify({
+                    sessionId: 1,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "register",
+                        apiArgs: JSON.stringify({
+                            username: "久美子",
+                            password: "123456"
+                        })
+                    }))),
+                }));
+                ws.send(JSON.stringify({
+                    sessionId: 2,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "auth_login",
+                        apiArgs: JSON.stringify({
+                            isTourist: false,
+                            username: "久美子",
+                            password: "123456"
+                        })
+                    }))),
+                }));
+                ws.send(JSON.stringify({
+                    sessionId: 3,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "config_deck_get",
+                        apiArgs: "{}"
+                    }))),
+                }));
+            });
+
+            ws.on('message', (response) => {
+                const {sessionId, sessionDataJson} = ParseMsg(response);
+                if (sessionId == 1) {
+                    expect(sessionDataJson.status).to.equal("success");
+                } else if (sessionId == 2) {
+                    expect(sessionDataJson.status).to.equal("success");
+                } else {
+                    // 返回格式：{"status": "success", "deck": { "group": 0, "config": [[int数组], [int数组]]}}
+                    expect(sessionDataJson.status).to.equal("success");
+                    expect(sessionDataJson.deck.group).to.equal(0);
+                    expect(sessionDataJson.deck.config.length).to.equal(2);
+                    ws.close();
+                    resolve();
+                }
+            });
+
+            ws.on('error', (err) => {
+                reject(err);
+            });
+        });
+    });
+
+    it('ConfigDeckUpdate', async () => {
+        const ws = new WebSocket(`ws://localhost:${port}/kitauji_api`);
+        await new Promise((resolve, reject) => {
+            ws.on('open', () => {
+                ws.send(JSON.stringify({
+                    sessionId: 1,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "register",
+                        apiArgs: JSON.stringify({
+                            username: "久美子",
+                            password: "123456"
+                        })
+                    }))),
+                }));
+                ws.send(JSON.stringify({
+                    sessionId: 2,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "auth_login",
+                        apiArgs: JSON.stringify({
+                            isTourist: false,
+                            username: "久美子",
+                            password: "123456"
+                        })
+                    }))),
+                }));
+                ws.send(JSON.stringify({
+                    sessionId: 3,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "config_deck_update",
+                        apiArgs: JSON.stringify({
+                            deck: {
+                                group: 1,
+                                config: [
+                                    [1, 2]
+                                ]
+                            }
+                        })
+                    }))),
+                }));
+                ws.send(JSON.stringify({
+                    sessionId: 4,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "config_deck_get",
+                        apiArgs: "{}"
+                    }))),
+                }));
+            });
+
+            ws.on('message', (response) => {
+                const {sessionId, sessionDataJson} = ParseMsg(response);
+                if (sessionId == 1) {
+                    expect(sessionDataJson.status).to.equal("success");
+                } else if (sessionId == 2) {
+                    expect(sessionDataJson.status).to.equal("success");
+                } else if (sessionId == 3) {
+                    expect(sessionDataJson.status).to.equal("success");
+                } else {
+                    // 返回格式：{"status": "success", "deck": { "group": 0, "config": [[int数组], [int数组]]}}
+                    expect(sessionDataJson.status).to.equal("success");
+                    expect(sessionDataJson.deck.group).to.equal(1);
+                    expect(sessionDataJson.deck.config.length).to.equal(1);
                     ws.close();
                     resolve();
                 }
@@ -382,6 +670,92 @@ describe('WebSocket Server', function () {
                 }
             }, 1);
             CheckAllConnClosed();
+        });
+    });
+
+    const SendHeartbeat = (ws, sessionId, user_status) => {
+        ws.send(JSON.stringify({
+            sessionId: sessionId,
+            sessionData: Array.from(Buffer.from(JSON.stringify({
+                apiType: "heartbeat",
+                apiArgs: JSON.stringify({
+                    user_status: user_status
+                })
+            }))),
+        }));
+    }
+
+    it('Heartbeat', async () => {
+        const ws1 = new WebSocket(`ws://localhost:${port}/kitauji_api`);
+        const ws2 = new WebSocket(`ws://localhost:${port}/kitauji_api`);
+        const ws3 = new WebSocket(`ws://localhost:${port}/kitauji_api`);
+        await new Promise((resolve, reject) => {
+            ws1.on('open', () => {
+                DefaultTouristLogin(ws1);
+            });
+            ws2.on('open', async () => {
+                DefaultTouristLogin(ws2);
+            });
+            ws3.on('open', async () => {
+                DefaultTouristLogin(ws3);
+            });
+
+            ws1.on('message', async (response) => {
+                const {sessionId, sessionDataJson} = ParseMsg(response);
+                if (sessionId == 1) {
+                    SendHeartbeat(ws1, 2, 1);
+                } else if (sessionId == 2) {
+                    expect(sessionDataJson.all_users.length).to.equal(4);
+                    expect(sessionDataJson.all_users[1]).to.equal(1);
+                    await KSleep(10);
+                    ws1.close();
+                }
+            });
+            ws2.on('message', async (response) => {
+                const {sessionId, sessionDataJson} = ParseMsg(response);
+                if (sessionId == 1) {
+                    await KSleep(10);
+                    SendHeartbeat(ws2, 2, 2);
+                } else if (sessionId == 2) {
+                    expect(sessionDataJson.all_users.length).to.equal(4);
+                    expect(sessionDataJson.all_users[1]).to.equal(1);
+                    expect(sessionDataJson.all_users[2]).to.equal(1);
+                    await KSleep(10);
+                    ws2.close();
+                }
+            });
+            ws3.on('message', async (response) => {
+                const {sessionId, sessionDataJson} = ParseMsg(response);
+                if (sessionId == 1) {
+                    await KSleep(10);
+                    SendHeartbeat(ws3, 2, 3);
+                } else if (sessionId == 2) {
+                    expect(sessionDataJson.all_users.length).to.equal(4);
+                    expect(sessionDataJson.all_users[1]).to.equal(1);
+                    expect(sessionDataJson.all_users[3]).to.equal(1);
+                    await KSleep(10);
+                    ws3.close();
+                }
+            });
+
+            ws1.on('error', (err) => {
+                reject(err);
+            });
+            ws2.on('error', (err) => {
+                reject(err);
+            });
+            ws3.on('error', (err) => {
+                reject(err);
+            });
+            const CheckAllConnClosed = setInterval(() => {
+                if (ws1.readyState == WebSocket.CLOSED &&
+                    ws2.readyState == WebSocket.CLOSED &&
+                    ws3.readyState == WebSocket.CLOSED) {
+                    resolve();
+                    clearInterval(CheckAllConnClosed);
+                }
+            }, 1);
+            //CheckAllConnClosed();
         });
     });
 });

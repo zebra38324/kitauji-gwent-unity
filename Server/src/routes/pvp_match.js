@@ -1,5 +1,6 @@
 import { BuildRes, ApiTypeEnum } from '../util/message_util.js';
 import { KLog } from '../util/k_log.js';
+import { StatStartMatch } from '../database/database.js';
 
 const TAG = 'PVPMatch';
 const matchQueue = [];
@@ -57,6 +58,7 @@ export const PVPMatchRoutes = {
         // {"status": "waiting"}
         // {"status": "success", "opponent": "opponent name", "isHost": true}
         KLog.I(TAG, `${ApiTypeEnum.PVP_MATCH_START}: ${ws.user.username}`);
+        StatStartMatch(ws.connId, ws.user.username);
         const matchRet = AddToMatchQueue(ws.user.username, sessionId);
         if (matchRet) {
             const [player1, player2] = matchRet;

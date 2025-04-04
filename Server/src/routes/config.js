@@ -1,4 +1,5 @@
 import { BuildRes, ApiTypeEnum } from '../util/message_util.js';
+import { UpdateDeckConfig, GetDeckConfig } from '../database/database.js';
 
 const CardGroupEnum = Object.freeze({
     K1: 0,
@@ -7,20 +8,48 @@ const CardGroupEnum = Object.freeze({
 });
 
 export const ConfigRoutes = {
-    [ApiTypeEnum.CONFIG_DECK_GET]: (ws, sessionId) => {
+    [ApiTypeEnum.CONFIG_DECK_GET]: (ws, sessionId, apiArgs) => {
         // 请求格式：{}
-        // 返回格式：{"status": "success", "deck": { "group": 0, "config": [[int数组], [int数组]]}}
+        // 返回格式：
+        // {"status": "success", "deck": { "group": 0, "config": [[int数组], [int数组]]}}
+        // {"status": "error", "message": ""}
         // 目前config包含k1、k2
-        ws.send(BuildRes(sessionId, {
-            status:"success",
-            deck: {
+        let deck_config = null;
+        let status = "success";
+        let message = null;
+        if (ws.user.isTourist) {
+            deck_config = {
                 group: CardGroupEnum.K1,
                 config: [
                     GetK1DefaultConfig(),
                     GetK2DefaultConfig()
                 ]
             }
-        }));
+        } else {
+            const result = GetDeckConfig(ws.user.username);
+            if (result.success) {
+                deck_config = result.deck_config;
+            } else {
+                message = result.message;
+            }
+        }
+        if (status == "success") {
+            ws.send(BuildRes(sessionId, {status: "success", deck: deck_config}));
+        } else {
+            ws.send(BuildRes(sessionId, {status: "error", message: message}));
+        }
+    },
+    [ApiTypeEnum.CONFIG_DECK_UPDATE]: (ws, sessionId, apiArgs) => {
+        // 请求格式：{"deck": { "group": 0, "config": [[int数组], [int数组]]}}
+        // 返回格式：
+        // {"status": "success"}
+        // {"status": "error", "message": ""}
+        const result = UpdateDeckConfig(ws.user.username, apiArgs.deck);
+        if (result.success) {
+            ws.send(BuildRes(sessionId, {status: "success"}));
+        } else {
+            ws.send(BuildRes(sessionId, {status: "error", message: message}));
+        }
     }
 }
 

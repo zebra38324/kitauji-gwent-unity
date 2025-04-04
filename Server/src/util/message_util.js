@@ -1,10 +1,13 @@
 export const ApiTypeEnum = Object.freeze({
+    REGISTER: "register",
     AUTH_LOGIN: "auth_login",
     CONFIG_DECK_GET: "config_deck_get",
+    CONFIG_DECK_UPDATE: "config_deck_update",
     PVP_MATCH_START: "pvp_match_start",
     PVP_MATCH_CANCEL: "pvp_match_cancel",
     PVP_MATCH_ACTION: "pvp_match_action",
     PVP_MATCH_STOP: "pvp_match_stop",
+    HEARTBEAT: "heartbeat", // 心跳，包含状态信息等，双向
 });
 
 export function ParseReq(reqMsg)

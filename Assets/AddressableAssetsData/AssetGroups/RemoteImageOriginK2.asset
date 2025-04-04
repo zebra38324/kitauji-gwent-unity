@@ -20,257 +20,308 @@ MonoBehaviour:
   - m_GUID: 08d7fa587e0dbe640aaa540250b41e59
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/27.chikao.takigawa-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 09b9ce0807bc0b4458b255917c91b36b
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/56.michiyo.morimoto-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0d96e47eed0b5bb439a973d497aa94a7
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/67.kumiko.oumae-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0d9809410a74c18448d07933725b5520
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/22.kana.etou-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0e897242955ffc34cbbea7d5581eebf6
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/origin-image-oumae_kumiko.png
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 19bf7c711a8117647a45e04e4d95e82f
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/65.mirei.suzuki-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 25c4101f51896024184be88707dc158f
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/61.takuya.gotou-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2fc34cd0a2f62394cadda4c0c95f4c44
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/50.sayaka.fukui-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 30b6f651c78c8c64aae91bfb173a7ddc
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/17.shirabe.inoue-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 324f110268fe9704bbaa34bed5232a81
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/66.natsuki.nakagawa-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3a064f6b4f9977d4990a1beee9aa2138
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/42.akiko.yoshizawa-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3b624827a09ea4f438eabd1c61498c59
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/68.kanade.hisaishi-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 42df2104bd882ff4bb1c58e10faae736
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/54.miru.kishibe-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 492f57bfb4d04cc48bd1fb3cc8970332
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/16.suruga.koteyama-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4b4564e074e4ed14a93c586ab7be5249
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/46.sayaka.takino-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4c0e106956af22649a620acbd34f89c5
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/49.shuichi.tsukamoto-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4e5c11d7b9d1d1c4697139324c5b6feb
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/78.aota.maeda-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4eb6e1b634df6644d9627cc00183ed74
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/18.nozomi.kasaki-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4f37d6d3c1b64da4ea9e490332c1fc04
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/79.sosuke.maeda-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 58dc6cdb131f9ef478c1a14956ac4569
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/24.tsumiki.yamane-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 61c11c3556972274aa3cba19f18fe555
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/70.motomu.tsukinaga-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 63e5536c248529b428148b49c86081df
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/44.yume.kohinata-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 65fbc365699f53d40b4c1a073f3b93ef
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/62.riko.nagase-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6a81580ec514ec74ca3328853940e7c3
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/02.hiyoko.ueda-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6e6f5110679aabe4cb894c6d2e0f6409
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/52.michiru.hakase-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 777762d173f26614e85f93a48cf361e0
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/15.eru.kabutodani-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 826ccc60db171314da49da4f53c89b35
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/21.tsubomi.nakano-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8c06e3eea1ecd0b4f9d773a1a428e512
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/19.meiko.oda-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8fb7437e1db751b40a5938f9317c1b6f
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/13.mizore.yoroizuka-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9808b1f12b7bc6b4aaecc9bc331bb83f
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/01.rie.shima-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a2b6a97084ef3a94587cc3d4702f63f8
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/64.satsuki.suzuki-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a3aa88d7447253247bda344d2f138677
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/69.sapphire.kawashima-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a9e55fb27996e3e4484ebaf81dbe0d9a
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/20.sari.takahashi-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b5f81de24d9e2d4429bb9e840ff3b6d3
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/23.narumi.hiraishi-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b9db54e3f26dd31428408b685e50d78f
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/74.masako.sakai-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c5206819052fd4e4fb5d435c5c4901f2
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/41.reina.kousaka-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c8a9a997e980e60479b6cccae618aaf2
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/09.tairu.kitayama-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c8e155fb99d0057458e75398e0a8a26b
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/25.sumiko.hirao-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cafd177faabffa84ab608736e5d25c21
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/04.chieri.takahisa-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cc1ffe89a9af91845b9d44e20c5c3e53
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/55.lala.hitomi-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d007316a3bf85014f8a2371af02909cb
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/47.keina.iwata-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d24b45d2a84d75846aa9e6c533a608c8
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/77.motoko.higashiura-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d2f35ad43354fc3469089b764e3a56ea
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/72.junna.inoue-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: db01d17ccad9aa547946cdbe1e4c9b70
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/63.hazuki.katou-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e63b05b34b8751d43b51d368d11618da
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/71.miyoko.ono-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e66721473879ec14990554d66f13b9d3
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/14.ririka.kenzaki-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: eb634f1f1046c334b8bc3fbfd9e41d16
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/40.junichi.takino-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f1f613bf921d5a34ebc7259534979c07
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/39.tomoe.kabe-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f7474d602494d9a489e57ab6bf1b327f
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/28.chikai.maki-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f9a398b12eac1ad45bcc295c16977a04
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/38.yuko.yoshikawa-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fed05d9208b949445b12548d721c22a2
     m_Address: Assets/RemoteRes/Image/origin-image/KumikoSecondYear/73.tsubame.kamaya-portrait.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_k2
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: a0611c52f639b8145b25d7fc1e3ec1d2, type: 2}
