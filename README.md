@@ -9,7 +9,7 @@
 原项目使用js构建，本项目为其unity重置版。
 
 ## 如何访问
-pc端使用chrome或edge浏览器，访问：https://kitauji-gwent.top/
+pc端使用chrome或edge浏览器，访问：https://kitauji-gwent.com/
 
 ## 开发环境配置
 Windows, Unity 2022.3.50f1c1
