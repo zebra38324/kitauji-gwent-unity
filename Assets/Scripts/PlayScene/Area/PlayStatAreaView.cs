@@ -63,6 +63,7 @@ public class PlayStatAreaView : MonoBehaviour
         while (!isAbort) {
             if (playSceneModel.tracker.curState == PlayStateTracker.State.WAIT_BACKUP_INFO) {
                 yield return null;
+                continue;
             }
             playerName.GetComponent<TextMeshProUGUI>().text = string.Format("{0}（{1}）",
                 isSelf ? playSceneModel.tracker.selfName : playSceneModel.tracker.enemyName,

@@ -11,6 +11,8 @@ public class MainMenuSceneManager : MonoBehaviour
 
     public GameObject toastView;
 
+    public GameObject choosePVEArea;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -29,8 +31,7 @@ public class MainMenuSceneManager : MonoBehaviour
             toastView.GetComponent<ToastView>().ShowToast("匹配中不可选择");
             return;
         }
-        RoomManager roomManager = new RoomManager();
-        roomManager.StartPVE();
+        choosePVEArea.SetActive(true);
     }
 
     public void PlayPVP()

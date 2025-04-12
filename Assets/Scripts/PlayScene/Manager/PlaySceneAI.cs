@@ -76,7 +76,7 @@ public class PlaySceneAI
     {
         switch (aiType) {
             case AIType.K1Basic: {
-                return null;
+                return new AIModelK1Basic(playSceneModel);
             }
             case AIType.K2Basic: {
                 return new AIModelK2Basic(playSceneModel);

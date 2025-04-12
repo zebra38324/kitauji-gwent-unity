@@ -51,7 +51,7 @@ class AIModelK2Basic : AIModelInterface
             return;
         }
         // 打个点数最高的手牌
-        if (TryPlayMax()) {
+        if (TryPlayMaxRole()) {
             return;
         }
         // 没牌打了，再试试退部
@@ -147,38 +147,7 @@ class AIModelK2Basic : AIModelInterface
         if (index < 0) {
             return false;
         }
-        int selfMaxPower = 0;
-        int enemyMaxPower = 0;
-        int maxPower = 0;
-        playSceneModel.selfSinglePlayerAreaModel.CountBattleAreaCard((CardModel targetCard) => {
-            if (targetCard.cardInfo.cardType == CardType.Normal && targetCard.currentPower > selfMaxPower) {
-                selfMaxPower = targetCard.currentPower;
-            }
-            return true;
-        });
-        playSceneModel.enemySinglePlayerAreaModel.CountBattleAreaCard((CardModel targetCard) => {
-            if (targetCard.cardInfo.cardType == CardType.Normal && targetCard.currentPower > enemyMaxPower) {
-                enemyMaxPower = targetCard.currentPower;
-            }
-            return true;
-        });
-        maxPower = Math.Max(selfMaxPower, enemyMaxPower);
-
-        int selfRemovePower = 0;
-        int enemyRemovePower = 0;
-        playSceneModel.selfSinglePlayerAreaModel.CountBattleAreaCard((CardModel targetCard) => {
-            if (targetCard.cardInfo.cardType == CardType.Normal && targetCard.currentPower == maxPower) {
-                selfRemovePower += targetCard.currentPower;
-            }
-            return true;
-        });
-        playSceneModel.enemySinglePlayerAreaModel.CountBattleAreaCard((CardModel targetCard) => {
-            if (targetCard.cardInfo.cardType == CardType.Normal && targetCard.currentPower == maxPower) {
-                enemyRemovePower += targetCard.currentPower;
-            }
-            return true;
-        });
-        if (enemyRemovePower - selfRemovePower >= minReturn) {
+        if (GetScorchReturn() >= minReturn) {
             // 收益够大，打出
             playSceneModel.ChooseCard(playSceneModel.selfSinglePlayerAreaModel.handRowAreaModel.cardList[index]);
             return true;
@@ -218,30 +187,6 @@ class AIModelK2Basic : AIModelInterface
         });
         foreach (CardModel card in playSceneModel.selfSinglePlayerAreaModel.handRowAreaModel.cardList) {
             if (card.cardInfo.ability == CardAbility.Bond && battleBondTypeList.Contains(card.cardInfo.bondType)) {
-                playSceneModel.ChooseCard(card);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // 尝试打出点数最高的手牌。成功返回true，没打就返回false
-    private bool TryPlayMax()
-    {
-        if (playSceneModel.selfSinglePlayerAreaModel.handRowAreaModel.cardList.Count == 0) {
-            return false;
-        }
-        int selfMaxPower = 0;
-        foreach (CardModel card in playSceneModel.selfSinglePlayerAreaModel.handRowAreaModel.cardList) {
-            if (card.cardInfo.originPower > selfMaxPower) {
-                selfMaxPower = card.cardInfo.originPower;
-            }
-        }
-        if (selfMaxPower == 0) {
-            return false;
-        }
-        foreach (CardModel card in playSceneModel.selfSinglePlayerAreaModel.handRowAreaModel.cardList) {
-            if (card.cardInfo.originPower == selfMaxPower) {
                 playSceneModel.ChooseCard(card);
                 return true;
             }

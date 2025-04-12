@@ -50,6 +50,14 @@ public class CardModel
         currentPower = info.originPower;
     }
 
+    public CardModel(CardModel card)
+    {
+        buffRecord = new int[buffTypeCount];
+        card.buffRecord.CopyTo(buffRecord, 0);
+        this.cardInfo = new CardInfo(card.cardInfo);
+        UpdateCurrentPower();
+    }
+
     // ========================= 点数逻辑 ===========================
     // 添加buff并指定添加buff的数量
     public void AddBuff(CardBuffType buffType, int num)

@@ -14,14 +14,14 @@ public class RoomManager
     {
     }
 
-    public void StartPVE()
+    public void StartPVE(PlaySceneAI.AIType aiType)
     {
         PlayerPrefs.SetString(PlayerPrefsKey.PLAY_SCENE_SELF_NAME.ToString(), KConfig.Instance.playerName);
         PlayerPrefs.SetString(PlayerPrefsKey.PLAY_SCENE_ENEMY_NAME.ToString(), "北宇治B编");
         PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_SELF_GROUP.ToString(), (int)KConfig.Instance.deckCardGroup);
         PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_IS_HOST.ToString(), 1);
         PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_IS_PVP.ToString(), 0);
-        PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_PVE_AI_TYPE.ToString(), (int)PlaySceneAI.AIType.K2Basic);
+        PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_PVE_AI_TYPE.ToString(), (int)aiType);
         PlayerPrefs.Save();
         KHeartbeat.Instance.SendHeartbeat(KHeartbeat.UserStatus.PVE_GAMING);
         SceneManager.LoadScene("PlayScene");
