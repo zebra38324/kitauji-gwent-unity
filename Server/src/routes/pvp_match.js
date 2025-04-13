@@ -62,8 +62,10 @@ export const PVPMatchRoutes = {
         const matchRet = AddToMatchQueue(ws.user.username, sessionId);
         if (matchRet) {
             const [player1, player2] = matchRet;
-            activeConns.get(player1.username)?.send(BuildRes(sessionId, {status:"success", opponent:player2.username, isHost:true}));
-            activeConns.get(player2.username)?.send(BuildRes(sessionId, {status:"success", opponent:player1.username, isHost:false}));
+            activeConns.get(player1.username)?.send(BuildRes(player1.sessionId, {status:"success", opponent:player2.username, isHost:true}));
+            KLog.I(TAG, `${ApiTypeEnum.PVP_MATCH_START}: success, ${player1.username}, session-${player1.sessionId}`);
+            activeConns.get(player2.username)?.send(BuildRes(player2.sessionId, {status:"success", opponent:player1.username, isHost:false}));
+            KLog.I(TAG, `${ApiTypeEnum.PVP_MATCH_START}: success, ${player2.username}, session-${player2.sessionId}`);
             // 绑定
             CreateGameSession(player1, player2);
         } else {

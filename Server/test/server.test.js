@@ -457,7 +457,7 @@ describe('WebSocket Server', function () {
                 DefaultTouristLogin(ws3);
             });
 
-            const DefaultPVPMatch = (ws, response) => {
+            const DefaultPVPMatch = (ws, response, init_session_id) => {
                 const {sessionId, sessionDataJson} = ParseMsg(response);
                 if (sessionId == 1) {
                     // login
@@ -465,13 +465,13 @@ describe('WebSocket Server', function () {
                     const username = sessionDataJson.username;
                     ws.user = { username };
                     ws.send(JSON.stringify({
-                        sessionId: 2,
+                        sessionId: init_session_id,
                         sessionData: Array.from(Buffer.from(JSON.stringify({
                             apiType: "pvp_match_start",
                             apiArgs: JSON.stringify({})
                         }))),
                     }));
-                } else if (sessionId == 2) {
+                } else if (sessionId == init_session_id) {
                     if (sessionDataJson.status == "waiting") {
                         KLog.I(TAG, `DefaultPVPMatch: ${ws.user.username} waiting`);
                         return;
@@ -481,7 +481,7 @@ describe('WebSocket Server', function () {
                         KLog.I(TAG, `DefaultPVPMatch: ${ws.user.username} success`);
                         ws.user.hasMatched = true;
                         ws.send(JSON.stringify({
-                            sessionId: 2,
+                            sessionId: init_session_id,
                             sessionData: Array.from(Buffer.from(JSON.stringify({
                                 apiType: "pvp_match_action",
                                 apiArgs: JSON.stringify({action:"test action"})
@@ -495,7 +495,7 @@ describe('WebSocket Server', function () {
                         return;
                     } else if (sessionDataJson.action == "test action") {
                         ws.send(JSON.stringify({
-                            sessionId: 2,
+                            sessionId: init_session_id,
                             sessionData: Array.from(Buffer.from(JSON.stringify({
                                 apiType: "pvp_match_stop",
                                 apiArgs: JSON.stringify({})
@@ -538,10 +538,10 @@ describe('WebSocket Server', function () {
                 }
             });
             ws2.on('message', (response) => {
-                DefaultPVPMatch(ws2, response);
+                DefaultPVPMatch(ws2, response, 2);
             });
             ws3.on('message', (response) => {
-                DefaultPVPMatch(ws3, response);
+                DefaultPVPMatch(ws3, response, 3);
             });
 
             ws1.on('error', (err) => {
