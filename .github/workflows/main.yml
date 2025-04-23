@@ -12,6 +12,9 @@ jobs:
       UNITY_LICENSE: ${{ secrets.MOZI_LIC }}
       UNITY_EMAIL: ${{ secrets.MOZI_EMAIL }}
       UNITY_PASSWORD: ${{ secrets.MOZI_PWD }}
+    # for the test step: "Resource not accessible by integration"
+    permissions:
+      checks: write
     
     steps:
       # Checkout
