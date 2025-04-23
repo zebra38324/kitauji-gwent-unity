@@ -33,9 +33,22 @@ jobs:
 
       # Test
       - name: Run tests
+        id: myTestStep
         uses: game-ci/unity-test-runner@v4
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Test results
+          path: ${{ steps.myTestStep.outputs.artifactsPath }}
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Coverage results
+          path: ${{ steps.myTestStep.outputs.coveragePath }}
 
       # Build
       - name: Build project
