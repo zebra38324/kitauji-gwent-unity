@@ -22,7 +22,7 @@ public class PlaySceneModelTest
     [SetUp]
     public void SetUp()
     {
-        KLog.I(TAG, "SetUp");
+        KLog.I(TAG, "SetUp: " + TestContext.CurrentContext.Test.Name);
         // 测试用，先把CardGenerator的资源加载了
         CardGenerator cardGenerator = new CardGenerator();
         cardGenerator.GetCard(2001);
@@ -49,7 +49,7 @@ public class PlaySceneModelTest
     [TearDown]
     public void Teardown()
     {
-        KLog.I(TAG, "Teardown");
+        KLog.I(TAG, "Teardown: " + TestContext.CurrentContext.Test.Name);
         ResetHostFirstRandom();
         hostModel.Release();
         playerModel.Release();
