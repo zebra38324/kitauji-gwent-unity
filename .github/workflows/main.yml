@@ -1,17 +1,25 @@
 # copied from https://game.ci/docs/github/getting-started
 
-name: Actions 😎
+name: Actions
 
 on: [push, pull_request, workflow_dispatch]
 
+# DO NOT LEAK!
+env:
+  UNITY_LICENSE: ${{ secrets.MOZI_LIC }}
+  UNITY_EMAIL: ${{ secrets.MOZI_EMAIL }}
+  UNITY_PASSWORD: ${{ secrets.MOZI_PWD }}
+
 jobs:
-  build:
-    name: Build my project ✨
-    runs-on: ubuntu-latest
-    env:
-      UNITY_LICENSE: ${{ secrets.MOZI_LIC }}
-      UNITY_EMAIL: ${{ secrets.MOZI_EMAIL }}
-      UNITY_PASSWORD: ${{ secrets.MOZI_PWD }}
+  test:
+    runs-on: ${{ matrix.os }}
+    matrix:
+      # oldest but still-supported OS'es
+      os:
+        - ubuntu-22.04
+        - windows-2022
+        - macos-13  # intel
+        - macos-14  # arm64
     # for the test step: "Resource not accessible by integration"
     permissions:
       checks: write
@@ -49,6 +57,25 @@ jobs:
         with:
           name: Coverage results
           path: ${{ steps.myTestStep.outputs.coveragePath }}
+
+  build:
+    needs: test
+    runs-on: ubuntu-22.04
+    
+    steps:
+      # Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      # Cache
+      - uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-
 
       # Build
       - name: Build project
