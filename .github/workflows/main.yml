@@ -16,11 +16,14 @@ jobs:
     strategy:
       matrix:
         # oldest but still-supported OS'es
+        # > Currently darwin-platform is not supported
+        # is there not macOS support?
+        #   Add support for macos · Issue #211 · game-ci/unity-test-runner
+        #   https://github.com/game-ci/unity-test-runner/issues/211
+        # ???
         os:
           - ubuntu-22.04
           - windows-2022
-          - macos-13  # intel
-          - macos-14  # arm64
     # for the test step: "Resource not accessible by integration"
     permissions:
       checks: write
