@@ -13,13 +13,14 @@ env:
 jobs:
   test:
     runs-on: ${{ matrix.os }}
-    matrix:
-      # oldest but still-supported OS'es
-      os:
-        - ubuntu-22.04
-        - windows-2022
-        - macos-13  # intel
-        - macos-14  # arm64
+    strategy:
+      matrix:
+        # oldest but still-supported OS'es
+        os:
+          - ubuntu-22.04
+          - windows-2022
+          - macos-13  # intel
+          - macos-14  # arm64
     # for the test step: "Resource not accessible by integration"
     permissions:
       checks: write
