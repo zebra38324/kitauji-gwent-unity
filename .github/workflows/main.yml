@@ -63,7 +63,6 @@ jobs:
           path: ${{ steps.myTestStep.outputs.coveragePath }}
 
   build:
-    needs: test
     runs-on: ubuntu-22.04
     
     steps:
