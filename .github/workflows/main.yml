@@ -39,9 +39,9 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: Library
-          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          key: Library-${{ matrix.os }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
-            Library-
+            Library-${{ matrix.os }}-
 
       # Test
       - name: Run tests
@@ -53,13 +53,13 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: Test results
+          name: Test results - ${{ matrix.os }}
           path: ${{ steps.myTestStep.outputs.artifactsPath }}
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: Coverage results
+          name: Coverage results - ${{ matrix.os }}
           path: ${{ steps.myTestStep.outputs.coveragePath }}
 
   build:
