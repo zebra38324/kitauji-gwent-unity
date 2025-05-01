@@ -152,17 +152,17 @@ public class PlayStateTracker
     // 流转curState
     public void TransState(State newState)
     {
-        TransStateInternal(newState);
         if (selfPass && enemyPass) {
             KLog.I(TAG, "TransState: set finsih");
-            TransStateInternal(State.SET_FINFISH);
-        } else if (selfPass && curState == State.WAIT_SELF_ACTION) {
+            newState = State.SET_FINFISH;
+        } else if (selfPass && curState == State.WAIT_ENEMY_ACTION) {
             KLog.I(TAG, "TransState: self pass, also enemy turn");
-            TransStateInternal(State.WAIT_ENEMY_ACTION);
-        } else if (enemyPass && curState == State.WAIT_ENEMY_ACTION) {
+            newState = State.WAIT_ENEMY_ACTION;
+        } else if (enemyPass && curState == State.WAIT_SELF_ACTION) {
             KLog.I(TAG, "TransState: enemy pass, also self turn");
-            TransStateInternal(State.WAIT_SELF_ACTION);
+            newState = State.WAIT_SELF_ACTION;
         }
+        TransStateInternal(newState); // 一步到位，避免错误的中间状态
     }
 
     // 流转actionState

@@ -30,6 +30,8 @@ public class InitReDrawHandCardAreaView: MonoBehaviour
 
     public long startTs { get; private set; }
 
+    public bool isSelfConfirmed { get; private set; } = false; // 是否已经确认过了
+
     private bool initFinish = false;
 
     // Start is called before the first frame update
@@ -46,6 +48,11 @@ public class InitReDrawHandCardAreaView: MonoBehaviour
 
     public void ConfirmButton()
     {
+        if (!confirmButton.activeSelf) {
+            // 已经确认过了，不能重复确认
+            return;
+        }
+        isSelfConfirmed = true;
         confirmButton.SetActive(false);
         tipText.GetComponent<TextMeshProUGUI>().text = waitTip;
         PlaySceneManager.Instance.HandleMessage(SceneMsg.ReDrawInitHandCard);
@@ -74,7 +81,7 @@ public class InitReDrawHandCardAreaView: MonoBehaviour
 
     private void UpdateCountDown()
     {
-        if (!confirmButton.activeSelf || !initFinish) {
+        if (isSelfConfirmed || !initFinish) {
             return;
         }
         long remainSecond = (MAX_TIME - (KTime.CurrentMill() - startTs)) / 1000;

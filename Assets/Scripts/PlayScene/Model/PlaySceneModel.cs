@@ -75,6 +75,8 @@ public class PlaySceneModel
 
     private bool isHost;
 
+    private bool hasSelfReDrawInitHandCard = false; // TODO: 这个设计很不好
+
     public void EnemyMsgCallback(BattleModel.ActionType actionType, params object[] list)
     {
         switch (actionType) {
@@ -201,6 +203,7 @@ public class PlaySceneModel
             KLog.E(TAG, "DrawInitHandCard: state invalid: " + tracker.curState);
             return;
         }
+        hasSelfReDrawInitHandCard = true;
         selfSinglePlayerAreaModel.ReDrawInitHandCard();
         // 发送self初始手牌信息
         Action SendSelfInitHandCardInfo = () => {
@@ -248,7 +251,8 @@ public class PlaySceneModel
     public bool EnableChooseCard(bool isSelf = true)
     {
         if (isSelf) {
-            return tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION || tracker.curState == PlayStateTracker.State.DOING_INIT_HAND_CARD;
+            return tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION ||
+                (tracker.curState == PlayStateTracker.State.DOING_INIT_HAND_CARD && !hasSelfReDrawInitHandCard);
         } else {
             return tracker.curState == PlayStateTracker.State.WAIT_ENEMY_ACTION;
         }
