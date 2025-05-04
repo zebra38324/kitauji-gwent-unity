@@ -194,7 +194,11 @@ public class PlaySceneManager : MonoBehaviour
             }
             case SceneMsg.ChooseCard: {
                 CardModel cardModel = (CardModel)list[0];
-                if (playSceneModel.EnableChooseCard(true) && cardModel.selectType != CardSelectType.None) {
+                if (playSceneModel.EnableChooseCard(true) && cardModel.selectType != CardSelectType.None &&
+                    (cardModel.cardLocation != CardLocation.LeaderCardArea ||
+                     (playSceneModel.selfSinglePlayerAreaModel.leaderCardAreaModel.cardList.Count > 0 &&
+                      playSceneModel.selfSinglePlayerAreaModel.leaderCardAreaModel.cardList[0] == cardModel))) {
+                    // TODO: 很丑陋的fix
                     // self turn时才允许选择
                     playSceneModel.ChooseCard(cardModel);
                     // 复活技能流程
@@ -267,7 +271,8 @@ public class PlaySceneManager : MonoBehaviour
         UpdateUI();
         while (playSceneModel.tracker.curState != PlayStateTracker.State.WAIT_SELF_ACTION &&
                playSceneModel.tracker.curState != PlayStateTracker.State.WAIT_ENEMY_ACTION) {
-            if (KTime.CurrentMill() - initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().startTs > InitReDrawHandCardAreaView.MAX_TIME) {
+            if (!initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().isSelfConfirmed && 
+                KTime.CurrentMill() - initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().startTs > InitReDrawHandCardAreaView.MAX_TIME) {
                 // 超时未操作，结束重抽手牌
                 KLog.I(TAG, "initReDrawHandCard: self action timeout");
                 initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().ConfirmButton();

@@ -107,6 +107,7 @@ public class PlaySceneModelTest
             hostModel.DrawInitHandCard();
             hostModel.ChooseCard(hostModel.selfSinglePlayerAreaModel.initHandRowAreaModel.cardList[0]);
             hostModel.ReDrawInitHandCard();
+            Assert.AreEqual(false, hostModel.EnableChooseCard(true));
             CheckCurState(hostModel, PlayStateTracker.State.WAIT_SELF_ACTION);
             // 开始对局
             long currentTs = KTime.CurrentMill();

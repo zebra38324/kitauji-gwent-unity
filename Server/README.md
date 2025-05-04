@@ -41,4 +41,3 @@ pm2 log kitauji_server_prod/kitauji_server_dev
 pm2 stop kitauji_server_prod/kitauji_server_dev
 ```
 
-
