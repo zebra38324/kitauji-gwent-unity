@@ -64,8 +64,15 @@ jobs:
 
   build:
     runs-on: ubuntu-22.04
-    
+
     steps:
+      # no space left on device.
+      - name: Free up disk space
+        run: |
+          set -ex
+          sudo apt clean
+          docker system prune --all --volumes --force
+
       # Checkout
       - name: Checkout repository
         uses: actions/checkout@v4
