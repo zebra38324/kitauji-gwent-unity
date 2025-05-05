@@ -1,0 +1,93 @@
+# copied from https://game.ci/docs/github/getting-started
+
+name: Actions
+
+on: [push, pull_request, workflow_dispatch]
+
+# DO NOT LEAK!
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+  UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+  UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        # oldest but still-supported OS'es
+        # > Currently darwin-platform is not supported
+        # is there not macOS support?
+        #   Add support for macos · Issue #211 · game-ci/unity-test-runner
+        #   https://github.com/game-ci/unity-test-runner/issues/211
+        # ???
+        os:
+          - ubuntu-22.04
+          - windows-2022
+    # for the test step: "Resource not accessible by integration"
+    permissions:
+      checks: write
+    
+    steps:
+      # Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      # Cache
+      - uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-${{ matrix.os }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-${{ matrix.os }}-
+
+      # Test
+      - name: Run tests
+        id: myTestStep
+        uses: game-ci/unity-test-runner@v4
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Test results - ${{ matrix.os }}
+          path: ${{ steps.myTestStep.outputs.artifactsPath }}
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Coverage results - ${{ matrix.os }}
+          path: ${{ steps.myTestStep.outputs.coveragePath }}
+
+  build:
+    runs-on: ubuntu-22.04
+    
+    steps:
+      # Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      # Cache
+      - uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-
+
+      # Build
+      - name: Build project
+        uses: game-ci/unity-builder@v4
+        with:
+          targetPlatform: WebGL
+
+      # Output
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Build
+          path: build
