@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -10,26 +11,9 @@ public class SinglePlayerAreaView : MonoBehaviour
     public GameObject percussionRow;
     public GameObject handCardRow; // self时不为空，enemy为空
     public GameObject offFieldCardsArea;
-    public GameObject playStat;
     public GameObject leaderArea;
 
-    private SinglePlayerAreaModel model_;
-    public SinglePlayerAreaModel model {
-        get {
-            return model_;
-        }
-        set {
-            model_ = value;
-            woodRow.GetComponent<BattleRowAreaView>().battleRowAreaModel = model_.woodRowAreaModel;
-            brassRow.GetComponent<BattleRowAreaView>().battleRowAreaModel = model_.brassRowAreaModel;
-            percussionRow.GetComponent<BattleRowAreaView>().battleRowAreaModel = model_.percussionRowAreaModel;
-            if (handCardRow != null ) {
-                handCardRow.GetComponent<RowAreaView>().rowAreaModel = model_.handRowAreaModel;
-            }
-            offFieldCardsArea.GetComponent<OffFieldCardsAreaView>().model = model_;
-            leaderArea.GetComponent<RowAreaView>().rowAreaModel = model_.leaderCardAreaModel;
-        }
-    }
+    private SinglePlayerAreaModel singlePlayerAreaModel;
 
     // Start is called before the first frame update
     void Start()
@@ -37,17 +21,20 @@ public class SinglePlayerAreaView : MonoBehaviour
 
     }
 
-    // 每次操作完，更新ui
-    public void UpdateUI()
+    // model变化时，尝试更新ui
+    public void UpdateModel(SinglePlayerAreaModel model)
     {
-        if (handCardRow != null) {
-            handCardRow.GetComponent<RowAreaView>().UpdateUI();
+        if (singlePlayerAreaModel == model) {
+            return;
         }
-        offFieldCardsArea.GetComponent<OffFieldCardsAreaView>().UpdateUI();
-        woodRow.GetComponent<BattleRowAreaView>().UpdateUI();
-        brassRow.GetComponent<BattleRowAreaView>().UpdateUI();
-        percussionRow.GetComponent<BattleRowAreaView>().UpdateUI();
-        playStat.GetComponent<PlayStatAreaView>().UpdateUI();
-        leaderArea.GetComponent<RowAreaView>().UpdateUI();
+        singlePlayerAreaModel = model;
+        if (handCardRow != null) {
+            handCardRow.GetComponent<RowAreaView>().UpdateModel(singlePlayerAreaModel.handCardAreaModel.handCardListModel);
+        }
+        offFieldCardsArea.GetComponent<OffFieldCardsAreaView>().UpdateModel(singlePlayerAreaModel.handCardAreaModel);
+        woodRow.GetComponent<BattleRowAreaView>().UpdateModel(singlePlayerAreaModel.battleRowAreaList[(int)CardBadgeType.Wood]);
+        brassRow.GetComponent<BattleRowAreaView>().UpdateModel(singlePlayerAreaModel.battleRowAreaList[(int)CardBadgeType.Brass]);
+        percussionRow.GetComponent<BattleRowAreaView>().UpdateModel(singlePlayerAreaModel.battleRowAreaList[(int)CardBadgeType.Percussion]);
+        leaderArea.GetComponent<RowAreaView>().UpdateModel(singlePlayerAreaModel.handCardAreaModel.leaderCardListModel);
     }
 }

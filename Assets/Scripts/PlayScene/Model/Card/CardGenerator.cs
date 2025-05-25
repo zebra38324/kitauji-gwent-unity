@@ -2,58 +2,43 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System.Collections.Immutable;
+
 /**
  * 卡牌生成管理器
  */
-public class CardGenerator
+public record CardGenerator
 {
     private static string TAG = "CardGenerator";
 
+    private static int hostSalt = 1;
+    private static int playerSalt = 2;
+
     // 实际id为 cardId * 10 + salt，salt范围为[0, 9]
-    public int salt { get; set; }
+    public int salt { get; init; }
 
-    public static int hostSalt = 1;
-    public static int playerSalt = 2;
+    private int cardId { get; init; } = 1;
 
-    private int cardId = 1;
+    private static ImmutableList<CardInfo> allCardInfoList;
 
-    private static List<CardInfo> allCardInfoList_;
-
-    private static List<CardInfo> allCardInfoList {
-        get {
-            if (allCardInfoList_ != null) {
-                return allCardInfoList_;
-            }
-            allCardInfoList_ = new List<CardInfo>();
-            string[] assetNameList = { @"Statistic\KumikoFirstYear", @"Statistic\KumikoSecondYear", @"Statistic\NeutralCard" };
-            foreach (string assetName in assetNameList) {
-                TextAsset cardInfoAsset = KResources.Load<TextAsset>(assetName);
-                if (cardInfoAsset == null) {
-                    KLog.E(TAG, "cardInfoAsset: " + assetName + " is null");
-                    return allCardInfoList_;
-                }
-                allCardInfoList_.AddRange(StatisticJsonParse.GetCardInfo(cardInfoAsset.text));
-            }
-            return allCardInfoList_;
-        }
-        set {
-
-        }
-    }
-
-    public CardGenerator(bool isHost = true)
+    public CardGenerator(bool isHost)
     {
         salt = isHost ? hostSalt : playerSalt;
+        LoadAllCardInfoList();
     }
 
     // 根据infoId生成卡牌，将赋予id
-    public CardModel GetCard(int infoId)
+    public CardGenerator GetCardAndUpdateId(int infoId, out CardModel card)
     {
         lock (this) {
+            var newRecord = this;
             CardInfo cardInfo = FindCardInfo(infoId);
             cardInfo.id = cardId * 10 + salt;
-            cardId++;
-            return new CardModel(cardInfo);
+            newRecord = newRecord with {
+                cardId = cardId + 1
+            };
+            card = new CardModel(cardInfo);
+            return newRecord;
         }
     }
 
@@ -78,7 +63,27 @@ public class CardGenerator
         return list;
     }
 
-    private CardInfo FindCardInfo(int infoId)
+    private void LoadAllCardInfoList()
+    {
+        if (allCardInfoList != null) {
+            return;
+        }
+        var list = new List<CardInfo>();
+        string[] assetNameList = { @"Statistic\KumikoFirstYear",
+            @"Statistic\KumikoSecondYear",
+            @"Statistic\NeutralCard" };
+        foreach (string assetName in assetNameList) {
+            TextAsset cardInfoAsset = KResources.Load<TextAsset>(assetName);
+            if (cardInfoAsset == null) {
+                KLog.E(TAG, "cardInfoAsset: " + assetName + " is null");
+                return;
+            }
+            list.AddRange(StatisticJsonParse.GetCardInfo(cardInfoAsset.text));
+        }
+        allCardInfoList = list.ToImmutableList();
+    }
+
+    private static CardInfo FindCardInfo(int infoId)
     {
         foreach (CardInfo cardInfo in allCardInfoList) {
             if (cardInfo.infoId == infoId) {

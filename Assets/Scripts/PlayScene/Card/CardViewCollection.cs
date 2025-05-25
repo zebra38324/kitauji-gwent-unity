@@ -45,7 +45,7 @@ public class CardViewCollection
             cardPrefab = KResources.Load<GameObject>("Prefabs/HalfCard");
         }
         GameObject card = GameObject.Instantiate(cardPrefab);
-        card.GetComponent<CardDisplay>().SetCardModel(model);
+        card.GetComponent<CardDisplay>().SetCardModel(model, true);
         card.GetComponent<CardDisplay>().SendSceneMsgCallback += PlaySceneManager.Instance.HandleMessage;
         return card;
     }

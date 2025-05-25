@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class PlayStatAreaView : MonoBehaviour
 {
@@ -16,11 +17,9 @@ public class PlayStatAreaView : MonoBehaviour
 
     public bool isAbort = false;
 
-    private PlaySceneModel playSceneModel { get; set; }
+    private WholeAreaModel wholeAreaModel;
 
     private bool isSelf = true;
-
-    private SinglePlayerAreaModel singlePlayerAreaModel { get; set; }
 
     // Start is called before the first frame update
     void Start()
@@ -34,21 +33,23 @@ public class PlayStatAreaView : MonoBehaviour
         UpdateCountDown();
     }
 
-    public void Init(PlaySceneModel model, bool isSelfModel)
+    public void UpdateModel(WholeAreaModel model, bool isSelf_)
     {
-        playSceneModel = model;
-        isSelf = isSelfModel;
-        singlePlayerAreaModel = isSelf ? playSceneModel.selfSinglePlayerAreaModel : playSceneModel.enemySinglePlayerAreaModel;
-        playerName.GetComponent<TextMeshProUGUI>().text = string.Format("{0}", isSelf ? playSceneModel.tracker.selfName : playSceneModel.tracker.enemyName);
-        StartCoroutine(InitPlayerName());
-    }
-
-    // 每次操作完，更新ui
-    public void UpdateUI()
-    {
-        handCardNum.GetComponent<TextMeshProUGUI>().text = singlePlayerAreaModel.handRowAreaModel.cardList.Count.ToString();
+        isSelf = isSelf_;
+        if (wholeAreaModel == model) {
+            return;
+        }
+        bool isFirstSet = wholeAreaModel == null;
+        wholeAreaModel = model;
+        if (isFirstSet) {
+            playerName.GetComponent<TextMeshProUGUI>().text = string.Format("{0}", isSelf ? wholeAreaModel.playTracker.selfPlayerInfo.name : wholeAreaModel.playTracker.enemyPlayerInfo.name);
+            StartCoroutine(InitPlayerName());
+            return;
+        }
+        var singlePlayerAreaModel = isSelf ? wholeAreaModel.selfSinglePlayerAreaModel : wholeAreaModel.enemySinglePlayerAreaModel;
+        handCardNum.GetComponent<TextMeshProUGUI>().text = singlePlayerAreaModel.handCardAreaModel.handCardListModel.cardList.Count.ToString();
         scoreNum.GetComponent<TextMeshProUGUI>().text = singlePlayerAreaModel.GetCurrentPower().ToString();
-        if (playSceneModel.IsTurn(isSelf)) {
+        if (wholeAreaModel.EnableChooseCard(isSelf)) {
             frame.SetActive(true);
             countDown.SetActive(true);
         } else {
@@ -61,13 +62,12 @@ public class PlayStatAreaView : MonoBehaviour
     private IEnumerator InitPlayerName()
     {
         while (!isAbort) {
-            if (playSceneModel.tracker.curState == PlayStateTracker.State.WAIT_BACKUP_INFO) {
+            if (wholeAreaModel.gameState.curState == GameState.State.WAIT_BACKUP_INFO) {
                 yield return null;
                 continue;
             }
-            playerName.GetComponent<TextMeshProUGUI>().text = string.Format("{0}（{1}）",
-                isSelf ? playSceneModel.tracker.selfName : playSceneModel.tracker.enemyName,
-                isSelf ? CardText.cardGroupText[(int)playSceneModel.tracker.selfGroup] : CardText.cardGroupText[(int)playSceneModel.tracker.enemyGroup]);
+            var playerInfo = isSelf ? wholeAreaModel.playTracker.selfPlayerInfo : wholeAreaModel.playTracker.enemyPlayerInfo;
+            playerName.GetComponent<TextMeshProUGUI>().text = string.Format("{0}（{1}）", playerInfo.name, CardText.cardGroupText[(int)playerInfo.cardGroup]);
             yield break;
         }
     }
@@ -77,16 +77,16 @@ public class PlayStatAreaView : MonoBehaviour
         if (isAbort) {
             return;
         }
-        if (playSceneModel == null || playSceneModel.tracker == null || !playSceneModel.IsTurn(isSelf)) {
+        if (wholeAreaModel == null || wholeAreaModel.gameState.curState != GameState.State.WAIT_SELF_ACTION) {
             return;
         }
-        long remainSecond = (PlayStateTracker.TURN_TIME - (KTime.CurrentMill() - playSceneModel.tracker.stateChangeTs)) / 1000;
+        long remainSecond = (GameState.TURN_TIME - (KTime.CurrentMill() - wholeAreaModel.gameState.stateChangeTs)) / 1000;
         countDown.GetComponent<TextMeshProUGUI>().text = remainSecond.ToString();
     }
 
     private void UpdateSetScore()
     {
-        int setScore = isSelf ? playSceneModel.tracker.selfSetScore : playSceneModel.tracker.enemySetScore;
+        int setScore = isSelf ? wholeAreaModel.playTracker.selfPlayerInfo.setScore : wholeAreaModel.playTracker.enemyPlayerInfo.setScore;
         if (setScore >= 1) {
             live1.GetComponent<Image>().sprite = KResources.Load<Sprite>(@"Image/texture/background/player_live_red");
         }

@@ -28,7 +28,7 @@ public class SampleScene : MonoBehaviour
     private IEnumerator GenAllCards()
     {
         yield return new WaitForSeconds(1);
-        CardGenerator cardGenerator = new CardGenerator();
+        CardGenerator cardGenerator = new CardGenerator(true);
         List<CardModel> allCardModelList = cardGenerator.GetGroupCardList(CardGroup.KumikoFirstYear);
         allCardModelList.AddRange(cardGenerator.GetGroupCardList(CardGroup.Neutral));
         allCardModelList.AddRange(cardGenerator.GetGroupCardList(CardGroup.KumikoSecondYear));

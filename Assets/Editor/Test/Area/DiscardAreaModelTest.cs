@@ -5,95 +5,98 @@ using System.Linq;
 
 public class DiscardAreaModelTest
 {
-    public List<int> GetExpectedRowCardNum(int cardNum)
+    [Test]
+    public void Constructor_InitialState_GetShowListEmpty()
     {
-        List<int> rowCardNumList = new List<int> { 0, 0, 0 };
-        int remain = cardNum;
-        for (int i = 0; i < DiscardAreaModel.rowNum; i++) {
-            if (remain <= 0) {
-                break;
-            }
-            int num = Math.Min(remain, 10);
-            rowCardNumList[i] = num;
-            remain -= num;
+        var model = new DiscardAreaModel();
+        var listAll = model.GetShowList(onlyNormal: false);
+        var listNormal = model.GetShowList(onlyNormal: true);
+        Assert.AreEqual(3, listAll.Count);
+        Assert.AreEqual(3, listNormal.Count);
+        foreach (var row in listAll) {
+            Assert.IsEmpty(row);
         }
-        for (int i = 0; i < DiscardAreaModel.rowNum; i++) {
-            int extra = (remain % 3) - i > 0 ? 1 : 0;
-            rowCardNumList[i] += remain / 3 + extra;
-        }
-        return rowCardNumList;
-    }
-
-    // 测试所有废弃角色牌的情况
-    [TestCase(25)]
-    [TestCase(37)]
-    public void AllCard(int cardNum)
-    {
-        DiscardAreaModel discardAreaModel = new DiscardAreaModel();
-        List<int> infoIdList = Enumerable.Range(2001, cardNum).ToList();
-        List<CardModel> cardList = TestGenCards.GetCardList(infoIdList);
-
-        foreach (CardModel card in cardList) {
-            discardAreaModel.AddCard(card);
-        }
-        discardAreaModel.SetRow(false);
-        List<DiscardRowAreaModel> rowAreaList = discardAreaModel.rowAreaList;
-        List<int> rowCardNumList = GetExpectedRowCardNum(cardNum);
-        for (int i = 0; i < DiscardAreaModel.rowNum; i++) {
-            Assert.AreEqual(rowCardNumList[i], rowAreaList[i].cardList.Count);
-            foreach (CardModel card in rowAreaList[i].cardList) {
-                Assert.AreEqual(CardLocation.DiscardArea, card.cardLocation);
-                Assert.AreEqual(CardSelectType.None, card.selectType);
-            }
-        }
-
-        CardModel removeCard = rowAreaList[0].cardList[0];
-        discardAreaModel.RemoveCard(removeCard);
-        Assert.AreEqual(CardLocation.None, removeCard.cardLocation);
-        Assert.AreEqual(CardSelectType.None, removeCard.selectType);
-
-        discardAreaModel.SetRow(false);
-        rowAreaList = discardAreaModel.rowAreaList;
-        rowCardNumList = GetExpectedRowCardNum(cardNum - 1); // 移除了一张牌
-        for (int i = 0; i < DiscardAreaModel.rowNum; i++) {
-            Assert.AreEqual(rowCardNumList[i], rowAreaList[i].cardList.Count);
-            foreach (CardModel card in rowAreaList[i].cardList) {
-                Assert.AreEqual(CardLocation.DiscardArea, card.cardLocation);
-                Assert.AreEqual(CardSelectType.None, card.selectType);
-            }
-        }
-
-        discardAreaModel.ClearRow();
-        rowAreaList = discardAreaModel.rowAreaList;
-        for (int i = 0; i < DiscardAreaModel.rowNum; i++) {
-            Assert.AreEqual(0, rowAreaList[i].cardList.Count); // 没有SetRow，list为空
+        foreach (var row in listNormal) {
+            Assert.IsEmpty(row);
         }
     }
 
-    // 测试非英雄角色牌的情况
-    [TestCase(25)]
-    [TestCase(38)]
-    public void NormalCard(int cardNum)
+    [Test]
+    public void AddCard_SetsLocationAndAddsToList()
     {
-        DiscardAreaModel discardAreaModel = new DiscardAreaModel();
-        List<int> infoIdList = Enumerable.Range(2001, cardNum).ToList();
-        List<CardModel> cardList = TestGenCards.GetCardList(infoIdList);
-        List<CardModel> normalCardList = new List<CardModel>(cardList);
-        normalCardList.RemoveAll(o => { return o.cardInfo.cardType != CardType.Normal; });
-        int normalCardNum = normalCardList.Count;
+        var card = TestUtil.MakeCard();
+        var model = new DiscardAreaModel()
+            .AddCard(card);
+        // New instance returned
+        Assert.AreEqual(CardLocation.DiscardArea, model.cardListModel.cardList.First().cardLocation);
+        // GetShowList should include this card in first row
+        var rows = model.GetShowList(false);
+        Assert.AreEqual(1, rows[0].Count);
+        Assert.AreEqual(model.cardListModel.cardList.First(), rows[0][0]);
+    }
 
-        foreach (CardModel card in cardList) {
-            discardAreaModel.AddCard(card);
+    [Test]
+    public void RemoveCard_RemovesAndOutputsRemovedCard()
+    {
+        var card = TestUtil.MakeCard();
+        var added = new DiscardAreaModel().AddCard(card);
+        var removedModel = added.RemoveCard(added.cardListModel.cardList[0], out var removed);
+        Assert.AreEqual(card, removed);
+        Assert.IsEmpty(removedModel.cardListModel.cardList);
+    }
+
+    [Test]
+    public void GetShowList_DistributeMoreThanRowMax()
+    {
+        var cards = Enumerable.Range(1, 14)
+            .Select(i => TestUtil.MakeCard(originPower: i))
+            .ToList();
+        var model = new DiscardAreaModel();
+        foreach (var c in cards) {
+            model = model.AddCard(c);
         }
-        discardAreaModel.SetRow(true);
-        List<DiscardRowAreaModel> rowAreaList = discardAreaModel.rowAreaList;
-        List<int> rowCardNumList = GetExpectedRowCardNum(normalCardNum);
-        for (int i = 0; i < DiscardAreaModel.rowNum; i++) {
-            Assert.AreEqual(rowCardNumList[i], rowAreaList[i].cardList.Count);
-            foreach (CardModel card in rowAreaList[i].cardList) {
-                Assert.AreEqual(CardLocation.DiscardArea, card.cardLocation);
-                Assert.AreEqual(CardSelectType.None, card.selectType);
-            }
+        var rows = model.GetShowList(false);
+        Assert.AreEqual(3, rows.Count);
+        Assert.AreEqual(10, rows[0].Count);
+        Assert.AreEqual(4, rows[1].Count);
+        Assert.AreEqual(0, rows[2].Count);
+        // Verify all cards present
+        var all = rows.SelectMany(r => r).ToList();
+        Assert.AreEqual(14, all.Count);
+    }
+
+    [Test]
+    public void GetShowList_DistributeMoreThanAllRowMax()
+    {
+        var cards = Enumerable.Range(1, 35)
+            .Select(i => TestUtil.MakeCard(originPower: i))
+            .ToList();
+        var model = new DiscardAreaModel();
+        foreach (var c in cards) {
+            model = model.AddCard(c);
         }
+        var rows = model.GetShowList(false);
+        Assert.AreEqual(3, rows.Count);
+        Assert.AreEqual(12, rows[0].Count);
+        Assert.AreEqual(12, rows[1].Count);
+        Assert.AreEqual(11, rows[2].Count);
+        // Verify all cards present
+        var all = rows.SelectMany(r => r).ToList();
+        Assert.AreEqual(35, all.Count);
+    }
+
+    [Test]
+    public void GetShowList_OnlyNormalFiltersHeroes()
+    {
+        var normal = Enumerable.Range(1, 5).Select(i => TestUtil.MakeCard(originPower: i, cardType: CardType.Normal));
+        var heroes = Enumerable.Range(6, 4).Select(i => TestUtil.MakeCard(originPower: i, cardType: CardType.Hero));
+        var model = new DiscardAreaModel();
+        foreach (var c in normal.Concat(heroes)) {
+            model = model.AddCard(c);
+        }
+        var rowsNormal = model.GetShowList(true);
+        var all = rowsNormal.SelectMany(r => r).ToList();
+        // only normals
+        Assert.AreEqual(5, all.Count);
     }
 }

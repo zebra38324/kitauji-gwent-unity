@@ -9,7 +9,7 @@ public enum CardGroup
 
 public enum CardBadgeType
 {
-    None = 0,
+    None = -1,
     Wood,
     Brass,
     Percussion,
@@ -38,7 +38,7 @@ public enum CardAbility // TODO: 完善
     Lip, // 迷唇: 使对方所有男性部员吹奏能力降低2。
     Guard, // 卫队: 守卫的目标部员在（任意一方）场上时，使指定对方一名部员吹奏能力降低4。
     Monaka, // Monaka: 给己方一名场上部员赠送护身符，使其吹奏能力+2。
-    Kasa, // 伞: 消除本方铠冢霙的不良影响，并使其吹奏能力+5。
+    Kasa, // 伞: 消除本方铠冢霙除天气外的不良影响，并使其吹奏能力+5。
 }
 
 public enum CardType
@@ -112,6 +112,8 @@ public enum CardLocation
     BattleArea, // 对战区
     WeatherCardArea, // 天气牌区域
     LeaderCardArea, // 指挥牌区
+    SelfLeaderCardArea, // 本方指挥牌区
+    EnemyLeaderCardArea, // 对方指挥牌区
 }
 
 // buff类型，明确记录增减益效果来源
@@ -127,6 +129,8 @@ public enum CardBuffType
     Attack2, // -2
     Attack4, // -4
     Weather, // 基础数值降为1
+    // 枚举总数
+    Count,
 }
 
 // 消息类型

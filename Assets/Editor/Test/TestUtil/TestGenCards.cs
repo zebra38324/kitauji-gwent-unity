@@ -6,23 +6,23 @@ using System;
 
 public class TestGenCards
 {
-    private static CardGenerator cardGenerator = new CardGenerator();
+    private static CardGeneratorOld cardGenerator = new CardGeneratorOld();
 
-    public static List<CardModel> GetCardList(List<int> infoIdList)
+    public static List<CardModelOld> GetCardList(List<int> infoIdList)
     {
-        List<CardModel> result = new List<CardModel>();
+        List<CardModelOld> result = new List<CardModelOld>();
         foreach (int infoId in infoIdList) {
             result.Add(GetCard(infoId));
         }
         return result;
     }
 
-    public static CardModel GetCard(int infoId)
+    public static CardModelOld GetCard(int infoId)
     {
         return cardGenerator.GetCard(infoId);
     }
 
-    public static CardModel GetCard(int infoId, int id)
+    public static CardModelOld GetCard(int infoId, int id)
     {
         return cardGenerator.GetCard(infoId, id);
     }

@@ -3,7 +3,7 @@ using System.Linq;
 
 /**
  * 记录游戏中每局的先后手顺序、每局结果、是否pass等
- * 以及PlaySceneModel的状态
+ * 以及PlaySceneModelOld的状态
  */
 public class PlayStateTracker
 {

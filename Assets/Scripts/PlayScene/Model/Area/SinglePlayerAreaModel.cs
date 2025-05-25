@@ -1,320 +1,368 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Collections.Immutable;
+using LanguageExt;
+using static LanguageExt.Prelude;
 
 // 单方对战区逻辑
-public class SinglePlayerAreaModel
+public record SinglePlayerAreaModel
 {
     private static string TAG = "SinglePlayerAreaModel";
 
-    public static readonly int initHandCardNum = 10; // 初始手牌数量
+    public DiscardAreaModel discardAreaModel { get; init; } = new DiscardAreaModel();
 
-    public List<CardModel> backupCardList { get; private set; }
+    public static readonly Lens<SinglePlayerAreaModel, DiscardAreaModel> Lens_DiscardAreaModel = Lens<SinglePlayerAreaModel, DiscardAreaModel>.New(
+        s => s.discardAreaModel,
+        discardAreaModel => s => s with { discardAreaModel = discardAreaModel }
+    );
 
-    public HandRowAreaModel handRowAreaModel {  get; private set; }
+    public static readonly Lens<SinglePlayerAreaModel, ImmutableList<CardModel>> Lens_DiscardAreaModel_CardListModel_Cardlist = lens(Lens_DiscardAreaModel, DiscardAreaModel.Lens_CardListModel_CardList);
 
-    public InitHandRowAreaModel initHandRowAreaModel { get; private set; }
+    public ImmutableList<BattleRowAreaModel> battleRowAreaList { get; init; }
 
-    public DiscardAreaModel discardAreaModel { get; private set; }
+    public HandCardAreaModel handCardAreaModel { get; init; }
 
-    public BattleRowAreaModel woodRowAreaModel { get; private set; }
+    public static readonly Lens<SinglePlayerAreaModel, HandCardAreaModel> Lens_HandCardAreaModel = Lens<SinglePlayerAreaModel, HandCardAreaModel>.New(
+        s => s.handCardAreaModel,
+        handCardAreaModel => s => s with { handCardAreaModel = handCardAreaModel }
+    );
 
-    public BattleRowAreaModel brassRowAreaModel { get; private set; }
+    public static readonly Lens<SinglePlayerAreaModel, HandCardListModel> Lens_HandCardAreaModel_HandCardListModel = lens(Lens_HandCardAreaModel, HandCardAreaModel.Lens_HandCardListModel);
 
-    public BattleRowAreaModel percussionRowAreaModel { get; private set; }
+    public static readonly Lens<SinglePlayerAreaModel, SingleCardListModel> Lens_HandCardAreaModel_LeaderCardListModel = lens(Lens_HandCardAreaModel, HandCardAreaModel.Lens_LeaderCardListModel);
 
-    // 指挥牌
-    public SingleCardRowAreaModel leaderCardAreaModel { get; private set; }
-
-    private CardGenerator cardGenerator;
-
-    public SinglePlayerAreaModel(bool isHost = true)
+    public SinglePlayerAreaModel(CardGenerator gen, bool isSelf = true)
     {
-        backupCardList = new List<CardModel>();
-        handRowAreaModel = new HandRowAreaModel();
-        initHandRowAreaModel = new InitHandRowAreaModel();
-        discardAreaModel = new DiscardAreaModel();
-        woodRowAreaModel = new BattleRowAreaModel(CardBadgeType.Wood);
-        brassRowAreaModel = new BattleRowAreaModel(CardBadgeType.Brass);
-        percussionRowAreaModel = new BattleRowAreaModel(CardBadgeType.Percussion);
-        leaderCardAreaModel = new SingleCardRowAreaModel();
-        cardGenerator = new CardGenerator(isHost); // TODO: 应有个统一管理处，设置是server还是client
-    }
-
-    // 初始时调用，设置所有备选卡牌信息
-    // enemy设置时idList由对端决定，因此不为null
-    public void SetBackupCardInfoIdList(List<int> infoIdList, List<int> idList = null)
-    {
-        for (int i = 0; i < infoIdList.Count; i++) {
-            // 所有备选卡牌生成CardModel并存储
-            CardModel card = null;
-            if (idList != null) {
-                card = cardGenerator.GetCard(infoIdList[i], idList[i]);
-            } else {
-                card = cardGenerator.GetCard(infoIdList[i]);
-            }
-            if (card.cardInfo.cardType == CardType.Leader) {
-                card.cardLocation = CardLocation.LeaderCardArea;
-                leaderCardAreaModel.AddCard(card);
-            } else {
-                backupCardList.Add(card);
-            }
+        battleRowAreaList = ImmutableList<BattleRowAreaModel>.Empty;
+        for (CardBadgeType cardBadgeType = CardBadgeType.Wood; cardBadgeType <= CardBadgeType.Percussion; cardBadgeType++) {
+            battleRowAreaList = battleRowAreaList.Add(new BattleRowAreaModel(cardBadgeType));
         }
+        handCardAreaModel = new HandCardAreaModel(gen, isSelf);
     }
 
-    // self抽取初始手牌时调用
-    public void DrawInitHandCard()
+    public SinglePlayerAreaModel AddBattleAreaCard(CardModel card)
     {
-        List<CardModel> newCardList = DrawRandomHandCardList(initHandCardNum);
-        initHandRowAreaModel.AddCardList(newCardList);
-    }
-
-    // reDrawCardList的牌放回备选卡牌区，重新抽取相同数量的手牌
-    public void ReDrawInitHandCard()
-    {
-        foreach (CardModel reDrawCard in initHandRowAreaModel.selectedCardList) {
-            KLog.I(TAG, "ReDrawInitHandCard: " + reDrawCard.cardInfo.chineseName);
-            initHandRowAreaModel.RemoveCard(reDrawCard);
-            backupCardList.Add(reDrawCard);
-        }
-        List<CardModel> handCardList = new List<CardModel>();
-        foreach (CardModel card in initHandRowAreaModel.cardList) {
-            handCardList.Add(card);
-        }
-        foreach (CardModel handCard in handCardList) {
-            initHandRowAreaModel.RemoveCard(handCard);
-            handRowAreaModel.AddCard(handCard);
-        }
-        DrawHandCards(initHandRowAreaModel.selectedCardList.Count);
-    }
-
-    public void DrawHandCards(int num)
-    {
-        List<CardModel> newCardList = DrawRandomHandCardList(num);
-        handRowAreaModel.AddCardList(newCardList);
-    }
-
-    // enemy设置时，随机抽取的操作在对端进行，因此直接指定idList
-    public void DrawHandCards(List<int> idList)
-    {
-        List<CardModel> newCardList = new List<CardModel>();
-        foreach (int id in idList) {
-            CardModel card = backupCardList.Find(o => { return o.cardInfo.id == id; });
-            if (card == null) {
-                KLog.E(TAG, "DrawHandCards: invalid id: " + id);
-                return;
-            }
-            newCardList.Add(card);
-            backupCardList.Remove(card);
-        }
-        handRowAreaModel.AddCardList(newCardList);
-    }
-
-    public void AddBattleAreaCard(CardModel card)
-    {
+        var newRecord = this;
         // 先打出卡牌，再结算技能
-        switch (card.cardInfo.badgeType) {
-            case CardBadgeType.Wood: {
-                woodRowAreaModel.AddCard(card);
-                break;
-            }
-            case CardBadgeType.Brass: {
-                brassRowAreaModel.AddCard(card);
-                break;
-            }
-            case CardBadgeType.Percussion: {
-                percussionRowAreaModel.AddCard(card);
-                break;
-            }
-        }
+        var rowArea = newRecord.battleRowAreaList[(int)card.cardInfo.badgeType];
+        var newRowArea = rowArea.AddCard(card);
+        newRecord = newRecord with {
+            battleRowAreaList = newRecord.battleRowAreaList.SetItem((int)card.cardInfo.badgeType, newRowArea)
+        };
 
         // 实施卡牌技能
+        card = newRowArea.FindCard(card.cardInfo.id);
         switch (card.cardInfo.ability) {
             case CardAbility.Tunning: {
-                ApplyTunning();
+                newRecord = newRecord.ApplyTunning();
                 break;
             }
             case CardAbility.Bond: {
-                UpdateBond(card.cardInfo.bondType);
+                newRecord = newRecord.UpdateBond(card.cardInfo.bondType);
                 break;
             }
             case CardAbility.Muster: {
-                ApplyMuster(card.cardInfo.musterType);
+                newRecord = newRecord.ApplyMuster(card.cardInfo.musterType);
                 break;
             }
             case CardAbility.HornBrass: {
-                brassRowAreaModel.AddCard(card);
-                break;
-            }
-            default: {
+                var oldBrassRow = newRecord.battleRowAreaList[(int)CardBadgeType.Brass];
+                var newBrassRow = oldBrassRow.AddCard(card);
+                newRecord = newRecord with {
+                    battleRowAreaList = newRecord.battleRowAreaList.Replace(oldBrassRow, newBrassRow)
+                };
                 break;
             }
         }
+        return newRecord;
+    }
+
+    // 伞击技能，木管行总点数大于10，将点数最高的卡牌设置Scorch
+    public SinglePlayerAreaModel ApplyScorchWood()
+    {
+        var newRecord = this;
+        var newWoodRow = newRecord.battleRowAreaList[(int)CardBadgeType.Wood].ApplyScorchWood();
+        newRecord = newRecord with {
+            battleRowAreaList = newRecord.battleRowAreaList.SetItem((int)CardBadgeType.Wood, newWoodRow)
+        };
+        return newRecord;
     }
 
     public int GetCurrentPower()
     {
-        return woodRowAreaModel.GetCurrentPower() +
-            brassRowAreaModel.GetCurrentPower() + 
-            percussionRowAreaModel.GetCurrentPower();
+        int sum = 0;
+        foreach (BattleRowAreaModel row in battleRowAreaList) {
+            sum += row.GetCurrentPower();
+        }
+        return sum;
     }
 
-    // 统计符合条件的对战区卡牌数量
-    public int CountBattleAreaCard(Func<CardModel, bool> judge)
+    // 获取非英雄牌中的最大点数
+    public int GetMaxNormalPower()
     {
-        int count = 0;
-        foreach (CardModel card in woodRowAreaModel.cardList) {
-            if (judge(card)) {
-                count += 1;
+        int max = 0;
+        foreach (BattleRowAreaModel row in battleRowAreaList) {
+            foreach (CardModel card in row.cardListModel.cardList) {
+                if (card.cardInfo.cardType == CardType.Normal && card.currentPower > max) {
+                    max = card.currentPower;
+                }
             }
         }
-        foreach (CardModel card in brassRowAreaModel.cardList) {
-            if (judge(card)) {
-                count += 1;
-            }
-        }
-        foreach (CardModel card in percussionRowAreaModel.cardList) {
-            if (judge(card)) {
-                count += 1;
-            }
-        }
-        return count;
+        return max;
     }
 
-    // 对符合条件的对战区卡牌进行操作
-    public void ApplyBattleAreaAction(Func<CardModel, bool> judge, Action<CardModel> action)
+    // 退部技能，移除点数为targetPower的卡牌设置Scorch
+    public SinglePlayerAreaModel ApplyScorch(int targetPower)
     {
-        foreach (CardModel card in woodRowAreaModel.cardList) {
-            if (judge(card)) {
-                action(card);
-            }
-        }
-        foreach (CardModel card in brassRowAreaModel.cardList) {
-            if (judge(card)) {
-                action(card);
-            }
-        }
-        foreach (CardModel card in percussionRowAreaModel.cardList) {
-            if (judge(card)) {
-                action(card);
-            }
-        }
+        return BattleApplyAction(card => {
+            return card.cardInfo.cardType == CardType.Normal && card.currentPower == targetPower;
+        }, card => {
+            return card.SetScorch();
+        }, out var actionCardList);
     }
 
-    // 从手牌区、弃牌区、对战区尝试找到id对应的卡牌
-    public CardModel FindCard(int id)
+    // 某些技能会导致卡牌退部，将他们统一移至弃牌区，并返回移除的卡牌列表。注意返回的card并不是实际存在discard中的card
+    public SinglePlayerAreaModel RemoveDeadCard(out List<CardModel> removedCardList)
     {
-        CardModel card = handRowAreaModel.FindCard(id);
-        if (card != null) {
-            return card;
+        var newRecord = this;
+        var newDiscardAreaModel = newRecord.discardAreaModel;
+        removedCardList = new List<CardModel>();
+        foreach (BattleRowAreaModel row in newRecord.battleRowAreaList) {
+            var newRow = row;
+            foreach (CardModel card in row.cardListModel.cardList) {
+                if (card.IsDead()) {
+                    KLog.I(TAG, "RemoveDeadCard: remove card: " + card.cardInfo.chineseName);
+                    newRow = newRow.RemoveCard(card, out var removedCard);
+                    removedCardList.Add(removedCard);
+                    newDiscardAreaModel = newDiscardAreaModel.AddCard(removedCard);
+                }
+            }
+            newRecord = newRecord with {
+                battleRowAreaList = newRecord.battleRowAreaList.Replace(row, newRow)
+            };
         }
-        card = woodRowAreaModel.FindCard(id);
-        if (card != null) {
-            return card;
-        }
-        card = brassRowAreaModel.FindCard(id);
-        if (card != null) {
-            return card;
-        }
-        card = percussionRowAreaModel.FindCard(id);
-        if (card != null) {
-            return card;
-        }
-        card = discardAreaModel.cardList.Find(o => { return o.cardInfo.id == id; });
-        if (card != null) {
-            return card;
-        }
-        card = leaderCardAreaModel.cardList.Find(o => { return o.cardInfo.id == id; });
-        return card;
+        newRecord = newRecord with {
+            discardAreaModel = newDiscardAreaModel
+        };
+        return newRecord;
     }
 
-
-    // 小局结束，将对战区的牌移至弃牌区
-    public void RemoveAllBattleCard()
+    // Lip技能，男性卡牌点数降低2，并返回攻击的卡牌列表。注意返回的card并不是实际存在model中的card
+    public SinglePlayerAreaModel ApplyLip(out List<CardModel> attackCardList)
     {
-        List<CardModel> allBattleCardList = new List<CardModel>();
-        allBattleCardList.AddRange(woodRowAreaModel.cardList);
-        allBattleCardList.AddRange(brassRowAreaModel.cardList);
-        allBattleCardList.AddRange(percussionRowAreaModel.cardList);
-        woodRowAreaModel.RemoveAllCard();
-        brassRowAreaModel.RemoveAllCard();
-        percussionRowAreaModel.RemoveAllCard();
-        foreach (CardModel card in allBattleCardList) {
-            if (card.cardInfo.cardType == CardType.Util) {
-                continue; // 工具牌不进入弃牌区
-            }
-            discardAreaModel.AddCard(card);
-        }
+        return BattleApplyAction(card => {
+            return card.cardInfo.cardType == CardType.Normal && card.cardInfo.isMale;
+        }, card => {
+            return card.AddBuff(CardBuffType.Attack2, 1);
+        }, out attackCardList);
     }
 
-    // 从备选卡牌中随机抽取一些牌
-    private List<CardModel> DrawRandomHandCardList(int num)
+    // 准备可攻击目标，并返回可攻击目标的卡牌列表。注意返回的card并不是实际存在model中的card
+    public SinglePlayerAreaModel PrepareAttackTarget(out List<CardModel> targetCardList)
     {
-        List<CardModel> newCardList = new List<CardModel>();
-        for (int i = 0; i < num; i++) {
-            if (backupCardList.Count <= 0) {
-                KLog.W(TAG, "GetCards: backupCardList not enough, missing " + (num - newCardList.Count).ToString());
-                break;
+        return BattleApplyAction(card => {
+            return card.cardInfo.cardType == CardType.Normal;
+        }, card => {
+            return card.ChangeCardSelectType(CardSelectType.WithstandAttack);
+        }, out targetCardList);
+    }
+
+    // 准备可复活目标，并返回可复活目标的卡牌列表。注意返回的card并不是实际存在model中的card
+    public SinglePlayerAreaModel PrepareMedicTarget(out List<CardModel> targetCardList)
+    {
+        return DiscardApplyAction(card => {
+            return card.cardInfo.cardType == CardType.Normal;
+        }, card => {
+            return card.ChangeCardSelectType(CardSelectType.PlayCard);
+        }, out targetCardList);
+    }
+
+    // 准备可撤回目标，并返回可撤回目标的卡牌列表。注意返回的card并不是实际存在model中的card
+    public SinglePlayerAreaModel PrepareDecoyTarget(out List<CardModel> targetCardList)
+    {
+        return BattleApplyAction(card => {
+            return card.cardInfo.cardType == CardType.Normal;
+        }, card => {
+            return card.ChangeCardSelectType(CardSelectType.DecoyWithdraw);
+        }, out targetCardList);
+    }
+
+    // 使用decoyCard替换targetCard，并将targetCard放回手牌区
+    public SinglePlayerAreaModel DecoyWithdrawCard(CardModel targetCard, CardModel decoyCard)
+    {
+        var newRecord = this;
+        int rowIndex = (int)targetCard.cardInfo.badgeType;
+        var newRow = newRecord.battleRowAreaList[rowIndex].ReplaceCard(targetCard, decoyCard);
+        newRecord = newRecord with {
+            battleRowAreaList = newRecord.battleRowAreaList.SetItem(rowIndex, newRow),
+        };
+        targetCard = targetCard.RemoveAllBuff();
+        newRecord = Lens_HandCardAreaModel_HandCardListModel.Set(newRecord.handCardAreaModel.handCardListModel.AddCard(targetCard) as HandCardListModel, newRecord);
+        return newRecord;
+    }
+
+    public bool HasCardInBattleArea(string chineseName)
+    {
+        foreach (BattleRowAreaModel row in battleRowAreaList) {
+            foreach (CardModel card in row.cardListModel.cardList) {
+                if (card.cardInfo.chineseName == chineseName) {
+                    return true;
+                }
             }
-            System.Random ran = new System.Random();
-            CardModel newCard = backupCardList[ran.Next(0, backupCardList.Count)];
-            newCardList.Add(newCard);
-            backupCardList.Remove(newCard);
+            foreach (CardModel card in row.hornCardListModel.cardList) {
+                if (card.cardInfo.chineseName == chineseName) {
+                    return true;
+                }
+            }
         }
-        return newCardList;
+        return false;
+    }
+
+    // 准备monaka目标，并返回monaka目标的卡牌列表。注意返回的card并不是实际存在model中的card
+    public SinglePlayerAreaModel PrepareMonakaTarget(out List<CardModel> targetCardList)
+    {
+        return BattleApplyAction(card => {
+            return card.cardInfo.cardType == CardType.Normal;
+        }, card => {
+            return card.ChangeCardSelectType(CardSelectType.Monaka);
+        }, out targetCardList);
+    }
+
+    // 重置battle区与discard区的选择状态
+    public SinglePlayerAreaModel ResetCardSelectType()
+    {
+        var newRecord = this;
+
+        newRecord = newRecord.BattleApplyAction(card => {
+            return card.cardInfo.cardType == CardType.Normal;
+        }, card => {
+            return card.ChangeCardSelectType(CardSelectType.None);
+        }, out var targetCardList);
+
+        newRecord = newRecord.DiscardApplyAction(card => {
+            return card.cardInfo.cardType == CardType.Normal;
+        }, card => {
+            return card.ChangeCardSelectType(CardSelectType.None);
+        }, out targetCardList);
+        return newRecord;
+    }
+
+    // 小局结束，将对战区的牌移除，角色牌移入弃牌区
+    public SinglePlayerAreaModel RemoveAllBattleCard()
+    {
+        var newRecord = this;
+        var newDiscardAreaModel = newRecord.discardAreaModel;
+        foreach (BattleRowAreaModel row in newRecord.battleRowAreaList) {
+            var newRow = row.RemoveAllCard(out var removedCardList);
+            foreach (var card in removedCardList) {
+                if (card.cardInfo.cardType == CardType.Normal || card.cardInfo.cardType == CardType.Hero) {
+                    // 仅角色牌进入弃牌区
+                    newDiscardAreaModel = newDiscardAreaModel.AddCard(card);
+                }
+            }
+            newRecord = newRecord with {
+                battleRowAreaList = newRecord.battleRowAreaList.Replace(row, newRow)
+            };
+        }
+        newRecord = newRecord with {
+            discardAreaModel = newDiscardAreaModel
+        };
+        return newRecord;
+    }
+
+    // 封装对于特定卡牌的操作
+    private SinglePlayerAreaModel BattleApplyAction(Func<CardModel, bool> needAction, Func<CardModel, CardModel> action, out List<CardModel> actionCardList)
+    {
+        var newRecord = this;
+        actionCardList = new List<CardModel>();
+        foreach (BattleRowAreaModel row in newRecord.battleRowAreaList) {
+            var newRow = row;
+            foreach (CardModel card in row.cardListModel.cardList) {
+                if (needAction(card)) {
+                    var newCard = action(card);
+                    actionCardList.Add(newCard);
+                    newRow = BattleRowAreaModel.Lens_CardListModel_CardList.Set(newRow.cardListModel.cardList.Replace(card, newCard), newRow);
+                }
+            }
+            newRecord = newRecord with {
+                battleRowAreaList = newRecord.battleRowAreaList.Replace(row, newRow)
+            };
+        }
+        return newRecord;
+    }
+
+    // 封装对于弃牌区特定卡牌的操作
+    private SinglePlayerAreaModel DiscardApplyAction(Func<CardModel, bool> needAction, Func<CardModel, CardModel> action, out List<CardModel> actionCardList)
+    {
+        var newRecord = this;
+        actionCardList = new List<CardModel>();
+        foreach (CardModel card in newRecord.discardAreaModel.cardListModel.cardList) {
+            if (needAction(card)) {
+                var newCard = action(card);
+                actionCardList.Add(newCard);
+                newRecord = Lens_DiscardAreaModel_CardListModel_Cardlist.Set(newRecord.discardAreaModel.cardListModel.cardList.Replace(card, newCard), newRecord);
+            }
+        }
+        return newRecord;
     }
 
     // 应用Tunning技能
-    private void ApplyTunning()
+    private SinglePlayerAreaModel ApplyTunning()
     {
-        ApplyBattleAreaAction((CardModel card) => {
-            return true;
-        }, (CardModel card) => {
-            card.RemoveNormalDebuff();
-        });
+        var newRecord = this;
+        foreach (BattleRowAreaModel row in newRecord.battleRowAreaList) {
+            var newRow = row;
+            foreach (CardModel card in newRow.cardListModel.cardList) {
+                newRow = newRow.ReplaceCard(card, card.RemoveNormalDebuff());
+            }
+            newRecord = newRecord with {
+                battleRowAreaList = newRecord.battleRowAreaList.Replace(row, newRow)
+            };
+        }
+        return newRecord;
     }
 
     // 更新bond技能
-    private void UpdateBond(string bondType)
+    private SinglePlayerAreaModel UpdateBond(string bondType)
     {
+        var newRecord = this;
         // 统计场上同类型的bond牌数量
-        int count = CountBattleAreaCard((CardModel card) => {
-            return card.cardInfo.bondType == bondType;
-        });
+        int count = 0;
+        foreach (BattleRowAreaModel row in newRecord.battleRowAreaList) {
+            foreach (CardModel card in row.cardListModel.cardList) {
+                if (card.cardInfo.ability == CardAbility.Bond && card.cardInfo.bondType == bondType) {
+                    count++;
+                }
+            }
+        }
         // 更新bond数据
-        ApplyBattleAreaAction((CardModel card) => {
-            return card.cardInfo.bondType == bondType;
-        }, (CardModel card) => {
-            card.SetBuff(CardBuffType.Bond, count - 1);
-        });
+        foreach (BattleRowAreaModel row in newRecord.battleRowAreaList) {
+            var newRow = row;
+            foreach (CardModel card in row.cardListModel.cardList) {
+                if (card.cardInfo.ability == CardAbility.Bond && card.cardInfo.bondType == bondType) {
+                    var realCard = newRow.FindCard(card.cardInfo.id);
+                    newRow = newRow.ReplaceCard(realCard, realCard.SetBuff(CardBuffType.Bond, count - 1));
+                }
+            }
+            newRecord = newRecord with {
+                battleRowAreaList = newRecord.battleRowAreaList.Replace(row, newRow)
+            };
+        }
+        return newRecord;
     }
 
     // 应用抱团技能
-    private void ApplyMuster(string musterType)
+    private SinglePlayerAreaModel ApplyMuster(string musterType)
     {
-        // 从手牌中获取
-        List<CardModel> handTargetCardList = new List<CardModel>();
-        foreach (CardModel card in handRowAreaModel.cardList) {
-            if (card.cardInfo.musterType == musterType) {
-                handTargetCardList.Add(card);
-            }
+        var newRecord = this;
+        newRecord = newRecord with {
+            handCardAreaModel = newRecord.handCardAreaModel.RemoveAndGetMuster(musterType, out var musterCardList)
+        };
+        // 添加卡牌。为避免递归调用造成错误，应先把要打出的卡牌选出来再一起打出
+        foreach (CardModel card in musterCardList) {
+            newRecord = newRecord.AddBattleAreaCard(card);
         }
-        foreach (CardModel card in handTargetCardList) {
-            handRowAreaModel.RemoveCard(card);
-        }
-        // 从备选卡牌中获取
-        List<CardModel> backupTargetCardList = new List<CardModel>();
-        foreach (CardModel card in backupCardList) {
-            if (card.cardInfo.musterType == musterType) {
-                backupTargetCardList.Add(card);
-            }
-        }
-        backupCardList.RemoveAll(o => { return o.cardInfo.musterType == musterType; });
-        // 添加卡牌。未避免递归调用造成错误，应先把要打出的卡牌选出来再一起打出
-        foreach (CardModel card in handTargetCardList) {
-            AddBattleAreaCard(card);
-        }
-        foreach (CardModel card in backupTargetCardList) {
-            AddBattleAreaCard(card);
-        }
+        return newRecord;
     }
 }

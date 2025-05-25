@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
+using System;
 
 // 打出的牌所在区域，一个RowArea为一排，包括这一排的分数、指挥牌、普通牌
 public class BattleRowAreaView : MonoBehaviour
@@ -13,32 +14,26 @@ public class BattleRowAreaView : MonoBehaviour
     public GameObject normalAreaView; // 角色牌对战区
     public GameObject weatherEffect;
 
-    private BattleRowAreaModel battleRowAreaModel_;
-    public BattleRowAreaModel battleRowAreaModel {
-        get {
-            return battleRowAreaModel_;
-        }
-        set {
-            battleRowAreaModel_ = value;
-            hornAreaView.GetComponent<RowAreaView>().rowAreaModel = battleRowAreaModel_.hornUtilCardArea;
-            normalAreaView.GetComponent<RowAreaView>().rowAreaModel = battleRowAreaModel_;
-        }
-    }
+    private BattleRowAreaModel battleRowAreaModel;
 
-    // 每次操作完，更新ui
-    public void UpdateUI()
+    // model变化时，尝试更新ui
+    public void UpdateModel(BattleRowAreaModel model)
     {
-        hornAreaView.GetComponent<RowAreaView>().UpdateUI();
-        normalAreaView.GetComponent<RowAreaView>().UpdateUI();
+        if (battleRowAreaModel == model) {
+            return;
+        }
+        battleRowAreaModel = model;
+        hornAreaView.GetComponent<RowAreaView>().UpdateModel(battleRowAreaModel.hornCardListModel);
+        normalAreaView.GetComponent<RowAreaView>().UpdateModel(battleRowAreaModel.cardListModel);
         RemoveUnuseCard();
-        scoreNum.GetComponent<TextMeshProUGUI>().text = normalAreaView.GetComponent<RowAreaView>().rowAreaModel.GetCurrentPower().ToString();
+        scoreNum.GetComponent<TextMeshProUGUI>().text = battleRowAreaModel.GetCurrentPower().ToString();
         weatherEffect.SetActive(battleRowAreaModel.hasWeatherBuff);
     }
 
     public void HornAreaViewButtonOnClick()
     {
         KLog.I(TAG, "HornAreaViewButtonOnClick");
-        PlaySceneManager.Instance.HandleMessage(SceneMsg.ClickHornAreaViewButton, battleRowAreaModel);
+        PlaySceneManager.Instance.HandleMessage(SceneMsg.ClickHornAreaViewButton, battleRowAreaModel.rowType);
     }
 
     public void ShowHornAreaViewButton()

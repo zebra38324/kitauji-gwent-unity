@@ -17,13 +17,13 @@ public class HandRowAreaModelTest
     {
         HandRowAreaModel handRowAreaModel = new HandRowAreaModel();
         handRowAreaModel.AddCardList(TestGenCards.GetCardList(new List<int> { 2001, 2002, 2003 }));
-        List<CardModel> cardList = handRowAreaModel.cardList;
-        foreach (CardModel cardModel in cardList) {
+        List<CardModelOld> cardList = handRowAreaModel.cardList;
+        foreach (CardModelOld cardModel in cardList) {
             Assert.AreEqual(CardLocation.HandArea, cardModel.cardLocation);
             Assert.AreEqual(CardSelectType.PlayCard, cardModel.selectType);
         }
         int targetId = cardList[0].cardInfo.id;
-        CardModel targetCard = handRowAreaModel.FindCard(targetId);
+        CardModelOld targetCard = handRowAreaModel.FindCard(targetId);
         Assert.AreNotEqual(null, targetCard);
         handRowAreaModel.RemoveCard(targetCard);
         Assert.AreEqual(2, handRowAreaModel.cardList.Count);

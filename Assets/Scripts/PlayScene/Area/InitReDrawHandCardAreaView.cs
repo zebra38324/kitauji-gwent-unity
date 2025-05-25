@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -14,23 +15,12 @@ public class InitReDrawHandCardAreaView: MonoBehaviour
     public GameObject cardRow;
     public GameObject tipText;
     public GameObject confirmButton;
-    private SinglePlayerAreaModel model_;
-    public SinglePlayerAreaModel model {
-        get {
-            return model_;
-        }
-        set {
-            model_ = value;
-            cardRow.GetComponent<RowAreaView>().rowAreaModel = model_.initHandRowAreaModel;
-            tipText.GetComponent<TextMeshProUGUI>().text = initTip;
-            gameObject.SetActive(true);
-            confirmButton.SetActive(false);
-        }
-    }
 
     public long startTs { get; private set; }
 
     public bool isSelfConfirmed { get; private set; } = false; // 是否已经确认过了
+
+    private InitHandCardListModel initHandCardListModel;
 
     private bool initFinish = false;
 
@@ -44,6 +34,22 @@ public class InitReDrawHandCardAreaView: MonoBehaviour
     void Update()
     {
         UpdateCountDown();
+    }
+
+    // model变化时，尝试更新ui
+    public void UpdateModel(InitHandCardListModel model)
+    {
+        if (initHandCardListModel == model) {
+            return;
+        }
+        bool isFirstSet = initHandCardListModel == null;
+        initHandCardListModel = model;
+        cardRow.GetComponent<RowAreaView>().UpdateModel(model);
+        if (isFirstSet) {
+            tipText.GetComponent<TextMeshProUGUI>().text = initTip;
+            gameObject.SetActive(true);
+            confirmButton.SetActive(false);
+        }
     }
 
     public void ConfirmButton()
@@ -64,14 +70,6 @@ public class InitReDrawHandCardAreaView: MonoBehaviour
         tipText.GetComponent<TextMeshProUGUI>().text = string.Format(defaultTip, 30);
         startTs = KTime.CurrentMill();
         confirmButton.SetActive(true);
-    }
-
-    public void UpdateUI()
-    {
-        if (!gameObject.activeSelf) {
-            return;
-        }
-        cardRow.GetComponent<RowAreaView>().UpdateUI();
     }
 
     public void Close()

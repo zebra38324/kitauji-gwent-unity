@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class WeatherCardAreaView : MonoBehaviour
@@ -10,18 +12,7 @@ public class WeatherCardAreaView : MonoBehaviour
 
     public GameObject percussionArea;
 
-    private WeatherCardAreaModel weatherCardAreaModel_;
-    public WeatherCardAreaModel weatherCardAreaModel {
-        get {
-            return weatherCardAreaModel_;
-        }
-        set {
-            weatherCardAreaModel_ = value;
-            woodArea.GetComponent<RowAreaView>().rowAreaModel = weatherCardAreaModel_.woodArea;
-            brassArea.GetComponent<RowAreaView>().rowAreaModel = weatherCardAreaModel_.brassArea;
-            percussionArea.GetComponent<RowAreaView>().rowAreaModel = weatherCardAreaModel_.percussionArea;
-        }
-    }
+    private WeatherAreaModel weatherAreaModel;
 
     // Start is called before the first frame update
     void Start()
@@ -35,10 +26,15 @@ public class WeatherCardAreaView : MonoBehaviour
 
     }
 
-    public void UpdateUI()
+    // model变化时，尝试更新ui
+    public void UpdateModel(WeatherAreaModel model)
     {
-        woodArea.GetComponent<RowAreaView>().UpdateUI();
-        brassArea.GetComponent<RowAreaView>().UpdateUI();
-        percussionArea.GetComponent<RowAreaView>().UpdateUI();
+        if (weatherAreaModel == model) {
+            return;
+        }
+        weatherAreaModel = model;
+        woodArea.GetComponent<RowAreaView>().UpdateModel(weatherAreaModel.wood);
+        brassArea.GetComponent<RowAreaView>().UpdateModel(weatherAreaModel.brass);
+        percussionArea.GetComponent<RowAreaView>().UpdateModel(weatherAreaModel.percussion);
     }
 }

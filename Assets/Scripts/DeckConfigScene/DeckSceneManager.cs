@@ -140,7 +140,7 @@ public class DeckSceneManager : MonoBehaviour
         backupArea.GetComponent<DeckCardAreaView>().RemoveAllCard();
         leaderCardContainer.GetComponent<SingleCardAreaView>().RemoveCard();
 
-        CardGenerator cardGenerator = new CardGenerator();
+        CardGenerator cardGenerator = new CardGenerator(true);
         List<CardModel> allCardModelList = cardGenerator.GetGroupCardList(selectedCardGroup);
         allCardModelList.AddRange(cardGenerator.GetGroupCardList(CardGroup.Neutral)); // 所有牌组都可以直接用中立牌组
         List<GameObject> backupList = new List<GameObject>();

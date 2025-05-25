@@ -17,8 +17,8 @@ public class InitHandRowAreaModelTest
     {
         InitHandRowAreaModel initHandRowAreaModel = new InitHandRowAreaModel();
         initHandRowAreaModel.AddCardList(TestGenCards.GetCardList(new List<int> { 2001, 2002, 2003 }));
-        List<CardModel> cardList = initHandRowAreaModel.cardList;
-        foreach (CardModel cardModel in cardList) {
+        List<CardModelOld> cardList = initHandRowAreaModel.cardList;
+        foreach (CardModelOld cardModel in cardList) {
             Assert.AreEqual(CardLocation.InitHandArea, cardModel.cardLocation);
             Assert.AreEqual(CardSelectType.ReDrawHandCard, cardModel.selectType);
         }

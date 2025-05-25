@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System;
 
 public class ActionTextAreaView : MonoBehaviour
 {
     public GameObject actionText;
 
     public GameObject scrollBar;
-
-    public ActionTextModel actionTextModel { get; set; }
 
     // Start is called before the first frame update
     void Start()
@@ -24,12 +23,12 @@ public class ActionTextAreaView : MonoBehaviour
 
     }
 
-    public void UpdateUI()
+    public void AddText(string newText)
     {
         if (actionText == null) {
             return;
         }
-        actionText.GetComponent<TextMeshProUGUI>().text = actionTextModel.totalText;
+        actionText.GetComponent<TextMeshProUGUI>().text += newText;
         // 滚动条滑到最下处
         StartCoroutine(SetSrollBarBottom());
     }

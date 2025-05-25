@@ -14,7 +14,7 @@ public class GameFinishAreaView : MonoBehaviour
 
     public GameObject gameFinishAreaResultText;
 
-    public PlayStateTracker tracker { get; set; }
+    public PlayTracker tracker { get; set; }
 
     // Start is called before the first frame update
     void Start()
@@ -33,9 +33,9 @@ public class GameFinishAreaView : MonoBehaviour
         // 绘制表格
         GameObject cellEmpty = GameObject.Instantiate(gameResultTableCellPrefab, gameResultTable.transform);
         GameObject cellSelfName = GameObject.Instantiate(gameResultTableCellPrefab, gameResultTable.transform);
-        cellSelfName.GetComponent<TextMeshProUGUI>().text = tracker.selfName;
+        cellSelfName.GetComponent<TextMeshProUGUI>().text = tracker.selfPlayerInfo.name;
         GameObject cellEnemyName = GameObject.Instantiate(gameResultTableCellPrefab, gameResultTable.transform);
-        cellEnemyName.GetComponent<TextMeshProUGUI>().text = tracker.enemyName;
+        cellEnemyName.GetComponent<TextMeshProUGUI>().text = tracker.enemyPlayerInfo.name;
 
         for (int i = 0; i <= tracker.curSet; i++) {
             GameObject cellSetTitle = GameObject.Instantiate(gameResultTableCellPrefab, gameResultTable.transform);
@@ -65,11 +65,12 @@ public class GameFinishAreaView : MonoBehaviour
         GameObject cellResultTitle = GameObject.Instantiate(gameResultTableCellPrefab, gameResultTable.transform);
         cellResultTitle.GetComponent<TextMeshProUGUI>().text = "大比分";
         GameObject cellSelfResult = GameObject.Instantiate(gameResultTableCellPrefab, gameResultTable.transform);
-        cellSelfResult.GetComponent<TextMeshProUGUI>().text = string.Format("<b>{0}</b>", tracker.selfSetScore.ToString());
+        cellSelfResult.GetComponent<TextMeshProUGUI>().text = string.Format("<b>{0}</b>", tracker.selfPlayerInfo.setScore.ToString());
         GameObject cellEnemyResult = GameObject.Instantiate(gameResultTableCellPrefab, gameResultTable.transform);
-        cellEnemyResult.GetComponent<TextMeshProUGUI>().text = string.Format("<b>{0}</b>", tracker.enemySetScore.ToString());
+        cellEnemyResult.GetComponent<TextMeshProUGUI>().text = string.Format("<b>{0}</b>", tracker.enemyPlayerInfo.setScore.ToString());
         // 添加颜色
-        if (tracker.isSelfWinner) {
+        bool isSelfWinner = tracker.isSelfWinner;
+        if (isSelfWinner) {
             cellSelfResult.GetComponent<TextMeshProUGUI>().color = new Color(0, 0.8f, 0, 1); // green
             cellEnemyResult.GetComponent<TextMeshProUGUI>().color = new Color(0.8f, 0, 0, 1); // red
         } else {
@@ -77,6 +78,6 @@ public class GameFinishAreaView : MonoBehaviour
             cellEnemyResult.GetComponent<TextMeshProUGUI>().color = new Color(0, 0.8f, 0, 1); // green
         }
 
-        gameFinishAreaResultText.GetComponent<TextMeshProUGUI>().text = string.Format("{0} 获得胜利！", tracker.isSelfWinner ? tracker.selfName : tracker.enemyName);
+        gameFinishAreaResultText.GetComponent<TextMeshProUGUI>().text = string.Format("{0} 获得胜利！", isSelfWinner ? tracker.selfPlayerInfo.name : tracker.enemyPlayerInfo.name);
     }
 }

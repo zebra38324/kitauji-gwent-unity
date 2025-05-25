@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -7,7 +8,8 @@ using UnityEngine;
 public class OffFieldCardsAreaView : MonoBehaviour
 {
     public GameObject backupCardNum;
-    public SinglePlayerAreaModel model { get; set; }
+
+    private HandCardAreaModel handCardAreaModel;
 
     // Start is called before the first frame update
     void Start()
@@ -21,13 +23,17 @@ public class OffFieldCardsAreaView : MonoBehaviour
         
     }
 
-    public void UpdateDiscardAreaView()
+    public void UpdateModel(HandCardAreaModel model)
     {
-        PlaySceneManager.Instance.HandleMessage(SceneMsg.ShowDiscardArea, model.discardAreaModel, false);
+        if (handCardAreaModel == model) {
+            return;
+        }
+        handCardAreaModel = model;
+        backupCardNum.GetComponent<TextMeshProUGUI>().text = handCardAreaModel.backupCardList.Count.ToString();
     }
 
-    public void UpdateUI()
+    public void UpdateDiscardAreaView()
     {
-        backupCardNum.GetComponent<TextMeshProUGUI>().text = model.backupCardList.Count.ToString();
+        PlaySceneManager.Instance.HandleMessage(SceneMsg.ShowDiscardArea, handCardAreaModel.isSelf, false);
     }
 }

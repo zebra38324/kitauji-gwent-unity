@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
 
 public class ActionToastAreaView : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class ActionToastAreaView : MonoBehaviour
 
     public GameObject actionToastText;
 
-    public ActionTextModel actionTextModel { get; set; }
+    public string showText = null;
 
     private long startShowTs = 0;
 
@@ -25,9 +26,9 @@ public class ActionToastAreaView : MonoBehaviour
         UpdateToastText();
     }
 
-    private void UpdateToastText()
+    public void UpdateToastText()
     {
-        if (actionTextModel.toastText == null) {
+        if (showText == null) {
             if (KTime.CurrentMill() - startShowTs > 2000) {
                 // 2s后消失
                 actionToastBackground.SetActive(false);
@@ -35,8 +36,8 @@ public class ActionToastAreaView : MonoBehaviour
             return;
         }
         startShowTs = KTime.CurrentMill();
-        actionToastText.GetComponent<TextMeshProUGUI>().text = actionTextModel.toastText;
-        actionTextModel.toastText = null;
+        actionToastText.GetComponent<TextMeshProUGUI>().text = showText;
+        showText = null;
         actionToastBackground.SetActive(true);
     }
 }

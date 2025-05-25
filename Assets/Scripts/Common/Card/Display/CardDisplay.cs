@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using System;
 
 public class CardDisplay : MonoBehaviour,
     IPointerEnterHandler,
@@ -69,19 +70,37 @@ public class CardDisplay : MonoBehaviour,
         JudgeShowCardInfo();
     }
 
-    public void SetCardModel(CardModel model)
+    public void SetCardModel(CardModel model, bool needUpdate = false)
     {
         cardModel = model;
+        if (needUpdate) {
+            PlaySceneManager.Instance.UpdateModelBoradcast += UpdateModel;
+        }
         Init();
+        UpdateUI();
     }
 
-    // 每次操作完，更新ui
+    public void UpdateModel(WholeAreaModel wholeAreaModel)
+    {
+        CardModel model = wholeAreaModel.FindCard(cardModel.cardInfo.id);
+        if (cardModel == model) {
+            return;
+        }
+        if (model == null) {
+            // model为null，说明卡牌已经没用了，location置为none就不用管了
+            cardModel = cardModel.ChangeCardLocation(CardLocation.None);
+            return;
+        }
+        cardModel = model;
+        UpdateUI();
+    }
+
     public void UpdateUI()
     {
         UpdateDisplayPower();
-        bool frameVisible = cardModel.selectType == CardSelectType.WithstandAttack ||
-            cardModel.selectType == CardSelectType.DecoyWithdraw ||
-            cardModel.selectType == CardSelectType.Monaka ||
+        bool frameVisible = cardModel.cardSelectType == CardSelectType.WithstandAttack ||
+            cardModel.cardSelectType == CardSelectType.DecoyWithdraw ||
+            cardModel.cardSelectType == CardSelectType.Monaka ||
             (cardModel.cardLocation == CardLocation.InitHandArea && cardModel.isSelected);
         SetFrameVisible(frameVisible);
     }
@@ -119,7 +138,7 @@ public class CardDisplay : MonoBehaviour,
 
     private void UpdateDisplayPower()
     {
-        if (cardModel.cardInfo.cardType == CardType.Hero) {
+        if (cardModel.cardInfo.cardType != CardType.Normal) {
             return;
         }
         int result = cardModel.currentPower;

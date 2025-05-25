@@ -1,304 +1,205 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class BattleRowAreaModelTest
 {
     [Test]
-    public void Horn()
+    public void Constructor_InitializesEmptyState()
     {
-        BattleRowAreaModel battleRowAreaModel = new BattleRowAreaModel(CardBadgeType.Brass);
-        int brassHornInfoId = 2036;
-        List<int> brassNormalInfoIdList = new List<int> {2037, 2038};
-        List<CardModel> brassNormalCardList = TestGenCards.GetCardList(brassNormalInfoIdList);
-        CardModel brassHornCard = TestGenCards.GetCard(brassHornInfoId);
-
-        // 加入第一张普通牌
-        battleRowAreaModel.AddCard(brassNormalCardList[0]);
-        Assert.AreEqual(CardLocation.BattleArea, brassNormalCardList[0].cardLocation);
-        Assert.AreEqual(CardSelectType.None, brassNormalCardList[0].selectType);
-        Assert.AreEqual(brassNormalCardList[0].cardInfo.originPower, brassNormalCardList[0].currentPower);
-        Assert.AreEqual(brassNormalCardList[0].currentPower, battleRowAreaModel.GetCurrentPower());
-        Assert.AreEqual(brassNormalCardList[0].currentPower, battleRowAreaModel.GetCurrentPower());
-
-        // 加入horn牌
-        battleRowAreaModel.AddCard(brassHornCard);
-        Assert.AreEqual(brassHornCard.cardInfo.originPower, brassHornCard.currentPower);
-        int expectPower = brassNormalCardList[0].cardInfo.originPower * 2 + brassHornCard.cardInfo.originPower;
-        Assert.AreEqual(expectPower, battleRowAreaModel.GetCurrentPower());
-
-        // 加入第二张普通牌，测试已存在horn时加入新牌的情况
-        battleRowAreaModel.AddCard(brassNormalCardList[1]);
-        Assert.AreEqual(brassNormalCardList[1].cardInfo.originPower * 2, brassNormalCardList[1].currentPower);
-        expectPower = (brassNormalCardList[0].cardInfo.originPower + brassNormalCardList[1].cardInfo.originPower) * 2 +
-            brassHornCard.cardInfo.originPower;
-        Assert.AreEqual(expectPower, battleRowAreaModel.GetCurrentPower());
-
-        // 移除horn牌，测试buff的清除情况
-        battleRowAreaModel.RemoveCard(brassHornCard);
-        expectPower = brassNormalCardList[0].cardInfo.originPower +
-            brassNormalCardList[1].cardInfo.originPower;
-        Assert.AreEqual(expectPower, battleRowAreaModel.GetCurrentPower());
+        var row = new BattleRowAreaModel(CardBadgeType.Wood);
+        Assert.IsEmpty(row.cardListModel.cardList);
+        Assert.IsEmpty(row.hornCardListModel.cardList);
+        Assert.AreEqual(0, row.GetCurrentPower());
     }
 
     [Test]
-    public void Morale()
+    public void AddCard_HornAbility_AddsToHornListAndUpdatesBuff()
     {
-        BattleRowAreaModel battleRowAreaModel = new BattleRowAreaModel(CardBadgeType.Brass);
-        int brassMoraleInfoId = 2020; // 特殊：这是个英雄牌
-        List<int> brassNormalInfoIdList = new List<int> { 2037, 2038 };
-        List<CardModel> brassNormalCardList = TestGenCards.GetCardList(brassNormalInfoIdList);
-        CardModel brassMoraleCard = TestGenCards.GetCard(brassMoraleInfoId);
+        var row = new BattleRowAreaModel(CardBadgeType.Wood);
+        var hornCard = TestUtil.MakeCard(ability: CardAbility.HornUtil, cardType: CardType.Util);
+        var updated = row.AddCard(hornCard);
 
-        // 加入第一张普通牌
-        battleRowAreaModel.AddCard(brassNormalCardList[0]);
-        Assert.AreEqual(brassNormalCardList[0].cardInfo.originPower, brassNormalCardList[0].currentPower);
-        Assert.AreEqual(brassNormalCardList[0].currentPower, battleRowAreaModel.GetCurrentPower());
-
-        // 加入morale牌
-        battleRowAreaModel.AddCard(brassMoraleCard);
-        Assert.AreEqual(brassMoraleCard.cardInfo.originPower, brassMoraleCard.currentPower);
-        int expectPower = brassNormalCardList[0].cardInfo.originPower + 1 + brassMoraleCard.cardInfo.originPower;
-        Assert.AreEqual(expectPower, battleRowAreaModel.GetCurrentPower());
-
-        // 加入第二张普通牌，测试已存在morale时加入新牌的情况
-        battleRowAreaModel.AddCard(brassNormalCardList[1]);
-        Assert.AreEqual(brassNormalCardList[1].cardInfo.originPower + 1, brassNormalCardList[1].currentPower);
-        expectPower = brassNormalCardList[0].cardInfo.originPower + brassNormalCardList[1].cardInfo.originPower + 2 +
-            brassMoraleCard.cardInfo.originPower;
-        Assert.AreEqual(expectPower, battleRowAreaModel.GetCurrentPower());
-
-        // 移除morale牌，测试buff的清除情况。这是个英雄牌，正常不会被移除，此处仅为测试morale技能
-        battleRowAreaModel.RemoveCard(brassMoraleCard);
-        expectPower = brassNormalCardList[0].cardInfo.originPower +
-            brassNormalCardList[1].cardInfo.originPower;
-        Assert.AreEqual(expectPower, battleRowAreaModel.GetCurrentPower());
+        Assert.AreEqual(1, updated.hornCardListModel.cardList.Count);
+        Assert.AreEqual(CardLocation.BattleArea, updated.hornCardListModel.cardList[0].cardLocation);
+        // Horn buff 会为普通行牌添加 horn buff
+        var normalCard = TestUtil.MakeCard(ability: CardAbility.None, originPower: 3);
+        updated = updated.AddCard(normalCard);
+        Assert.AreEqual(1, updated.cardListModel.cardList.Count);
+        Assert.AreEqual(6, updated.GetCurrentPower());
     }
 
     [Test]
-    public void MoraleHorn()
+    public void AddCard_NormalAbility_AddsToCardList_WithKasaEffect()
     {
-        BattleRowAreaModel battleRowAreaModel = new BattleRowAreaModel(CardBadgeType.Brass);
-        int brassMoraleInfoId = 2020; // 特殊：这是个英雄牌
-        int brassHornInfoId = 2036;
-        List<int> brassNormalInfoIdList = new List<int> { 2037, 2038 };
-        List<CardModel> brassNormalCardList = TestGenCards.GetCardList(brassNormalInfoIdList);
-        CardModel brassMoraleCard = TestGenCards.GetCard(brassMoraleInfoId);
-        CardModel brassHornCard = TestGenCards.GetCard(brassHornInfoId);
+        var row = new BattleRowAreaModel(CardBadgeType.Wood);
+        var mizoreCard = TestUtil.MakeCard(ability: CardAbility.None, originPower: 4, CardType.Normal, "铠冢霙").AddBuff(CardBuffType.Attack2, 1);
+        var kasaCard = TestUtil.MakeCard(ability: CardAbility.Kasa, originPower: 4, CardType.Normal);
+        var updated = row.AddCard(mizoreCard).AddCard(kasaCard);
 
-        // 加入第一张普通牌
-        battleRowAreaModel.AddCard(brassNormalCardList[0]);
-        Assert.AreEqual(brassNormalCardList[0].cardInfo.originPower, brassNormalCardList[0].currentPower);
-        Assert.AreEqual(brassNormalCardList[0].currentPower, battleRowAreaModel.GetCurrentPower());
-
-        // 加入morale牌
-        battleRowAreaModel.AddCard(brassMoraleCard);
-        Assert.AreEqual(brassMoraleCard.cardInfo.originPower, brassMoraleCard.currentPower);
-        int expectPower = brassNormalCardList[0].cardInfo.originPower + 1 +
-            brassMoraleCard.cardInfo.originPower;
-        Assert.AreEqual(expectPower, battleRowAreaModel.GetCurrentPower());
-
-        // 加入horn牌
-        battleRowAreaModel.AddCard(brassHornCard);
-        Assert.AreEqual(brassHornCard.cardInfo.originPower + 1, brassHornCard.currentPower);
-        expectPower = brassNormalCardList[0].cardInfo.originPower * 2 + 1 +
-            brassMoraleCard.cardInfo.originPower +
-            brassHornCard.cardInfo.originPower + 1;
-        Assert.AreEqual(expectPower, battleRowAreaModel.GetCurrentPower());
-
-        // 加入第二张普通牌
-        battleRowAreaModel.AddCard(brassNormalCardList[1]);
-        Assert.AreEqual(brassNormalCardList[1].cardInfo.originPower * 2 + 1, brassNormalCardList[1].currentPower);
-        expectPower = brassNormalCardList[0].cardInfo.originPower * 2 + 1 +
-            brassNormalCardList[1].cardInfo.originPower * 2 + 1 +
-            brassMoraleCard.cardInfo.originPower +
-            brassHornCard.cardInfo.originPower + 1;
-        Assert.AreEqual(expectPower, battleRowAreaModel.GetCurrentPower());
-
-        // 移除morale牌，测试buff的清除情况。这是个英雄牌，正常不会被移除，此处仅为测试morale技能
-        battleRowAreaModel.RemoveCard(brassMoraleCard);
-        expectPower = brassNormalCardList[0].cardInfo.originPower * 2 +
-            brassNormalCardList[1].cardInfo.originPower * 2 +
-            brassHornCard.cardInfo.originPower;
-        Assert.AreEqual(expectPower, battleRowAreaModel.GetCurrentPower());
-
-        // 移除horn牌，测试buff的清除情况
-        battleRowAreaModel.RemoveCard(brassHornCard);
-        expectPower = brassNormalCardList[0].cardInfo.originPower +
-            brassNormalCardList[1].cardInfo.originPower;
-        Assert.AreEqual(expectPower, battleRowAreaModel.GetCurrentPower());
-    }
-
-    // 测试普通牌被伞击
-    [Test]
-    public void NormalScorchWood()
-    {
-        BattleRowAreaModel battleRowAreaModel = new BattleRowAreaModel(CardBadgeType.Wood);
-        List<int> woodNormalInfoIdList = new List<int> { 2009, 2017 }; // 能力分别为7、6
-        List<CardModel> woodNormalCardList = TestGenCards.GetCardList(woodNormalInfoIdList);
-
-        // 一张普通牌，总点数不到10，伞击无事发生
-        battleRowAreaModel.AddCard(woodNormalCardList[0]);
-        List<CardModel> scorchTargetList = battleRowAreaModel.ApplyScorchWood();
-        Assert.AreEqual(0, scorchTargetList.Count);
-        Assert.AreEqual(woodNormalCardList[0].cardInfo.originPower, battleRowAreaModel.GetCurrentPower());
-
-        // 两张普通牌，总点数超过10，最高点数的牌被移除
-        battleRowAreaModel.AddCard(woodNormalCardList[1]);
-        scorchTargetList = battleRowAreaModel.ApplyScorchWood();
-        Assert.AreEqual(1, scorchTargetList.Count);
-        Assert.AreEqual(woodNormalCardList[1].cardInfo.originPower, battleRowAreaModel.GetCurrentPower());
-    }
-
-    // 测试包含英雄牌被伞击
-    [Test]
-    public void HeroScorchWood()
-    {
-        BattleRowAreaModel battleRowAreaModel = new BattleRowAreaModel(CardBadgeType.Wood);
-        List<int> woodHeroInfoIdList = new List<int> { 2005, 2010 }; // 能力分别为10、7
-        List<CardModel> woodHeroCardList = TestGenCards.GetCardList(woodHeroInfoIdList);
-        List<int> woodNormalInfoIdList = new List<int> { 2009, 2017 }; // 能力分别为7、6
-        List<CardModel> woodNormalCardList = TestGenCards.GetCardList(woodNormalInfoIdList);
-
-        // 两张英雄牌，总点数17，伞击无事发生
-        battleRowAreaModel.AddCard(woodHeroCardList[0]);
-        battleRowAreaModel.AddCard(woodHeroCardList[1]);
-        List<CardModel> scorchTargetList = battleRowAreaModel.ApplyScorchWood();
-        Assert.AreEqual(0, scorchTargetList.Count);
-        Assert.Less(10, battleRowAreaModel.GetCurrentPower());
-        int expectPower = woodHeroCardList[0].cardInfo.originPower +
-            woodHeroCardList[1].cardInfo.originPower;
-        Assert.AreEqual(expectPower, battleRowAreaModel.GetCurrentPower());
-
-        // 一张普通牌与两张英雄牌，总点数超过10，最高点数的普通牌被移除
-        battleRowAreaModel.AddCard(woodNormalCardList[0]);
-        scorchTargetList = battleRowAreaModel.ApplyScorchWood();
-        Assert.AreEqual(1, scorchTargetList.Count);
-        Assert.AreEqual(expectPower, battleRowAreaModel.GetCurrentPower());
-    }
-
-    // 测试多张点数相同的牌被伞击
-    [Test]
-    public void MultiScorchWood()
-    {
-        BattleRowAreaModel battleRowAreaModel = new BattleRowAreaModel(CardBadgeType.Wood);
-        List<int> woodNormalInfoIdList = new List<int> { 2002, 2019, 2006 }; // 能力分别为5、5、4
-        List<CardModel> woodNormalCardList = TestGenCards.GetCardList(woodNormalInfoIdList);
-
-        // 两张普通牌能力都是5，总点数10，无事发生
-        battleRowAreaModel.AddCard(woodNormalCardList[0]);
-        battleRowAreaModel.AddCard(woodNormalCardList[1]);
-        int expectPower = woodNormalCardList[0].cardInfo.originPower +
-            woodNormalCardList[1].cardInfo.originPower;
-        Assert.AreEqual(expectPower, battleRowAreaModel.GetCurrentPower());
-        List<CardModel> scorchTargetList = battleRowAreaModel.ApplyScorchWood();
-        Assert.AreEqual(0, scorchTargetList.Count);
-        Assert.AreEqual(expectPower, battleRowAreaModel.GetCurrentPower());
-
-        // 三张普通牌总点数14，两张5点的被移除
-        battleRowAreaModel.AddCard(woodNormalCardList[2]);
-        scorchTargetList = battleRowAreaModel.ApplyScorchWood();
-        Assert.AreEqual(2, scorchTargetList.Count);
-        expectPower = woodNormalCardList[2].cardInfo.originPower;
-        Assert.AreEqual(expectPower, battleRowAreaModel.GetCurrentPower());
+        Assert.AreEqual(2, updated.cardListModel.cardList.Count);
+        mizoreCard = updated.cardListModel.cardList[0];
+        Assert.AreEqual(CardLocation.BattleArea, mizoreCard.cardLocation);
+        Assert.AreEqual(4 + 5, mizoreCard.currentPower);
+        Assert.AreEqual(4 + 9, updated.GetCurrentPower());
     }
 
     [Test]
-    public void BrassScorchWood()
+    public void RemoveCard_RemovesAndClearsBuff()
     {
-        BattleRowAreaModel battleRowAreaModel = new BattleRowAreaModel(CardBadgeType.Brass);
-        List<int> brassNormalInfoIdList = new List<int> { 2025, 2028 }; // 能力分别为6、6
-        List<CardModel> brassNormalCardList = TestGenCards.GetCardList(brassNormalInfoIdList);
+        var row = new BattleRowAreaModel(CardBadgeType.Wood)
+            .AddCard(TestUtil.MakeCard(ability: CardAbility.None, originPower: 5).AddBuff(CardBuffType.Attack2, 1));
+        var before = row.cardListModel.cardList[0];
+        var result = row.RemoveCard(before, out var removed);
 
-        // 两张普通牌能力都是6，总点数12，但不是木管行，无事发生
-        battleRowAreaModel.AddCard(brassNormalCardList[0]);
-        battleRowAreaModel.AddCard(brassNormalCardList[1]);
-        int expectPower = brassNormalCardList[0].cardInfo.originPower +
-            brassNormalCardList[1].cardInfo.originPower;
-        Assert.Less(10, battleRowAreaModel.GetCurrentPower());
-        List<CardModel> scorchTargetList = battleRowAreaModel.ApplyScorchWood();
-        Assert.AreEqual(0, scorchTargetList.Count);
-        Assert.AreEqual(expectPower, battleRowAreaModel.GetCurrentPower());
+        Assert.IsFalse(result.cardListModel.cardList.Contains(before));
+        Assert.AreEqual(removed.cardInfo.originPower, removed.currentPower);
     }
 
-    // 测试移除卡牌后，被移除的牌是否buff状态清零
     [Test]
-    public void RemoveCard()
+    public void RemoveAllCard_ClearsAllAndReturnsList()
     {
-        BattleRowAreaModel battleRowAreaModel = new BattleRowAreaModel(CardBadgeType.Brass);
-        int brassMoraleInfoId = 2020; // 特殊：这是个英雄牌
-        int brassHornInfoId = 2036;
-        List<int> brassNormalInfoIdList = new List<int> { 2037, 2038 };
-        List<CardModel> brassNormalCardList = TestGenCards.GetCardList(brassNormalInfoIdList);
-        CardModel brassMoraleCard = TestGenCards.GetCard(brassMoraleInfoId);
-        CardModel brassHornCard = TestGenCards.GetCard(brassHornInfoId);
+        var row = new BattleRowAreaModel(CardBadgeType.Brass)
+            .AddCard(TestUtil.MakeCard(ability: CardAbility.None, originPower: 6).AddBuff(CardBuffType.Attack2, 1))
+            .AddCard(TestUtil.MakeCard(ability: CardAbility.None, originPower: 6).AddBuff(CardBuffType.Attack4, 1))
+            .AddCard(TestUtil.MakeCard(ability: CardAbility.HornUtil, originPower: 0, cardType: CardType.Util));
+        var cleared = row.RemoveAllCard(out var list);
 
-        battleRowAreaModel.AddCard(brassMoraleCard);
-        battleRowAreaModel.AddCard(brassHornCard);
-        battleRowAreaModel.AddCardList(brassNormalCardList);
-        int expectPower = brassNormalCardList[0].cardInfo.originPower * 2 + 1 +
-            brassNormalCardList[1].cardInfo.originPower * 2 + 1 +
-            brassMoraleCard.cardInfo.originPower +
-            brassHornCard.cardInfo.originPower + 1;
-        Assert.AreEqual(expectPower, battleRowAreaModel.GetCurrentPower());
-
-        // 移除带buff的牌
-        battleRowAreaModel.RemoveCard(brassNormalCardList[0]);
-        Assert.AreEqual(brassNormalCardList[0].cardInfo.originPower, brassNormalCardList[0].currentPower);
-
-        // 移除所有牌
-        battleRowAreaModel.RemoveAllCard();
-        Assert.AreEqual(0, battleRowAreaModel.cardList.Count);
-        Assert.AreEqual(brassNormalCardList[0].cardInfo.originPower, brassNormalCardList[0].currentPower);
-        Assert.AreEqual(brassNormalCardList[1].cardInfo.originPower, brassNormalCardList[1].currentPower);
-        Assert.AreEqual(brassMoraleCard.cardInfo.originPower, brassMoraleCard.currentPower);
-        Assert.AreEqual(brassHornCard.cardInfo.originPower, brassHornCard.currentPower);
+        Assert.IsEmpty(cleared.cardListModel.cardList);
+        Assert.IsEmpty(cleared.hornCardListModel.cardList);
+        Assert.AreEqual(3, list.Count);
+        Assert.IsTrue(list.All(c => c.currentPower == c.cardInfo.originPower));
     }
 
-    // 测试horn util
     [Test]
-    public void HornUtil()
+    public void ApplyScorchWood_RemovesMaxPowerCards_WhenThresholdExceeded()
     {
-        BattleRowAreaModel battleRowAreaModel = new BattleRowAreaModel(CardBadgeType.Brass);
-        CardModel brassHeroCard = TestGenCards.GetCard(2040); // medic hero(9)
-        CardModel brassNormalCard = TestGenCards.GetCard(2024); // normal(4)
-        CardModel brassHornCard = TestGenCards.GetCard(2036); // horn(2)
-        CardModel hornUtilCard = TestGenCards.GetCard(5008); // horn util
+        var row = new BattleRowAreaModel(CardBadgeType.Wood)
+            .AddCard(TestUtil.MakeCard(ability: CardAbility.None, originPower: 6))
+            .AddCard(TestUtil.MakeCard(ability: CardAbility.None, originPower: 7));
+        var result = row.ApplyScorchWood();
 
-        battleRowAreaModel.AddCard(brassHeroCard);
-        battleRowAreaModel.AddCard(brassNormalCard);
-        battleRowAreaModel.AddCard(brassHornCard);
-        battleRowAreaModel.AddCard(hornUtilCard);
-        int expectPower = brassHeroCard.cardInfo.originPower +
-            brassNormalCard.cardInfo.originPower * 3 +
-            brassHornCard.cardInfo.originPower * 2;
-        Assert.AreEqual(expectPower, battleRowAreaModel.GetCurrentPower());
-
-        // 移除所有牌
-        battleRowAreaModel.RemoveAllCard();
-        Assert.AreEqual(0, battleRowAreaModel.GetCurrentPower());
-        Assert.AreEqual(0, battleRowAreaModel.hornUtilCardArea.cardList.Count);
-        Assert.AreEqual(brassHeroCard.cardInfo.originPower, brassHeroCard.currentPower);
-        Assert.AreEqual(brassNormalCard.cardInfo.originPower, brassNormalCard.currentPower);
-        Assert.AreEqual(brassHornCard.cardInfo.originPower, brassHornCard.currentPower);
+        Assert.AreEqual(false, result.cardListModel.cardList[0].hasScorch);
+        Assert.AreEqual(true, result.cardListModel.cardList[1].hasScorch);
     }
 
-    // 测试kasa
     [Test]
-    public void Kasa()
+    public void ApplyScorchWood_RemovesMaxPowerCards_MaxIsHero()
     {
-        BattleRowAreaModel battleRowAreaModel = new BattleRowAreaModel(CardBadgeType.Wood);
-        CardModel k1MizoreCard1 = TestGenCards.GetCard(1051); // 铠冢霙，普通(8)
-        CardModel k1MizoreCard2 = TestGenCards.GetCard(1051); // 铠冢霙，普通(8)
-        CardModel k1NozomiCard = TestGenCards.GetCard(1052); // 伞木希美，kasa(7)
+        var row = new BattleRowAreaModel(CardBadgeType.Wood)
+            .AddCard(TestUtil.MakeCard(id: 1, ability: CardAbility.None, originPower: 6))
+            .AddCard(TestUtil.MakeCard(id: 2, ability: CardAbility.None, originPower: 6))
+            .AddCard(TestUtil.MakeCard(id: 3, ability: CardAbility.None, originPower: 7, cardType: CardType.Hero));
+        var result = row.ApplyScorchWood();
 
-        battleRowAreaModel.AddCard(k1MizoreCard1);
-        k1MizoreCard1.AddBuff(CardBuffType.Attack2, 1);
-        Assert.AreEqual(6, battleRowAreaModel.GetCurrentPower());
-        battleRowAreaModel.AddCard(k1MizoreCard2);
-        k1MizoreCard2.AddBuff(CardBuffType.Weather, 1);
-        Assert.AreEqual(7, battleRowAreaModel.GetCurrentPower()); // 6 + 1
-        battleRowAreaModel.AddCard(k1NozomiCard);
-        Assert.AreEqual(33, battleRowAreaModel.GetCurrentPower()); // 13 + 13 + 7
+        Assert.AreEqual(true, result.cardListModel.cardList[0].hasScorch);
+        Assert.AreEqual(true, result.cardListModel.cardList[1].hasScorch);
+        Assert.AreEqual(false, result.cardListModel.cardList[2].hasScorch);
+    }
+
+    [Test]
+    public void ApplyScorchWood_NoRemoval_WhenBelowThreshold()
+    {
+        var row = new BattleRowAreaModel(CardBadgeType.Wood)
+            .AddCard(TestUtil.MakeCard(ability: CardAbility.None, originPower: 5));
+        var result = row.ApplyScorchWood();
+
+        Assert.AreEqual(false, result.cardListModel.cardList[0].hasScorch);
+    }
+
+    [Test]
+    public void SetWeatherBuff_AppliesAndRemovesCorrectly()
+    {
+        var row = new BattleRowAreaModel(CardBadgeType.Percussion)
+            .AddCard(TestUtil.MakeCard(ability: CardAbility.None, originPower: 8));
+        var withBuff = row.SetWeatherBuff(true);
+        Assert.IsTrue(withBuff.cardListModel.cardList.All(c => c.currentPower == 1));
+        Assert.AreEqual(1, withBuff.GetCurrentPower());
+
+        var without = withBuff.SetWeatherBuff(false);
+        Assert.IsTrue(without.cardListModel.cardList.All(c => c.currentPower == c.cardInfo.originPower));
+        Assert.AreEqual(8, without.GetCurrentPower());
+    }
+
+    [Test]
+    public void FindCard_InCardList_ReturnsCard()
+    {
+        // Arrange
+        int cardId = 42;
+        var card = TestUtil.MakeCard(id: cardId);
+        var row = new BattleRowAreaModel(CardBadgeType.Wood)
+            .AddCard(card);
+
+        // Act
+        var found = row.FindCard(cardId);
+
+        // Assert
+        Assert.IsNotNull(found);
+        Assert.AreEqual(cardId, found.cardInfo.id);
+    }
+
+    [Test]
+    public void FindCard_InHornList_ReturnsCard()
+    {
+        // Arrange
+        int cardId = 99;
+        var hornCard = TestUtil.MakeCard(ability: CardAbility.HornUtil,
+            id: cardId);
+        var row = new BattleRowAreaModel(CardBadgeType.Wood)
+            .AddCard(hornCard);
+
+        // Act
+        var found = row.FindCard(cardId);
+
+        // Assert
+        Assert.IsNotNull(found);
+        Assert.AreEqual(cardId, found.cardInfo.id);
+    }
+
+    [Test]
+    public void ReplaceCard_ReplacesExistingCardInRow()
+    {
+        // Arrange
+        var oldCard = TestUtil.MakeCard(originPower: 5, id: 1);
+        var newCard = TestUtil.MakeCard(originPower: 8, id: 2);
+        var model = new BattleRowAreaModel(CardBadgeType.Wood)
+            .AddCard(oldCard);
+
+        // Act
+        var result = model.ReplaceCard(model.FindCard(oldCard.cardInfo.id), newCard);
+
+        // Assert
+        Assert.AreEqual(newCard.cardInfo.id, result.cardListModel.cardList[0].cardInfo.id,
+                        "ReplaceCard 应该将新的卡牌放入同一个位置");
+        Assert.AreEqual(1, result.cardListModel.cardList.Count,
+                        "替换后，列表长度应保持不变");
+    }
+
+    [Test]
+    public void ReplaceCard_AppliesBuffUpdateAfterReplacement()
+    {
+        // Arrange
+        // 我们在行中加入一张具有“Morale”加成能力的卡，以及另一张普通卡
+        var moraleCard = TestUtil.MakeCard(chineseName: "M", originPower: 3, ability: CardAbility.Morale, cardType: CardType.Normal);
+        var normalOld = TestUtil.MakeCard(id: 4, originPower: 2);
+        var normalNew = TestUtil.MakeCard(id: 5, originPower: 7);
+
+        var model = new BattleRowAreaModel(CardBadgeType.Wood)
+            .AddCard(moraleCard)
+            .AddCard(normalOld);
+
+        // 当有一个 Morale 卡时，普通卡的 currentPower 会被设置为 MoraleCount（1）* 原始 + any diffs
+        var beforeReplace = model.cardListModel.cardList.Single(c => c.cardInfo.id == normalOld.cardInfo.id).currentPower;
+        Assert.AreEqual(3, beforeReplace);
+
+        // Act: 用一张点数更高的新卡替换旧卡
+        var result = model.ReplaceCard(model.FindCard(normalOld.cardInfo.id), normalNew);
+
+        // Assert
+        // 替换后 newCard 应在列表里，并且通过 UpdateBuff，newCard.currentPower 会受到 MoraleBuff 的影响
+        Assert.AreEqual(normalNew.cardInfo.id, result.cardListModel.cardList[1].cardInfo.id);
+        var updated = result.cardListModel.cardList.Single(c => c.cardInfo.id.Equals(normalNew.cardInfo.id));
+        Assert.AreEqual(8, updated.currentPower);
     }
 }

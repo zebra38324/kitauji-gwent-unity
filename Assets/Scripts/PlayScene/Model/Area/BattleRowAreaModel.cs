@@ -1,82 +1,89 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
+using System.Collections.Immutable;
+using LanguageExt;
+using static LanguageExt.Prelude;
+
 /**
  * 对战区行区域逻辑
  */
-public class BattleRowAreaModel : RowAreaModel
+public record BattleRowAreaModel
 {
-    private bool hasWeatherBuff_;
-    public bool hasWeatherBuff {
-        get {
-            return hasWeatherBuff_;
-        }
-        set {
-            hasWeatherBuff_ = value;
-            UpdateWeatherBuff();
-        }
+    private static string TAG = "BattleRowAreaModel";
+
+    public CardListModel cardListModel { get; init; } = new CardListModel();
+
+    public SingleCardListModel hornCardListModel { get; init; } = new SingleCardListModel(CardLocation.BattleArea);
+
+    public static readonly Lens<BattleRowAreaModel, CardListModel> Lens_CardListModel = Lens<BattleRowAreaModel, CardListModel>.New(
+        b => b.cardListModel,
+        cardListModel => b => b with { cardListModel = cardListModel }
+    );
+
+    public static readonly Lens<BattleRowAreaModel, ImmutableList<CardModel>> Lens_CardListModel_CardList = lens(Lens_CardListModel, CardListModel.Lens_CardList);
+
+    public CardBadgeType rowType { get; init; }
+
+    public bool hasWeatherBuff { get; init; } = false;
+
+    public BattleRowAreaModel(CardBadgeType type)
+    {
+        rowType = type;
     }
 
-    // 指导老师牌
-    public SingleCardRowAreaModel hornUtilCardArea { get; private set; }
-
-    CardBadgeType rowType = CardBadgeType.None;
-
-    public BattleRowAreaModel(CardBadgeType rowType)
+    public BattleRowAreaModel AddCard(CardModel card)
     {
-        this.rowType = rowType;
-        hasWeatherBuff = false;
-        hornUtilCardArea = new SingleCardRowAreaModel();
-    }
-
-    public override void AddCardList(List<CardModel> newCardList)
-    {
-        foreach (CardModel card in newCardList) {
-            card.cardLocation = CardLocation.BattleArea;
-        }
-        base.AddCardList(newCardList);
-        UpdateBuff();
-    }
-
-    public override void AddCard(CardModel card)
-    {
-        if (card.cardInfo.ability == CardAbility.HornUtil || card.cardInfo.ability == CardAbility.HornBrass) {
-            hornUtilCardArea.AddCard(card);
+        card = card.ChangeCardLocation(CardLocation.BattleArea);
+        var newRecord = this;
+        if (card.cardInfo.ability == CardAbility.HornUtil ||
+            card.cardInfo.ability == CardAbility.HornBrass) {
+            var newHornCardListModel = newRecord.hornCardListModel.AddCard(card) as SingleCardListModel;
+            newRecord = newRecord with {
+                hornCardListModel = newHornCardListModel
+            };
         } else {
             if (card.cardInfo.ability == CardAbility.Kasa) {
-                ApplyKasa();
+                newRecord = newRecord.ApplyKasa();
             }
-            base.AddCard(card);
+            var newCardListModel = newRecord.cardListModel.AddCard(card);
+            newRecord = newRecord with {
+                cardListModel = newCardListModel
+            };
         }
-        card.cardLocation = CardLocation.BattleArea;
-        UpdateBuff();
+        return newRecord.UpdateBuff();
     }
 
-    public override void RemoveCard(CardModel card)
+    public BattleRowAreaModel RemoveCard(CardModel card, out CardModel removedCard)
     {
-        card.RemoveAllBuff();
-        base.RemoveCard(card);
-        UpdateBuff();
+        var newRecord = this;
+        newRecord = newRecord with {
+            cardListModel = cardListModel.RemoveCard(card, out removedCard)
+        };
+        removedCard = removedCard.RemoveAllBuff();
+        return newRecord.UpdateBuff();
     }
 
-    public override void RemoveAllCard()
+    public BattleRowAreaModel RemoveAllCard(out List<CardModel> removedCardList)
     {
-        foreach (CardModel card in cardList) {
-            card.RemoveAllBuff();
-        }
-        base.RemoveAllCard();
-        hornUtilCardArea.RemoveAllCard();
-        UpdateBuff();
+        var newRecord = this;
+        newRecord = newRecord with {
+            cardListModel = cardListModel.RemoveAllCard(out removedCardList),
+            hornCardListModel = hornCardListModel.RemoveAllCard(out var removedHornCardList) as SingleCardListModel
+        };
+        removedCardList = removedCardList.Select(card => card.RemoveAllBuff()).ToList();
+        removedCardList.AddRange(removedHornCardList);
+        return newRecord.UpdateBuff();
     }
 
-    // 伞击技能，木管行总点数大于10，移除点数最高的若干卡牌，并返回移除的卡牌列表
-    public List<CardModel> ApplyScorchWood()
+    // 伞击技能，木管行总点数大于10，将点数最高的卡牌设置Scorch
+    public BattleRowAreaModel ApplyScorchWood()
     {
-        List <CardModel> targetCardList = new List<CardModel>();
         if (rowType != CardBadgeType.Wood || GetCurrentPower() <= 10) {
-            return targetCardList;
+            return this;
         }
+        List<CardModel> targetCardList = new List<CardModel>();
         int maxPower = -1;
-        foreach (CardModel card in cardList) {
+        foreach (CardModel card in cardListModel.cardList) {
             if (card.cardInfo.cardType != CardType.Normal) {
                 continue;
             }
@@ -89,85 +96,138 @@ public class BattleRowAreaModel : RowAreaModel
                 targetCardList.Add(card);
             }
         }
+        var newRecord = this;
         foreach (CardModel card in targetCardList) {
-            RemoveCard(card);
+            var newCard = card.SetScorch();
+            newRecord = Lens_CardListModel_CardList.Set(newRecord.cardListModel.cardList.Replace(card, newCard), newRecord);
         }
-        return targetCardList;
+        return newRecord;
     }
 
-    public override int GetCurrentPower()
+    // 为现有的卡牌调整buff，或者替换
+    public BattleRowAreaModel ReplaceCard(CardModel oldCard, CardModel newCard)
+    {
+        var newRecord = this;
+        var oldCardList = newRecord.cardListModel.cardList;
+        if (oldCardList.Contains(oldCard)) {
+            newRecord = Lens_CardListModel_CardList.Set(oldCardList.Replace(oldCard, newCard), newRecord);
+        }
+        return newRecord.UpdateBuff();
+    }
+
+    public int GetCurrentPower()
     {
         int sum = 0;
-        foreach (CardModel card in cardList) {
+        foreach (CardModel card in cardListModel.cardList) {
             sum += card.currentPower;
         }
         return sum;
     }
 
-    // 更新天气、horn、morale等行生效的buff
-    private void UpdateBuff()
+    public BattleRowAreaModel SetWeatherBuff(bool flag)
     {
-        UpdateMoraleBuff();
-        UpdateHornBuff();
-        UpdateWeatherBuff();
+        var newRecord = this;
+        if (flag == hasWeatherBuff) {
+            return newRecord;
+        }
+        newRecord = newRecord with {
+            hasWeatherBuff = flag
+        };
+        return newRecord.UpdateBuff();
     }
 
-    private void UpdateMoraleBuff()
+    public CardModel FindCard(int id)
     {
+        foreach (CardModel card in cardListModel.cardList) {
+            if (card.cardInfo.id == id) {
+                return card;
+            }
+        }
+        foreach (CardModel card in hornCardListModel.cardList) {
+            if (card.cardInfo.id == id) {
+                return card;
+            }
+        }
+        KLog.E(TAG, "FindCard: invalid id: " + id);
+        return null;
+    }
+
+    private BattleRowAreaModel ApplyKasa()
+    {
+        var newRecord = this;
+        foreach (CardModel card in newRecord.cardListModel.cardList) {
+            if (card.cardInfo.chineseName == "铠冢霙" && card.cardInfo.cardType == CardType.Normal) {
+                var newCard = card.RemoveNormalDebuff()
+                    .AddBuff(CardBuffType.Kasa, 1);
+                return Lens_CardListModel_CardList.Set(newRecord.cardListModel.cardList.Replace(card, newCard), newRecord);
+            }
+        }
+        return newRecord;
+    }
+
+    private BattleRowAreaModel UpdateBuff()
+    {
+        var newRecord = this;
+        newRecord = newRecord.UpdateMoraleBuff();
+        newRecord = newRecord.UpdateHornBuff();
+        newRecord = newRecord.UpdateWeatherBuff();
+        return newRecord;
+    }
+
+    private BattleRowAreaModel UpdateMoraleBuff()
+    {
+        var newRecord = this;
         int moraleCount = 0;
-        foreach (CardModel card in cardList) {
+        foreach (CardModel card in newRecord.cardListModel.cardList) {
             if (card.cardInfo.ability == CardAbility.Morale) {
                 moraleCount++;
             }
         }
-        foreach (CardModel card in cardList) {
+        var newCardList = newRecord.cardListModel.cardList.Select(card => {
+            var newCard = card;
             if (card.cardInfo.ability != CardAbility.Morale) {
-                card.SetBuff(CardBuffType.Morale, moraleCount);
+                newCard = card.SetBuff(CardBuffType.Morale, moraleCount);
             } else if (moraleCount > 0) {
-                card.SetBuff(CardBuffType.Morale, moraleCount - 1);
+                newCard = card.SetBuff(CardBuffType.Morale, moraleCount - 1);
             }
-        }
+            return newCard;
+        }).ToImmutableList();
+        return Lens_CardListModel_CardList.Set(newCardList, newRecord);
     }
 
-    private void UpdateHornBuff()
+    private BattleRowAreaModel UpdateHornBuff()
     {
-        int hornCount = 0;
-        foreach (CardModel card in cardList) {
+        var newRecord = this;
+        int hornCount = hornCardListModel.cardList.Count;
+        foreach (CardModel card in newRecord.cardListModel.cardList) {
             if (card.cardInfo.ability == CardAbility.Horn) {
                 hornCount++;
             }
         }
-        if (hornUtilCardArea.cardList.Count > 0) {
-            hornCount += 1;
-        }
-        foreach (CardModel card in cardList) {
+        var newCardList = newRecord.cardListModel.cardList.Select(card => {
+            var newCard = card;
             if (card.cardInfo.ability != CardAbility.Horn) {
-                card.SetBuff(CardBuffType.Horn, hornCount);
+                newCard = card.SetBuff(CardBuffType.Horn, hornCount);
             } else if (hornCount > 0) {
-                card.SetBuff(CardBuffType.Horn, hornCount - 1);
+                newCard = card.SetBuff(CardBuffType.Horn, hornCount - 1);
             }
-        }
+            return newCard;
+        }).ToImmutableList();
+        return Lens_CardListModel_CardList.Set(newCardList, newRecord);
     }
 
-    private void UpdateWeatherBuff()
+    private BattleRowAreaModel UpdateWeatherBuff()
     {
-        foreach (CardModel card in cardList) {
-            if (hasWeatherBuff) {
-                card.SetBuff(CardBuffType.Weather, 1);
+        var newRecord = this;
+        var newCardList = newRecord.cardListModel.cardList.Select(card => {
+            var newCard = card;
+            if (newRecord.hasWeatherBuff) {
+                newCard = card.SetBuff(CardBuffType.Weather, 1);
             } else {
-                card.RemoveBuff(CardBuffType.Weather);
+                newCard = card.RemoveBuff(CardBuffType.Weather);
             }
-        }
-    }
-
-    private void ApplyKasa()
-    {
-        foreach (CardModel card in cardList) {
-            if (card.cardInfo.chineseName == "铠冢霙" && card.cardInfo.cardType == CardType.Normal) {
-                card.RemoveBuff(CardBuffType.Weather);
-                card.RemoveNormalDebuff();
-                card.AddBuff(CardBuffType.Kasa, 1);
-            }
-        }
+            return newCard;
+        }).ToImmutableList();
+        return Lens_CardListModel_CardList.Set(newCardList, newRecord);
     }
 }

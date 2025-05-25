@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,6 +13,9 @@ public class PlaySceneManager : MonoBehaviour
     private static string TAG = "PlaySceneManager";
 
     public static PlaySceneManager Instance;
+
+    public delegate void UpdateModelDelegate(WholeAreaModel wholeAreaModel);
+    public UpdateModelDelegate UpdateModelBoradcast;
 
     private GameObject discardArea;
 
@@ -24,6 +28,8 @@ public class PlaySceneManager : MonoBehaviour
     private GameObject gameFinishAreaView;
     private GameObject weatherCardAreaView;
     private GameObject toastView; // 普通toast
+    private GameObject selfPlayStatView;
+    private GameObject enemyPlayStatView;
 
     private GameObject cardPrefab;
 
@@ -101,8 +107,8 @@ public class PlaySceneManager : MonoBehaviour
         playSceneModel = new PlaySceneModel(Convert.ToBoolean(PlayerPrefs.GetInt(PlayerPrefsKey.PLAY_SCENE_IS_HOST.ToString())),
             PlayerPrefs.GetString(PlayerPrefsKey.PLAY_SCENE_SELF_NAME.ToString()),
             PlayerPrefs.GetString(PlayerPrefsKey.PLAY_SCENE_ENEMY_NAME.ToString()),
-            (CardGroup)PlayerPrefs.GetInt(PlayerPrefsKey.PLAY_SCENE_SELF_GROUP.ToString()));
-        playSceneModel.SfxCallback += AudioManager.Instance.PlaySFX;
+            (CardGroup)PlayerPrefs.GetInt(PlayerPrefsKey.PLAY_SCENE_SELF_GROUP.ToString()),
+            UpdateModel);
         if (selfPlayArea == null) {
             selfPlayArea = GameObject.Find("SelfPlayArea");
         }
@@ -135,6 +141,12 @@ public class PlaySceneManager : MonoBehaviour
         }
         if (toastView == null) {
             toastView = GameObject.Find("Canvas/Background/ToastView");
+        }
+        if (selfPlayStatView == null) {
+            selfPlayStatView = GameObject.Find("Canvas/Background/SelfPlayStatView");
+        }
+        if (enemyPlayStatView == null) {
+            enemyPlayStatView = GameObject.Find("Canvas/Background/EnemyPlayStatView");
         }
 
         isPVP = Convert.ToBoolean(PlayerPrefs.GetInt(PlayerPrefsKey.PLAY_SCENE_IS_PVP.ToString()));
@@ -179,13 +191,13 @@ public class PlaySceneManager : MonoBehaviour
                 break;
             }
             case SceneMsg.ShowDiscardArea: {
-                DiscardAreaModel discardAreaModel = (DiscardAreaModel)list[0];
+                bool isSelf = (bool)list[0];
                 bool isMedic = (bool)list[1];
-                discardArea.GetComponent<DiscardAreaView>().ShowArea(discardAreaModel, isMedic);
+                discardArea.GetComponent<DiscardAreaView>().ShowArea(isSelf, isMedic);
                 break;
             }
             case SceneMsg.HideDiscardArea: {
-                if (playSceneModel.tracker.actionState == PlayStateTracker.ActionState.MEDICING && playSceneModel.tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION) {
+                if (playSceneModel.wholeAreaModel.gameState.actionState == GameState.ActionState.MEDICING && playSceneModel.wholeAreaModel.gameState.curState == GameState.State.WAIT_SELF_ACTION) {
                     // medic时，不复活直接关闭需要通知转状态
                     playSceneModel.InterruptAction();
                 }
@@ -194,33 +206,27 @@ public class PlaySceneManager : MonoBehaviour
             }
             case SceneMsg.ChooseCard: {
                 CardModel cardModel = (CardModel)list[0];
-                if (playSceneModel.EnableChooseCard(true) && cardModel.selectType != CardSelectType.None &&
-                    (cardModel.cardLocation != CardLocation.LeaderCardArea ||
-                     (playSceneModel.selfSinglePlayerAreaModel.leaderCardAreaModel.cardList.Count > 0 &&
-                      playSceneModel.selfSinglePlayerAreaModel.leaderCardAreaModel.cardList[0] == cardModel))) {
-                    // TODO: 很丑陋的fix
+                if (playSceneModel.EnableChooseCard() && cardModel.cardSelectType != CardSelectType.None && cardModel.cardLocation != CardLocation.EnemyLeaderCardArea) {
                     // self turn时才允许选择
                     playSceneModel.ChooseCard(cardModel);
                     // 复活技能流程
-                    if (playSceneModel.tracker.actionState == PlayStateTracker.ActionState.MEDICING) {
-                        HandleMessage(SceneMsg.ShowDiscardArea, playSceneModel.selfSinglePlayerAreaModel.discardAreaModel, true);
-                    } else if (discardArea.GetComponent<DiscardAreaView>().model != null) {
+                    if (playSceneModel.wholeAreaModel.gameState.actionState == GameState.ActionState.MEDICING) {
+                        HandleMessage(SceneMsg.ShowDiscardArea, true, true);
+                    } else if (discardArea.GetComponent<DiscardAreaView>().isShowing) {
                         HandleMessage(SceneMsg.HideDiscardArea);
                     }
                     // 选择指导老师的行
-                    if (playSceneModel.tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION &&
-                        playSceneModel.tracker.actionState == PlayStateTracker.ActionState.HORN_UTILING) {
+                    if (playSceneModel.wholeAreaModel.gameState.curState == GameState.State.WAIT_SELF_ACTION &&
+                        playSceneModel.wholeAreaModel.gameState.actionState == GameState.ActionState.HORN_UTILING) {
                         HandleMessage(SceneMsg.ShowHornAreaViewButton);
                     }
-                    UpdateUI();
                 }
                 break;
             }
             case SceneMsg.ClickPass: {
-                if (playSceneModel.IsTurn(true)) {
+                if (playSceneModel.EnableChooseCard()) {
                     // self turn时才允许选择
                     playSceneModel.Pass();
-                    UpdateUI();
                 }
                 break;
             }
@@ -229,10 +235,8 @@ public class PlaySceneManager : MonoBehaviour
                 break;
             }
             case SceneMsg.ClickHornAreaViewButton: {
-                BattleRowAreaModel battleRowAreaModel = (BattleRowAreaModel)list[0];
-                playSceneModel.ChooseHornUtilArea(battleRowAreaModel);
+                playSceneModel.ChooseHornUtilArea((CardBadgeType)list[0]);
                 HandleMessage(SceneMsg.HideHornAreaViewButton);
-                UpdateUI();
                 break;
             }
             case SceneMsg.ShowHornAreaViewButton: {
@@ -251,11 +255,10 @@ public class PlaySceneManager : MonoBehaviour
             }
             case SceneMsg.PVPEnemyExit: {
                 // 对方退出，弹toast提示。并暂停各种倒计时
-                playSceneModel.actionTextModel.EnemyExit();
-                UpdateUI();
+                actionTextAreaView.GetComponent<ActionTextAreaView>().AddText(string.Format("<color=red>{1}</color> 退出房间\n", playSceneModel.wholeAreaModel.playTracker.enemyPlayerInfo.name));
                 isAbort = true;
-                selfPlayArea.GetComponent<SinglePlayerAreaView>().playStat.GetComponent<PlayStatAreaView>().isAbort = true;
-                enemyPlayArea.GetComponent<SinglePlayerAreaView>().playStat.GetComponent<PlayStatAreaView>().isAbort = true;
+                selfPlayStatView.GetComponent<PlayStatAreaView>().isAbort = true;
+                enemyPlayStatView.GetComponent<PlayStatAreaView>().isAbort = true;
                 toastView.GetComponent<ToastView>().ShowToast("对方已退出房间，请退出");
                 break;
             }
@@ -264,13 +267,12 @@ public class PlaySceneManager : MonoBehaviour
 
     private IEnumerator StartGame()
     {
-        while (playSceneModel.tracker.curState != PlayStateTracker.State.WAIT_INIT_HAND_CARD) {
+        while (playSceneModel.wholeAreaModel.gameState.curState != GameState.State.WAIT_INIT_HAND_CARD) {
             yield return null;
         }
         playSceneModel.DrawInitHandCard();
-        UpdateUI();
-        while (playSceneModel.tracker.curState != PlayStateTracker.State.WAIT_SELF_ACTION &&
-               playSceneModel.tracker.curState != PlayStateTracker.State.WAIT_ENEMY_ACTION) {
+        while (playSceneModel.wholeAreaModel.gameState.curState != GameState.State.WAIT_SELF_ACTION &&
+               playSceneModel.wholeAreaModel.gameState.curState != GameState.State.WAIT_ENEMY_ACTION) {
             if (!initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().isSelfConfirmed && 
                 KTime.CurrentMill() - initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().startTs > InitReDrawHandCardAreaView.MAX_TIME) {
                 // 超时未操作，结束重抽手牌
@@ -279,83 +281,92 @@ public class PlaySceneManager : MonoBehaviour
             }
             yield return null;
         }
-        UpdateUI();
         StartCoroutine(ModelCoroutine());
     }
 
     private void InitViewModel()
     {
-        selfPlayArea.GetComponent<SinglePlayerAreaView>().model = playSceneModel.selfSinglePlayerAreaModel;
-        enemyPlayArea.GetComponent<SinglePlayerAreaView>().model = playSceneModel.enemySinglePlayerAreaModel;
-        selfPlayArea.GetComponent<SinglePlayerAreaView>().playStat.GetComponent<PlayStatAreaView>().Init(playSceneModel, true);
-        enemyPlayArea.GetComponent<SinglePlayerAreaView>().playStat.GetComponent<PlayStatAreaView>().Init(playSceneModel, false);
-        initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().model = playSceneModel.selfSinglePlayerAreaModel;
-        actionTextAreaView.GetComponent<ActionTextAreaView>().actionTextModel = playSceneModel.actionTextModel;
-        actionToastAreaView.GetComponent<ActionToastAreaView>().actionTextModel = playSceneModel.actionTextModel;
-        gameFinishAreaView.GetComponent<GameFinishAreaView>().tracker = playSceneModel.tracker;
-        weatherCardAreaView.GetComponent<WeatherCardAreaView>().weatherCardAreaModel = playSceneModel.weatherCardAreaModel;
-        UpdateUI();
+        UpdateModel(null);
     }
 
-    private void UpdateUI()
+    private void UpdateModel(List<ActionEvent> actionEventList)
     {
-        selfPlayArea.GetComponent<SinglePlayerAreaView>().UpdateUI();
-        enemyPlayArea.GetComponent<SinglePlayerAreaView>().UpdateUI();
-        initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().UpdateUI();
-        if (playSceneModel.tracker.curState != PlayStateTracker.State.WAIT_BACKUP_INFO &&
-            playSceneModel.tracker.curState != PlayStateTracker.State.WAIT_INIT_HAND_CARD &&
-            playSceneModel.tracker.curState != PlayStateTracker.State.DOING_INIT_HAND_CARD) {
+        WholeAreaModel model = playSceneModel.wholeAreaModel;
+        if (UpdateModelBoradcast != null) {
+            UpdateModelBoradcast(model); // 要先更新card的状态
+        }
+        selfPlayArea.GetComponent<SinglePlayerAreaView>().UpdateModel(model.selfSinglePlayerAreaModel);
+        enemyPlayArea.GetComponent<SinglePlayerAreaView>().UpdateModel(model.enemySinglePlayerAreaModel);
+        selfPlayStatView.GetComponent<PlayStatAreaView>().UpdateModel(model, true);
+        enemyPlayStatView.GetComponent<PlayStatAreaView>().UpdateModel(model, false);
+        initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().UpdateModel(model.selfSinglePlayerAreaModel.handCardAreaModel.initHandCardListModel);
+        weatherCardAreaView.GetComponent<WeatherCardAreaView>().UpdateModel(model.weatherAreaModel);
+        discardArea.GetComponent<DiscardAreaView>().UpdateModel(model.selfSinglePlayerAreaModel.discardAreaModel, model.enemySinglePlayerAreaModel.discardAreaModel);
+        gameFinishAreaView.GetComponent<GameFinishAreaView>().tracker = playSceneModel.wholeAreaModel.playTracker;
+        if (model.gameState.curState != GameState.State.WAIT_BACKUP_INFO &&
+            model.gameState.curState != GameState.State.WAIT_INIT_HAND_CARD) {
             initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().Close();
         }
-        actionTextAreaView.GetComponent<ActionTextAreaView>().UpdateUI();
-        weatherCardAreaView.GetComponent<WeatherCardAreaView>().UpdateUI();
+        if (actionEventList == null) {
+            return;
+        }
+        foreach (ActionEvent actionEvent in actionEventList) {
+            switch (actionEvent.type) {
+                case ActionEvent.Type.ActionText: {
+                    actionTextAreaView.GetComponent<ActionTextAreaView>().AddText((string)actionEvent.args[0]);
+                    break;
+                }
+                case ActionEvent.Type.Toast: {
+                    actionToastAreaView.GetComponent<ActionToastAreaView>().showText = (string)actionEvent.args[0];
+                    break;
+                }
+                case ActionEvent.Type.Sfx: {
+                    AudioManager.Instance.PlaySFX((AudioManager.SFXType)actionEvent.args[0]);
+                    break;
+                }
+            }
+        }
     }
 
     // 监听playSceneModel的状态，状态变化时更新UI
     private IEnumerator ModelCoroutine()
     {
-        while (playSceneModel.tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION ||
-            playSceneModel.tracker.curState == PlayStateTracker.State.WAIT_ENEMY_ACTION ||
-            playSceneModel.tracker.curState == PlayStateTracker.State.SET_FINFISH) {
+        while (playSceneModel.wholeAreaModel.gameState.curState == GameState.State.WAIT_SELF_ACTION ||
+            playSceneModel.wholeAreaModel.gameState.curState == GameState.State.WAIT_ENEMY_ACTION ||
+            playSceneModel.wholeAreaModel.gameState.curState == GameState.State.SET_FINFISH) {
             if (isAbort) {
                 isModelCoroutineFinish = true;
                 KLog.I(TAG, "ModelCoroutine: isAbort, break loop");
                 yield break;
             }
-            if (playSceneModel.hasEnemyUpdate) {
-                playSceneModel.hasEnemyUpdate = false;
-                UpdateUI();
-            }
-            if (playSceneModel.tracker.curState == PlayStateTracker.State.WAIT_SELF_ACTION &&
-                KTime.CurrentMill() - playSceneModel.tracker.stateChangeTs > PlayStateTracker.TURN_TIME) {
+            if (playSceneModel.wholeAreaModel.gameState.curState == GameState.State.WAIT_SELF_ACTION &&
+                KTime.CurrentMill() - playSceneModel.wholeAreaModel.gameState.stateChangeTs > GameState.TURN_TIME) {
                 KLog.I(TAG, "ListenModel: self action timeout");
                 // 超时未操作
                 // 若还未出牌，则pass
                 // 若还在技能流程中，则中止流程并流转状态，但不pass
                 // 时序操作，尽量跟随unity每帧的更新逻辑走，因此不放在model里。对应的，不考虑ai超时未操作的情况
-                if (playSceneModel.tracker.actionState == PlayStateTracker.ActionState.None) {
+                if (playSceneModel.wholeAreaModel.gameState.actionState == GameState.ActionState.None) {
                     playSceneModel.Pass();
-                } else if (playSceneModel.tracker.actionState == PlayStateTracker.ActionState.MEDICING) {
+                } else if (playSceneModel.wholeAreaModel.gameState.actionState == GameState.ActionState.MEDICING) {
                     HandleMessage(SceneMsg.HideDiscardArea);
-                } else if (playSceneModel.tracker.actionState == PlayStateTracker.ActionState.HORN_UTILING) {
+                } else if (playSceneModel.wholeAreaModel.gameState.actionState == GameState.ActionState.HORN_UTILING) {
                     HandleMessage(SceneMsg.HideHornAreaViewButton);
                     playSceneModel.InterruptAction();
-                } else if (playSceneModel.tracker.actionState == PlayStateTracker.ActionState.ATTACKING ||
-                    playSceneModel.tracker.actionState == PlayStateTracker.ActionState.DECOYING ||
-                    playSceneModel.tracker.actionState == PlayStateTracker.ActionState.MONAKAING) {
+                } else if (playSceneModel.wholeAreaModel.gameState.actionState == GameState.ActionState.ATTACKING ||
+                    playSceneModel.wholeAreaModel.gameState.actionState == GameState.ActionState.DECOYING ||
+                    playSceneModel.wholeAreaModel.gameState.actionState == GameState.ActionState.MONAKAING) {
                     playSceneModel.InterruptAction();
                 }
-                UpdateUI();
             }
             yield return null;
         }
         // 此时state理论上必为stop
-        if (playSceneModel.tracker.curState != PlayStateTracker.State.STOP) {
-            KLog.E(TAG, "ModelCoroutine: break loop, state invalid = " + playSceneModel.tracker.curState);
+        if (playSceneModel.wholeAreaModel.gameState.curState != GameState.State.STOP) {
+            KLog.E(TAG, "ModelCoroutine: break loop, state invalid = " + playSceneModel.wholeAreaModel.gameState.curState);
         }
         // 展示结算页面
         KLog.I(TAG, "ModelCoroutine: game finish");
-        UpdateUI();
         gameFinishAreaView.SetActive(true);
         isModelCoroutineFinish = true;
     }

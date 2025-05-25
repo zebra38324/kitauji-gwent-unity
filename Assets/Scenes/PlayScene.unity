@@ -1971,11 +1971,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &623850304 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1784742120332540476, guid: 88fa17d0ee4891a4b8ded994da041d82, type: 3}
-  m_PrefabInstance: {fileID: 1605937421}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &625461727
 GameObject:
   m_ObjectHideFlags: 0
@@ -2563,11 +2558,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b6f5d5b45f5df274aa0c1e24bf26858b, type: 3}
---- !u!1 &775754659 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1784742120332540476, guid: 88fa17d0ee4891a4b8ded994da041d82, type: 3}
-  m_PrefabInstance: {fileID: 1784742119964158367}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &775754660 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1784742120332540475, guid: 88fa17d0ee4891a4b8ded994da041d82, type: 3}
@@ -2624,6 +2614,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actionToastBackground: {fileID: 1276153668}
   actionToastText: {fileID: 219179694}
+  showText: 
 --- !u!1 &789326007
 GameObject:
   m_ObjectHideFlags: 0
@@ -3226,7 +3217,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1693619417}
   m_HandleRect: {fileID: 1693619416}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -3405,11 +3396,13 @@ RectTransform:
   m_Children:
   - {fileID: 798728802}
   - {fileID: 1774306432}
+  - {fileID: 775754660}
+  - {fileID: 1605937422}
   - {fileID: 491948970}
   - {fileID: 296122537}
   - {fileID: 2051701124}
-  - {fileID: 246932195}
   - {fileID: 162086082}
+  - {fileID: 246932195}
   - {fileID: 549562059}
   - {fileID: 1842093214}
   - {fileID: 778866180}
@@ -3898,7 +3891,6 @@ RectTransform:
   - {fileID: 267978436}
   - {fileID: 1301925239}
   - {fileID: 1490261392}
-  - {fileID: 1605937422}
   m_Father: {fileID: 491948970}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -3923,7 +3915,6 @@ MonoBehaviour:
   percussionRow: {fileID: 1947284397}
   handCardRow: {fileID: 0}
   offFieldCardsArea: {fileID: 418442090}
-  playStat: {fileID: 623850304}
   leaderArea: {fileID: 1806104535}
 --- !u!1 &1254062862
 GameObject:
@@ -4600,7 +4591,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1173754401}
+    m_TransformParent: {fileID: 973567613}
     m_Modifications:
     - target: {fileID: 1784742120332540475, guid: 88fa17d0ee4891a4b8ded994da041d82, type: 3}
       propertyPath: m_Pivot.x
@@ -4656,23 +4647,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1784742120332540475, guid: 88fa17d0ee4891a4b8ded994da041d82, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1784742120332540475, guid: 88fa17d0ee4891a4b8ded994da041d82, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1784742120332540475, guid: 88fa17d0ee4891a4b8ded994da041d82, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1784742120332540475, guid: 88fa17d0ee4891a4b8ded994da041d82, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -755
+      value: -709.57404
       objectReference: {fileID: 0}
     - target: {fileID: 1784742120332540475, guid: 88fa17d0ee4891a4b8ded994da041d82, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -101.55
+      value: 215.89998
       objectReference: {fileID: 0}
     - target: {fileID: 1784742120332540475, guid: 88fa17d0ee4891a4b8ded994da041d82, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -4688,7 +4679,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1784742120332540476, guid: 88fa17d0ee4891a4b8ded994da041d82, type: 3}
       propertyPath: m_Name
-      value: PlayStat
+      value: EnemyPlayStatView
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4733,7 +4724,6 @@ RectTransform:
   - {fileID: 419396984}
   - {fileID: 316367911}
   - {fileID: 738669547}
-  - {fileID: 775754660}
   - {fileID: 121925421}
   - {fileID: 1002587175}
   m_Father: {fileID: 491948970}
@@ -4760,7 +4750,6 @@ MonoBehaviour:
   percussionRow: {fileID: 682698323}
   handCardRow: {fileID: 121925420}
   offFieldCardsArea: {fileID: 968114356}
-  playStat: {fileID: 775754659}
   leaderArea: {fileID: 1002587174}
 --- !u!1001 &1691119000
 PrefabInstance:
@@ -5946,7 +5935,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1636682483}
+    m_TransformParent: {fileID: 973567613}
     m_Modifications:
     - target: {fileID: 1784742120332540475, guid: 88fa17d0ee4891a4b8ded994da041d82, type: 3}
       propertyPath: m_Pivot.x
@@ -6014,11 +6003,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1784742120332540475, guid: 88fa17d0ee4891a4b8ded994da041d82, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -755
+      value: -709.57404
       objectReference: {fileID: 0}
     - target: {fileID: 1784742120332540475, guid: 88fa17d0ee4891a4b8ded994da041d82, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -84.80459
+      value: -162.86055
       objectReference: {fileID: 0}
     - target: {fileID: 1784742120332540475, guid: 88fa17d0ee4891a4b8ded994da041d82, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -6034,7 +6023,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1784742120332540476, guid: 88fa17d0ee4891a4b8ded994da041d82, type: 3}
       propertyPath: m_Name
-      value: PlayStat
+      value: SelfPlayStatView
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

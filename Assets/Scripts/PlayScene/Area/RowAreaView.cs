@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,16 +8,7 @@ using UnityEngine;
  */
 public class RowAreaView : MonoBehaviour
 {
-    private RowAreaModel rowAreaModel_;
-    public RowAreaModel rowAreaModel {
-        get {
-            return rowAreaModel_;
-        }
-        set {
-            rowAreaModel_ = value;
-            Init();
-        }
-    }
+    private CardListModel cardListModel;
 
     protected float areaWidth;
     protected float areaHeight;
@@ -33,25 +25,33 @@ public class RowAreaView : MonoBehaviour
         
     }
 
-    // 每次操作完，更新ui
-    public void UpdateUI()
+    // model变化时，尝试更新ui
+    public void UpdateModel(CardListModel model)
     {
+        if (cardListModel == model) {
+            return;
+        }
+        bool isFirstSet = cardListModel == null;
+        cardListModel = model;
+        if (isFirstSet) {
+            Init();
+        }
         List<GameObject> removeList = new List<GameObject>();
         for (int i = 0; i < gameObject.transform.childCount; i++) {
             GameObject child = gameObject.transform.GetChild(i).gameObject;
-            if (child.GetComponent<CardDisplay>().cardModel.cardLocation == CardLocation.None) {
+            if ((cardListModel.cardLocation == CardLocation.None && child.GetComponent<CardDisplay>().cardModel.cardLocation == CardLocation.None) ||
+                child.GetComponent<CardDisplay>().cardModel.cardLocation != cardListModel.cardLocation) {
                 removeList.Add(child);
             }
         }
         foreach (GameObject card in removeList) {
-            // location为null，需要从ui上移除
+            // location不在当前area，需要从ui上移除
             card.transform.SetParent(null);
         }
-        foreach (CardModel cardModel in rowAreaModel.cardList) {
+        foreach (CardModel cardModel in cardListModel.cardList) {
             GameObject card = CardViewCollection.Instance.Get(cardModel);
             card.transform.SetParent(gameObject.transform);
             SetCardSize(card);
-            card.GetComponent<CardDisplay>().UpdateUI();
         }
         ReArrange();
     }
@@ -75,24 +75,24 @@ public class RowAreaView : MonoBehaviour
     // 添加或移出卡片时，重新排布位置
     private void ReArrange()
     {
-        if (rowAreaModel.cardList.Count == 0) {
+        if (cardListModel.cardList.Count == 0) {
             return;
         }
-        GameObject firstCard = CardViewCollection.Instance.Get(rowAreaModel.cardList[0]);
+        GameObject firstCard = CardViewCollection.Instance.Get(cardListModel.cardList[0]);
         float cardWidth = firstCard.transform.localScale.x * firstCard.GetComponent<RectTransform>().rect.width;
         float currentPosition = 0f;
         float gap = 5f; // 左右gap
         float step = 0f;
         if (!IsAreaFull(gap)) {
-            currentPosition = -(cardWidth + gap) * rowAreaModel.cardList.Count / 2;
+            currentPosition = -(cardWidth + gap) * cardListModel.cardList.Count / 2;
             step = cardWidth + gap;
         } else {
             currentPosition = -(areaWidth - gap) / 2;
-            step = (areaWidth - gap - cardWidth) / (rowAreaModel.cardList.Count - 1); // step * count + (width - step) = area - gap
+            step = (areaWidth - gap - cardWidth) / (cardListModel.cardList.Count - 1); // step * count + (width - step) = area - gap
         }
 
         // 重新排布位置
-        foreach (CardModel cardModel in rowAreaModel.cardList) {
+        foreach (CardModel cardModel in cardListModel.cardList) {
             GameObject card = CardViewCollection.Instance.Get(cardModel);
             card.GetComponent<CardDisplay>().UpdatePosition(new Vector3(currentPosition, 0, 0));
             currentPosition += step;
@@ -102,11 +102,11 @@ public class RowAreaView : MonoBehaviour
     // 是否已放满，放满之后要进行堆叠放置
     private bool IsAreaFull(float gap = 5f)
     {
-        if (rowAreaModel.cardList.Count == 0) {
+        if (cardListModel.cardList.Count == 0) {
             return false;
         }
-        GameObject firstCard = CardViewCollection.Instance.Get(rowAreaModel.cardList[0]);
+        GameObject firstCard = CardViewCollection.Instance.Get(cardListModel.cardList[0]);
         float cardWidth = firstCard.transform.localScale.x * firstCard.GetComponent<RectTransform>().rect.width;
-        return (cardWidth + gap) * rowAreaModel.cardList.Count > areaWidth;
+        return (cardWidth + gap) * cardListModel.cardList.Count > areaWidth;
     }
 }

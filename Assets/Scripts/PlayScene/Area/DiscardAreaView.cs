@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -16,21 +18,15 @@ public class DiscardAreaView : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     private bool isPointerInside = false;
 
-    private DiscardAreaModel model_;
-    public DiscardAreaModel model {
-        get {
-            return model_;
-        }
-        private set {
-            model_ = value;
-            if (model_ == null) {
-                return;
-            }
-            row0.GetComponent<RowAreaView>().rowAreaModel = model_.rowAreaList[0];
-            row1.GetComponent<RowAreaView>().rowAreaModel = model_.rowAreaList[1];
-            row2.GetComponent<RowAreaView>().rowAreaModel = model_.rowAreaList[2];
-        }
-    }
+    public bool isShowing { get; private set; } = false;
+
+    private bool showSelf = false;
+
+    private bool isMedic = false;
+
+    private DiscardAreaModel selfDiscardAreaModel;
+
+    private DiscardAreaModel enemyDiscardAreaModel;
 
     // Start is called before the first frame update
     void Start()
@@ -48,14 +44,23 @@ public class DiscardAreaView : MonoBehaviour, IPointerEnterHandler, IPointerExit
         }
     }
 
-    // 是否是Medic技能触发的展示
-    public void ShowArea(DiscardAreaModel discardAreaModel, bool isMedic)
+    // model变化时，尝试更新ui
+    public void UpdateModel(DiscardAreaModel selfModel, DiscardAreaModel enemyModel)
     {
-        model = discardAreaModel;
-        model.SetRow(isMedic);
-        row0.GetComponent<RowAreaView>().UpdateUI();
-        row1.GetComponent<RowAreaView>().UpdateUI();
-        row2.GetComponent<RowAreaView>().UpdateUI();
+        if (selfDiscardAreaModel == selfModel && enemyDiscardAreaModel == enemyModel) {
+            return;
+        }
+        selfDiscardAreaModel = selfModel;
+        enemyDiscardAreaModel = enemyModel;
+        UpdateUI();
+    }
+
+    public void ShowArea(bool showSelf_, bool isMedic_)
+    {
+        isShowing = true;
+        showSelf = showSelf_;
+        isMedic = isMedic_;
+        UpdateUI();
         if (isMedic) {
             tipText.GetComponent<TextMeshProUGUI>().text = medicTip + "\n" + defaultTip;
         }
@@ -64,19 +69,15 @@ public class DiscardAreaView : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void HideArea()
     {
+        isShowing = false;
         // 先把ui移除
-        foreach (CardModel cardModel in model.cardList) {
+        DiscardAreaModel model = showSelf ? selfDiscardAreaModel : enemyDiscardAreaModel;
+        foreach (CardModel cardModel in model.cardListModel.cardList) {
             GameObject card = CardViewCollection.Instance.Get(cardModel);
             card.transform.SetParent(null);
         }
-        // 再清除model
-        model.ClearRow();
-        row0.GetComponent<RowAreaView>().UpdateUI();
-        row1.GetComponent<RowAreaView>().UpdateUI();
-        row2.GetComponent<RowAreaView>().UpdateUI();
         gameObject.SetActive(false);
         tipText.GetComponent<TextMeshProUGUI>().text = defaultTip;
-        model = null;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -87,5 +88,17 @@ public class DiscardAreaView : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public void OnPointerExit(PointerEventData eventData)
     {
         isPointerInside = false;
+    }
+
+    private void UpdateUI()
+    {
+        if (!isShowing) {
+            return;
+        }
+        DiscardAreaModel model = showSelf ? selfDiscardAreaModel : enemyDiscardAreaModel;
+        List<List<CardModel>> showList = model.GetShowList(isMedic);
+        row0.GetComponent<RowAreaView>().UpdateModel(new CardListModel().AddCardList(showList[0].ToImmutableList()));
+        row1.GetComponent<RowAreaView>().UpdateModel(new CardListModel().AddCardList(showList[1].ToImmutableList()));
+        row2.GetComponent<RowAreaView>().UpdateModel(new CardListModel().AddCardList(showList[2].ToImmutableList()));
     }
 }

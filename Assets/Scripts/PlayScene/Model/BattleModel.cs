@@ -9,7 +9,7 @@ using UnityEngine;
  * 对战框架：
  *      涉及方：host、player
  *      逻辑流程：
- *          1. host、player初始化PlaySceneModel，生成各自卡牌的id（包括备选卡牌）
+ *          1. host、player初始化PlaySceneModelOld，生成各自卡牌的id（包括备选卡牌）
  *          2. host、player将各自卡牌情况（牌组信息 + infoId + id）发送至对方。接收对方的卡牌infoId+id组合后，生成CardModel
  *          3. host、player各自抽取自己的手牌，并将手牌信息（id）发送至对方
  *          4. host向player发送开始整场游戏的信息，并附带先后手信息
@@ -24,7 +24,7 @@ using UnityEngine;
  *          2. BattleModel的发送线程定期轮询，将发送队列的信息发送出去
  *      消息接收方式：
  *          1. （可能是网络模块或本地AI模块）调用BattleModel接口，将信息设置到接收队列中
- *          2. BattleModel的接收线程定期轮询，将接收队列的信息转译为指令回调PlaySceneModel
+ *          2. BattleModel的接收线程定期轮询，将接收队列的信息转译为指令回调PlaySceneModelOld
  *      可能需要注意的点：
  *          1. 双方各自抽取牌，可能涉及id冲突问题。解决方式：各方生成id时进行加盐值处理，暂定host为 *10+1，player为*10+2。保证双方的id不会冲突
  */
@@ -34,9 +34,9 @@ public class BattleModel
 
     public enum ActionType
     {
-        Init = 0, // 初始卡牌信息。data: cardGroup, infoIdList, idList
+        Init = 0, // 初始卡牌信息。data: cardGroup, infoIdList, idList, hostFirst（仅host发送）
         DrawHandCard, // 抽取手牌。data: idList
-        StartGame, // 开始整场比赛，仅host向player发送。data: hostFirst
+        StartGame, // 开始整场比赛，仅host向player发送。data: hostFirst TODO: delete
         ChooseCard, // 选择卡牌。data: id
         Pass, // 过牌。data: null
         InterruptAction, // 中断技能流程。data: null
@@ -81,7 +81,7 @@ public class BattleModel
     public delegate void SendToEnemyFuncHandler(string actionMsgStr);
     public SendToEnemyFuncHandler SendToEnemyFunc;
 
-    // 收到对端消息后，回调通知PlaySceneModel
+    // 收到对端消息后，回调通知PlaySceneModelOld
     private ConcurrentQueue<ActionMsg> receiveQueue; // 接收队列
     public delegate void EnemyMsgCallbackHandler(ActionType actionType, params object[] list);
     public EnemyMsgCallbackHandler EnemyMsgCallback;
@@ -95,6 +95,9 @@ public class BattleModel
                 actionMsg.cardGroup = (CardGroup)list[0];
                 actionMsg.infoIdList = (List<int>)list[1];
                 actionMsg.idList = (List<int>)list[2];
+                if (list.Length > 3) {
+                    actionMsg.hostFirst = (bool)list[3];
+                }
                 break;
             }
             case ActionType.DrawHandCard: {
@@ -164,7 +167,7 @@ public class BattleModel
             if (EnemyMsgCallback != null) {
                 switch (actionMsg.actionType) {
                     case ActionType.Init: {
-                        EnemyMsgCallback(actionMsg.actionType, actionMsg.cardGroup, actionMsg.infoIdList, actionMsg.idList);
+                        EnemyMsgCallback(actionMsg.actionType, actionMsg.cardGroup, actionMsg.infoIdList, actionMsg.idList, actionMsg.hostFirst);
                         break;
                     }
                     case ActionType.DrawHandCard: {

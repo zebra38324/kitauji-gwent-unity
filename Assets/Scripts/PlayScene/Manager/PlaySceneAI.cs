@@ -9,8 +9,8 @@ public class PlaySceneAI
 
     public enum AIType
     {
-        K1Basic = 0,
-        K2Basic,
+        K1L1 = 0,
+        K2L1,
     }
 
     private bool isAbort = false;
@@ -22,7 +22,12 @@ public class PlaySceneAI
         string enemyName,
         AIType aiType)
     {
-        playSceneModel = new PlaySceneModel(isHost_, selfName, enemyName, GetAIGroup(aiType));
+        playSceneModel = new PlaySceneModel(isHost_,
+            selfName,
+            enemyName,
+            GetAIGroup(aiType),
+            events => {}
+        );
         aiModelInterface = GetAIImpl(aiType, playSceneModel);
     }
 
@@ -38,17 +43,17 @@ public class PlaySceneAI
 
     private async void AICoroutine()
     {
-        while (!isAbort && playSceneModel.tracker.curState != PlayStateTracker.State.WAIT_INIT_HAND_CARD) {
+        while (!isAbort && playSceneModel.wholeAreaModel.gameState.curState != GameState.State.WAIT_INIT_HAND_CARD) {
             await UniTask.Delay(1);
         }
         aiModelInterface.DoInitHandCard();
         while (!isAbort &&
-               playSceneModel.tracker.curState != PlayStateTracker.State.WAIT_SELF_ACTION && 
-               playSceneModel.tracker.curState != PlayStateTracker.State.WAIT_ENEMY_ACTION) {
+               playSceneModel.wholeAreaModel.gameState.curState != GameState.State.WAIT_SELF_ACTION && 
+               playSceneModel.wholeAreaModel.gameState.curState != GameState.State.WAIT_ENEMY_ACTION) {
             await UniTask.Delay(1);
         }
         while (!isAbort) {
-            if (playSceneModel.tracker.curState != PlayStateTracker.State.WAIT_SELF_ACTION) {
+            if (playSceneModel.wholeAreaModel.gameState.curState != GameState.State.WAIT_SELF_ACTION) {
                 await UniTask.Delay(1);
                 continue;
             }
@@ -60,10 +65,10 @@ public class PlaySceneAI
     private CardGroup GetAIGroup(AIType aiType)
     {
         switch (aiType) {
-            case AIType.K1Basic: {
+            case AIType.K1L1: {
                 return CardGroup.KumikoFirstYear;
             }
-            case AIType.K2Basic: {
+            case AIType.K2L1: {
                 return CardGroup.KumikoSecondYear;
             }
             default: {
@@ -75,11 +80,11 @@ public class PlaySceneAI
     private AIModelInterface GetAIImpl(AIType aiType, PlaySceneModel playSceneModel)
     {
         switch (aiType) {
-            case AIType.K1Basic: {
-                return new AIModelK1Basic(playSceneModel);
+            case AIType.K1L1: {
+                return new AIModelK1L1(playSceneModel);
             }
-            case AIType.K2Basic: {
-                return new AIModelK2Basic(playSceneModel);
+            case AIType.K2L1: {
+                return new AIModelK2L1(playSceneModel);
             }
             default: {
                 return null;
