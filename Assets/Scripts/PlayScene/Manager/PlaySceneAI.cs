@@ -9,8 +9,8 @@ public class PlaySceneAI
 
     public enum AIType
     {
-        K1L1 = 0,
-        K2L1,
+        L1K1 = 0,
+        L1K2,
     }
 
     private bool isAbort = false;
@@ -65,10 +65,10 @@ public class PlaySceneAI
     private CardGroup GetAIGroup(AIType aiType)
     {
         switch (aiType) {
-            case AIType.K1L1: {
+            case AIType.L1K1: {
                 return CardGroup.KumikoFirstYear;
             }
-            case AIType.K2L1: {
+            case AIType.L1K2: {
                 return CardGroup.KumikoSecondYear;
             }
             default: {
@@ -80,11 +80,9 @@ public class PlaySceneAI
     private AIModelInterface GetAIImpl(AIType aiType, PlaySceneModel playSceneModel)
     {
         switch (aiType) {
-            case AIType.K1L1: {
-                return new AIModelK1L1(playSceneModel);
-            }
-            case AIType.K2L1: {
-                return new AIModelK2L1(playSceneModel);
+            case AIType.L1K1:
+            case AIType.L1K2: {
+                return new AIModelL1(playSceneModel);
             }
             default: {
                 return null;

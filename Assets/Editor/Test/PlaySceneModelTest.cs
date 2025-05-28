@@ -372,6 +372,7 @@ public class PlaySceneModelTest
             hostModel.DrawInitHandCard();
             hostModel.ReDrawInitHandCard();
             CheckCurState(hostModel, GameState.State.WAIT_SELF_ACTION);
+            Thread.Sleep(10);
             hostModel.ChooseCard(hostModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0]);
             int lastIndex = hostRecvList.Count - 1;
             Assert.AreEqual(ActionEvent.Type.ActionText, hostRecvList[lastIndex].type);

@@ -287,9 +287,6 @@ public record WholeAreaModel
         var newRecord = this;
         // 抽牌可能在状态流转后才到这里，因此不判断状态
         newRecord = Lens_EnemySinglePlayerAreaModel_HandCardAreaModel.Set(newRecord.enemySinglePlayerAreaModel.handCardAreaModel.DrawHandCardsWithoutRandom(idList), newRecord);
-        newRecord = newRecord with {
-            actionEventList = newRecord.actionEventList.Add(new ActionEvent(ActionEvent.Type.ActionText, string.Format("{0} 抽取了{1}张牌\n", newRecord.playTracker.GetNameText(false), idList.Count)))
-        };
         return newRecord;
     }
 

@@ -8,38 +8,37 @@ using Unity.VisualScripting;
 class AIModelCommon
 {
     private static string TAG = "AIModelCommon";
-    public struct ActionReturn
+    public class ActionReturn
     {
-        public int scoreDiff;
-        public int handCardReturn;
-        public static bool operator >(ActionReturn r1, ActionReturn r2)
-        {
-            return r1.scoreDiff + r1.handCardReturn > r2.scoreDiff + r2.handCardReturn;
-        }
-        public static bool operator <(ActionReturn r1, ActionReturn r2)
-        {
-            return r1.scoreDiff + r1.handCardReturn < r2.scoreDiff + r2.handCardReturn;
-        }
+        public int scoreDiff = 0;
+        public int handCardReturn = 0;
+        public List<ActionEvent> actionList = new List<ActionEvent>();
         public static ActionReturn operator +(ActionReturn r1, ActionReturn r2)
         {
             return new ActionReturn {
                 scoreDiff = r1.scoreDiff + r2.scoreDiff,
                 handCardReturn = r1.handCardReturn + r2.handCardReturn,
+                actionList = r1.actionList.Concat(r2.actionList).ToList(),
             };
+        }
+        public int Total()
+        {
+            return scoreDiff + handCardReturn;
         }
     }
 
-    // 计算收益最高的操作，并通过List<ActionEvent>返回，仅包含battle msg
-    // 收益包含分数差与手牌差
-    public static ActionReturn GetMaxReturnAction(WholeAreaModel originModel, out List<ActionEvent> actionList)
+    // 获取所有可能的操作，并按照收益由高到低排序
+    public static List<ActionReturn> GetAllAction(WholeAreaModel originModel)
     {
-        KLog.I(TAG, "GetMaxReturnAction: start");
+        KLog.I(TAG, "GetAllAction: start");
         originModel = originModel with {
             actionEventList = ImmutableList<ActionEvent>.Empty,
         };
-        ActionReturn maxReturn = MockActionRecursive(originModel, out actionList);
-        KLog.I(TAG, "GetMaxReturnAction: finish, actionList.Count: " + actionList.Count);
-        return maxReturn;
+        var result = new List<ActionReturn>();
+        MockActionRecursive(originModel, new ActionReturn(), ref result);
+        result.Sort((x, y) => y.Total() - x.Total());
+        KLog.I(TAG, "GetAllAction: finish, result.Count: " + result.Count);
+        return result;
     }
 
     // self - emeny Recursive
@@ -74,7 +73,7 @@ class AIModelCommon
 
     public static bool NeedPass(PlaySceneModel model, ActionReturn maxReturn)
     {
-        int scoreDiff = AIModelCommon.GetScoreDiff(model.wholeAreaModel);
+        int scoreDiff = GetScoreDiff(model.wholeAreaModel);
         bool ret = false;
         if (model.wholeAreaModel.playTracker.enemyPlayerInfo.setScore <= 1 &&
             ((scoreDiff < -10 && maxReturn.scoreDiff < 3) ||
@@ -88,15 +87,10 @@ class AIModelCommon
         return ret;
     }
 
-    private static ActionReturn MockActionRecursive(WholeAreaModel originModel, out List<ActionEvent> actionList)
+    private static void MockActionRecursive(WholeAreaModel originModel, ActionReturn lastReturn, ref List<ActionReturn> record)
     {
         originModel = originModel with {
             actionEventList = ImmutableList<ActionEvent>.Empty,
-        };
-        actionList = new List<ActionEvent>();
-        ActionReturn maxReturn = new ActionReturn {
-            scoreDiff = 0,
-            handCardReturn = -20,
         };
 
         var enableChooseList = new List<CardModel>();
@@ -141,28 +135,21 @@ class AIModelCommon
         if (originModel.gameState.actionState == GameState.ActionState.HORN_UTILING) {
             foreach (var row in originModel.selfSinglePlayerAreaModel.battleRowAreaList) {
                 var newModel = originModel.ChooseHornUtilArea(row.rowType, true);
-                var curReturn = GetReturn(newModel, originModel);
-                if (curReturn > maxReturn) {
-                    maxReturn = curReturn;
-                    actionList = GetActionEventList(newModel);
-                }
+                var curReturn = lastReturn + GetReturn(newModel, originModel);
+                // HORN_UTILING不可能再继续了
+                record.Add(curReturn);
             }
         } else {
             foreach (var card in enableChooseList) {
                 var newModel = originModel.ChooseCard(card, true);
-                var curReturn = GetReturn(newModel, originModel);
-                var newActionList = new List<ActionEvent>();
-                if (originModel.gameState.actionState != GameState.ActionState.None) {
-                    curReturn += MockActionRecursive(newModel, out newActionList);
-                }
-                if (curReturn > maxReturn) {
-                    maxReturn = curReturn;
-                    actionList = GetActionEventList(newModel);
-                    actionList.AddRange(newActionList);
+                var curReturn = lastReturn + GetReturn(newModel, originModel);
+                if (newModel.gameState.actionState != GameState.ActionState.None) {
+                    MockActionRecursive(newModel, curReturn, ref record);
+                } else {
+                    record.Add(curReturn);
                 }
             }
         }
-        return maxReturn;
     }
 
     private static ActionReturn GetReturn(WholeAreaModel newModel, WholeAreaModel oldModel)
@@ -170,13 +157,17 @@ class AIModelCommon
         ActionReturn actionReturn = new ActionReturn {
             scoreDiff = GetScoreDiff(newModel) - GetScoreDiff(oldModel),
             handCardReturn = 0,
+            actionList = GetActionEventList(newModel),
         };
         Random random = new Random();
         int handCardReturn = newModel.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList.Count -
             oldModel.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList.Count;
         handCardReturn += newModel.selfSinglePlayerAreaModel.handCardAreaModel.leaderCardListModel.cardList.Count -
             oldModel.selfSinglePlayerAreaModel.handCardAreaModel.leaderCardListModel.cardList.Count;
-        handCardReturn *= random.Next(5, 15); // TODO: 手牌的收益计算
+        int HAND_CAR_DIFF_BASE = -1; // 正常情况，手牌减少1
+        handCardReturn -= HAND_CAR_DIFF_BASE; // 减去基础手牌差
+        handCardReturn = Math.Abs(handCardReturn); // 手牌数只考虑正向收益
+        handCardReturn *= random.Next(10, 20); // TODO: 手牌的收益计算
         actionReturn.handCardReturn = handCardReturn;
         return actionReturn;
     }

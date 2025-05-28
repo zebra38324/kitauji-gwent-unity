@@ -1387,6 +1387,7 @@ public class WholeAreaModelTest
         Assert.AreEqual(5, updated.enemySinglePlayerAreaModel.GetCurrentPower());
         Assert.AreEqual(1, updated.selfSinglePlayerAreaModel.battleRowAreaList[(int)CardBadgeType.Brass].cardListModel.cardList.Count);
         Assert.AreEqual(6, updated.selfSinglePlayerAreaModel.battleRowAreaList[(int)CardBadgeType.Brass].cardListModel.cardList[0].cardInfo.infoId);
+        Assert.AreEqual(CardLocation.BattleArea, updated.selfSinglePlayerAreaModel.battleRowAreaList[(int)CardBadgeType.Brass].cardListModel.cardList[0].cardLocation);
         Assert.AreEqual(1, updated.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList.Count);
         Assert.AreEqual(2, updated.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0].cardInfo.infoId);
         Assert.AreEqual(2, updated.actionEventList.Count);
@@ -1436,6 +1437,7 @@ public class WholeAreaModelTest
         Assert.AreEqual(0, updated.enemySinglePlayerAreaModel.GetCurrentPower());
         Assert.AreEqual(1, updated.enemySinglePlayerAreaModel.battleRowAreaList[(int)CardBadgeType.Brass].cardListModel.cardList.Count);
         Assert.AreEqual(6, updated.enemySinglePlayerAreaModel.battleRowAreaList[(int)CardBadgeType.Brass].cardListModel.cardList[0].cardInfo.infoId);
+        Assert.AreEqual(CardLocation.BattleArea, updated.enemySinglePlayerAreaModel.battleRowAreaList[(int)CardBadgeType.Brass].cardListModel.cardList[0].cardLocation);
         Assert.AreEqual(1, updated.enemySinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList.Count);
         Assert.AreEqual(2, updated.enemySinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0].cardInfo.infoId);
         Assert.AreEqual(1, updated.actionEventList.Count);
@@ -2808,9 +2810,7 @@ public class WholeAreaModelTest
             actionEventList = ImmutableList<ActionEvent>.Empty
         };
         updated = updated.EnemyDrawHandCard(drawIdList);
-        Assert.AreEqual(1, updated.actionEventList.Count);
-        Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[0].type);
-        Assert.AreEqual("<color=red>E</color> 抽取了2张牌\n", updated.actionEventList[0].args[0]);
+        Assert.AreEqual(0, updated.actionEventList.Count);
     }
 
     [Test]

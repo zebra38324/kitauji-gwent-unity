@@ -36,12 +36,12 @@ public class ChoosePVEArea : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public void OnClickK1()
     {
         RoomManager roomManager = new RoomManager();
-        roomManager.StartPVE(PlaySceneAI.AIType.K1L1);
+        roomManager.StartPVE(PlaySceneAI.AIType.L1K1);
     }
 
     public void OnClickK2()
     {
         RoomManager roomManager = new RoomManager();
-        roomManager.StartPVE(PlaySceneAI.AIType.K2L1);
+        roomManager.StartPVE(PlaySceneAI.AIType.L1K2);
     }
 }

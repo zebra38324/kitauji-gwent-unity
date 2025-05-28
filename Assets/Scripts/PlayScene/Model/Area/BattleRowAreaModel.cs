@@ -108,6 +108,7 @@ public record BattleRowAreaModel
     public BattleRowAreaModel ReplaceCard(CardModel oldCard, CardModel newCard)
     {
         var newRecord = this;
+        newCard = newCard.ChangeCardLocation(CardLocation.BattleArea);
         var oldCardList = newRecord.cardListModel.cardList;
         if (oldCardList.Contains(oldCard)) {
             newRecord = Lens_CardListModel_CardList.Set(oldCardList.Replace(oldCard, newCard), newRecord);

@@ -3803,7 +3803,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "20250413-v2.1\n\u589E\u52A0\u4EBA\u673A\u724C\u7EC4\n20250405-v2.0\n\u91CD\u5236\u7248\u4E0A\u7EBF"
+  m_text: "20250531-v2.2\n\u4F18\u5316\u4EBA\u673A\u5BF9\u6218\u7B56\u7565\uFF0C\u4FEE\u590Dbug\n20250413-v2.1\n\u589E\u52A0\u4EBA\u673A\u724C\u7EC4"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 81b689e8712710a4e8d26c0ce41dfd29, type: 2}
   m_sharedMaterial: {fileID: 67576259127510927, guid: 81b689e8712710a4e8d26c0ce41dfd29, type: 2}

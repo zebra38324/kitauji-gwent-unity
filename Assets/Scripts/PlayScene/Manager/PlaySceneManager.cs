@@ -173,7 +173,6 @@ public class PlaySceneManager : MonoBehaviour
         }
         List<int> selfInfoIdList = KConfig.Instance.GetDeckInfoIdList(KConfig.Instance.deckCardGroup);
         playSceneModel.SetBackupCardInfoIdList(selfInfoIdList);
-        initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().StartUI();
         StartCoroutine(StartGame());
     }
 
@@ -255,7 +254,7 @@ public class PlaySceneManager : MonoBehaviour
             }
             case SceneMsg.PVPEnemyExit: {
                 // 对方退出，弹toast提示。并暂停各种倒计时
-                actionTextAreaView.GetComponent<ActionTextAreaView>().AddText(string.Format("<color=red>{1}</color> 退出房间\n", playSceneModel.wholeAreaModel.playTracker.enemyPlayerInfo.name));
+                actionTextAreaView.GetComponent<ActionTextAreaView>().AddText(string.Format("<color=red>{0}</color> 退出房间\n", playSceneModel.wholeAreaModel.playTracker.enemyPlayerInfo.name));
                 isAbort = true;
                 selfPlayStatView.GetComponent<PlayStatAreaView>().isAbort = true;
                 enemyPlayStatView.GetComponent<PlayStatAreaView>().isAbort = true;
@@ -268,11 +267,22 @@ public class PlaySceneManager : MonoBehaviour
     private IEnumerator StartGame()
     {
         while (playSceneModel.wholeAreaModel.gameState.curState != GameState.State.WAIT_INIT_HAND_CARD) {
+            if (isAbort) {
+                KLog.I(TAG, "StartGame: isAbort at WAIT_BACKUP_INFO, break loop");
+                isModelCoroutineFinish = true;
+                yield break;
+            }
             yield return null;
         }
+        initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().StartUI();
         playSceneModel.DrawInitHandCard();
         while (playSceneModel.wholeAreaModel.gameState.curState != GameState.State.WAIT_SELF_ACTION &&
                playSceneModel.wholeAreaModel.gameState.curState != GameState.State.WAIT_ENEMY_ACTION) {
+            if (isAbort) {
+                KLog.I(TAG, "StartGame: isAbort at WAIT_INIT_HAND_CARD, break loop");
+                isModelCoroutineFinish = true;
+                yield break;
+            }
             if (!initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().isSelfConfirmed && 
                 KTime.CurrentMill() - initReDrawHandCardAreaView.GetComponent<InitReDrawHandCardAreaView>().startTs > InitReDrawHandCardAreaView.MAX_TIME) {
                 // 超时未操作，结束重抽手牌
