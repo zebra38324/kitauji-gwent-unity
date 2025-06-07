@@ -77,12 +77,6 @@ public class DeckSceneManager : MonoBehaviour
     public void Save()
     {
         KLog.I(TAG, "Save");
-        if (selectedCardGroup != CardGroup.KumikoFirstYear &&
-            selectedCardGroup != CardGroup.KumikoSecondYear) {
-            KLog.W(TAG, "card group not support");
-            toastView.GetComponent<ToastView>().ShowToast("此牌组尚未制作完成，无法使用");
-            return;
-        }
         int selectedCardNum = 0;
         foreach (GameObject card in selectedArea.GetComponent<DeckCardAreaView>().cardList) {
             if (card.GetComponent<CardDisplay>().cardModel.cardInfo.cardType == CardType.Normal ||
@@ -116,12 +110,7 @@ public class DeckSceneManager : MonoBehaviour
         int value = cardGroupSelect.GetComponent<TMP_Dropdown>().value;
         KLog.I(TAG, "CardGroupChange: value = " + value);
         selectedCardGroup = (CardGroup)value;
-        // TODO: 区分牌组
-        selectedInfoIdList = new List<int>();
-        if (selectedCardGroup == CardGroup.KumikoFirstYear ||
-            selectedCardGroup == CardGroup.KumikoSecondYear) {
-            selectedInfoIdList = new List<int>(KConfig.Instance.GetDeckInfoIdList(selectedCardGroup));
-        }
+        selectedInfoIdList = new List<int>(KConfig.Instance.GetDeckInfoIdList(selectedCardGroup));
         cardGroupAbilityText.GetComponent<TextMeshProUGUI>().text = CardText.cardGroupAbilityText[value];
         LoadSelectedCardGroup();
     }

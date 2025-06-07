@@ -222,6 +222,8 @@ public class CardDisplay : MonoBehaviour,
                 return prefix + "KumikoFirstYear/" + cardModel.cardInfo.imageName;
             case CardGroup.KumikoSecondYear:
                 return prefix + "KumikoSecondYear/" + cardModel.cardInfo.imageName;
+            case CardGroup.KumikoThirdYear:
+                return prefix + "KumikoThirdYear/" + cardModel.cardInfo.imageName;
             case CardGroup.Neutral:
                 return prefix + "Neutral/" + cardModel.cardInfo.imageName;
             default:
@@ -235,6 +237,10 @@ public class CardDisplay : MonoBehaviour,
         switch (cardModel.cardInfo.group) {
             case CardGroup.KumikoFirstYear:
                 return beltNames[(cardModel.cardInfo.grade - 1 + 3) % 3];
+            case CardGroup.KumikoSecondYear:
+                return beltNames[(cardModel.cardInfo.grade - 2 + 3) % 3];
+            case CardGroup.KumikoThirdYear:
+                return beltNames[(cardModel.cardInfo.grade - 3 + 3) % 3];
             default:
                 return beltNames[(cardModel.cardInfo.grade - 2 + 3) % 3];
         }
@@ -298,6 +304,14 @@ public class CardDisplay : MonoBehaviour,
                 return "monaka.png";
             case CardAbility.Kasa:
                 return "kasa.png";
+            case CardAbility.K5Leader:
+                return "k5leader.png";
+            case CardAbility.SalutdAmour:
+                return "salutd_amour.png";
+            case CardAbility.Pressure:
+                return "pressure.png";
+            case CardAbility.Defend:
+                return "defend.png";
             default: // None
                 return "none";
         }

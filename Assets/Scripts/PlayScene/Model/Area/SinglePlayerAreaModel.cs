@@ -74,6 +74,14 @@ public record SinglePlayerAreaModel
                 };
                 break;
             }
+            case CardAbility.K5Leader: {
+                newRecord = newRecord.ApplyK5Leader(card);
+                break;
+            }
+            case CardAbility.Pressure: {
+                newRecord = newRecord.ApplyPressure();
+                break;
+            }
         }
         return newRecord;
     }
@@ -161,8 +169,16 @@ public record SinglePlayerAreaModel
     // 准备可攻击目标，并返回可攻击目标的卡牌列表。注意返回的card并不是实际存在model中的card
     public SinglePlayerAreaModel PrepareAttackTarget(out List<CardModel> targetCardList)
     {
+        List<bool> hasDefend = battleRowAreaList.Select(row => {
+            foreach (CardModel card in row.cardListModel.cardList) {
+                if (card.cardInfo.ability == CardAbility.Defend) {
+                    return true;
+                }
+            }
+            return false;
+        }).ToList();
         return BattleApplyAction(card => {
-            return card.cardInfo.cardType == CardType.Normal;
+            return card.cardInfo.cardType == CardType.Normal && !hasDefend[(int)card.cardInfo.badgeType];
         }, card => {
             return card.ChangeCardSelectType(CardSelectType.WithstandAttack);
         }, out targetCardList);
@@ -362,6 +378,44 @@ public record SinglePlayerAreaModel
         // 添加卡牌。为避免递归调用造成错误，应先把要打出的卡牌选出来再一起打出
         foreach (CardModel card in musterCardList) {
             newRecord = newRecord.AddBattleAreaCard(card);
+        }
+        return newRecord;
+    }
+
+    private SinglePlayerAreaModel ApplyK5Leader(CardModel k5LeaderCard)
+    {
+        var newRecord = this;
+        foreach (BattleRowAreaModel row in newRecord.battleRowAreaList) {
+            var newRow = row;
+            foreach (CardModel card in row.cardListModel.cardList) {
+                if (card.cardInfo.id != k5LeaderCard.cardInfo.id && card.cardInfo.cardType == CardType.Normal && card.cardInfo.grade == 1) {
+                    var realCard = newRow.FindCard(card.cardInfo.id);
+                    newRow = newRow.ReplaceCard(realCard, realCard.AddBuff(CardBuffType.K5Leader, 1));
+                }
+            }
+            newRecord = newRecord with {
+                battleRowAreaList = newRecord.battleRowAreaList.Replace(row, newRow)
+            };
+        }
+        return newRecord;
+    }
+
+    private SinglePlayerAreaModel ApplyPressure()
+    {
+        // 注意：目前默认只有英雄牌有这个技能
+        var newRecord = this;
+        foreach (BattleRowAreaModel row in newRecord.battleRowAreaList) {
+            var newRow = row;
+            foreach (CardModel card in row.cardListModel.cardList) {
+                if (card.cardInfo.cardType == CardType.Normal) {
+                    var realCard = newRow.FindCard(card.cardInfo.id);
+                    CardBuffType type = new Random().Next(0, 2) == 0 ? CardBuffType.PressurePlus : CardBuffType.PressureMinus;
+                    newRow = newRow.ReplaceCard(realCard, realCard.AddBuff(type, 1));
+                }
+            }
+            newRecord = newRecord with {
+                battleRowAreaList = newRecord.battleRowAreaList.Replace(row, newRow)
+            };
         }
         return newRecord;
     }

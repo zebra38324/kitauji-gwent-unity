@@ -22,6 +22,30 @@ public class KConfig
 
     private bool isTourist = false;
 
+    private static int[][] DEFAULT_DECK = new int[][] {
+        new int[] {
+            1002, 1003, 1004, 1007, 1008, 1009, 1013, 1051, 1052,
+            1016, 1021, 1022, 1023, 1024, 1028, 1040, 1044,
+            1041,
+            5002, 5003, 5004,
+            1080
+        },
+        new int[] {
+            2005, 2006, 2007, 2008, 2011, 2012, 2013,
+            2028, 2034, 2035,
+            2042, 2047, 2048,
+            5002, 5003, 5004,
+            2080
+        },
+        new int[] {
+            3001, 3005, 3006, 3007, 3021, 3040,
+            3011, 3012, 3013, 3026, 3029, 3030, 3031, 3046, 3048, 3049, 3053, 3054, 3055,
+            3032, 3056, 3057, 3058, 3059,
+            5001, 5002, 5004,
+            5010
+        }
+    };
+
     private KConfig()
     {
         deckInfoIdListDic = new Dictionary<CardGroup, List<int>>();
@@ -124,7 +148,8 @@ public class KConfig
     public List<int> GetDeckInfoIdList(CardGroup cardGroup)
     {
         if (!deckInfoIdListDic.ContainsKey(cardGroup)) {
-            return null;
+            // 返回默认值，客户端指定
+            deckInfoIdListDic[cardGroup] = new List<int>(DEFAULT_DECK[(int)cardGroup]);
         }
         return deckInfoIdListDic[cardGroup];
     }
@@ -183,8 +208,13 @@ public class KConfig
             KLog.I(TAG, "UpdateDeckConfig: isTourist");
             return;
         }
+        if (deckCardGroup == CardGroup.KumikoThirdYear) {
+            KLog.I(TAG, "UpdateDeckConfig: not save KumikoThirdYear");
+            return;
+        }
         UpdateDeckConfigReq updateDeckConfigReq = new UpdateDeckConfigReq();
         updateDeckConfigReq.deck = new UpdateDeckConfigReqDeck();
+        // TODO: 久三年保存
         updateDeckConfigReq.deck.group = (int)deckCardGroup;
         updateDeckConfigReq.deck.config = new int[][] {
             deckInfoIdListDic[CardGroup.KumikoFirstYear].ToArray(),

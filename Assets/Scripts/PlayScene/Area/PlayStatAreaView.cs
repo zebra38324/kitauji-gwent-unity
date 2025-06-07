@@ -77,7 +77,7 @@ public class PlayStatAreaView : MonoBehaviour
         if (isAbort) {
             return;
         }
-        if (wholeAreaModel == null || wholeAreaModel.gameState.curState != GameState.State.WAIT_SELF_ACTION) {
+        if (wholeAreaModel == null) {
             return;
         }
         long remainSecond = (GameState.TURN_TIME - (KTime.CurrentMill() - wholeAreaModel.gameState.stateChangeTs)) / 1000;

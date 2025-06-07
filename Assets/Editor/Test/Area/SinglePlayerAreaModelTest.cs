@@ -322,6 +322,23 @@ public class SinglePlayerAreaModelTest
     }
 
     [Test]
+    public void PrepareAttackTarget_Defend()
+    {
+        var c1 = TestUtil.MakeCard(originPower: 7, cardType: CardType.Normal, badgeType: CardBadgeType.Wood);
+        var c2 = TestUtil.MakeCard(originPower: 7, cardType: CardType.Normal, badgeType: CardBadgeType.Brass);
+        var c3 = TestUtil.MakeCard(originPower: 7, cardType: CardType.Normal, badgeType: CardBadgeType.Brass, ability: CardAbility.Defend);
+        var model = new SinglePlayerAreaModel(hostGen)
+            .AddBattleAreaCard(c1)
+            .AddBattleAreaCard(c2)
+            .AddBattleAreaCard(c3);
+        var result = model.PrepareAttackTarget(out var targetCardList);
+        Assert.AreEqual(1, targetCardList.Count);
+        Assert.AreEqual(CardSelectType.WithstandAttack, result.battleRowAreaList[(int)CardBadgeType.Wood].cardListModel.cardList[0].cardSelectType);
+        Assert.AreEqual(CardSelectType.None, result.battleRowAreaList[(int)CardBadgeType.Brass].cardListModel.cardList[0].cardSelectType);
+        Assert.AreEqual(CardSelectType.None, result.battleRowAreaList[(int)CardBadgeType.Brass].cardListModel.cardList[1].cardSelectType);
+    }
+
+    [Test]
     public void PrepareMedicTarget()
     {
         var c1 = TestUtil.MakeCard(originPower: 7, cardType: CardType.Normal);
@@ -426,6 +443,65 @@ public class SinglePlayerAreaModelTest
         foreach (var card in result.discardAreaModel.cardListModel.cardList) {
             Assert.AreNotEqual(41, card.cardInfo.id);
             Assert.AreNotEqual(51, card.cardInfo.id);
+        }
+    }
+
+    [Test]
+    public void AddBattleAreaCard_K5LeaderAbility()
+    {
+        var card1 = TestUtil.MakeCard(originPower: 6,
+            id: 20,
+            badgeType: CardBadgeType.Wood,
+            grade: 1);
+        var card2 = TestUtil.MakeCard(originPower: 6,
+            id: 21,
+            badgeType: CardBadgeType.Brass,
+            grade: 1);
+        var card3 = TestUtil.MakeCard(originPower: 6,
+            cardType: CardType.Hero,
+            id: 22,
+            badgeType: CardBadgeType.Brass,
+            grade: 2);
+        var card4 = TestUtil.MakeCard(originPower: 6,
+            id: 23,
+            badgeType: CardBadgeType.Percussion,
+            grade: 2);
+        var card5 = TestUtil.MakeCard(originPower: 6,
+            id: 24,
+            badgeType: CardBadgeType.Brass,
+            ability: CardAbility.K5Leader,
+            grade: 1);
+
+        var model = new SinglePlayerAreaModel(hostGen)
+            .AddBattleAreaCard(card1)
+            .AddBattleAreaCard(card2)
+            .AddBattleAreaCard(card3)
+            .AddBattleAreaCard(card4)
+            .AddBattleAreaCard(card5);
+
+        Assert.AreEqual(8, model.battleRowAreaList[(int)CardBadgeType.Wood].GetCurrentPower());
+        Assert.AreEqual(8 + 6 + 6, model.battleRowAreaList[(int)CardBadgeType.Brass].GetCurrentPower());
+        Assert.AreEqual(6, model.battleRowAreaList[(int)CardBadgeType.Percussion].GetCurrentPower());
+    }
+
+    [Test]
+    public void AddBattleAreaCard_PressureAbility()
+    {
+        var normalCard = TestUtil.MakeCard(originPower: 6,
+            id: 20,
+            badgeType: CardBadgeType.Wood);
+        var pressureCard = TestUtil.MakeCard(originPower: 6,
+            id: 21,
+            ability: CardAbility.Pressure,
+            badgeType: CardBadgeType.Brass,
+            cardType: CardType.Hero);
+        var model = new SinglePlayerAreaModel(hostGen)
+            .AddBattleAreaCard(normalCard)
+            .AddBattleAreaCard(pressureCard);
+        if (model.battleRowAreaList[(int)CardBadgeType.Wood].cardListModel.cardList[0].currentPower == 7) {
+            Assert.AreEqual(13, model.GetCurrentPower());
+        } else {
+            Assert.AreEqual(11, model.GetCurrentPower());
         }
     }
 }

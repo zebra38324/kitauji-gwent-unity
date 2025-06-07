@@ -11,7 +11,7 @@ public class AssetDownload : MonoBehaviour
 
     public TextMeshProUGUI progressText;
 
-    private static string[] assetGroupNames = { "image_k1", "image_k2", "image_neutral" };
+    private static string[] assetGroupNames = { "image_k1", "image_k2", "image_k3", "image_neutral" };
 
     private static bool hasShowed = false; // 一次访问只显示一次
 
@@ -62,6 +62,8 @@ public class AssetDownload : MonoBehaviour
                 assetName = "久一年牌组";
             } else if (entry.Key == "image_k2") {
                 assetName = "久二年牌组";
+            } else if (entry.Key == "image_k3") {
+                assetName = "久三年牌组";
             } else if (entry.Key == "image_neutral") {
                 assetName = "中立牌组";
             }

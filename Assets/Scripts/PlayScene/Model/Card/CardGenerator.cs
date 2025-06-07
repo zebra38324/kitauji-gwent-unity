@@ -71,6 +71,7 @@ public record CardGenerator
         var list = new List<CardInfo>();
         string[] assetNameList = { @"Statistic\KumikoFirstYear",
             @"Statistic\KumikoSecondYear",
+            @"Statistic\KumikoThirdYear",
             @"Statistic\NeutralCard" };
         foreach (string assetName in assetNameList) {
             TextAsset cardInfoAsset = KResources.Load<TextAsset>(assetName);

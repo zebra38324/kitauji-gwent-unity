@@ -209,9 +209,9 @@ MonoBehaviour:
   m_fontSize: 20
   m_fontSizeBase: 20
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 14
+  m_fontSizeMax: 20
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -3803,7 +3803,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "20250531-v2.2\n\u4F18\u5316\u4EBA\u673A\u5BF9\u6218\u7B56\u7565\uFF0C\u4FEE\u590Dbug\n20250413-v2.1\n\u589E\u52A0\u4EBA\u673A\u724C\u7EC4"
+  m_text: "20250607-v2.3\n\u90E8\u5206\u4E45\u4E09\u5E74\u724C\u7EC4\n20250531-v2.2\n\u4F18\u5316\u4EBA\u673A\u5BF9\u6218\u7B56\u7565\uFF0C\u4FEE\u590Dbug"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 81b689e8712710a4e8d26c0ce41dfd29, type: 2}
   m_sharedMaterial: {fileID: 67576259127510927, guid: 81b689e8712710a4e8d26c0ce41dfd29, type: 2}

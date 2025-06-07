@@ -156,10 +156,14 @@ public record CardModel
             power *= times;
         }
         int diff = newBuffRecord[(int)CardBuffType.Morale] +
+            2 * newBuffRecord[(int)CardBuffType.K5Leader] + 
+            3 * newBuffRecord[(int)CardBuffType.SalutdAmour] +
+            1 * newBuffRecord[(int)CardBuffType.PressurePlus] +
             5 * newBuffRecord[(int)CardBuffType.Kasa] +
             2 * newBuffRecord[(int)CardBuffType.Monaka] -
             2 * newBuffRecord[(int)CardBuffType.Attack2] -
-            4 * newBuffRecord[(int)CardBuffType.Attack4];
+            4 * newBuffRecord[(int)CardBuffType.Attack4] -
+            1 * newBuffRecord[(int)CardBuffType.PressureMinus];
         power += diff;
         return power;
     }

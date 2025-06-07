@@ -202,4 +202,28 @@ public class BattleRowAreaModelTest
         var updated = result.cardListModel.cardList.Single(c => c.cardInfo.id.Equals(normalNew.cardInfo.id));
         Assert.AreEqual(8, updated.currentPower);
     }
+
+    [Test]
+    public void AddCard_SalutdAmour_NoRelated()
+    {
+        var normalCard = TestUtil.MakeCard(chineseName: "S", originPower: 3, ability: CardAbility.None, cardType: CardType.Normal);
+        var salutdAmourCard = TestUtil.MakeCard(chineseName: "M", originPower: 3, ability: CardAbility.SalutdAmour, cardType: CardType.Normal);
+        var model = new BattleRowAreaModel(CardBadgeType.Wood)
+            .AddCard(normalCard)
+            .AddCard(salutdAmourCard);
+        Assert.AreEqual(6, model.GetCurrentPower());
+    }
+
+    [Test]
+    public void AddCard_SalutdAmour_HasRelated()
+    {
+        var normalCard = TestUtil.MakeCard(chineseName: "川岛绿辉", originPower: 3, ability: CardAbility.None, cardType: CardType.Normal);
+        var salutdAmourCard = TestUtil.MakeCard(chineseName: "M", originPower: 3, ability: CardAbility.SalutdAmour, cardType: CardType.Normal);
+        var model = new BattleRowAreaModel(CardBadgeType.Wood)
+            .AddCard(normalCard)
+            .AddCard(salutdAmourCard);
+        Assert.AreEqual(9, model.GetCurrentPower());
+        Assert.AreEqual(3, model.cardListModel.cardList[0].currentPower);
+        Assert.AreEqual(6, model.cardListModel.cardList[1].currentPower);
+    }
 }

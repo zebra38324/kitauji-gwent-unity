@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 468a46d0ae32c3544b7d98094e6448a9, type: 3}
   m_Name: AddressableAssetSettings
   m_EditorClassIdentifier: 
-  m_DefaultGroup: ea830d6d2ccf52a49ba7ed475cb556cd
+  m_DefaultGroup: 823b96c06e81a7f40962e3a05a3ff289
   m_currentHash:
     serializedVersion: 2
-    Hash: b724acac236dc69e23889a229585b8cf
+    Hash: 179f99dba8941bbe594e3a4472fb1934
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -46,6 +46,7 @@ MonoBehaviour:
   m_GroupAssets:
   - {fileID: 11400000, guid: fba184cd423618e43bcc158990bf6aa5, type: 2}
   - {fileID: 11400000, guid: e29491c99ab2e7243ae0f55e99aa30c2, type: 2}
+  - {fileID: 11400000, guid: 8f526fe2ff686c249bde3a8332e82d49, type: 2}
   - {fileID: 11400000, guid: 010f83861f173654f855c07b67590042, type: 2}
   - {fileID: 11400000, guid: 61eed4f098b911743a4618569aa4bc65, type: 2}
   - {fileID: 11400000, guid: 419b510f6aa417747963955ffc7db04e, type: 2}
@@ -109,6 +110,7 @@ MonoBehaviour:
     - image_k1
     - image_k2
     - image_neutral
+    - image_k3
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 5195f71278c9ec54eb640a151f581abc, type: 2}

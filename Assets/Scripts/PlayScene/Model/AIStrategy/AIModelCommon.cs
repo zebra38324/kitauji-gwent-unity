@@ -75,7 +75,7 @@ class AIModelCommon
     {
         int scoreDiff = GetScoreDiff(model.wholeAreaModel);
         bool ret = false;
-        if (model.wholeAreaModel.playTracker.enemyPlayerInfo.setScore <= 1 &&
+        if (model.wholeAreaModel.playTracker.enemyPlayerInfo.setScore == 0 &&
             ((scoreDiff < -10 && maxReturn.scoreDiff < 3) ||
              scoreDiff > 20 && maxReturn.scoreDiff > 5)) {
             ret = true;

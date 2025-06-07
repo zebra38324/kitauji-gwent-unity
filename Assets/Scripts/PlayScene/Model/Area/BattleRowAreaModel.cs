@@ -44,6 +44,8 @@ public record BattleRowAreaModel
         } else {
             if (card.cardInfo.ability == CardAbility.Kasa) {
                 newRecord = newRecord.ApplyKasa();
+            } else if (card.cardInfo.ability == CardAbility.SalutdAmour) {
+                card = newRecord.ApplySalutdAmour(card);
             }
             var newCardListModel = newRecord.cardListModel.AddCard(card);
             newRecord = newRecord with {
@@ -230,5 +232,15 @@ public record BattleRowAreaModel
             return newCard;
         }).ToImmutableList();
         return Lens_CardListModel_CardList.Set(newCardList, newRecord);
+    }
+
+    private CardModel ApplySalutdAmour(CardModel card)
+    {
+        foreach (CardModel releatedCard in cardListModel.cardList) {
+            if (releatedCard.cardInfo.chineseName == "川岛绿辉") {
+                return card.AddBuff(CardBuffType.SalutdAmour, 1);
+            }
+        }
+        return card;
     }
 }

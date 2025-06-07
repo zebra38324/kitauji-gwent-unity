@@ -1,0 +1,379 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: RemoteImageOriginK3
+  m_EditorClassIdentifier: 
+  m_GroupName: RemoteImageOriginK3
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 823b96c06e81a7f40962e3a05a3ff289
+  m_SerializeEntries:
+  - m_GUID: 00ef33b81e6a3db42b9c49d555689c25
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_MayaHashida.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 09ebb539ef8032e43bcab53d4e903d35
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_ShuichiTsukamoto.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0dcde5a9fe99aeb4da1f0cc397456462
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_ShioriHiranuma.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0f391270a5cf3724a88e336fd5c339da
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_MeikoOda.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 12bcd51232b2a5e4280c5fb06fa13e5a
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_MasakoSakai.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 13f4727aa5d460d44a3b6196c81e195c
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_MikuKachisu.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 151b5012b4f01734199b7a26d542b7f2
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_KiriMatsumoto.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 17cd76d41cf42f245bf52d927f9b8c71
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_YoukoMatsuzaki.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 204506a46fd21bf4898ab3fd64bc19e1
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_YukiTakekawa.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2563ae0569d800544b74a3cbc7abf175
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_MichiruHakase.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d8e3376b13ab9e41b7edf5de82d9387
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_ChieriTakahisa.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d9ef72aa8c901745b0dd0ccadc11c45
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_TamariAsakura.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30ba937d42c74e64aacc08f57c752ebc
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_HiyokoUeda.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 319bfc5211088ea419735980a7aee3a4
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_SumikaKawaguchi.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 386800022b586e44eb03290c67d52fbf
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_MotokoHigashiura.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3b5dbad5c69a52641ba294e533b3e486
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_HazukiKatou.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3f767f36a0f35a34b8d9f2b1cde760ff
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_IchigoNakata.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 436dfcef4dc68c54892f628b16009740
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_LalaHitomi.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ba016f35259e7846ab4eea55eee3f36
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_ChikaoTakigawa.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4d6a2601711d9fb459636c970743e02a
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_NarumiHiraishi.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ec0b9a44e2a68c4daf95af4f25b5dbf
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_ChikaiMaki.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 526092f1f7cd66648b123739d0af34e3
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_EikoMatsufuji.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 53c979fa4ddb544419a6e9d2041ffa21
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_ReinaKousaka.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5436f695ea8e98940a56762bfd21aac1
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_SapphireKawashima.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5bcad7e106b507542b5041205a2fc2f9
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_SariYoshii.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5d52bd6c418d46749a232627e77c6574
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_TsumikiYamane.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e85e6c92b4970249b90fc322c3526df
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_RirikaKenzaki.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 62d26ceb6f2c56241976c2ffe619581e
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_TakuImura.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67801685a4d2f734c8b32d92d8ecbab9
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_TsubameKamaya.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ebceb38465c98a4ea1c4d2520b3b8ad
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_JunnaInoue.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6f363abda534a264eb3514fa48521ac3
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_RukaSakamoto.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 72f76d3c9a5eaea42b4e3797cbb96586
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_MikiKatou.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 73912bf4ef4927641aef4fe0edfa8b8e
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_SariTakahashi.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7494502f7a81fd042aa6206e77cb8497
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_BabeUchida.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7a12ec75d20638646974b8037f398215
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_SayakaFukui.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 82e938a1c7483ed4b99080f2240f1ef0
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_MakiAkamatsu.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 82f3ae1f269983f49abc0fe64e10bbe2
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_MireiSuzuki.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 838fee7e2a09bc84ea0c5d8cc41ecc42
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_SeikoAshida.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 86387a00004dedf49b266bbd459035a2
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_YayoiKamiishi.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a3763254cdbcdf488e178b03fd644fa
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_MayuKuroe.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8e2ea37cdbcee5241a682c8631d4f609
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_SousukeMaeda.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 947d47493ba68d34fbcabc8308caa48f
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_YumeKohinata.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9f141a6891d57a6409972ebab9c82934
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_YoshinoMiki.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a2b3c19d0f6698c4bb3959b190b8ab1b
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_KanadeHisaish.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a58a3265ba889974d9ba2faec352c8e9
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_RairiHayashi.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aa39d73b25bcb87478f2210ece7be853
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_KahoHariya.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aa45537d7477cf54bb98a4bd3ce2bb3a
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_SuzumeKamaya.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b0e980ae4abb65f40b7db3f640a4e14e
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_EruKabutodani.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cbbece00e95daee4c8a98a942f89665c
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_SatsukiSuzuki.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ddea6b6a433933d49aa5eb82605bbfa3
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_MotomuTsukinaga.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e0a69184f91e3a24493713022681e284
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_TakumiYoshida.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e1d7c89fd36a48d468d8cbc8aa45a470
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_AkikoYoshizawa.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e27a09946069a7c4d990e6a4ca1f8faa
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_TsubomiNakano.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e61c900b44369874ea51162c84f61f3e
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_MichiyoMorimoto.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e7a17a7f3198c72408562c7c11f88415
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_SurugaKoteyama.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8a6cc6112656e148b0ef30365c511eb
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_HisaeTakano.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8f5f5676a7085d4ba83244a5ff295f7
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_KumikoOumae.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb8b43e9f1dc3254984676c8b287d2dd
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_AotaMaeda.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fca25f8a35e0b27449d7018f4a8554ce
+    m_Address: Assets/RemoteRes/Image/origin-image/KumikoThirdYear/K3_ShionKajiwar.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_k3
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: a0611c52f639b8145b25d7fc1e3ec1d2, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 187615a13918ab749a84b7a61cba5304, type: 2}
+    - {fileID: 11400000, guid: dbfd633a31896914baddbdd2e1e6d333, type: 2}

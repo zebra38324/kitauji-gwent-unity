@@ -39,6 +39,10 @@ public enum CardAbility // TODO: 完善
     Guard, // 卫队: 守卫的目标部员在（任意一方）场上时，使指定对方一名部员吹奏能力降低4。
     Monaka, // Monaka: 给己方一名场上部员赠送护身符，使其吹奏能力+2。
     Kasa, // 伞: 消除本方铠冢霙除天气外的不良影响，并使其吹奏能力+5。
+    K5Leader, // 新人领袖: 使本方场上除自己之外所有的一年级部员吹奏能力+2。
+    SalutdAmour, // 爱的礼赞：打出时若本方川岛绿辉在场，则自己吹奏能力+3。
+    Pressure, // 高压：使本方场上所有部员的吹奏能力，50%概率+1，50%概率-1。
+    Defend, // 防守：自身所在行的部员，无法成为投掷、卫队技能的攻击目标。
 }
 
 public enum CardType
@@ -125,9 +129,13 @@ public enum CardBuffType
     Horn, // 点数加倍
     Kasa, // +5
     Monaka, // +2
+    K5Leader, // +2
+    SalutdAmour, // +3
+    PressurePlus, // +1
     // 减益buff
     Attack2, // -2
     Attack4, // -4
+    PressureMinus, // -1
     Weather, // 基础数值降为1
     // 枚举总数
     Count,

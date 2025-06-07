@@ -150,10 +150,10 @@ class AIModelL1 : AIModelInterface
             return;
         }
         var returnList = AIModelCommon.GetAllAction(playSceneModel.wholeAreaModel);
-        if (returnList.Count == 0 || AIModelCommon.NeedPass(playSceneModel, returnList[0])) {
+        var actionReturn = SelectActionReturn(returnList);
+        if (returnList.Count == 0 || AIModelCommon.NeedPass(playSceneModel, returnList[0]) || actionReturn == null) {
             playSceneModel.Pass();
         } else {
-            var actionReturn = SelectActionReturn(returnList);
             foreach (var action in actionReturn.actionList) {
                 AIModelCommon.ApplyAction(playSceneModel, action);
             }
@@ -169,7 +169,7 @@ class AIModelL1 : AIModelInterface
         playSceneModel.SetBackupCardInfoIdList(selectDeckList);
     }
 
-    // 选择操作，注意allAction不可为空
+    // 选择操作
     private AIModelCommon.ActionReturn SelectActionReturn(List<AIModelCommon.ActionReturn> allAction)
     {
         var filterList = new List<AIModelCommon.ActionReturn>();
@@ -178,6 +178,15 @@ class AIModelL1 : AIModelInterface
                 break;
             }
             filterList.Add(action);
+        }
+        if (filterList.Count == 0) {
+            if (allAction.Count > 3) {
+                KLog.I(TAG, "SelectAction: use first action, allAction.Count = " + allAction.Count);
+                return allAction[0]; // 还有后续操作，暂时负收益试一试
+            } else {
+                KLog.I(TAG, "SelectAction: no valid action found, allAction.Count = " + allAction.Count);
+                return null;
+            }
         }
         int actionIndex = GetActionIndexLinearProbabilities(filterList.Count);
         KLog.I(TAG, "SelectAction: actionIndex = " + actionIndex + ", filterList.Count = " + filterList.Count + ", total count = " + allAction.Count);

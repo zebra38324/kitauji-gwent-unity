@@ -8,7 +8,8 @@
         string musterType = "",
         string bondType = "",
         CardBadgeType badgeType = CardBadgeType.Wood,
-        bool isMale = false)
+        bool isMale = false,
+        int grade = 1)
     {
         var cardInfo = new CardInfo {
             ability = ability,
@@ -19,7 +20,8 @@
             musterType = musterType,
             bondType = bondType,
             badgeType = badgeType,
-            isMale = isMale
+            isMale = isMale,
+            grade = grade,
         };
         return new CardModel(cardInfo);
     }
