@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 468a46d0ae32c3544b7d98094e6448a9, type: 3}
   m_Name: AddressableAssetSettings
   m_EditorClassIdentifier: 
-  m_DefaultGroup: 823b96c06e81a7f40962e3a05a3ff289
+  m_DefaultGroup: ec8ed61fca326424b8611c3c62851cd3
   m_currentHash:
     serializedVersion: 2
-    Hash: 179f99dba8941bbe594e3a4472fb1934
+    Hash: 00000000000000000000000000000000
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -87,6 +87,20 @@ MonoBehaviour:
         m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
       - m_Id: e5fd2f766ebc9e846a08caaeead7bcca
         m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
+    - m_InheritedParent: 
+      m_Id: f2b33df9a22311e42a9d2415ffb36d96
+      m_ProfileName: Dev
+      m_Values:
+      - m_Id: 01611fd2df8bafb4596513a2a1913518
+        m_Value: http://localhost:12333
+      - m_Id: 19d9dffe3836dc048a2a87139074111f
+        m_Value: ServerData/[BuildTarget]
+      - m_Id: 1a462a7fe61651245b2f44dbe324d81a
+        m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
+      - m_Id: 1aa9bdf6158ff2248998768769f1a666
+        m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
+      - m_Id: e5fd2f766ebc9e846a08caaeead7bcca
+        m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
     m_ProfileEntryNames:
     - m_Id: 01611fd2df8bafb4596513a2a1913518
       m_Name: Remote.LoadPath
@@ -111,6 +125,7 @@ MonoBehaviour:
     - image_k2
     - image_neutral
     - image_k3
+    - bgm
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 5195f71278c9ec54eb640a151f581abc, type: 2}

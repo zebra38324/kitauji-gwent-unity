@@ -17,15 +17,83 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: ec8ed61fca326424b8611c3c62851cd3
   m_SerializeEntries:
-  - m_GUID: 7da8c3c575971f140aea86ecf1ae428d
-    m_Address: Assets/RemoteRes/Audio/bgm/dream_solister.mp3
+  - m_GUID: 02d2610b0f62f0f4b912a90378832440
+    m_Address: "Assets/RemoteRes/Audio/bgm/\u97FF\u3051\uFF01\u30E6\u30FC\u30D5\u30A9\u30CB\u30A2\u30E0.mp3"
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - bgm
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c3674ef3e89844946bae121bdd05299d
-    m_Address: "Assets/RemoteRes/Audio/bgm/\u666E\u7F57\u65FA\u65AF\u4E4B\u98CE.mp3"
+  - m_GUID: 246ae351477f42e438991d8795f04d77
+    m_Address: "Assets/RemoteRes/Audio/bgm/\u30D7\u30ED\u30F4\u30A1\u30F3\u30B9\u306E\u98A8.mp3"
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - bgm
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 25ed39c6828ac414cb118b7f11e95259
+    m_Address: "Assets/RemoteRes/Audio/bgm/\u6D77\u5175\u968A.mp3"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - bgm
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 569c8abfc1b6e7044b89309fe1084d82
+    m_Address: Assets/RemoteRes/Audio/bgm/RYDEEN.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - bgm
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d39d8a2b9093ee44bb6880acfda0f88
+    m_Address: "Assets/RemoteRes/Audio/bgm/\u4E00\u5E74\u306E\u8A69 \uFF5E\u5439\u594F\u697D\u306E\u305F\u3081\u306E.mp3"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - bgm
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 84e9a34f6b7b04c40af05a56cd09b0bd
+    m_Address: "Assets/RemoteRes/Audio/bgm/\u5B9D\u5CF6.mp3"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - bgm
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8817fa548301c3346a6dcb0d6b80dd7e
+    m_Address: "Assets/RemoteRes/Audio/bgm/\u5B66\u5712\u5929\u56FD.mp3"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - bgm
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a41f92606f392fc49bd286768273a36e
+    m_Address: "Assets/RemoteRes/Audio/bgm/\u611B\u3092\u898B\u3064\u3051\u305F\u5834\u6240.mp3"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - bgm
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ab5f2c64907831a48b83fa351c7e00fe
+    m_Address: "Assets/RemoteRes/Audio/bgm/\u30B5\u30A6\u30F3\u30C9\u30B9\u30B1\u30FC\u30D7.mp3"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - bgm
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b563501e6f73d3840897660191e318b3
+    m_Address: Assets/RemoteRes/Audio/bgm/DREAM SOLISTER.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - bgm
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7c428e35f3236a4982318e82790361a
+    m_Address: "Assets/RemoteRes/Audio/bgm/\u4E09\u65E5\u6708\u306E\u821E.mp3"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - bgm
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c7ae1920c4419fb4a94b1bd7f4af0c1d
+    m_Address: "Assets/RemoteRes/Audio/bgm/\u30EA\u30BA\u3068\u9752\u3044\u9CE5 \u7B2C\u4E09\u697D\u7AE0\u300C\u611B\u3086\u3048\u306E\u6C7A\u65AD\u300D.mp3"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - bgm
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f095c366328ff7346a5c7a4a9b8f2efc
+    m_Address: "Assets/RemoteRes/Audio/bgm/\u3053\u308C\u304C\u79C1\u306E\u751F\u304D\u308B\u9053.mp3"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - bgm
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: a0611c52f639b8145b25d7fc1e3ec1d2, type: 2}

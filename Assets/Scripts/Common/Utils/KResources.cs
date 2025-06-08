@@ -44,18 +44,6 @@ public class KResources : MonoBehaviour
                     }
                 }));
             }
-        } else if (target is AudioSource audioSource) {
-            if (localRes != null) {
-                audioSource.clip = localRes as AudioClip;
-            } else {
-                StartCoroutine(TryLoadAddressables<AudioClip>(filename, (clip) => {
-                    if (clip != null) {
-                        audioSource.clip = clip;
-                    } else {
-                        KLog.W(TAG, "Load: " + filename + " fail");
-                    }
-                }));
-            }
         }
     }
 

@@ -153,6 +153,11 @@ public record SinglePlayerAreaModel
         newRecord = newRecord with {
             discardAreaModel = newDiscardAreaModel
         };
+        foreach (CardModel card in removedCardList) {
+            if (card.cardInfo.ability == CardAbility.Bond) {
+                newRecord = newRecord.UpdateBond(card.cardInfo.bondType);
+            }
+        }
         return newRecord;
     }
 

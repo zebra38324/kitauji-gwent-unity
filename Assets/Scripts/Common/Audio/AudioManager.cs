@@ -1,9 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class AudioManager : MonoBehaviour
 {
+    private static string TAG = "AudioManager";
+
     public static AudioManager Instance;
 
     public AudioSource bgmPlayer;
@@ -21,9 +25,9 @@ public class AudioManager : MonoBehaviour
 
     private Dictionary<SFXType, AudioClip> sfxCache;
 
-    private static string[] bgmNameList = { "dream_solister.mp3", "普罗旺斯之风.mp3" };
+    private List<AudioClip> bgmList = new List<AudioClip>();
 
-    private int bgmIndex;
+    private bool switchNextBGM = false;
 
     private bool isAbort = false;
 
@@ -76,23 +80,59 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public string GetBGMName()
+    {
+        if (bgmPlayer.clip == null) {
+            return "BGM加载中";
+        }
+        return bgmPlayer.clip.name;
+    }
+
+    public void SwitchNextBGM()
+    {
+        KLog.I(TAG, "SwitchNextBGM");
+        switchNextBGM = true;
+    }
+
     private IEnumerator PlayBGM()
     {
         bgmPlayer.volume = 0.5f; // 初始默认音量
-        string filePrefix = @"Audio/bgm/";
-        bgmIndex = 0;
+        yield return LoadBGM();
+        if (bgmList.Count == 0) {
+            yield break;
+        }
+        int lastIndex = 0;
         while (!isAbort) {
-            if (bgmPlayer.isPlaying) {
+            if (bgmPlayer.isPlaying && !switchNextBGM) {
                 yield return null;
                 continue;
             }
-            bgmPlayer.clip = null;
-            KResources.Instance.Load<AudioClip>(bgmPlayer, filePrefix + bgmNameList[bgmIndex]);
-            bgmIndex = (bgmIndex + 1) % bgmNameList.Length;
-            while (bgmPlayer.clip == null && !isAbort) {
-                yield return null;
-            }
+            int randomIndex;
+            do {
+                randomIndex = Random.Range(0, bgmList.Count);
+            } while (randomIndex == lastIndex);
+            var clip = bgmList[randomIndex];
+            bgmPlayer.clip = clip;
+            lastIndex = randomIndex;
+            switchNextBGM = false;
+            KLog.I(TAG, $"PlayBGM: {clip.name} ({clip.length}秒)");
             bgmPlayer.Play();
+        }
+    }
+
+    private IEnumerator LoadBGM()
+    {
+        KLog.I(TAG, "LoadBGM: will load");
+        AsyncOperationHandle<IList<AudioClip>> handle = Addressables.LoadAssetsAsync<AudioClip>("bgm", null);
+        yield return handle;
+        if (handle.Status == AsyncOperationStatus.Succeeded) {
+            foreach (AudioClip clip in handle.Result) {
+                bgmList.Add(clip);
+                KLog.I(TAG, $"LoadBGM: {clip.name} ({clip.length}秒)");
+            }
+            KLog.I(TAG, "LoadBGM: BGM assets loaded successfully: " + handle.Result.Count);
+        } else {
+            KLog.W(TAG, "LoadBGM: Failed to load BGM assets");
         }
     }
 

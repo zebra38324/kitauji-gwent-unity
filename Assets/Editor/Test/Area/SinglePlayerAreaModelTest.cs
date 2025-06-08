@@ -293,6 +293,22 @@ public class SinglePlayerAreaModelTest
     }
 
     [Test]
+    public void RemoveDeadCard_Bond()
+    {
+        var bond1 = TestUtil.MakeCard(originPower: 6, ability: CardAbility.Bond, bondType: "bond", badgeType: CardBadgeType.Brass, id: 50);
+        var bond2 = TestUtil.MakeCard(originPower: 6, ability: CardAbility.Bond, bondType: "bond", badgeType: CardBadgeType.Brass, id: 51);
+        var bond3 = TestUtil.MakeCard(originPower: 7, ability: CardAbility.Bond, bondType: "bond", badgeType: CardBadgeType.Brass, id: 52);
+        var model = new SinglePlayerAreaModel(hostGen)
+            .AddBattleAreaCard(bond1)
+            .AddBattleAreaCard(bond2)
+            .AddBattleAreaCard(bond3);
+        Assert.AreEqual(57, model.GetCurrentPower());
+        var result = model.ApplyScorch(18).RemoveDeadCard(out var removed);
+        Assert.AreEqual(2, removed.Count);
+        Assert.AreEqual(7, result.GetCurrentPower());
+    }
+
+    [Test]
     public void ApplyLip()
     {
         var c1 = TestUtil.MakeCard(originPower: 7, isMale: false, badgeType: CardBadgeType.Wood);
