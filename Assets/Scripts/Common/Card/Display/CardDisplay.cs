@@ -312,6 +312,8 @@ public class CardDisplay : MonoBehaviour,
                 return "pressure.png";
             case CardAbility.Defend:
                 return "defend.png";
+            case CardAbility.PowerFirst:
+                return "power_first.png";
             default: // None
                 return "none";
         }

@@ -41,8 +41,9 @@ public enum CardAbility // TODO: 完善
     Kasa, // 伞: 消除本方铠冢霙除天气外的不良影响，并使其吹奏能力+5。
     K5Leader, // 新人领袖: 使本方场上除自己之外所有的一年级部员吹奏能力+2。
     SalutdAmour, // 爱的礼赞：打出时若本方川岛绿辉在场，则自己吹奏能力+3。
-    Pressure, // 高压：使本方场上所有部员的吹奏能力，50%概率+1，50%概率-1。
-    Defend, // 防守：自身所在行的部员，无法成为投掷、卫队技能的攻击目标。
+    Pressure, // 高压：使本方场上所有部员的吹奏能力，50%概率+2，50%概率-1。
+    Defend, // 防守：自身所在行的部员，本小局结束前不会被移除。
+    PowerFirst, // 实力至上：对方场上所有点数小于4的部员，吹奏能力降低1。
 }
 
 public enum CardType
@@ -131,11 +132,12 @@ public enum CardBuffType
     Monaka, // +2
     K5Leader, // +2
     SalutdAmour, // +3
-    PressurePlus, // +1
+    PressurePlus, // +2
     // 减益buff
     Attack2, // -2
     Attack4, // -4
     PressureMinus, // -1
+    PowerFirst, // -1
     Weather, // 基础数值降为1
     // 枚举总数
     Count,

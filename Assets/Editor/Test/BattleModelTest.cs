@@ -18,6 +18,8 @@ public class BattleModelTest
 
     private bool testHostFirst;
 
+    private int testSeed;
+
     private string testActionMsgStr;
 
     [SetUp]
@@ -52,6 +54,7 @@ public class BattleModelTest
                 testIdList = (List<int>)list[2];
                 if (list.Length > 3) {
                     testHostFirst = (bool)list[3];
+                    testSeed = (int)list[4];
                 }
                 break;
             }
@@ -76,7 +79,7 @@ public class BattleModelTest
         CardGroup cardGroup = CardGroup.KumikoSecondYear;
         List<int> infoIdList = new List<int> { 2001, 2002 };
         List<int> idList = new List<int> { 11, 21 };
-        battleModel.AddSelfActionMsg(BattleModel.ActionType.Init, cardGroup, infoIdList, idList, true);
+        battleModel.AddSelfActionMsg(BattleModel.ActionType.Init, cardGroup, infoIdList, idList, true, 2233);
         yield return new WaitForSecondsRealtime(0.03f); // 等待异步执行完成
 
         // 消息原路返回，测试序列化、反序列化是否正常
@@ -91,5 +94,6 @@ public class BattleModelTest
         Assert.AreEqual(idList[0], testIdList[0]);
         Assert.AreEqual(idList[1], testIdList[1]);
         Assert.AreEqual(true, testHostFirst);
+        Assert.AreEqual(2233, testSeed);
     }
 }

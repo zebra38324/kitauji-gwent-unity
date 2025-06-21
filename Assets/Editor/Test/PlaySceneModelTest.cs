@@ -31,6 +31,7 @@ public class PlaySceneModelTest
             new CardInfo { chineseName = "指挥牌", infoId = 3, originPower = 0, cardType = CardType.Leader },
             new CardInfo { chineseName = "指导老师牌", infoId = 4, ability = CardAbility.HornUtil },
             new CardInfo { chineseName = "间谍牌", infoId = 5, originPower = 5, cardType = CardType.Normal, badgeType = CardBadgeType.Wood, ability = CardAbility.Spy },
+            new CardInfo { chineseName = "高压牌-5", infoId = 6, originPower = 5, cardType = CardType.Hero, badgeType = CardBadgeType.Brass, ability = CardAbility.Pressure },
         };
         allInfoField.SetValue(null, infos.ToImmutableList());
         hostRecvList = new List<ActionEvent>();
@@ -340,7 +341,6 @@ public class PlaySceneModelTest
             CheckCurState(playerModel, GameState.State.WAIT_INIT_HAND_CARD);
             playerModel.DrawInitHandCard();
             playerModel.ReDrawInitHandCard();
-            CheckCurState(playerModel, GameState.State.WAIT_ENEMY_ACTION);
             CheckCurState(playerModel, GameState.State.WAIT_SELF_ACTION);
             int lastIndex = playerRecvList.Count - 1;
             Assert.AreEqual(ActionEvent.Type.ActionText, playerRecvList[lastIndex].type);
@@ -537,6 +537,128 @@ public class PlaySceneModelTest
             int lastIndex = playerRecvList.Count - 1;
             Assert.AreEqual(ActionEvent.Type.ActionText, playerRecvList[lastIndex].type);
             Assert.AreEqual("<color=red>host</color> 打出卡牌：<b>指导老师牌</b>\n", playerRecvList[lastIndex].args[0]);
+        });
+        hostThread.Start();
+        playerThread.Start();
+        while (hostThread == null || playerModel == null) {
+            yield return null;
+        }
+        InitModelConn();
+        while (hostThread.IsAlive || playerThread.IsAlive) {
+            yield return null;
+        }
+    }
+
+    // 涉及随机数，测试双方状态一致
+    [UnityTest]
+    public IEnumerator Pressure()
+    {
+        SetHostFirst(true);
+        Thread hostThread = new Thread(() => {
+            InitHostModel();
+            while (hostModel.battleModel.SendToEnemyFunc == null || playerModel == null || playerModel.battleModel.SendToEnemyFunc == null) {
+                Thread.Sleep(1);
+            }
+            // 以下开始测试逻辑
+            hostModel.SetBackupCardInfoIdList(new List<int> { 1, 1, 1, 6 });
+            CheckCurState(hostModel, GameState.State.WAIT_INIT_HAND_CARD);
+            hostModel.DrawInitHandCard();
+            hostModel.ReDrawInitHandCard();
+            CheckCurState(hostModel, GameState.State.WAIT_SELF_ACTION);
+            hostModel.ChooseCard(hostModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList.Find(x => x.cardInfo.infoId == 1));
+            CheckCurState(hostModel, GameState.State.WAIT_SELF_ACTION);
+            hostModel.ChooseCard(hostModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList.Find(x => x.cardInfo.infoId == 1));
+            CheckCurState(hostModel, GameState.State.WAIT_SELF_ACTION);
+            hostModel.ChooseCard(hostModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList.Find(x => x.cardInfo.infoId == 1));
+            CheckCurState(hostModel, GameState.State.WAIT_SELF_ACTION);
+            hostModel.ChooseCard(hostModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0]);
+        });
+        Thread playerThread = new Thread(() => {
+            InitPlayerModel();
+            while (hostModel == null || hostModel.battleModel.SendToEnemyFunc == null || playerModel.battleModel.SendToEnemyFunc == null) {
+                Thread.Sleep(1);
+            }
+            // 以下开始测试逻辑
+            playerModel.SetBackupCardInfoIdList(new List<int> { 1, 1, 1 });
+            CheckCurState(playerModel, GameState.State.WAIT_INIT_HAND_CARD);
+            playerModel.DrawInitHandCard();
+            playerModel.ReDrawInitHandCard();
+            CheckCurState(playerModel, GameState.State.WAIT_ENEMY_ACTION);
+            CheckCurState(playerModel, GameState.State.WAIT_SELF_ACTION);
+            playerModel.ChooseCard(playerModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0]);
+            CheckCurState(playerModel, GameState.State.WAIT_SELF_ACTION);
+            playerModel.ChooseCard(playerModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0]);
+            CheckCurState(playerModel, GameState.State.WAIT_SELF_ACTION);
+            playerModel.ChooseCard(playerModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0]);
+            CheckCurState(playerModel, GameState.State.WAIT_SELF_ACTION);
+            // check
+            var hostRowList = hostModel.wholeAreaModel.selfSinglePlayerAreaModel.battleRowAreaList[(int)CardBadgeType.Wood].cardListModel.cardList;
+            var playerRowList = playerModel.wholeAreaModel.enemySinglePlayerAreaModel.battleRowAreaList[(int)CardBadgeType.Wood].cardListModel.cardList;
+            Assert.AreEqual(hostRowList.Count, playerRowList.Count);
+            for (int i = 0; i < hostRowList.Count; i++) {
+                Assert.AreEqual(hostRowList[i].currentPower, playerRowList[i].currentPower);
+            }
+        });
+        hostThread.Start();
+        playerThread.Start();
+        while (hostThread == null || playerModel == null) {
+            yield return null;
+        }
+        InitModelConn();
+        while (hostThread.IsAlive || playerThread.IsAlive) {
+            yield return null;
+        }
+    }
+
+    // 涉及随机数，测试双方状态一致
+    [UnityTest]
+    public IEnumerator K3Ability()
+    {
+        SetHostFirst(true);
+        Thread hostThread = new Thread(() => {
+            InitHostModel();
+            while (hostModel.battleModel.SendToEnemyFunc == null || playerModel == null || playerModel.battleModel.SendToEnemyFunc == null) {
+                Thread.Sleep(1);
+            }
+            // 以下开始测试逻辑
+            hostModel.SetBackupCardInfoIdList(new List<int> { 1, 1, 1 });
+            CheckCurState(hostModel, GameState.State.WAIT_INIT_HAND_CARD);
+            hostModel.DrawInitHandCard();
+            hostModel.ReDrawInitHandCard();
+            CheckCurState(hostModel, GameState.State.WAIT_SELF_ACTION);
+            hostModel.ChooseCard(hostModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0]);
+            CheckCurState(hostModel, GameState.State.WAIT_SELF_ACTION);
+            hostModel.ChooseCard(hostModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0]);
+            CheckCurState(hostModel, GameState.State.WAIT_SELF_ACTION);
+            hostModel.ChooseCard(hostModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0]);
+            CheckCurState(hostModel, GameState.State.WAIT_SELF_ACTION);
+            // check
+            var hostHostRowList = hostModel.wholeAreaModel.selfSinglePlayerAreaModel.battleRowAreaList[(int)CardBadgeType.Wood].cardListModel.cardList;
+            var hostPlayerRowList = hostModel.wholeAreaModel.enemySinglePlayerAreaModel.battleRowAreaList[(int)CardBadgeType.Wood].cardListModel.cardList;
+            var playerHostRowList = playerModel.wholeAreaModel.enemySinglePlayerAreaModel.battleRowAreaList[(int)CardBadgeType.Wood].cardListModel.cardList;
+            var playerPlayerRowList = playerModel.wholeAreaModel.selfSinglePlayerAreaModel.battleRowAreaList[(int)CardBadgeType.Wood].cardListModel.cardList;
+            Assert.AreEqual(hostHostRowList.Count, playerHostRowList.Count);
+            Assert.AreEqual(hostPlayerRowList.Count, playerPlayerRowList.Count);
+            Assert.AreEqual(hostHostRowList[0].cardInfo.id, playerHostRowList[0].cardInfo.id);
+            Assert.AreEqual(hostPlayerRowList[0].cardInfo.id, playerPlayerRowList[0].cardInfo.id);
+        });
+        Thread playerThread = new Thread(() => {
+            InitPlayerModel();
+            while (hostModel == null || hostModel.battleModel.SendToEnemyFunc == null || playerModel.battleModel.SendToEnemyFunc == null) {
+                Thread.Sleep(1);
+            }
+            // 以下开始测试逻辑
+            playerModel.SetBackupCardInfoIdList(new List<int> { 1, 1, 1 });
+            CheckCurState(playerModel, GameState.State.WAIT_INIT_HAND_CARD);
+            playerModel.DrawInitHandCard();
+            playerModel.ReDrawInitHandCard();
+            CheckCurState(playerModel, GameState.State.WAIT_ENEMY_ACTION);
+            CheckCurState(playerModel, GameState.State.WAIT_SELF_ACTION);
+            playerModel.ChooseCard(playerModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0]);
+            CheckCurState(playerModel, GameState.State.WAIT_SELF_ACTION);
+            playerModel.ChooseCard(playerModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0]);
+            CheckCurState(playerModel, GameState.State.WAIT_SELF_ACTION);
+            playerModel.ChooseCard(playerModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0]);
         });
         hostThread.Start();
         playerThread.Start();

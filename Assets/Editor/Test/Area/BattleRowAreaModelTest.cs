@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 public class BattleRowAreaModelTest
 {
@@ -43,6 +44,40 @@ public class BattleRowAreaModelTest
         Assert.AreEqual(CardLocation.BattleArea, mizoreCard.cardLocation);
         Assert.AreEqual(4 + 5, mizoreCard.currentPower);
         Assert.AreEqual(4 + 9, updated.GetCurrentPower());
+    }
+
+    [Test]
+    public void AddCard_Defend()
+    {
+        var row = new BattleRowAreaModel(CardBadgeType.Wood)
+            .AddCard(TestUtil.MakeCard(id: 1, ability: CardAbility.None, originPower: 2))
+            .AddCard(TestUtil.MakeCard(id: 2, ability: CardAbility.Defend, originPower: 2))
+            .AddCard(TestUtil.MakeCard(id: 3, ability: CardAbility.None, originPower: 2));
+        var underDefendproperty = typeof(CardModel).GetProperty(
+            "underDefend",
+            BindingFlags.NonPublic | BindingFlags.Instance
+        );
+        Assert.IsTrue((bool)underDefendproperty.GetValue(row.cardListModel.cardList[0]));
+        Assert.IsTrue((bool)underDefendproperty.GetValue(row.cardListModel.cardList[1]));
+        Assert.IsTrue((bool)underDefendproperty.GetValue(row.cardListModel.cardList[2]));
+
+        var card0 = row.cardListModel.cardList[0];
+        row = row.ReplaceCard(card0, card0.AddBuff(CardBuffType.Attack4, 1));
+        Assert.AreEqual(4, row.GetCurrentPower());
+
+        var card2 = row.cardListModel.cardList[2];
+        row = row.ReplaceCard(card2, card2.AddBuff(CardBuffType.Attack4, 1));
+        Assert.AreEqual(2, row.GetCurrentPower());
+
+        var decoyCard = TestUtil.MakeCard(id: 4, ability: CardAbility.Decoy);
+        row = row.ReplaceCard(row.cardListModel.cardList[1], decoyCard);
+        Assert.AreEqual(0, row.GetCurrentPower());
+        Assert.IsFalse((bool)underDefendproperty.GetValue(row.cardListModel.cardList[0]));
+        Assert.IsFalse((bool)underDefendproperty.GetValue(row.cardListModel.cardList[1]));
+        Assert.IsFalse((bool)underDefendproperty.GetValue(row.cardListModel.cardList[2]));
+        Assert.IsTrue(row.cardListModel.cardList[0].IsDead());
+        Assert.IsFalse(row.cardListModel.cardList[1].IsDead());
+        Assert.IsTrue(row.cardListModel.cardList[2].IsDead());
     }
 
     [Test]

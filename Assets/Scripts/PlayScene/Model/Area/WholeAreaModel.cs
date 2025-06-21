@@ -89,15 +89,19 @@ public record WholeAreaModel
         ActionEvent actionEvent = null;
         if (newRecord.playTracker.isHost) {
             bool hostFirst = PlayTracker.IsHostSelfFirst();
+            int seed = new Random().Next();
             newRecord = newRecord with {
-                playTracker = newRecord.playTracker.ConfigFirstSet(hostFirst)
+                playTracker = newRecord.playTracker.ConfigFirstSet(hostFirst),
+                selfSinglePlayerAreaModel = newRecord.selfSinglePlayerAreaModel.InitKRandom(seed + 1),
+                enemySinglePlayerAreaModel = newRecord.enemySinglePlayerAreaModel.InitKRandom(seed + 2),
             };
             actionEvent = new ActionEvent(ActionEvent.Type.BattleMsg,
                 BattleModel.ActionType.Init,
                 newRecord.playTracker.selfPlayerInfo.cardGroup,
                 infoIdList,
                 idList,
-                hostFirst);
+                hostFirst,
+                seed);
         } else {
             actionEvent = new ActionEvent(ActionEvent.Type.BattleMsg,
                 BattleModel.ActionType.Init,
@@ -119,7 +123,7 @@ public record WholeAreaModel
 
     // 初始时调用，设置所有备选卡牌信息，以及其他的一些初始化信息
     // enemy设置时idList由对端决定，因此不为null
-    public WholeAreaModel EnemyInit(List<int> infoIdList, List<int> idList, CardGroup enemyCardGroup, bool hostFirst)
+    public WholeAreaModel EnemyInit(List<int> infoIdList, List<int> idList, CardGroup enemyCardGroup, bool hostFirst, int seed = 0)
     {
         var newRecord = this;
         if (newRecord.gameState.curState != GameState.State.WAIT_BACKUP_INFO) {
@@ -131,6 +135,10 @@ public record WholeAreaModel
         if (!newRecord.playTracker.isHost) {
             // 非host，参照enemy传来的开局先手配置
             newRecord = Lens_PlayTracker.Set(newRecord.playTracker.ConfigFirstSet(!hostFirst), newRecord);
+            newRecord = newRecord with {
+                selfSinglePlayerAreaModel = newRecord.selfSinglePlayerAreaModel.InitKRandom(seed + 2),
+                enemySinglePlayerAreaModel = newRecord.enemySinglePlayerAreaModel.InitKRandom(seed + 1),
+            };
         }
         if (newRecord.selfSinglePlayerAreaModel.handCardAreaModel.backupCardList.Count > 0 &&
             newRecord.enemySinglePlayerAreaModel.handCardAreaModel.backupCardList.Count > 0) {
@@ -648,6 +656,15 @@ public record WholeAreaModel
                 selfArea = selfArea.AddBattleAreaCard(realCard); // 要先判断monaka，再把牌打出去。不然就加强自己了
                 break;
             }
+            case CardAbility.PowerFirst: {
+                enemyArea = enemyArea.ApplyPowerFirst(out var attackCardList).RemoveDeadCard(out var removedCardList);
+                if (removedCardList.Count > 0) {
+                    newActionList = RecordScorchAction(newActionList, removedCardList, CardAbility.PowerFirst);
+                } else if (attackCardList.Count > 0) {
+                    newActionList = RecordAttackAction(newActionList, attackCardList, CardAbility.PowerFirst);
+                }
+                break;
+            }
             default: {
                 selfArea = selfArea.AddBattleAreaCard(realCard);
                 break;
@@ -741,13 +758,13 @@ public record WholeAreaModel
         KLog.I(TAG, "SetFinish");
         var newRecord = this;
         // 清理卡牌、buff
-        var selfArea = newRecord.selfSinglePlayerAreaModel.RemoveAllBattleCard();
+        var selfArea = newRecord.selfSinglePlayerAreaModel.RemoveAllBattleCard(newRecord.playTracker.selfPlayerInfo.cardGroup == CardGroup.KumikoThirdYear);
         selfArea = selfArea with {
             battleRowAreaList = selfArea.battleRowAreaList.Select(row => row.SetWeatherBuff(false)).ToImmutableList()
         };
-        var enemyArea = newRecord.enemySinglePlayerAreaModel.RemoveAllBattleCard();
+        var enemyArea = newRecord.enemySinglePlayerAreaModel.RemoveAllBattleCard(newRecord.playTracker.enemyPlayerInfo.cardGroup == CardGroup.KumikoThirdYear);
         enemyArea = enemyArea with {
-            battleRowAreaList = selfArea.battleRowAreaList.Select(row => row.SetWeatherBuff(false)).ToImmutableList()
+            battleRowAreaList = enemyArea.battleRowAreaList.Select(row => row.SetWeatherBuff(false)).ToImmutableList()
         };
         newRecord = newRecord with {
             selfSinglePlayerAreaModel = selfArea,

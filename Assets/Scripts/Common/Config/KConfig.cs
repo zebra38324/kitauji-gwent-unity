@@ -38,13 +38,15 @@ public class KConfig
             2080
         },
         new int[] {
-            3001, 3005, 3006, 3007, 3021, 3040,
-            3011, 3012, 3013, 3026, 3029, 3030, 3031, 3046, 3048, 3049, 3053, 3054, 3055,
+            3001, 3006, 3007, 3021, 3040,
+            3011, 3012, 3013, 3026, 3029, 3046, 3048, 3053, 3054, 3055,
             3032, 3056, 3057, 3058, 3059,
-            5001, 5002, 5004,
-            5010
+            3096, 5001, 5002, 5004,
+            3095
         }
     };
+
+    private CompetitionBase.ContextRecord competitionContextRecord = null;
 
     private KConfig()
     {
@@ -154,6 +156,19 @@ public class KConfig
         return deckInfoIdListDic[cardGroup];
     }
 
+    public void SaveCompetitionContext(CompetitionBase.ContextRecord contextRecord)
+    {
+        KLog.I(TAG, "SaveCompetitionContext");
+        competitionContextRecord = contextRecord;
+        // TODO: 后端保存
+    }
+
+    public CompetitionBase.ContextRecord GetCompetitionContext()
+    {
+        KLog.I(TAG, "GetCompetitionContext");
+        return competitionContextRecord;
+    }
+
     private async void GetDeckConfig()
     {
         string deckConfigReqStr = "{}";
@@ -208,17 +223,13 @@ public class KConfig
             KLog.I(TAG, "UpdateDeckConfig: isTourist");
             return;
         }
-        if (deckCardGroup == CardGroup.KumikoThirdYear) {
-            KLog.I(TAG, "UpdateDeckConfig: not save KumikoThirdYear");
-            return;
-        }
         UpdateDeckConfigReq updateDeckConfigReq = new UpdateDeckConfigReq();
         updateDeckConfigReq.deck = new UpdateDeckConfigReqDeck();
-        // TODO: 久三年保存
         updateDeckConfigReq.deck.group = (int)deckCardGroup;
         updateDeckConfigReq.deck.config = new int[][] {
-            deckInfoIdListDic[CardGroup.KumikoFirstYear].ToArray(),
-            deckInfoIdListDic[CardGroup.KumikoSecondYear].ToArray()
+            GetDeckInfoIdList(CardGroup.KumikoFirstYear).ToArray(),
+            GetDeckInfoIdList(CardGroup.KumikoSecondYear).ToArray(),
+            GetDeckInfoIdList(CardGroup.KumikoThirdYear).ToArray(),
         };
         string updateDeckConfigReqStr = JsonConvert.SerializeObject(updateDeckConfigReq);
         KLog.I(TAG, "UpdateDeckConfig: updateDeckConfigReqStr = " + updateDeckConfigReqStr);

@@ -110,10 +110,12 @@ public class PlaySceneModel
                 List<int> infoIdList = (List<int>)list[1];
                 List<int> idList = (List<int>)list[2];
                 bool hostFirst = false;
+                int seed = 0;
                 if (list.Length > 3) {
                     hostFirst = (bool)list[3];
+                    seed = (int)list[4];
                 }
-                wholeAreaModel = wholeAreaModel.EnemyInit(infoIdList, idList, cardGroup, hostFirst);
+                wholeAreaModel = wholeAreaModel.EnemyInit(infoIdList, idList, cardGroup, hostFirst, seed);
                 LoadActionEvent();
                 break;
             }

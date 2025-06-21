@@ -81,13 +81,13 @@ public class PlaySceneManager : MonoBehaviour
         CardViewCollection.Instance.Clear();
     }
 
-    public async void ExitPlaySceneButton()
+    public async void ExitPlaySceneButton(bool normalFinish)
     {
         // 两个退出按钮都走这里逻辑
         if (hasClickExitPlaySceneButton) {
             return;
         }
-        KLog.I(TAG, "Click ExitPlaySceneButton");
+        KLog.I(TAG, $"Click ExitPlaySceneButton, normalFinish = {normalFinish}");
         hasClickExitPlaySceneButton = true;
         isAbort = true;
         if (isPVP) {
@@ -98,16 +98,19 @@ public class PlaySceneManager : MonoBehaviour
             await UniTask.Delay(1);
         }
         Reset();
-        SceneManager.LoadScene("MainMenuScene");
+        var gameConfig = GameConfig.Instance;
+        gameConfig.normalFinish = normalFinish;
+        SceneManager.LoadScene(gameConfig.fromScene);
     }
 
     // 每场比赛初始化
     public async UniTask Init()
     {
-        playSceneModel = new PlaySceneModel(Convert.ToBoolean(PlayerPrefs.GetInt(PlayerPrefsKey.PLAY_SCENE_IS_HOST.ToString())),
-            PlayerPrefs.GetString(PlayerPrefsKey.PLAY_SCENE_SELF_NAME.ToString()),
-            PlayerPrefs.GetString(PlayerPrefsKey.PLAY_SCENE_ENEMY_NAME.ToString()),
-            (CardGroup)PlayerPrefs.GetInt(PlayerPrefsKey.PLAY_SCENE_SELF_GROUP.ToString()),
+        var gameConfig = GameConfig.Instance;
+        playSceneModel = new PlaySceneModel(gameConfig.isHost,
+            gameConfig.selfName,
+            gameConfig.enemyName,
+            gameConfig.selfGroup,
             UpdateModel);
         if (selfPlayArea == null) {
             selfPlayArea = GameObject.Find("SelfPlayArea");
@@ -149,17 +152,17 @@ public class PlaySceneManager : MonoBehaviour
             enemyPlayStatView = GameObject.Find("Canvas/Background/EnemyPlayStatView");
         }
 
-        isPVP = Convert.ToBoolean(PlayerPrefs.GetInt(PlayerPrefsKey.PLAY_SCENE_IS_PVP.ToString()));
+        isPVP = gameConfig.isPVP;
         if (isPVP) {
-            int sessionId = PlayerPrefs.GetInt(PlayerPrefsKey.PLAY_SCENE_PVP_SESSION_ID.ToString());
+            int sessionId = gameConfig.pvpSessionId;
             playScenePVP = new PlayScenePVP(playSceneModel.battleModel, sessionId);
             playScenePVP.Start();
         } else {
             // 配置AI模块，注意信息要和host反过来
-            playSceneAI = new PlaySceneAI(!Convert.ToBoolean(PlayerPrefs.GetInt(PlayerPrefsKey.PLAY_SCENE_IS_HOST.ToString())),
-                PlayerPrefs.GetString(PlayerPrefsKey.PLAY_SCENE_ENEMY_NAME.ToString()),
-                PlayerPrefs.GetString(PlayerPrefsKey.PLAY_SCENE_SELF_NAME.ToString()),
-                (PlaySceneAI.AIType)PlayerPrefs.GetInt(PlayerPrefsKey.PLAY_SCENE_PVE_AI_TYPE.ToString()));
+            playSceneAI = new PlaySceneAI(!gameConfig.isHost,
+                gameConfig.selfName,
+                gameConfig.enemyName,
+                gameConfig.pveAIType);
             playSceneAI.playSceneModel.battleModel.SendToEnemyFunc += playSceneModel.battleModel.AddEnemyActionMsg;
             playSceneModel.battleModel.SendToEnemyFunc += playSceneAI.playSceneModel.battleModel.AddEnemyActionMsg;
             playSceneAI.Start();

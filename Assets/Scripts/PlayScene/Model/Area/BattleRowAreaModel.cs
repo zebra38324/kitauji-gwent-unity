@@ -107,12 +107,14 @@ public record BattleRowAreaModel
     }
 
     // 为现有的卡牌调整buff，或者替换
+    // 宽松的，寻找对应id
     public BattleRowAreaModel ReplaceCard(CardModel oldCard, CardModel newCard)
     {
         var newRecord = this;
         newCard = newCard.ChangeCardLocation(CardLocation.BattleArea);
         var oldCardList = newRecord.cardListModel.cardList;
-        if (oldCardList.Contains(oldCard)) {
+        oldCard = oldCardList.Find(x => x.cardInfo.id == oldCard.cardInfo.id);
+        if (oldCard != null) {
             newRecord = Lens_CardListModel_CardList.Set(oldCardList.Replace(oldCard, newCard), newRecord);
         }
         return newRecord.UpdateBuff();
@@ -174,6 +176,7 @@ public record BattleRowAreaModel
         newRecord = newRecord.UpdateMoraleBuff();
         newRecord = newRecord.UpdateHornBuff();
         newRecord = newRecord.UpdateWeatherBuff();
+        newRecord = newRecord.UpdateDefend();
         return newRecord;
     }
 
@@ -231,6 +234,14 @@ public record BattleRowAreaModel
             }
             return newCard;
         }).ToImmutableList();
+        return Lens_CardListModel_CardList.Set(newCardList, newRecord);
+    }
+
+    private BattleRowAreaModel UpdateDefend()
+    {
+        var newRecord = this;
+        bool hasDefend = newRecord.cardListModel.cardList.Find(x => x.cardInfo.ability == CardAbility.Defend) != null;
+        var newCardList = newRecord.cardListModel.cardList.Select(card => card.SetUnderDefend(hasDefend)).ToImmutableList();
         return Lens_CardListModel_CardList.Set(newCardList, newRecord);
     }
 

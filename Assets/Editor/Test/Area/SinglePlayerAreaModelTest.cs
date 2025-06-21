@@ -112,6 +112,31 @@ public class SinglePlayerAreaModelTest
     }
 
     [Test]
+    public void AddBattleAreaCard_TunningAbility()
+    {
+        var c1 = TestUtil.MakeCard(originPower: 5,
+            id: 101,
+            badgeType: CardBadgeType.Brass);
+        c1 = c1.AddBuff(CardBuffType.Attack2, 1);
+        var c2 = TestUtil.MakeCard(originPower: 5,
+            id: 102,
+            ability: CardAbility.Morale,
+            badgeType: CardBadgeType.Brass);
+        c2 = c2.AddBuff(CardBuffType.Attack2, 1);
+        var c3 = TestUtil.MakeCard(originPower: 5,
+            id: 103,
+            ability: CardAbility.Tunning,
+            badgeType: CardBadgeType.Wood);
+
+        var model = new SinglePlayerAreaModel(hostGen)
+            .AddBattleAreaCard(c1)
+            .AddBattleAreaCard(c2);
+        Assert.AreEqual(3 + 3 + 1, model.GetCurrentPower());
+        model = model.AddBattleAreaCard(c3);
+        Assert.AreEqual(5 + 5 + 1 + 5, model.GetCurrentPower());
+    }
+
+    [Test]
     public void AddBattleAreaCard_BondAbility_AppliesBondBuff()
     {
         // 两张同类型 Bond 卡
@@ -338,23 +363,6 @@ public class SinglePlayerAreaModelTest
     }
 
     [Test]
-    public void PrepareAttackTarget_Defend()
-    {
-        var c1 = TestUtil.MakeCard(originPower: 7, cardType: CardType.Normal, badgeType: CardBadgeType.Wood);
-        var c2 = TestUtil.MakeCard(originPower: 7, cardType: CardType.Normal, badgeType: CardBadgeType.Brass);
-        var c3 = TestUtil.MakeCard(originPower: 7, cardType: CardType.Normal, badgeType: CardBadgeType.Brass, ability: CardAbility.Defend);
-        var model = new SinglePlayerAreaModel(hostGen)
-            .AddBattleAreaCard(c1)
-            .AddBattleAreaCard(c2)
-            .AddBattleAreaCard(c3);
-        var result = model.PrepareAttackTarget(out var targetCardList);
-        Assert.AreEqual(1, targetCardList.Count);
-        Assert.AreEqual(CardSelectType.WithstandAttack, result.battleRowAreaList[(int)CardBadgeType.Wood].cardListModel.cardList[0].cardSelectType);
-        Assert.AreEqual(CardSelectType.None, result.battleRowAreaList[(int)CardBadgeType.Brass].cardListModel.cardList[0].cardSelectType);
-        Assert.AreEqual(CardSelectType.None, result.battleRowAreaList[(int)CardBadgeType.Brass].cardListModel.cardList[1].cardSelectType);
-    }
-
-    [Test]
     public void PrepareMedicTarget()
     {
         var c1 = TestUtil.MakeCard(originPower: 7, cardType: CardType.Normal);
@@ -463,6 +471,33 @@ public class SinglePlayerAreaModelTest
     }
 
     [Test]
+    public void RemoveAllBattleCard_Keep_Empty()
+    {
+        var model = new SinglePlayerAreaModel(hostGen)
+            .AddBattleAreaCard(TestUtil.MakeCard(id: 11, originPower: 7, cardType: CardType.Normal, badgeType: CardBadgeType.Wood).AddBuff(CardBuffType.Attack2, 1))
+            .AddBattleAreaCard(TestUtil.MakeCard(id: 21, originPower: 7, cardType: CardType.Normal, badgeType: CardBadgeType.Wood).AddBuff(CardBuffType.Attack2, 1))
+            .AddBattleAreaCard(TestUtil.MakeCard(id: 31, originPower: 7, cardType: CardType.Normal, badgeType: CardBadgeType.Wood).AddBuff(CardBuffType.Attack2, 1));
+        var result = model.RemoveAllBattleCard(true);
+        Assert.AreEqual(7, result.GetCurrentPower());
+        Assert.AreEqual(1, result.battleRowAreaList[(int)CardBadgeType.Wood].cardListModel.cardList.Count);
+        Assert.AreEqual(2, result.discardAreaModel.cardListModel.cardList.Count);
+    }
+
+    [Test]
+    public void RemoveAllBattleCard_Keep_Exist()
+    {
+        var model = new SinglePlayerAreaModel(hostGen);
+        var newWoodRow = model.battleRowAreaList[(int)CardBadgeType.Wood]
+            .AddCard(TestUtil.MakeCard(id: 51, cardType: CardType.Leader, ability: CardAbility.Decoy));
+        model = model with {
+            battleRowAreaList = model.battleRowAreaList.SetItem((int)CardBadgeType.Wood, newWoodRow)
+        };
+        var result = model.RemoveAllBattleCard(true);
+        Assert.AreEqual(0, result.battleRowAreaList[(int)CardBadgeType.Wood].cardListModel.cardList.Count);
+        Assert.AreEqual(0, result.discardAreaModel.cardListModel.cardList.Count);
+    }
+
+    [Test]
     public void AddBattleAreaCard_K5LeaderAbility()
     {
         var card1 = TestUtil.MakeCard(originPower: 6,
@@ -512,12 +547,44 @@ public class SinglePlayerAreaModelTest
             badgeType: CardBadgeType.Brass,
             cardType: CardType.Hero);
         var model = new SinglePlayerAreaModel(hostGen)
+            .InitKRandom(10)
             .AddBattleAreaCard(normalCard)
             .AddBattleAreaCard(pressureCard);
-        if (model.battleRowAreaList[(int)CardBadgeType.Wood].cardListModel.cardList[0].currentPower == 7) {
-            Assert.AreEqual(13, model.GetCurrentPower());
+        if (model.battleRowAreaList[(int)CardBadgeType.Wood].cardListModel.cardList[0].currentPower == 8) {
+            Assert.AreEqual(14, model.GetCurrentPower());
         } else {
             Assert.AreEqual(11, model.GetCurrentPower());
         }
+    }
+
+    [Test]
+    public void ApplyPowerFirst()
+    {
+        var c1 = TestUtil.MakeCard(id: 1, originPower: 4, badgeType: CardBadgeType.Wood);
+        var c2 = TestUtil.MakeCard(id: 2, originPower: 3, badgeType: CardBadgeType.Brass);
+        var model = new SinglePlayerAreaModel(hostGen)
+            .AddBattleAreaCard(c1)
+            .AddBattleAreaCard(c2);
+        var result = model.ApplyPowerFirst(out var attackCardList);
+        Assert.AreEqual(1, attackCardList.Count);
+        Assert.AreEqual(2, attackCardList[0].cardInfo.id);
+        Assert.AreEqual(4, result.battleRowAreaList[(int)CardBadgeType.Wood].GetCurrentPower());
+        Assert.AreEqual(2, result.battleRowAreaList[(int)CardBadgeType.Brass].GetCurrentPower());
+    }
+
+    [Test]
+    public void ApplyPowerFirst_Morale()
+    {
+        var c1 = TestUtil.MakeCard(id: 1, originPower: 1, badgeType: CardBadgeType.Wood);
+        var c2 = TestUtil.MakeCard(id: 2, originPower: 1, badgeType: CardBadgeType.Wood, ability: CardAbility.Morale);
+        var model = new SinglePlayerAreaModel(hostGen)
+            .AddBattleAreaCard(c1)
+            .AddBattleAreaCard(c2);
+        model = model.ApplyPowerFirst(out var attackCardList);
+        Assert.AreEqual(2, attackCardList.Count);
+        Assert.AreEqual(1, model.battleRowAreaList[(int)CardBadgeType.Wood].GetCurrentPower());
+        model = model.RemoveDeadCard(out var removedCardList);
+        Assert.AreEqual(2, removedCardList.Count);
+        Assert.AreEqual(0, model.battleRowAreaList[(int)CardBadgeType.Wood].GetCurrentPower());
     }
 }

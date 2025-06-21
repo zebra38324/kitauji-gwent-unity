@@ -11,14 +11,23 @@ public record CardModel
     public CardLocation cardLocation { get; init; } = CardLocation.None;
     public CardSelectType cardSelectType { get; init; } = CardSelectType.None;
     public bool isSelected { get; init; } = false; // 初始化选择重抽手牌时使用
-    public int currentPower { get; init; } = 0;
+    public int currentPower {
+        get {
+            return Math.Max(realPower, 0);
+        }
+        init {
+            realPower = value;
+        }
+    } // 当前对外显示点数，最低为0
     public bool hasScorch { get; init; } = false; // 是否已被退部
+    private int realPower { get; init; } = 0; // 实际点数
+    private bool underDefend { get; init; } = false; // 所在行是否有defend技能
     private ImmutableList<int> buffRecord { get; init; } = ImmutableList.CreateRange(Enumerable.Repeat(0, (int)CardBuffType.Count));
 
     public CardModel(CardInfo info)
     {
         cardInfo = new CardInfo(info);
-        currentPower = cardInfo.originPower;
+        realPower = cardInfo.originPower;
     }
 
     // ========================= ui相关逻辑 ===========================
@@ -77,7 +86,7 @@ public record CardModel
         var newBuffRecord = buffRecord.SetItem((int)buffType, oldValue + num);
         return this with {
             buffRecord = newBuffRecord,
-            currentPower = GetPower(newBuffRecord)
+            realPower = GetPower(newBuffRecord)
         };
     }
 
@@ -97,7 +106,7 @@ public record CardModel
         var newBuffRecord = buffRecord.SetItem((int)buffType, newValue);
         return this with {
             buffRecord = newBuffRecord,
-            currentPower = GetPower(newBuffRecord)
+            realPower = GetPower(newBuffRecord)
         };
     }
 
@@ -108,7 +117,7 @@ public record CardModel
         newBuffRecord = newBuffRecord.SetItem((int)CardBuffType.Attack4, 0);
         return this with {
             buffRecord = newBuffRecord,
-            currentPower = GetPower(newBuffRecord)
+            realPower = GetPower(newBuffRecord)
         };
     }
 
@@ -120,8 +129,9 @@ public record CardModel
         }
         return this with {
             buffRecord = newBuffRecord,
-            currentPower = GetPower(newBuffRecord),
-            hasScorch = false
+            realPower = GetPower(newBuffRecord),
+            hasScorch = false,
+            underDefend = false,
         };
     }
 
@@ -134,13 +144,23 @@ public record CardModel
 
     public bool IsDead()
     {
-        return hasScorch || (currentPower <= 0 && currentPower < cardInfo.originPower);
+        if (underDefend) {
+            return false;
+        }
+        return hasScorch || (realPower <= 0 && realPower < cardInfo.originPower);
     }
 
     public CardModel SetScorch()
     {
         return this with {
             hasScorch = true
+        };
+    }
+
+    public CardModel SetUnderDefend(bool enable)
+    {
+        return this with {
+            underDefend = enable
         };
     }
 
@@ -158,12 +178,13 @@ public record CardModel
         int diff = newBuffRecord[(int)CardBuffType.Morale] +
             2 * newBuffRecord[(int)CardBuffType.K5Leader] + 
             3 * newBuffRecord[(int)CardBuffType.SalutdAmour] +
-            1 * newBuffRecord[(int)CardBuffType.PressurePlus] +
+            2 * newBuffRecord[(int)CardBuffType.PressurePlus] +
             5 * newBuffRecord[(int)CardBuffType.Kasa] +
             2 * newBuffRecord[(int)CardBuffType.Monaka] -
             2 * newBuffRecord[(int)CardBuffType.Attack2] -
             4 * newBuffRecord[(int)CardBuffType.Attack4] -
-            1 * newBuffRecord[(int)CardBuffType.PressureMinus];
+            1 * newBuffRecord[(int)CardBuffType.PressureMinus] -
+            1 * newBuffRecord[(int)CardBuffType.PowerFirst];
         power += diff;
         return power;
     }

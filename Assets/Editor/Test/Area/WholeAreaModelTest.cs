@@ -2403,6 +2403,204 @@ public class WholeAreaModelTest
         Assert.AreEqual("施放<b>迷唇</b>技能，移除卡牌：<b>普通牌-2-男</b>\n", updated.actionEventList[2].args[0]);
     }
 
+    // power first 无目标
+    [Test]
+    public void ChooseCard_PowerFirst_NoTarget_Self()
+    {
+        SetHostFirst(false);
+        AppendAllCardInfoList(new List<CardInfo> {
+            new CardInfo { chineseName = "实力至上牌", infoId = 6, ability = CardAbility.PowerFirst, cardType = CardType.Leader },
+        });
+        var model = new WholeAreaModel(true, "S", "E", CardGroup.KumikoFirstYear);
+        var updated = model.SelfInit(new List<int> { 1, 6 })
+            .EnemyInit(new List<int> { 1 }, new List<int> { 13 }, CardGroup.KumikoThirdYear, false)
+            .SelfDrawInitHandCard()
+            .SelfReDrawInitHandCard()
+            .EnemyDrawInitHandCard(new List<int> { 13 });
+        updated = updated.ChooseCard(updated.enemySinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0], false);
+        updated = updated with {
+            actionEventList = ImmutableList<ActionEvent>.Empty
+        };
+        var card = updated.selfSinglePlayerAreaModel.handCardAreaModel.leaderCardListModel.cardList[0];
+        updated = updated.ChooseCard(card, true);
+        Assert.AreEqual(GameState.State.WAIT_ENEMY_ACTION, updated.gameState.curState);
+        Assert.AreEqual(GameState.ActionState.None, updated.gameState.actionState);
+        Assert.AreEqual(0, updated.selfSinglePlayerAreaModel.GetCurrentPower());
+        Assert.AreEqual(5, updated.enemySinglePlayerAreaModel.GetCurrentPower());
+        Assert.AreEqual(2, updated.actionEventList.Count);
+        Assert.AreEqual(ActionEvent.Type.BattleMsg, updated.actionEventList[0].type);
+        Assert.AreEqual(BattleModel.ActionType.ChooseCard, updated.actionEventList[0].args[0]);
+        Assert.AreEqual(card.cardInfo.id, updated.actionEventList[0].args[1]);
+        Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[1].type);
+        Assert.AreEqual("<color=green>S</color> 打出卡牌：<b>实力至上牌</b>\n", updated.actionEventList[1].args[0]);
+    }
+
+    [Test]
+    public void ChooseCard_PowerFirst_NoTarget_Enemy()
+    {
+        SetHostFirst(true);
+        AppendAllCardInfoList(new List<CardInfo> {
+            new CardInfo { chineseName = "实力至上牌", infoId = 6, ability = CardAbility.PowerFirst, cardType = CardType.Leader },
+        });
+        var model = new WholeAreaModel(true, "S", "E", CardGroup.KumikoFirstYear);
+        var updated = model.SelfInit(new List<int> { 1 })
+            .EnemyInit(new List<int> { 1, 6 }, new List<int> { 13, 63 }, CardGroup.KumikoThirdYear, false)
+            .SelfDrawInitHandCard()
+            .SelfReDrawInitHandCard()
+            .EnemyDrawInitHandCard(new List<int> { 13 });
+        updated = updated.ChooseCard(updated.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0], true);
+        updated = updated with {
+            actionEventList = ImmutableList<ActionEvent>.Empty
+        };
+        var card = updated.enemySinglePlayerAreaModel.handCardAreaModel.leaderCardListModel.cardList[0];
+        updated = updated.ChooseCard(card, false);
+        Assert.AreEqual(GameState.State.WAIT_SELF_ACTION, updated.gameState.curState);
+        Assert.AreEqual(GameState.ActionState.None, updated.gameState.actionState);
+        Assert.AreEqual(5, updated.selfSinglePlayerAreaModel.GetCurrentPower());
+        Assert.AreEqual(0, updated.enemySinglePlayerAreaModel.GetCurrentPower());
+        Assert.AreEqual(1, updated.actionEventList.Count);
+        Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[0].type);
+        Assert.AreEqual("<color=red>E</color> 打出卡牌：<b>实力至上牌</b>\n", updated.actionEventList[0].args[0]);
+    }
+
+    // power first 攻击
+    [Test]
+    public void ChooseCard_PowerFirst_Attack_Self()
+    {
+        SetHostFirst(false);
+        AppendAllCardInfoList(new List<CardInfo> {
+            new CardInfo { chineseName = "实力至上牌", infoId = 6, ability = CardAbility.PowerFirst, cardType = CardType.Leader },
+        });
+        var model = new WholeAreaModel(true, "S", "E", CardGroup.KumikoFirstYear);
+        var updated = model.SelfInit(new List<int> { 1, 6 })
+            .EnemyInit(new List<int> { 2 }, new List<int> { 23 }, CardGroup.KumikoThirdYear, false)
+            .SelfDrawInitHandCard()
+            .SelfReDrawInitHandCard()
+            .EnemyDrawInitHandCard(new List<int> { 23 });
+        updated = updated.ChooseCard(updated.enemySinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0], false);
+        updated = updated with {
+            actionEventList = ImmutableList<ActionEvent>.Empty
+        };
+        var card = updated.selfSinglePlayerAreaModel.handCardAreaModel.leaderCardListModel.cardList[0];
+        updated = updated.ChooseCard(card, true);
+        Assert.AreEqual(GameState.State.WAIT_ENEMY_ACTION, updated.gameState.curState);
+        Assert.AreEqual(GameState.ActionState.None, updated.gameState.actionState);
+        Assert.AreEqual(0, updated.selfSinglePlayerAreaModel.GetCurrentPower());
+        Assert.AreEqual(2, updated.enemySinglePlayerAreaModel.GetCurrentPower());
+        Assert.AreEqual(4, updated.actionEventList.Count);
+        Assert.AreEqual(ActionEvent.Type.BattleMsg, updated.actionEventList[0].type);
+        Assert.AreEqual(BattleModel.ActionType.ChooseCard, updated.actionEventList[0].args[0]);
+        Assert.AreEqual(card.cardInfo.id, updated.actionEventList[0].args[1]);
+        Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[1].type);
+        Assert.AreEqual("<color=green>S</color> 打出卡牌：<b>实力至上牌</b>\n", updated.actionEventList[1].args[0]);
+        Assert.AreEqual(ActionEvent.Type.Sfx, updated.actionEventList[2].type);
+        Assert.AreEqual(AudioManager.SFXType.Attack, updated.actionEventList[2].args[0]);
+        Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[3].type);
+        Assert.AreEqual("施放<b>实力至上</b>技能，攻击卡牌：<b>普通牌-3</b>\n", updated.actionEventList[3].args[0]);
+    }
+
+    [Test]
+    public void ChooseCard_PowerFirst_Attack_Enemy()
+    {
+        SetHostFirst(true);
+        AppendAllCardInfoList(new List<CardInfo> {
+            new CardInfo { chineseName = "实力至上牌", infoId = 6, ability = CardAbility.PowerFirst, cardType = CardType.Leader },
+        });
+        var model = new WholeAreaModel(true, "S", "E", CardGroup.KumikoFirstYear);
+        var updated = model.SelfInit(new List<int> { 2 })
+            .EnemyInit(new List<int> { 1, 6 }, new List<int> { 13, 63 }, CardGroup.KumikoThirdYear, false)
+            .SelfDrawInitHandCard()
+            .SelfReDrawInitHandCard()
+            .EnemyDrawInitHandCard(new List<int> { 13 });
+        updated = updated.ChooseCard(updated.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0], true);
+        updated = updated with {
+            actionEventList = ImmutableList<ActionEvent>.Empty
+        };
+        var card = updated.enemySinglePlayerAreaModel.handCardAreaModel.leaderCardListModel.cardList[0];
+        updated = updated.ChooseCard(card, false);
+        Assert.AreEqual(GameState.State.WAIT_SELF_ACTION, updated.gameState.curState);
+        Assert.AreEqual(GameState.ActionState.None, updated.gameState.actionState);
+        Assert.AreEqual(2, updated.selfSinglePlayerAreaModel.GetCurrentPower());
+        Assert.AreEqual(0, updated.enemySinglePlayerAreaModel.GetCurrentPower());
+        Assert.AreEqual(3, updated.actionEventList.Count);
+        Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[0].type);
+        Assert.AreEqual("<color=red>E</color> 打出卡牌：<b>实力至上牌</b>\n", updated.actionEventList[0].args[0]);
+        Assert.AreEqual(ActionEvent.Type.Sfx, updated.actionEventList[1].type);
+        Assert.AreEqual(AudioManager.SFXType.Attack, updated.actionEventList[1].args[0]);
+        Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[2].type);
+        Assert.AreEqual("施放<b>实力至上</b>技能，攻击卡牌：<b>普通牌-3</b>\n", updated.actionEventList[2].args[0]);
+    }
+
+    // power first 退部
+    [Test]
+    public void ChooseCard_PowerFirst_Dead_Self()
+    {
+        SetHostFirst(false);
+        AppendAllCardInfoList(new List<CardInfo> {
+            new CardInfo { chineseName = "实力至上牌", infoId = 6, ability = CardAbility.PowerFirst, cardType = CardType.Leader },
+            new CardInfo { chineseName = "普通牌-1", infoId = 7, originPower = 1, cardType = CardType.Normal, badgeType = CardBadgeType.Brass },
+        });
+        var model = new WholeAreaModel(true, "S", "E", CardGroup.KumikoFirstYear);
+        var updated = model.SelfInit(new List<int> { 1, 6 })
+            .EnemyInit(new List<int> { 7 }, new List<int> { 73 }, CardGroup.KumikoThirdYear, false)
+            .SelfDrawInitHandCard()
+            .SelfReDrawInitHandCard()
+            .EnemyDrawInitHandCard(new List<int> { 73 });
+        updated = updated.ChooseCard(updated.enemySinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0], false);
+        updated = updated with {
+            actionEventList = ImmutableList<ActionEvent>.Empty
+        };
+        var card = updated.selfSinglePlayerAreaModel.handCardAreaModel.leaderCardListModel.cardList[0];
+        updated = updated.ChooseCard(card, true);
+        Assert.AreEqual(GameState.State.WAIT_ENEMY_ACTION, updated.gameState.curState);
+        Assert.AreEqual(GameState.ActionState.None, updated.gameState.actionState);
+        Assert.AreEqual(0, updated.selfSinglePlayerAreaModel.GetCurrentPower());
+        Assert.AreEqual(0, updated.enemySinglePlayerAreaModel.GetCurrentPower());
+        Assert.AreEqual(4, updated.actionEventList.Count);
+        Assert.AreEqual(ActionEvent.Type.BattleMsg, updated.actionEventList[0].type);
+        Assert.AreEqual(BattleModel.ActionType.ChooseCard, updated.actionEventList[0].args[0]);
+        Assert.AreEqual(card.cardInfo.id, updated.actionEventList[0].args[1]);
+        Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[1].type);
+        Assert.AreEqual("<color=green>S</color> 打出卡牌：<b>实力至上牌</b>\n", updated.actionEventList[1].args[0]);
+        Assert.AreEqual(ActionEvent.Type.Sfx, updated.actionEventList[2].type);
+        Assert.AreEqual(AudioManager.SFXType.Scorch, updated.actionEventList[2].args[0]);
+        Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[3].type);
+        Assert.AreEqual("施放<b>实力至上</b>技能，移除卡牌：<b>普通牌-1</b>\n", updated.actionEventList[3].args[0]);
+    }
+
+    [Test]
+    public void ChooseCard_PowerFirst_Dead_Enemy()
+    {
+        SetHostFirst(true);
+        AppendAllCardInfoList(new List<CardInfo> {
+            new CardInfo { chineseName = "实力至上牌", infoId = 6, ability = CardAbility.PowerFirst, cardType = CardType.Leader },
+            new CardInfo { chineseName = "普通牌-1", infoId = 7, originPower = 1, cardType = CardType.Normal, badgeType = CardBadgeType.Brass },
+        });
+        var model = new WholeAreaModel(true, "S", "E", CardGroup.KumikoFirstYear);
+        var updated = model.SelfInit(new List<int> { 7 })
+            .EnemyInit(new List<int> { 1, 6 }, new List<int> { 13, 63 }, CardGroup.KumikoThirdYear, false)
+            .SelfDrawInitHandCard()
+            .SelfReDrawInitHandCard()
+            .EnemyDrawInitHandCard(new List<int> { 13 });
+        updated = updated.ChooseCard(updated.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0], true);
+        updated = updated with {
+            actionEventList = ImmutableList<ActionEvent>.Empty
+        };
+        var card = updated.enemySinglePlayerAreaModel.handCardAreaModel.leaderCardListModel.cardList[0];
+        updated = updated.ChooseCard(card, false);
+        Assert.AreEqual(GameState.State.WAIT_SELF_ACTION, updated.gameState.curState);
+        Assert.AreEqual(GameState.ActionState.None, updated.gameState.actionState);
+        Assert.AreEqual(0, updated.selfSinglePlayerAreaModel.GetCurrentPower());
+        Assert.AreEqual(0, updated.enemySinglePlayerAreaModel.GetCurrentPower());
+        Assert.AreEqual(3, updated.actionEventList.Count);
+        Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[0].type);
+        Assert.AreEqual("<color=red>E</color> 打出卡牌：<b>实力至上牌</b>\n", updated.actionEventList[0].args[0]);
+        Assert.AreEqual(ActionEvent.Type.Sfx, updated.actionEventList[1].type);
+        Assert.AreEqual(AudioManager.SFXType.Scorch, updated.actionEventList[1].args[0]);
+        Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[2].type);
+        Assert.AreEqual("施放<b>实力至上</b>技能，移除卡牌：<b>普通牌-1</b>\n", updated.actionEventList[2].args[0]);
+    }
+
     // 守卫，无守卫目标牌
     [Test]
     public void ChooseCard_Guard_NoRelatedCard_Self()

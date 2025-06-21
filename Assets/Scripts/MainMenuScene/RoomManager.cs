@@ -16,13 +16,15 @@ public class RoomManager
 
     public void StartPVE(PlaySceneAI.AIType aiType)
     {
-        PlayerPrefs.SetString(PlayerPrefsKey.PLAY_SCENE_SELF_NAME.ToString(), KConfig.Instance.playerName);
-        PlayerPrefs.SetString(PlayerPrefsKey.PLAY_SCENE_ENEMY_NAME.ToString(), "北宇治B编");
-        PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_SELF_GROUP.ToString(), (int)KConfig.Instance.deckCardGroup);
-        PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_IS_HOST.ToString(), 1);
-        PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_IS_PVP.ToString(), 0);
-        PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_PVE_AI_TYPE.ToString(), (int)aiType);
-        PlayerPrefs.Save();
+        GameConfig.Instance.Reset();
+        var gameConfig = GameConfig.Instance;
+        gameConfig.selfName = KConfig.Instance.playerName;
+        gameConfig.enemyName = "北宇治B编";
+        gameConfig.selfGroup = KConfig.Instance.deckCardGroup;
+        gameConfig.isHost = true;
+        gameConfig.isPVP = false;
+        gameConfig.pveAIType = aiType;
+        gameConfig.fromScene = "MainMenuScene";
         KHeartbeat.Instance.SendHeartbeat(KHeartbeat.UserStatus.PVE_GAMING);
         SceneManager.LoadScene("PlayScene");
     }
@@ -44,13 +46,14 @@ public class RoomManager
                     continue;
                 }
                 if (apiSuccess) {
-                    PlayerPrefs.SetString(PlayerPrefsKey.PLAY_SCENE_SELF_NAME.ToString(), KConfig.Instance.playerName);
-                    PlayerPrefs.SetString(PlayerPrefsKey.PLAY_SCENE_ENEMY_NAME.ToString(), receiveJson["opponent"]?.ToString());
-                    PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_SELF_GROUP.ToString(), (int)KConfig.Instance.deckCardGroup);
-                    PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_IS_HOST.ToString(), Convert.ToInt32(receiveJson["isHost"].ToObject<bool>()));
-                    PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_IS_PVP.ToString(), 1);
-                    PlayerPrefs.SetInt(PlayerPrefsKey.PLAY_SCENE_PVP_SESSION_ID.ToString(), sessionId);
-                    PlayerPrefs.Save();
+                    GameConfig.Instance.Reset();
+                    var gameConfig = GameConfig.Instance;
+                    gameConfig.selfName = KConfig.Instance.playerName;
+                    gameConfig.enemyName = receiveJson["opponent"]?.ToString();
+                    gameConfig.selfGroup = KConfig.Instance.deckCardGroup;
+                    gameConfig.isHost = Convert.ToBoolean(receiveJson["isHost"]?.ToString());
+                    gameConfig.isPVP = true;
+                    gameConfig.pvpSessionId = sessionId;
                     KHeartbeat.Instance.SendHeartbeat(KHeartbeat.UserStatus.PVP_GAMING);
                     SceneManager.LoadScene("PlayScene");
                 } else {

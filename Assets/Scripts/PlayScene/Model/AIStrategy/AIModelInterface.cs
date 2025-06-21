@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 
 // AI逻辑模块统一接口
 class AIModelInterface
 {
-    protected PlaySceneModel playSceneModel;
+    public PlaySceneModel playSceneModel;
 
     protected AIModelInit aiModelInit;
 
     // 初始化并设置牌组
-    public AIModelInterface(PlaySceneModel playSceneModel_)
+    public AIModelInterface(PlaySceneModel playSceneModel_, List<int> deckList = null)
     {
         playSceneModel = playSceneModel_;
         aiModelInit = new AIModelInit(playSceneModel);

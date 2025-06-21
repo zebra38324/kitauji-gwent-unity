@@ -23,5 +23,8 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/GuideScene.unity
     guid: c86a582316ca9dd4982460c5139dc052
+  - enabled: 0
+    path: Assets/Scenes/CompetitionScene.unity
+    guid: f9fdd74ee94a8a349a6987adf9ce44e6
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 14479bda0565eb141928698b3cff0d38, type: 2}

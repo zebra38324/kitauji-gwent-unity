@@ -160,6 +160,26 @@ public class CardModelTest
         var result = card.RemoveAllBuff();
         Assert.IsFalse(result.hasScorch);
         Assert.IsFalse(result.IsDead());
+    }
 
+    [Test]
+    public void SetUnderDefend()
+    {
+        var card = TestUtil.MakeCard(originPower: 5);
+        card = card.SetUnderDefend(true);
+        card = card.SetScorch();
+        Assert.IsFalse(card.IsDead());
+        card = card.RemoveAllBuff();
+        card = card.SetScorch();
+        Assert.IsTrue(card.IsDead());
+    }
+
+    [Test]
+    public void CurrentPowerNotNegtive()
+    {
+        var card = TestUtil.MakeCard(originPower: 3);
+        card = card.AddBuff(CardBuffType.Attack4, 1);
+        Assert.IsTrue(card.IsDead());
+        Assert.AreEqual(0, card.currentPower);
     }
 }

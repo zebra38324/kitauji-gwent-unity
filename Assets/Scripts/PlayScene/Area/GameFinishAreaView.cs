@@ -20,6 +20,7 @@ public class GameFinishAreaView : MonoBehaviour
     void Start()
     {
         UpdateUI();
+        RecordResult();
     }
 
     // Update is called once per frame
@@ -79,5 +80,13 @@ public class GameFinishAreaView : MonoBehaviour
         }
 
         gameFinishAreaResultText.GetComponent<TextMeshProUGUI>().text = string.Format("{0} 获得胜利！", isSelfWinner ? tracker.selfPlayerInfo.name : tracker.enemyPlayerInfo.name);
+    }
+
+    private void RecordResult()
+    {
+        var gameConfig = GameConfig.Instance;
+        gameConfig.selfScore = tracker.selfPlayerInfo.setScore;
+        gameConfig.enemyScore = tracker.enemyPlayerInfo.setScore;
+        gameConfig.isSelfWin = tracker.isSelfWinner;
     }
 }

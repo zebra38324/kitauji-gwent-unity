@@ -34,9 +34,8 @@ public class BattleModel
 
     public enum ActionType
     {
-        Init = 0, // 初始卡牌信息。data: cardGroup, infoIdList, idList, hostFirst（仅host发送）
+        Init = 0, // 初始卡牌信息。data: cardGroup, infoIdList, idList, hostFirst（仅host发送）, seed（仅host发送）
         DrawHandCard, // 抽取手牌。data: idList
-        StartGame, // 开始整场比赛，仅host向player发送。data: hostFirst TODO: delete
         ChooseCard, // 选择卡牌。data: id
         Pass, // 过牌。data: null
         InterruptAction, // 中断技能流程。data: null
@@ -57,6 +56,7 @@ public class BattleModel
         public List<int> infoIdList;
         public List<int> idList;
         public bool hostFirst; // 第一局游戏，是否由host先手
+        public int seed; // 初始随机种子
         public HornUtilAreaType hornUtilAreaType;
     }
 
@@ -97,15 +97,12 @@ public class BattleModel
                 actionMsg.idList = (List<int>)list[2];
                 if (list.Length > 3) {
                     actionMsg.hostFirst = (bool)list[3];
+                    actionMsg.seed = (int)list[4];
                 }
                 break;
             }
             case ActionType.DrawHandCard: {
                 actionMsg.idList = (List<int>)list[0];
-                break;
-            }
-            case ActionType.StartGame: {
-                actionMsg.hostFirst = (bool)list[0];
                 break;
             }
             case ActionType.ChooseCard: {
@@ -167,15 +164,11 @@ public class BattleModel
             if (EnemyMsgCallback != null) {
                 switch (actionMsg.actionType) {
                     case ActionType.Init: {
-                        EnemyMsgCallback(actionMsg.actionType, actionMsg.cardGroup, actionMsg.infoIdList, actionMsg.idList, actionMsg.hostFirst);
+                        EnemyMsgCallback(actionMsg.actionType, actionMsg.cardGroup, actionMsg.infoIdList, actionMsg.idList, actionMsg.hostFirst, actionMsg.seed);
                         break;
                     }
                     case ActionType.DrawHandCard: {
                         EnemyMsgCallback(actionMsg.actionType, actionMsg.idList);
-                        break;
-                    }
-                    case ActionType.StartGame: {
-                        EnemyMsgCallback(actionMsg.actionType, actionMsg.hostFirst);
                         break;
                     }
                     case ActionType.ChooseCard: {

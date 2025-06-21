@@ -32,6 +32,8 @@ public record SinglePlayerAreaModel
 
     public static readonly Lens<SinglePlayerAreaModel, SingleCardListModel> Lens_HandCardAreaModel_LeaderCardListModel = lens(Lens_HandCardAreaModel, HandCardAreaModel.Lens_LeaderCardListModel);
 
+    public KRandom kRandom { get; init; } = new KRandom(0); // 目前的限制：只有真正的游戏过程中才能保证同步
+
     public SinglePlayerAreaModel(CardGenerator gen, bool isSelf = true)
     {
         battleRowAreaList = ImmutableList<BattleRowAreaModel>.Empty;
@@ -39,6 +41,17 @@ public record SinglePlayerAreaModel
             battleRowAreaList = battleRowAreaList.Add(new BattleRowAreaModel(cardBadgeType));
         }
         handCardAreaModel = new HandCardAreaModel(gen, isSelf);
+    }
+
+    // host +1
+    // player +2
+    public SinglePlayerAreaModel InitKRandom(int randomSeed)
+    {
+        var newRecord = this;
+        newRecord = newRecord with {
+            kRandom = new KRandom(randomSeed)
+        };
+        return newRecord;
     }
 
     public SinglePlayerAreaModel AddBattleAreaCard(CardModel card)
@@ -134,30 +147,14 @@ public record SinglePlayerAreaModel
     public SinglePlayerAreaModel RemoveDeadCard(out List<CardModel> removedCardList)
     {
         var newRecord = this;
-        var newDiscardAreaModel = newRecord.discardAreaModel;
         removedCardList = new List<CardModel>();
-        foreach (BattleRowAreaModel row in newRecord.battleRowAreaList) {
-            var newRow = row;
-            foreach (CardModel card in row.cardListModel.cardList) {
-                if (card.IsDead()) {
-                    KLog.I(TAG, "RemoveDeadCard: remove card: " + card.cardInfo.chineseName);
-                    newRow = newRow.RemoveCard(card, out var removedCard);
-                    removedCardList.Add(removedCard);
-                    newDiscardAreaModel = newDiscardAreaModel.AddCard(removedCard);
-                }
-            }
-            newRecord = newRecord with {
-                battleRowAreaList = newRecord.battleRowAreaList.Replace(row, newRow)
-            };
-        }
-        newRecord = newRecord with {
-            discardAreaModel = newDiscardAreaModel
-        };
-        foreach (CardModel card in removedCardList) {
-            if (card.cardInfo.ability == CardAbility.Bond) {
-                newRecord = newRecord.UpdateBond(card.cardInfo.bondType);
-            }
-        }
+        var singleTry = new List<CardModel>();
+        // 移除卡牌后，可能导致新的卡牌被移除
+        // 例如移除morale后，一些卡牌的点数会降低1，可能导致到0
+        do {
+            newRecord = newRecord.TryRemoveDeadCardInternal(out singleTry);
+            removedCardList.AddRange(singleTry);
+        } while (singleTry.Count > 0);
         return newRecord;
     }
 
@@ -174,16 +171,8 @@ public record SinglePlayerAreaModel
     // 准备可攻击目标，并返回可攻击目标的卡牌列表。注意返回的card并不是实际存在model中的card
     public SinglePlayerAreaModel PrepareAttackTarget(out List<CardModel> targetCardList)
     {
-        List<bool> hasDefend = battleRowAreaList.Select(row => {
-            foreach (CardModel card in row.cardListModel.cardList) {
-                if (card.cardInfo.ability == CardAbility.Defend) {
-                    return true;
-                }
-            }
-            return false;
-        }).ToList();
         return BattleApplyAction(card => {
-            return card.cardInfo.cardType == CardType.Normal && !hasDefend[(int)card.cardInfo.badgeType];
+            return card.cardInfo.cardType == CardType.Normal;
         }, card => {
             return card.ChangeCardSelectType(CardSelectType.WithstandAttack);
         }, out targetCardList);
@@ -270,16 +259,19 @@ public record SinglePlayerAreaModel
     }
 
     // 小局结束，将对战区的牌移除，角色牌移入弃牌区
-    public SinglePlayerAreaModel RemoveAllBattleCard()
+    // needKeepOneRoleCard: 需要保留一张角色牌
+    public SinglePlayerAreaModel RemoveAllBattleCard(bool needKeepOneRoleCard = false)
     {
         var newRecord = this;
         var newDiscardAreaModel = newRecord.discardAreaModel;
+        var removedRoleCardList = new List<CardModel>();
         foreach (BattleRowAreaModel row in newRecord.battleRowAreaList) {
             var newRow = row.RemoveAllCard(out var removedCardList);
             foreach (var card in removedCardList) {
                 if (card.cardInfo.cardType == CardType.Normal || card.cardInfo.cardType == CardType.Hero) {
                     // 仅角色牌进入弃牌区
                     newDiscardAreaModel = newDiscardAreaModel.AddCard(card);
+                    removedRoleCardList.Add(card);
                 }
             }
             newRecord = newRecord with {
@@ -289,7 +281,27 @@ public record SinglePlayerAreaModel
         newRecord = newRecord with {
             discardAreaModel = newDiscardAreaModel
         };
+        if (needKeepOneRoleCard && removedRoleCardList.Count > 0) {
+            var newKRandom = newRecord.kRandom.Next(0, removedRoleCardList.Count, out var nextVal);
+            var keepCard = removedRoleCardList[nextVal];
+            newRecord = newRecord with {
+                kRandom = newKRandom,
+                discardAreaModel = newRecord.discardAreaModel.RemoveCard(keepCard, out var realKeepCard),
+            };
+            newRecord = newRecord.AddBattleAreaCard(realKeepCard);
+            KLog.I(TAG, "RemoveAllBattleCard: keep card: " + realKeepCard.cardInfo.chineseName);
+        }
         return newRecord;
+    }
+
+    // 实力至上技能，对方场上所有点数小于4的部员，吹奏能力降低2。并返回攻击的卡牌列表。注意返回的card并不是实际存在model中的card
+    public SinglePlayerAreaModel ApplyPowerFirst(out List<CardModel> attackCardList)
+    {
+        return BattleApplyAction(card => {
+            return card.cardInfo.cardType == CardType.Normal && card.currentPower < 4;
+        }, card => {
+            return card.AddBuff(CardBuffType.PowerFirst, 1);
+        }, out attackCardList);
     }
 
     // 封装对于特定卡牌的操作
@@ -409,18 +421,50 @@ public record SinglePlayerAreaModel
     {
         // 注意：目前默认只有英雄牌有这个技能
         var newRecord = this;
+        var newKRandom = newRecord.kRandom;
         foreach (BattleRowAreaModel row in newRecord.battleRowAreaList) {
             var newRow = row;
             foreach (CardModel card in row.cardListModel.cardList) {
                 if (card.cardInfo.cardType == CardType.Normal) {
                     var realCard = newRow.FindCard(card.cardInfo.id);
-                    CardBuffType type = new Random().Next(0, 2) == 0 ? CardBuffType.PressurePlus : CardBuffType.PressureMinus;
+                    newKRandom = newKRandom.Next(0, 2, out var nextVal);
+                    CardBuffType type = nextVal == 0 ? CardBuffType.PressurePlus : CardBuffType.PressureMinus;
                     newRow = newRow.ReplaceCard(realCard, realCard.AddBuff(type, 1));
                 }
             }
             newRecord = newRecord with {
                 battleRowAreaList = newRecord.battleRowAreaList.Replace(row, newRow)
             };
+        }
+        return newRecord;
+    }
+
+    public SinglePlayerAreaModel TryRemoveDeadCardInternal(out List<CardModel> removedCardList)
+    {
+        var newRecord = this;
+        var newDiscardAreaModel = newRecord.discardAreaModel;
+        removedCardList = new List<CardModel>();
+        foreach (BattleRowAreaModel row in newRecord.battleRowAreaList) {
+            var newRow = row;
+            foreach (CardModel card in row.cardListModel.cardList) {
+                if (card.IsDead()) {
+                    KLog.I(TAG, "RemoveDeadCard: remove card: " + card.cardInfo.chineseName);
+                    newRow = newRow.RemoveCard(card, out var removedCard);
+                    removedCardList.Add(removedCard);
+                    newDiscardAreaModel = newDiscardAreaModel.AddCard(removedCard);
+                }
+            }
+            newRecord = newRecord with {
+                battleRowAreaList = newRecord.battleRowAreaList.Replace(row, newRow)
+            };
+        }
+        newRecord = newRecord with {
+            discardAreaModel = newDiscardAreaModel
+        };
+        foreach (CardModel card in removedCardList) {
+            if (card.cardInfo.ability == CardAbility.Bond) {
+                newRecord = newRecord.UpdateBond(card.cardInfo.bondType);
+            }
         }
         return newRecord;
     }

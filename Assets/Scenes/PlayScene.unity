@@ -670,7 +670,7 @@ MonoBehaviour:
       - m_Target: {fileID: 973567617}
         m_TargetAssemblyTypeName: PlaySceneManager, Assembly-CSharp
         m_MethodName: ExitPlaySceneButton
-        m_Mode: 1
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1520,7 +1520,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u70B9\u51FB\u8FD4\u56DE\u4E3B\u754C\u9762"
+  m_text: "\u70B9\u6B64\u9000\u51FA"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 81b689e8712710a4e8d26c0ce41dfd29, type: 2}
   m_sharedMaterial: {fileID: 1755339581428627022, guid: 68496b202f66a2f4597597076ce67a0d, type: 2}
@@ -2058,14 +2058,14 @@ MonoBehaviour:
       - m_Target: {fileID: 973567617}
         m_TargetAssemblyTypeName: PlaySceneManager, Assembly-CSharp
         m_MethodName: ExitPlaySceneButton
-        m_Mode: 1
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &668172518
 MonoBehaviour:
@@ -3115,7 +3115,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1693619417}
   m_HandleRect: {fileID: 1693619416}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
