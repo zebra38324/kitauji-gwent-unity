@@ -442,7 +442,8 @@
             "badgeType": "Percussion",
             "ability": "SalutdAmour",
             "cardType": "Normal",
-            "quote": "“姐姐梦想中的高中吹奏乐社，\n是不是就是这种感觉呢？”"
+            "quote": "“姐姐梦想中的高中吹奏乐社，\n是不是就是这种感觉呢？”",
+            "isMale": true
         },
         {
             "infoId": 3033,
@@ -457,7 +458,8 @@
             "bondType": "k3_perc",
             "relatedCard": "前田苍太",
             "cardType": "Normal",
-            "quote": "与双胞胎哥哥前田苍太一起\n备受期待成为打击乐的双人王牌。"
+            "quote": "与双胞胎哥哥前田苍太一起\n备受期待成为打击乐的双人王牌。",
+            "isMale": true
         },
         {
             "infoId": 3034,
@@ -472,7 +474,8 @@
             "bondType": "k3_perc",
             "relatedCard": "前田飒介",
             "cardType": "Normal",
-            "quote": "小学的时候就和\n弟弟前田飒介一起学习鼓。"
+            "quote": "小学的时候就和\n弟弟前田飒介一起学习鼓。",
+            "isMale": true
         },
         {
             "infoId": 3035,
@@ -623,7 +626,8 @@
             "bondType": "k3_bg",
             "relatedCard": "高久智惠理",
             "cardType": "Normal",
-            "quote": "次中音萨克斯担当，\n与高久智惠理交往中。"
+            "quote": "次中音萨克斯担当，\n与高久智惠理交往中。",
+            "isMale": true
         },
         {
             "infoId": 3046,
@@ -663,7 +667,8 @@
             "ability": "Guard",
             "relatedCard": "黄前久美子",
             "cardType": "Hero",
-            "quote": "“我会加油，\n好让我能在久美子快跌倒时扶住你。”"
+            "quote": "“我会加油，\n好让我能在久美子快跌倒时扶住你。”",
+            "isMale": true
         },
         {
             "infoId": 3049,

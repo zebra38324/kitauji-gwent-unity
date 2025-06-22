@@ -113,8 +113,10 @@ public record CardModel
     // 清除所有除了天气的debuff
     public CardModel RemoveNormalDebuff()
     {
-        var newBuffRecord = buffRecord.SetItem((int)CardBuffType.Attack2, 0);
-        newBuffRecord = newBuffRecord.SetItem((int)CardBuffType.Attack4, 0);
+        var newBuffRecord = buffRecord.SetItem((int)CardBuffType.Attack2, 0)
+            .SetItem((int)CardBuffType.Attack4, 0)
+            .SetItem((int)CardBuffType.PressureMinus, 0)
+            .SetItem((int)CardBuffType.PowerFirst, 0);
         return this with {
             buffRecord = newBuffRecord,
             realPower = GetPower(newBuffRecord)

@@ -105,9 +105,10 @@ public class CardModelTest
         var card = TestUtil.MakeCard(originPower: 10)
             .AddBuff(CardBuffType.Attack2, 2)
             .AddBuff(CardBuffType.Attack4, 1)
+            .AddBuff(CardBuffType.PressureMinus, 1)
+            .AddBuff(CardBuffType.PowerFirst, 1)
             .AddBuff(CardBuffType.Morale, 2);
         var cleaned = card.RemoveNormalDebuff();
-        // Attack2 and Attack4 removed; morale remains
         Assert.AreEqual(10 + 2, cleaned.currentPower);
     }
 
