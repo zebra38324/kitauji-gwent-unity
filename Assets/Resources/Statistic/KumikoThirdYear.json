@@ -25,11 +25,11 @@
             "englishName": "Ichigo Nakata",
             "group": "KumikoThirdYear",
             "grade": 1,
-            "originPower": 4,
+            "originPower": 3,
             "badgeType": "Wood",
             "ability": "None",
             "cardType": "Normal",
-            "quote": "单簧管新人，总是戴着绿色蝴蝶结。\n或许与万纱子会有共同话题。"
+            "quote": "单簧管新人，总戴绿蝴蝶结。或许与万纱子有共同话题。\n投票给了黑江。"
         },
         {
             "infoId": 3003,
@@ -42,7 +42,7 @@
             "badgeType": "Wood",
             "ability": "None",
             "cardType": "Normal",
-            "quote": "“关于选拔的顺序。。。”"
+            "quote": "“关于选拔的顺序。。。”\n投票给了黑江。"
         },
         {
             "infoId": 3004,
@@ -55,7 +55,7 @@
             "badgeType": "Wood",
             "ability": "None",
             "cardType": "Normal",
-            "quote": "长笛组的一年生，\n已经在A编站稳了脚跟。"
+            "quote": "长笛一年生，已在A编站稳脚跟。\n投票给了黑江。"
         },
         {
             "infoId": 3005,
@@ -68,7 +68,7 @@
             "badgeType": "Wood",
             "ability": "None",
             "cardType": "Normal",
-            "quote": "双簧管组的一年生，\n梨梨花的直系后辈。"
+            "quote": "双簧管组的一年生，梨梨花的直系后辈。\n投票给了黑江。"
         },
         {
             "infoId": 3006,
@@ -111,7 +111,7 @@
             "badgeType": "Brass",
             "ability": "None",
             "cardType": "Normal",
-            "quote": "小号组一年生，\n使用薄荷色发圈扎着单马尾。"
+            "quote": "小号一年生，用薄荷色发圈扎单马尾。\n投票给了黄前。"
         },
         {
             "infoId": 3009,
@@ -124,7 +124,7 @@
             "badgeType": "Brass",
             "ability": "None",
             "cardType": "Normal",
-            "quote": "圆号组一年生，\n左眼下有着与香织相似的泪痣。"
+            "quote": "圆号一年生，已在A编站稳脚跟。\n左眼下有与香织相似泪痣。投票给了黑江。"
         },
         {
             "infoId": 3010,
@@ -133,11 +133,11 @@
             "englishName": "Yuki Takekawa",
             "group": "KumikoThirdYear",
             "grade": 1,
-            "originPower": 3,
+            "originPower": 2,
             "badgeType": "Brass",
             "ability": "None",
             "cardType": "Normal",
-            "quote": "圆号组一年生，\nsunfes时承受了很大压力。"
+            "quote": "圆号一年生，sunfes时承受了很大压力。\n不出意料投票给黑江。"
         },
         {
             "infoId": 3011,
@@ -176,7 +176,7 @@
             "englishName": "Suzume Kamaya",
             "group": "KumikoThirdYear",
             "grade": 1,
-            "originPower": 3,
+            "originPower": 4,
             "badgeType": "Brass",
             "ability": "Bond",
             "bondType": "k3_kamaya",
@@ -191,7 +191,7 @@
             "englishName": "Taku Imura",
             "group": "KumikoThirdYear",
             "grade": 2,
-            "originPower": 5,
+            "originPower": 4,
             "badgeType": "Wood",
             "ability": "Bond",
             "bondType": "k3_clarinet",
@@ -206,7 +206,7 @@
             "englishName": "Seiko Ashida",
             "group": "KumikoThirdYear",
             "grade": 2,
-            "originPower": 5,
+            "originPower": 4,
             "badgeType": "Wood",
             "ability": "Bond",
             "bondType": "k3_clarinet",
@@ -221,13 +221,13 @@
             "englishName": "Shiori Hiranuma",
             "group": "KumikoThirdYear",
             "grade": 2,
-            "originPower": 5,
+            "originPower": 6,
             "badgeType": "Wood",
             "ability": "Muster",
             "musterType": "blackroom",
             "relatedCard": "叶加濑满、深町澄子",
             "cardType": "Normal",
-            "quote": "演奏技术很高。和坂崎彩子、屋敷早苗关系好。\n和叶加濑满、深町澄子晚上因背后㖆㖆泷升在娱乐室被高坂训斥。\n和加藤树争男朋友成败犬。"
+            "quote": "演奏强。和加藤树争男友成败犬。\n和叶加濑、深町晚上㖆㖆泷升被高坂训斥。"
         },
         {
             "infoId": 3017,
@@ -240,7 +240,7 @@
             "badgeType": "Wood",
             "ability": "None",
             "cardType": "Normal",
-            "quote": "文化祭上参加猜谜游戏与叶月相识。"\n和加藤树争男朋友获胜。但失去了全国大赛A编。
+            "quote": "和加藤树争男朋友获胜。\n但失去了全国大赛A编。"
         },
         {
             "infoId": 3018,
@@ -262,7 +262,7 @@
             "englishName": "Narumi Hiraishi",
             "group": "KumikoThirdYear",
             "grade": 2,
-            "originPower": 3,
+            "originPower": 4,
             "badgeType": "Wood",
             "badgeType": "Wood",
             "ability": "Muster",
@@ -336,7 +336,7 @@
             "englishName": "Kiri Matsumoto",
             "group": "KumikoThirdYear",
             "grade": 2,
-            "originPower": 4,
+            "originPower": 5,
             "badgeType": "Wood",
             "ability": "Muster",
             "musterType": "BigLord",
@@ -351,7 +351,7 @@
             "englishName": "Babe Uchida",
             "group": "KumikoThirdYear",
             "grade": 2,
-            "originPower": 5,
+            "originPower": 4,
             "badgeType": "Wood",
             "ability": "None",
             "cardType": "Normal",
@@ -390,13 +390,13 @@
             "englishName": "Michiru Hakase",
             "group": "KumikoThirdYear",
             "grade": 2,
-            "originPower": 4,
+            "originPower": 5,
             "badgeType": "Brass",
             "ability": "Muster",
             "musterType": "blackroom",
             "relatedCard": "平沼诗织、深町澄子",
             "cardType": "Normal",
-            "quote": "南中出身，有乐器经验。\n和平沼诗织、深町澄子晚上因背后㖆㖆泷升被高坂在娱乐室训斥。\n内心对同组的冢本秀一憧憬着。"
+            "quote": "南中出身，有乐器经验。\n和平沼、深町晚上㖆㖆泷升被高坂训斥。"
         },
         {
             "infoId": 3029,
@@ -510,11 +510,11 @@
             "englishName": "Motoko Higashiura",
             "group": "KumikoThirdYear",
             "grade": 2,
-            "originPower": 5,
+            "originPower": 6,
             "badgeType": "Percussion",
             "ability": "None",
             "cardType": "Normal",
-            "quote": "初中的时候就是打击乐担当，\n尤其是节奏感拔群。"
+            "quote": "初中时就打击乐担当，节奏感拔群。\n比剑崎更早负责定音工作。"
         },
         {
             "infoId": 3037,
@@ -560,7 +560,7 @@
         {
             "infoId": 3040,
             "imageName": "K3_YoukoMatsuzaki.jpg",
-            "chineseName": "松绮洋子",
+            "chineseName": "松崎洋子",
             "englishName": "Youko Matsuzaki",
             "group": "KumikoThirdYear",
             "grade": 3,
@@ -620,7 +620,7 @@
             "englishName": "Chikai Maki",
             "group": "KumikoThirdYear",
             "grade": 3,
-            "originPower": 7,
+            "originPower": 6,
             "badgeType": "Wood",
             "ability": "Muster",
             "musterType": "BigLord",
@@ -692,7 +692,7 @@
             "englishName": "Maki Akamatsu",
             "group": "KumikoThirdYear",
             "grade": 3,
-            "originPower": 5,
+            "originPower": 6,
             "badgeType": "Brass",
             "ability": "Defend",
             "cardType": "Normal",
@@ -733,7 +733,7 @@
             "englishName": "Michiyo Morimoto",
             "group": "KumikoThirdYear",
             "grade": 3,
-            "originPower": 7,
+            "originPower": 6,
             "badgeType": "Brass",
             "ability": "Morale",
             "cardType": "Normal",
@@ -798,7 +798,7 @@
             "englishName": "Masako Sakai",
             "group": "KumikoThirdYear",
             "grade": 3,
-            "originPower": 5,
+            "originPower": 6,
             "badgeType": "Percussion",
             "ability": "Defend",
             "cardType": "Normal",
@@ -811,7 +811,7 @@
             "englishName": "Junna Inoue",
             "group": "KumikoThirdYear",
             "grade": 3,
-            "originPower": 7,
+            "originPower": 6,
             "badgeType": "Percussion",
             "ability": "Morale",
             "cardType": "Normal",
@@ -843,7 +843,7 @@
             "badgeType": "Wood",
             "ability": "None",
             "cardType": "Normal",
-            "quote": "前年带领南中夺金的吹奏部长，现在负责吹中音单簧管。\n才华横溢，演奏技术高超。",
+            "quote": "前年带领南中夺金的吹奏部长，\n现在负责吹中音单簧管。"
             "isMale": true
         },
         {
@@ -859,7 +859,7 @@
             "musterType": "sameclass",
             "relatedCard": "屋敷早苗",
             "cardType": "Normal",
-            "quote": "南中人。极度怕羞，总和同为低音单簧管松崎洋子形影不离。\n和平沼诗织、屋敷早苗同班。\n总是低着头快步走路，所以总是撞上东西。"
+            "quote": "南中人。极怕羞，和平沼、屋敷同班。\n总低头快走，故总撞东西。"
         },
         {
             "infoId": 3062,
@@ -868,13 +868,13 @@
             "englishName": "Sanae Yashiki",
             "group": "KumikoThirdYear",
             "grade": 2,
-            "originPower": 4,
+            "originPower": 5,
             "badgeType": "Brass",
             "ability": "Muster",
             "musterType": "sameclass",
             "relatedCard": "坂崎彩子",
             "cardType": "Normal",
-            "quote": "南中人，有圆号经验。和同班坂崎彩子与平沼诗织关系好。\n非常喜欢编头发，故每天都练习。"
+            "quote": "南中人，有圆号经验。和坂崎与平沼同班。\n非常喜欢编头发。"
         },
         {
             "infoId": 3063,
@@ -883,13 +883,13 @@
             "englishName": "Sumiko Fukamachi",
             "group": "KumikoThirdYear",
             "grade": 2,
-            "originPower": 3,
+            "originPower": 4,
             "badgeType": "Brass",
             "musterType": "blackroom",
             "ability": "Muster",
             "relatedCard": "叶加濑满、平沼诗织",
             "cardType": "Normal",
-            "quote": "不擅学习考试会不及格，受到同组小原爱音教导，\n但没成果。擅长体育。"\n和平沼诗织、深町澄子晚上因背后㖆㖆泷升被高坂在娱乐室训斥。
+            "quote": "不擅学习擅体育，受小原教导。"\n和平沼、深町晚上㖆㖆泷升被高坂训斥。
         },
         {
             "infoId": 3064,
@@ -898,7 +898,7 @@
             "englishName": "Kaida Yoshihito",
             "group": "KumikoThirdYear",
             "grade": 1,
-            "originPower": 2,
+            "originPower": 3,
             "badgeType": "Wood",
             "ability": "None",
             "cardType": "Normal",
@@ -912,11 +912,11 @@
             "englishName": "Manako Hirao",
             "group": "KumikoThirdYear",
             "grade": 1,
-            "originPower": 2,
+            "originPower": 3,
             "badgeType": "Wood",
             "ability": "None",
             "cardType": "Normal",
-            "quote": "加入大管组的女生新手。b编。\n投票给黑江。可能是平尾澄子妹妹？",
+            "quote": "加入大管组女生新手。b编。\n投票给黑江。可能平尾澄子妹妹？"
         },
         {
             "infoId": 3066,
@@ -931,8 +931,7 @@
             "musterType": "flute1",
             "relatedCard": "平石成美、山根都美贵",
             "cardType": "Normal",
-            "quote": "南中人，负责吹长笛。但和中野蕾实反复拉锯争A
-编位置。\n可能是当年伞木青训没打好基础。"
+            "quote": "南中人吹长笛。但和中野反复争A编。\n可能当年伞木没打好基础。"
         },
         {
             "infoId": 3067,
@@ -941,11 +940,11 @@
             "englishName": "Hinata Mizui",
             "group": "KumikoThirdYear",
             "grade": 1,
-            "originPower": 2,
+            "originPower": 3,
             "badgeType": "Wood",
             "ability": "None",
             "cardType": "Normal",
-            "quote": "加入长笛组的女生新手。b编。\n投票给黄前。",
+            "quote": "加入长笛组的女生新手。b编。\n投票给黄前。"
         },
         {
             "infoId": 3068,
@@ -960,7 +959,7 @@
             "bondType": "doublebaritonesaxophone",
             "relatedCard": "鲶川京子",
             "cardType": "Normal",
-            "quote": "不擅长应对女生，平常总是极其谦逊，但演奏风格十分热情。\n喜欢多肉植物，拥有着自己制作培养皿的艺术品味。"
+            "quote": "不擅长应对女生，极谦逊但演奏热情。\n喜多肉植物，有制培养皿艺术品味。"
             "isMale": true
         },
         {
@@ -970,13 +969,13 @@
             "englishName": "Nanami Otaki",
             "group": "KumikoThirdYear",
             "grade": 2,
-            "originPower": 3,
+            "originPower": 4,
             "badgeType": "Wood",
             "ability": "Bond",
             "bondType": "doublealtosaxophone",
             "relatedCard": "铃木靖也",
             "cardType": "Normal",
-            "quote": "初学者，不习惯被人夸奖，故总保持清冷模样，其实为遮掩自羞涩。\n总关注着同样中音萨克斯的铃木靖也，看是否给他人添麻烦。"
+            "quote": "初学者，不习惯被夸冷面寒霜，实为掩羞。\n总关注铃木靖也，怕他添麻烦。"
         },
         {
             "infoId": 3070,
@@ -991,7 +990,7 @@
             "bondType": "doublealtosaxophone",
             "relatedCard": "大泷七海",
             "cardType": "Normal",
-            "quote": "南中出身，有萨克斯经验。略轻浮，\n常拈花惹草而被同是中音萨克斯的大泷七海训斥，但不会弃之不顾。"
+            "quote": "南中出身，有萨克斯经验。略轻浮，\n被大泷七海训斥，但不会弃之不顾。"
             "isMale": true
         },
         {
@@ -1016,19 +1015,19 @@
             "englishName": "Nakaba Hattori",
             "group": "KumikoThirdYear",
             "grade": 2,
-            "originPower": 3,
+            "originPower": 4,
             "badgeType": "Wood",
             "ability": "Muster",
             "musterType": "player",
             "relatedCard": "吉川真衣弥",
             "cardType": "Normal",
-            "quote": "南中人，己认忍者后裔，一旦谈起家世谁也拦不住。\n沉迷己家改为忍者基地，似满置机关……"
+            "quote": "南中人，己认忍者后裔，谈起家世谁也拦不住。\n明明是成手却上不了a编。"
         },
         {
             "infoId": 3073,
             "imageName": "K3_HarunaHosono.jpg",
             "chineseName": "细野暖奈",
-            "englishName": Haruna Hosono",
+            "englishName": "Haruna Hosono",
             "group": "KumikoThirdYear",
             "grade": 2,
             "originPower": 3,
@@ -1037,7 +1036,7 @@
             "musterType": "eaters",
             "relatedCard": "林来理",
             "cardType": "Normal",
-            "quote": "初学者，部内头号大胃王，不限制会永面无表情进食。\n擅长料理，对于考虑和享用自己专用大分菜单感到幸福。"
+            "quote": "初学者，部内头号大胃王。\n擅长料理。享用大份菜单感到幸福。"
         },
         {
             "infoId": 3074,
@@ -1050,7 +1049,7 @@
             "badgeType": "Brass",
             "ability": "Monaka",
             "cardType": "Normal",
-            "quote": "非常尊敬部长吉川优子。常和同班低音提琴月永求谈论部长，但基本被无视。\n擅长手工，想要送吉川部长一份礼物。"
+            "quote": "身为男生却不能一人撑起一音程。\n看体格音量够，那就技巧不强了。"
             "isMale": true
         },
         {
@@ -1066,7 +1065,7 @@
             "musterType": "equalclass",
             "relatedCard": "町田道子",
             "cardType": "Normal",
-            "quote": "泷野纯一的妹妹，打击乐町田道子的同班同学与推荐人。\n性格十分招人喜爱，人气很高。"
+            "quote": "泷野纯一妹妹，打击乐町田的同班与推荐人。\n性格惹人喜爱。"
         },
         {
             "infoId": 3076,
@@ -1081,7 +1080,7 @@
             "musterType": "equalclass",
             "relatedCard": "泷野沙耶香",
             "cardType": "Normal",
-            "quote": "初学者，和小号泷野沙耶香同班，入学就被她邀请。本想入小号组，但最终选了更显眼打击乐。"
+            "quote": "初学者，和小号泷野沙耶香同班，\n入学被她邀请。终选更显眼打击乐。"
         },
         {
             "infoId": 3077,
@@ -1090,13 +1089,13 @@
             "englishName": "Maiya Kikkawa",
             "group": "KumikoThirdYear",
             "grade": 2,
-            "originPower": 2,
+            "originPower": 3,
             "badgeType": "Brass",
             "ability": "Muster",
             "musterType": "player",
             "relatedCard": "服部半叶",
             "cardType": "Normal",
-            "quote": "初学者，毫无体力，尽可能不运动。每天都被严格练习挫败。\n喜动画，近热衷魔女动画。"
+            "quote": "毫无体力，热衷魔女动画。每天都被挫败。\n很让人担心下一年能否进a编。"
         },
         {
             "infoId": 3078,
@@ -1109,7 +1108,7 @@
             "badgeType": "Brass",
             "ability": "Monaka",
             "cardType": "Normal",
-            "quote": "初中东中就在吹长号，但由于原来吹奏乐部十分不认真，\n内心正烦恼是否在动真格北宇治高中继续吹。"
+            "quote": "初中东中吹长号，十分不认真，\n烦恼是否在动真格的北宇治继续。"
         },
         {
             "infoId": 3079,
@@ -1122,7 +1121,7 @@
             "badgeType": "Brass",
             "ability": "Morale",
             "cardType": "Normal",
-            "quote": "冷静沉着，万事皆通的天才。成绩也优秀，\n每逢考试都教导一年生学习，被前辈称为“小原塾”。"
+            "quote": "每逢考试都教导同学，被称为“小原塾”\n也因此没进a编。"
         },
         {
             "infoId": 3080,
@@ -1135,8 +1134,7 @@
             "badgeType": "Brass",
             "ability": "Monaka",
             "cardType": "Normal",
-            "quote": "初中就对吹奏部憧憬。铜管尤爱圆号，毫不犹豫加入。
-\n非常喜欢前辈的孩子，虽新手，却考虑支援前辈。"
+            "quote": "铜管尤爱圆号，毫不犹豫加入。\n虽新手想支援前辈，但事与愿违。"
         },
         {
             "infoId": 3081,
@@ -1149,7 +1147,7 @@
             "badgeType": "Percussion",
             "ability": "Lip",
             "cardType": "Normal",
-            "quote": "曾经是初学者单可以独当一面了，认为打击乐非常时髦。\n最近热衷休息日逛精品店。"
+            "quote": "曾是初学者，但现独当一面。\n继承大野美代子的竖琴。"
         },
         {
             "infoId": 3082,
@@ -1158,11 +1156,11 @@
             "englishName": "Yo Yoshizawa",
             "group": "KumikoThirdYear",
             "grade": 1,
-            "originPower": 2,
+            "originPower": 3,
             "badgeType": "Brass",
             "ability": "None",
             "cardType": "Normal",
-            "quote": "长号新人，深紫色的短发，卷曲的刘海和深红色的眼睛。总穿浅肉色毛衣。\n投票投给了黄前。"
+            "quote": "长号新人。也许是吉泽秋子妹妹？\n投票投给了黄前。"
         },
         {
             "infoId": 3083,
@@ -1171,11 +1169,11 @@
             "englishName": "Keito Yamashita",
             "group": "KumikoThirdYear",
             "grade": 1,
-            "originPower": 2,
+            "originPower": 3,
             "badgeType": "Brass",
             "ability": "None",
             "cardType": "Normal",
-            "quote": "长号新人。棕色长发，刘海向两侧梳，脸上雀斑，眼睛深蓝色\n投票投给了黑江。"
+            "quote": "长号新人。脸上雀斑，眼睛深蓝色。\n投票投给了黑江。"
         },
         {
             "infoId": 3084,
@@ -1184,11 +1182,11 @@
             "englishName": "Mashiro Mashima",
             "group": "KumikoThirdYear",
             "grade": 1,
-            "originPower": 2,
+            "originPower": 3,
             "badgeType": "Wood",
             "ability": "None",
             "cardType": "Normal",
-            "quote": "萨克斯新人。身材娇小，蓬松灰色长发刘海短，脑后扎成个小发髻。有双酒红色眼睛和圆圆眉毛。很可爱。\n投票投给了黑江。"
+            "quote": "萨克斯新人。身材娇小，脑后扎成个小发髻。很可爱。\n投票投给了黑江。"
         },
         {
             "infoId": 3085,
@@ -1197,11 +1195,11 @@
             "englishName": "Hitomi Komoto",
             "group": "KumikoThirdYear",
             "grade": 1,
-            "originPower": 2,
+            "originPower": 3,
             "badgeType": "Wood",
             "ability": "None",
             "cardType": "Normal",
-            "quote": "萨克斯新人。紫色的短发发尾微卷曲，淡褐眼睛。通常戴一条黄绿色头带。\n投票投给了黑江。"
+            "quote": "萨克斯新人。通常戴一条黄绿色头带。\n投票投给了黑江。"
         },
         {
             "infoId": 3086,
@@ -1210,12 +1208,12 @@
             "englishName": "Sutebe Kitsune",
             "group": "KumikoThirdYear",
             "grade": 1,
-            "originPower": 2,
+            "originPower": 3,
             "badgeType": "Percussion",
             "ability": "None",
             "cardType": "Normal",
             "isMale": true
-            "quote": "打击乐新人。有一头棕色的长发刘海凌乱，扎成一个发髻。有一双绿色的眼睛。\n投票投给了黄前。"
+            "quote": "打击乐新人。长发扎成一发髻。\n投票投给了黄前。"
         },
         {
             "infoId": 3087,
@@ -1224,12 +1222,12 @@
             "englishName": "Yutaka Asano",
             "group": "KumikoThirdYear",
             "grade": 1,
-            "originPower": 3,
+            "originPower": 4,
             "badgeType": "Brass",
             "ability": "None",
             "cardType": "Normal",
             "isMale": true
-            "quote": "长号新人。在两次落选的情况下，最后成为全国金大赛的成员之一，顶替了叶加濑满。\n投票投给了黄前。"
+            "quote": "长号新人。两次落选却终为全国大赛一员，顶替叶加濑。\n投票投给了黄前。"
         },
         {
             "infoId": 3088,
@@ -1238,12 +1236,12 @@
             "englishName": "Sunaida Asumi",
             "group": "KumikoThirdYear",
             "grade": 1,
-            "originPower": 2,
+            "originPower": 3,
             "badgeType": "Percussion",
             "ability": "None",
             "cardType": "Normal",
             "isMale": true
-            "quote": "打击乐新人。黑短卷发，刘海用一根绿色发夹固定左侧。一双淡褐色眼睛。\n投票投给了黑江。"
+            "quote": "打击乐新人。刘海用一根绿色发夹固定左侧。\n投票投给了黑江。"
         },
         {
             "infoId": 3089,
@@ -1252,7 +1250,7 @@
             "englishName": "Matsutake Shugo",
             "group": "KumikoThirdYear",
             "grade": 1,
-            "originPower": 2,
+            "originPower": 3,
             "badgeType": "Brass",
             "ability": "None",
             "cardType": "Normal",
@@ -1266,11 +1264,11 @@
             "englishName": "YukimiTakahashi ",
             "group": "KumikoThirdYear",
             "grade": 1,
-            "originPower": 2,
+            "originPower": 3,
             "badgeType": "Brass",
             "ability": "None",
             "cardType": "Normal",
-            "quote": "小号新人。一头棕色的头发，扎着双荷兰辫，发型为发髻，眼睛是紫色的。\n投票投给了黄前。"
+            "quote": "小号新人。扎着双荷兰辫，发型为发髻。\n投票投给了黄前。"
         },
         {
             "infoId": 3091,
@@ -1279,13 +1277,13 @@
             "englishName": "Kyoko Ayukai",
             "group": "KumikoThirdYear",
             "grade": 2,
-            "originPower": 3,
+            "originPower": 4,
             "badgeType": "Wood",
             "ability": "Bond",
             "bondType": "doublebaritonesaxophone",
             "relatedCard": "远藤正",
             "cardType": "Normal",
-            "quote": "对上低音萨克斯一心一意。对于乐器的爱不输任何人。\n希望同样演奏上低音萨克斯的远藤正能变的更可靠，但对他的演奏技术也是认可的。"
+            "quote": "虽说对上低音萨克斯专心。\n但没进a编，被远藤正越甩越远。"
         },
         {
             "infoId": 3095,
