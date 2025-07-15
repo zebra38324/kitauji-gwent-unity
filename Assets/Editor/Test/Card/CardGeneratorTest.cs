@@ -89,4 +89,14 @@ public class CardGeneratorTest
         var noneList = gen.GetGroupCardList((CardGroup)999);
         Assert.IsEmpty(noneList);
     }
+
+    [Test]
+    public void GetGroupInfoList()
+    {
+        var noneList = CardGenerator.GetGroupInfoList((CardGroup)999);
+        Assert.IsEmpty(noneList);
+
+        var list = CardGenerator.GetGroupInfoList(CardGroup.KumikoFirstYear);
+        CollectionAssert.AreEquivalent(new List<int> { 5 }, list.Select(x => x.infoId));
+    }
 }

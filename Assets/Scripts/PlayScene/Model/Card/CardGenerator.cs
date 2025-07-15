@@ -63,6 +63,17 @@ public record CardGenerator
         return list;
     }
 
+    public static List<CardInfo> GetGroupInfoList(CardGroup cardGroup)
+    {
+        var result = new List<CardInfo>();
+        foreach (CardInfo cardInfo in allCardInfoList) {
+            if (cardInfo.group == cardGroup) {
+                result.Add(cardInfo);
+            }
+        }
+        return result;
+    }
+
     private void LoadAllCardInfoList()
     {
         if (allCardInfoList != null) {

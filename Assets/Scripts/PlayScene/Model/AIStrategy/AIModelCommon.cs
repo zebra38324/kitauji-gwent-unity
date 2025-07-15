@@ -1,11 +1,10 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using Unity.VisualScripting;
+using System;
 
-// AI逻辑模块初始化策略，决定重抽手牌
-class AIModelCommon
+public class AIModelCommon
 {
     private static string TAG = "AIModelCommon";
     public class ActionReturn
@@ -13,6 +12,7 @@ class AIModelCommon
         public int scoreDiff = 0;
         public int handCardReturn = 0;
         public List<ActionEvent> actionList = new List<ActionEvent>();
+        public float benifit = 0; // L2使用
         public static ActionReturn operator +(ActionReturn r1, ActionReturn r2)
         {
             return new ActionReturn {
@@ -27,67 +27,37 @@ class AIModelCommon
         }
     }
 
+    private AIBase.AILevel level;
+
+    public AIModelCommon(AIBase.AILevel level)
+    {
+        this.level = level;
+    }
+
     // 获取所有可能的操作，并按照收益由高到低排序
-    public static List<ActionReturn> GetAllAction(WholeAreaModel originModel)
+    public List<ActionReturn> GetAllAction(WholeAreaModel originModel)
     {
         KLog.I(TAG, "GetAllAction: start");
         originModel = originModel with {
             actionEventList = ImmutableList<ActionEvent>.Empty,
         };
         var result = new List<ActionReturn>();
+        bool originBlockLog = KLog.blockLog;
+        KLog.blockLog = true;
         MockActionRecursive(originModel, new ActionReturn(), ref result);
+        KLog.blockLog = originBlockLog;
         result.Sort((x, y) => y.Total() - x.Total());
         KLog.I(TAG, "GetAllAction: finish, result.Count: " + result.Count);
         return result;
     }
 
     // self - emeny Recursive
-    public static int GetScoreDiff(WholeAreaModel model)
+    public int GetScoreDiff(WholeAreaModel model)
     {
         return model.selfSinglePlayerAreaModel.GetCurrentPower() - model.enemySinglePlayerAreaModel.GetCurrentPower();
     }
 
-    public static void ApplyAction(PlaySceneModel model, ActionEvent actionEvent)
-    {
-        switch (actionEvent.args[0]) {
-            case BattleModel.ActionType.ChooseCard: {
-                int id = (int)actionEvent.args[1];
-                CardModel card = model.wholeAreaModel.FindCard(id);
-                if (card == null) {
-                    KLog.E(TAG, "ApplyAction: ChooseCard: invalid id: " + id);
-                    return;
-                }
-                model.ChooseCard(card);
-                break;
-            }
-            case BattleModel.ActionType.ChooseHornUtilArea: {
-                model.ChooseHornUtilArea((CardBadgeType)actionEvent.args[1]);
-                break;
-            }
-            default: {
-                KLog.E(TAG, "ApplyAction: invalid type = " + actionEvent.args[0]);
-                break;
-            }
-        }
-    }
-
-    public static bool NeedPass(PlaySceneModel model, ActionReturn maxReturn)
-    {
-        int scoreDiff = GetScoreDiff(model.wholeAreaModel);
-        bool ret = false;
-        if (model.wholeAreaModel.playTracker.enemyPlayerInfo.setScore == 0 &&
-            ((scoreDiff < -10 && maxReturn.scoreDiff < 3) ||
-             scoreDiff > 20 && maxReturn.scoreDiff > 5)) {
-            ret = true;
-        }
-        KLog.I(TAG, "NeedPass: scoreDiff: " + scoreDiff +
-            ", maxReturn.scoreDiff: " + maxReturn.scoreDiff +
-            ", maxReturn.handCardReturn: " + maxReturn.handCardReturn +
-            ", ret = " + ret);
-        return ret;
-    }
-
-    private static void MockActionRecursive(WholeAreaModel originModel, ActionReturn lastReturn, ref List<ActionReturn> record)
+    private void MockActionRecursive(WholeAreaModel originModel, ActionReturn lastReturn, ref List<ActionReturn> record)
     {
         originModel = originModel with {
             actionEventList = ImmutableList<ActionEvent>.Empty,
@@ -131,7 +101,7 @@ class AIModelCommon
                 break;
             }
         }
-        
+
         if (originModel.gameState.actionState == GameState.ActionState.HORN_UTILING) {
             foreach (var row in originModel.selfSinglePlayerAreaModel.battleRowAreaList) {
                 var newModel = originModel.ChooseHornUtilArea(row.rowType, true);
@@ -152,7 +122,7 @@ class AIModelCommon
         }
     }
 
-    private static ActionReturn GetReturn(WholeAreaModel newModel, WholeAreaModel oldModel)
+    private ActionReturn GetReturn(WholeAreaModel newModel, WholeAreaModel oldModel)
     {
         ActionReturn actionReturn = new ActionReturn {
             scoreDiff = GetScoreDiff(newModel) - GetScoreDiff(oldModel),

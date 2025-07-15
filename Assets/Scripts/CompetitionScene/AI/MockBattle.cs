@@ -92,7 +92,7 @@ public class MockBattle
                 await UniTask.Delay(1);
                 continue;
             }
-            aiModel.DoPlayAction();
+            await aiModel.DoPlayAction();
         }
     }
 }

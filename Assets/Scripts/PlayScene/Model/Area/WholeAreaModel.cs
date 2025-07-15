@@ -398,6 +398,16 @@ public record WholeAreaModel
         return card;
     }
 
+    // TODO: 暂时默认对enemy生效
+    public WholeAreaModel ReplaceHandAndBackupCard(List<int> handInfoIdList, List<int> handIdList, List<int> backupInfoIdList, List<int> backupIdList)
+    {
+        var newRecord = this;
+        newRecord = Lens_EnemySinglePlayerAreaModel_HandCardAreaModel.Set(
+            newRecord.enemySinglePlayerAreaModel.handCardAreaModel.ReplaceHandAndBackupCard(handInfoIdList, handIdList, backupInfoIdList, backupIdList),
+            newRecord);
+        return newRecord;
+    }
+
     // 尝试开始游戏
     private WholeAreaModel TryStartGame()
     {

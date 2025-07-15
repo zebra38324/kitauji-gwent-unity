@@ -203,6 +203,30 @@ public record HandCardAreaModel
         return newRecord;
     }
 
+
+    // 替换手牌和备选卡牌，ai模拟时使用
+    public HandCardAreaModel ReplaceHandAndBackupCard(List<int> handInfoIdList, List<int> handIdList, List<int> backupInfoIdList, List<int> backupIdList)
+    {
+        var newRecord = this;
+        newRecord = newRecord with {
+            handCardListModel = newRecord.handCardListModel.RemoveAllCard(out var removedHandCardList) as HandCardListModel,
+            backupCardList = newRecord.backupCardList.Clear()
+        };
+        for (int i = 0; i < handInfoIdList.Count; i++) {
+            CardModel card = newRecord.cardGenerator.GetCard(handInfoIdList[i], handIdList[i]);
+            newRecord = newRecord with {
+                handCardListModel = newRecord.handCardListModel.AddCard(card) as HandCardListModel
+            };
+        }
+        for (int i = 0; i < backupInfoIdList.Count; i++) {
+            CardModel card = newRecord.cardGenerator.GetCard(backupInfoIdList[i], backupIdList[i]);
+            newRecord = newRecord with {
+                backupCardList = newRecord.backupCardList.Add(card)
+            };
+        }
+        return newRecord;
+    }
+
     // 从backup中随机抽取一些牌，但不放入别的地方
     private HandCardAreaModel DrawRandomHandCardList(int num, out List<CardModel> newCardList)
     {

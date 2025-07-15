@@ -244,4 +244,28 @@ public class HandCardAreaModelTest
         Assert.AreEqual(1, result.handCardListModel.cardList.Count);
         Assert.AreEqual(1, result.backupCardList.Count);
     }
+
+    [Test]
+    public void ReplaceHandAndBackupCard()
+    {
+        var infoIds = new List<int> { 1 };
+        infoIds.AddRange(Enumerable.Repeat(2, 11));
+        var model = new HandCardAreaModel(hostGen, false)
+            .SetBackupCardInfoIdList(infoIds);
+
+        var handInfoIds = Enumerable.Repeat(3, 8).ToList();
+        var handIds = Enumerable.Range(8, 8).Select(x => x * 10 + 3).ToList();
+        var backupInfoIds = Enumerable.Repeat(3, 3).ToList();
+        var backupIds = Enumerable.Range(20, 3).Select(x => x * 10 + 3).ToList();
+        model = model.ReplaceHandAndBackupCard(handInfoIds, handIds, backupInfoIds, backupIds);
+
+        Assert.AreEqual(1, model.leaderCardListModel.cardList.Count);
+        Assert.IsTrue(model.leaderCardListModel.cardList[0].cardInfo.infoId == 1);
+        foreach (var card in model.handCardListModel.cardList) {
+            Assert.AreEqual(3, card.cardInfo.infoId);
+        }
+        foreach (var card in model.backupCardList) {
+            Assert.AreEqual(3, card.cardInfo.infoId);
+        }
+    }
 }

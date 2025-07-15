@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 
 // AI逻辑模块初始化策略，决定重抽手牌
-class AIModelInit
+public class AIModelInit
 {
+    private static string TAG = "AIModelInit";
+
     private PlaySceneModel playSceneModel;
 
     // 预期收益，有些牌是组合统计的
@@ -26,216 +28,224 @@ class AIModelInit
 
     public void ChooseReDrawInitHandCard()
     {
-        // 根据牌组决策出最好的情况，然后与实际抽到的进行对比
-        var bestList = GetBestHandCard();
-        var musterIndex = new Dictionary<string, List<int>>();
-        for (int index = 0; index < bestList.Count; index++) {
-            var card = bestList[index];
-            if (card.cardInfo.ability != CardAbility.Muster) {
-                continue;
-            }
-            if (musterIndex.ContainsKey(card.cardInfo.musterType)) {
-                musterIndex[card.cardInfo.musterType].Add(index);
-            } else {
-                musterIndex.Add(card.cardInfo.musterType, new List<int> { index });
+        // 遍历所有选择情况，共 1 + 10 + 45 = 56 种选择
+        // 每种选择情况，遍历从backup中随机抽取的组合，计算每种选择情况的期望
+        // 将每种选择情况排序，按照一个概率分布进行选择
+        KLog.I(TAG, $"ChooseReDrawInitHandCard: origin hand card: {string.Join(", ", playSceneModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.initHandCardListModel.cardList.Select(x => $"{x.cardInfo.chineseName}-{x.cardInfo.ability}"))}");
+        var allActionList = new List<List<int>>();
+        var expectationDict = new Dictionary<List<int>, int>();
+        allActionList.Add(new List<int>()); // 0个选择的情况
+        for (int i = 0; i < HandCardAreaModel.INIT_HAND_CARD_NUM; i++) {
+            allActionList.Add(new List<int> { i }); // 1个选择的情况
+            for (int j = i + 1; j < HandCardAreaModel.INIT_HAND_CARD_NUM; j++) {
+                allActionList.Add(new List<int> { i, j }); // 2个选择的情况
             }
         }
-
-        var GetExpectIndex = new Func<CardModel, int>(card => {
-            if (card.cardInfo.ability != CardAbility.Muster) {
-                return bestList.FindIndex(o => o.cardInfo.id == card.cardInfo.id);
-            } else {
-                int index = musterIndex[card.cardInfo.musterType][0];
-                musterIndex[card.cardInfo.musterType].RemoveAt(0);
-                return index;
-            }
-        });
-
-        List<KeyValuePair<CardModel, int>> cardList = playSceneModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.initHandCardListModel.cardList
-            .Select(o => new KeyValuePair<CardModel, int>(o, GetExpectIndex(o))).ToList();
-        cardList.Sort((x, y) => y.Value.CompareTo(x.Value));
-        // 越往前的收益越低
-        int handCardNum = 10;
-        int canSelect = 2;
-        foreach (var pair in cardList) {
-            var card = pair.Key;
-            if (canSelect == 0 || pair.Value <= handCardNum) {
-                break;
-            }
-            var select = playSceneModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.initHandCardListModel.cardList.Find(o => o.cardInfo.id == card.cardInfo.id);
-            playSceneModel.ChooseCard(select);
-            canSelect -= 1;
+        foreach (var action in allActionList) {
+            int expectation = CalculateExpectation(action);
+            expectationDict[action] = expectation;
+        }
+        allActionList.Sort((x, y) => expectationDict[y].CompareTo(expectationDict[x])); // 按照期望值降序排序
+        int index = AIBase.GetIndexExponentialProbabilities(10); // 简化处理，只考虑前十个
+        KLog.I(TAG, $"ChooseReDrawInitHandCard: selected index: {index}, expectation: {expectationDict[allActionList[index]]}");
+        foreach (var i in allActionList[index]) {
+            playSceneModel.ChooseCard(playSceneModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.initHandCardListModel.cardList[i]);
         }
     }
 
-    private List<CardModel> GetBestHandCard()
+    // 选择selectedIndexList中的index，长度可能为0，1，2  
+    // 计算这种选择情况下的手牌收益期望  
+    private int CalculateExpectation(List<int> selectedIndexList)
     {
-        List<CardModel> bestHandCardList = new List<CardModel>();
-        List<CardModel> allCardList = playSceneModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.initHandCardListModel.cardList.ToList();
-        allCardList.AddRange(playSceneModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.backupCardList);
-        var expectPowerList = GetExpectPowerList(allCardList); // 预期收益，有些牌是组合统计的
-        var backList = new List<CardModel>();
-
-        foreach (var combineCard in expectPowerList) {
-            if (combineCard.cardList[0].cardInfo.ability == CardAbility.Muster) {
-                var cardList = new List<CardModel>(combineCard.cardList);
-                bestHandCardList.Add(cardList[0]);
-                cardList.RemoveAt(0);
-                backList.AddRange(cardList);
-            } else {
-                var cardList = new List<CardModel>(combineCard.cardList);
-                cardList.Sort((x, y) => y.cardInfo.originPower.CompareTo(x.cardInfo.originPower));
-                bestHandCardList.AddRange(cardList);
-            }
+        var originHandList = playSceneModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.initHandCardListModel.cardList;
+        var originBackupList = playSceneModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.backupCardList.ToList();
+        var baseHandList = originHandList.Where((item, index) => !selectedIndexList.Contains(index)).ToList();
+        var baseBackupList = new List<CardModel>(originBackupList);
+        foreach (var index in selectedIndexList) {
+            baseBackupList.Add(originHandList[index]);
         }
-        bestHandCardList.AddRange(backList);
-        return bestHandCardList;
-    }
-
-    // 获取预期收益列表，降序排序
-    // TODO: 这些随机的收益上下限，后续可以更科学一些
-    private List<CombineCard> GetExpectPowerList(List<CardModel> allCardList)
-    {
-        var expectPowerList = new List<CombineCard>();
-        Random random = new Random();
-        foreach (CardModel card in allCardList) {
-            int heroExtra = random.Next(3, 10); // 英雄牌在计算收益时，随机添加一些
-            int cardPower = card.cardInfo.cardType == CardType.Hero ? card.cardInfo.originPower + heroExtra : card.cardInfo.originPower;
-            switch (card.cardInfo.ability) {
-                case CardAbility.None: {
-                    if (card.cardInfo.chineseName == "铠冢霙" && card.cardInfo.cardType == CardType.Normal) {
-                        var kasa = expectPowerList.Find(o => o.cardList[0].cardInfo.ability == CardAbility.Kasa);
-                        if (kasa == null) {
-                            expectPowerList.Add(new CombineCard(new List<CardModel> { card }, cardPower));
-                        } else {
-                            int extra = random.Next(0, 4);
-                            kasa.avgExpectPower = (kasa.cardList[0].cardInfo.originPower + card.cardInfo.originPower + extra + 5) / 2;
-                            kasa.cardList.Add(card);
-                        }
-                    } else {
-                        expectPowerList.Add(new CombineCard(new List<CardModel> { card }, cardPower));
-                    }
-                    break;
+        var allHandList = new List<List<CardModel>>();
+        var allBackupList = new List<List<CardModel>>();
+        if (selectedIndexList.Count == 0) {
+            allHandList.Add(baseHandList);
+            allBackupList.Add(baseBackupList);
+            //KLog.I(TAG, "CalculateExpectation: no select");
+        } else if (selectedIndexList.Count == 1) {
+            //KLog.I(TAG, $"CalculateExpectation: select = {originHandList[selectedIndexList[0]].cardInfo.chineseName}");
+            foreach (var card in baseBackupList) {
+                var curHandList = new List<CardModel>(baseHandList);
+                curHandList.Add(card);
+                allHandList.Add(curHandList);
+                var curBackupList = new List<CardModel>(baseBackupList);
+                curBackupList.Remove(card);
+                allBackupList.Add(curBackupList);
+            }
+        } else if (selectedIndexList.Count == 2) {
+            //KLog.I(TAG, $"CalculateExpectation: select = {originHandList[selectedIndexList[0]].cardInfo.chineseName} {originHandList[selectedIndexList[1]].cardInfo.chineseName}");
+            for (int i = 0; i < baseBackupList.Count; i++) {
+                for (int j = i + 1; j < baseBackupList.Count; j++) {
+                    var curHandList = new List<CardModel>(baseHandList);
+                    curHandList.Add(baseBackupList[i]);
+                    curHandList.Add(baseBackupList[j]);
+                    allHandList.Add(curHandList);
+                    var curBackupList = new List<CardModel>(baseBackupList);
+                    curBackupList.Remove(baseBackupList[i]);
+                    curBackupList.Remove(baseBackupList[j]);
+                    allBackupList.Add(curBackupList);
                 }
+            }
+        } else {
+            throw new ArgumentException("CalculateExpectation: selectedIndexList length should be 0, 1 or 2");
+        }
+
+        int sum = 0;
+        for (int i = 0; i < allHandList.Count; i++) {
+            int benifit = GetHandCardBenifit(allHandList[i], allBackupList[i]);
+            sum += benifit;
+        }
+        int expectation = sum / allHandList.Count;
+        //KLog.I(TAG, $"CalculateExpectation: expectation = {expectation}");
+        return expectation;
+    }
+
+    /**
+     * 手牌组预期收益
+     * 由于不少卡牌的收益与其他卡片相关联，很难对单独卡牌准确计算，因此对于手牌组进行收益的整体计算
+     * TODO: 这些随机的收益上下限，后续可以更科学一些
+     * 
+     * 这里的代码或许是个重要的节点，希望能保留这种兴奋感
+     */
+    private int GetHandCardBenifit(List<CardModel> handCardList, List<CardModel> backupCardList)
+    {
+        int sum = 0;
+        foreach (var card in handCardList) {
+            Random random = new Random();
+            int baseBenifit = card.cardInfo.originPower;
+            int extra = card.cardInfo.cardType == CardType.Hero ? random.Next(3, 10) : 0; // 英雄牌在计算收益时，随机添加一些
+            switch (card.cardInfo.ability) {
                 case CardAbility.Spy: {
                     // spy优先级最高
-                    expectPowerList.Add(new CombineCard(new List<CardModel> { card }, 500 - cardPower));
+                    baseBenifit = -baseBenifit;
+                    extra = 500;
                     break;
                 }
                 case CardAbility.Attack: {
-                    expectPowerList.Add(new CombineCard(new List<CardModel> { card }, cardPower + card.cardInfo.attackNum));
+                    extra = card.cardInfo.attackNum;
                     break;
                 }
                 case CardAbility.Tunning: {
-                    int extra = random.Next(0, 5);
-                    expectPowerList.Add(new CombineCard(new List<CardModel> { card }, cardPower + extra));
+                    extra = random.Next(0, 5);
                     break;
                 }
                 case CardAbility.Bond: {
-                    var bond = expectPowerList.Find(o => o.cardList[0].cardInfo.bondType == card.cardInfo.bondType);
-                    if (bond == null) {
-                        expectPowerList.Add(new CombineCard(new List<CardModel> { card }, cardPower));
-                    } else {
-                        bond.cardList.Add(card);
-                        bond.avgExpectPower = cardPower * bond.cardList.Count;
-                    }
+                    string bondType = card.cardInfo.bondType;
+                    int count = handCardList.Count(x => x.cardInfo.bondType == bondType);
+                    extra = baseBenifit * (count - 1);
                     break;
                 }
                 case CardAbility.ScorchWood: {
-                    int extra = random.Next(10, 20);
-                    expectPowerList.Add(new CombineCard(new List<CardModel> { card }, cardPower + extra));
+                    extra = random.Next(5, 20);
                     break;
                 }
                 case CardAbility.Muster: {
-                    var muster = expectPowerList.Find(o => o.cardList[0].cardInfo.musterType == card.cardInfo.musterType);
-                    if (muster == null) {
-                        expectPowerList.Add(new CombineCard(new List<CardModel> { card }, cardPower));
-                    } else {
-                        muster.cardList.Add(card);
-                        int extra = random.Next(-5, 0);
-                        muster.avgExpectPower = muster.cardList.Count * cardPower + extra;
-                    }
+                    string musterType = card.cardInfo.musterType;
+                    int handCount = handCardList.Count(x => x.cardInfo.musterType == musterType);
+                    extra = -(handCount - 1) * 100; // 相当于少手牌，收益大幅降低
+                    extra += (handCardList.Sum(x => x.cardInfo.musterType == musterType ? x.cardInfo.originPower : 0) +
+                        backupCardList.Sum(x => x.cardInfo.musterType == musterType ? x.cardInfo.originPower : 0)) / handCount;
                     break;
                 }
                 case CardAbility.Morale: {
-                    int extra = random.Next(3, 6);
-                    expectPowerList.Add(new CombineCard(new List<CardModel> { card }, cardPower + extra));
+                    extra = random.Next(3, 6);
                     break;
                 }
                 case CardAbility.Medic: {
-                    int extra = random.Next(5, 10);
-                    expectPowerList.Add(new CombineCard(new List<CardModel> { card }, cardPower + extra));
+                    extra = random.Next(20, 30);
                     break;
                 }
                 case CardAbility.Horn: {
-                    int extra = random.Next(10, 20);
-                    expectPowerList.Add(new CombineCard(new List<CardModel> { card }, cardPower + extra));
+                    extra = random.Next(15, 30);
                     break;
                 }
                 case CardAbility.Decoy: {
-                    int extra = random.Next(0, 10);
-                    expectPowerList.Add(new CombineCard(new List<CardModel> { card }, cardPower + extra));
+                    extra = 100;
                     break;
                 }
                 case CardAbility.Scorch: {
-                    int extra = random.Next(10, 30);
-                    expectPowerList.Add(new CombineCard(new List<CardModel> { card }, cardPower + extra));
+                    extra = random.Next(10, 30);
                     break;
                 }
                 case CardAbility.SunFes: {
-                    int extra = random.Next(10, 30);
-                    expectPowerList.Add(new CombineCard(new List<CardModel> { card }, cardPower + extra));
+                    extra = random.Next(10, 30);
                     break;
                 }
                 case CardAbility.Daisangakushou: {
-                    int extra = random.Next(10, 25);
-                    expectPowerList.Add(new CombineCard(new List<CardModel> { card }, cardPower + extra));
+                    extra = random.Next(10, 25);
                     break;
                 }
                 case CardAbility.Drumstick: {
-                    int extra = random.Next(10, 20);
-                    expectPowerList.Add(new CombineCard(new List<CardModel> { card }, cardPower + extra));
+                    extra = random.Next(10, 20);
                     break;
                 }
                 case CardAbility.ClearWeather: {
-                    int extra = random.Next(0, 20);
-                    expectPowerList.Add(new CombineCard(new List<CardModel> { card }, cardPower + extra));
+                    extra = random.Next(0, 20);
                     break;
                 }
                 case CardAbility.HornUtil:
                 case CardAbility.HornBrass: {
-                    int extra = random.Next(10, 20);
-                    expectPowerList.Add(new CombineCard(new List<CardModel> { card }, cardPower + extra));
+                    extra = random.Next(0, 20);
                     break;
                 }
                 case CardAbility.Lip: {
-                    int extra = random.Next(0, 6);
-                    expectPowerList.Add(new CombineCard(new List<CardModel> { card }, cardPower + extra));
+                    extra = random.Next(0, 4);
                     break;
                 }
                 case CardAbility.Guard: {
-                    int extra = random.Next(0, 4);
-                    expectPowerList.Add(new CombineCard(new List<CardModel> { card }, cardPower + extra));
+                    bool hasTarget = handCardList.Any(x => x.cardInfo.chineseName == card.cardInfo.relatedCard);
+                    extra = hasTarget ? 4 : 0;
                     break;
                 }
                 case CardAbility.Monaka: {
-                    expectPowerList.Add(new CombineCard(new List<CardModel> { card }, cardPower + 2));
+                    extra = 2;
                     break;
                 }
                 case CardAbility.Kasa: {
-                    var kasa = expectPowerList.Find(o => o.cardList[0].cardInfo.chineseName == "铠冢霙" && o.cardList[0].cardInfo.cardType == CardType.Normal);
-                    if (kasa == null) {
-                        expectPowerList.Add(new CombineCard(new List<CardModel> { card }, cardPower));
+                    bool hasMizore = handCardList.Any(x => x.cardInfo.chineseName == "铠冢霙");
+                    if (hasMizore) {
+                        extra = 5 + random.Next(0, 4);
                     } else {
-                        int extra = random.Next(0, 4);
-                        kasa.avgExpectPower = (kasa.cardList[0].cardInfo.originPower + card.cardInfo.originPower + extra + 5) / 2;
-                        kasa.cardList.Add(card);
+                        extra = 0;
                     }
                     break;
                 }
+                case CardAbility.K5Leader: {
+                    int k5Count = handCardList.Count(x => x.cardInfo.grade == 1);
+                    float ratio = random.Next(2, 4) / 3;
+                    extra = (int)(2 * (k5Count - 1) * ratio);
+                    break;
+                }
+                case CardAbility.SalutdAmour: {
+                    bool hasSapphire = handCardList.Any(x => x.cardInfo.chineseName == "川岛绿辉");
+                    extra = hasSapphire ? 3 : 0;
+                    break;
+                }
+                case CardAbility.Pressure: {
+                    extra = random.Next(-5, 10);
+                    break;
+                }
+                case CardAbility.Defend: {
+                    extra = random.Next(5, 20);
+                    break;
+                }
+                case CardAbility.PowerFirst: {
+                    extra = random.Next(0, 5);
+                    break;
+                }
             }
+            sum += baseBenifit + extra;
         }
-        expectPowerList.Sort((x, y) => y.avgExpectPower.CompareTo(x.avgExpectPower));
-        return expectPowerList;
+        //KLog.I(TAG, $"GetHandCardBenifit: hand card list: {string.Join(", ", handCardList.Select(x => x.cardInfo.chineseName))}");
+        //KLog.I(TAG, $"GetHandCardBenifit: result: {sum}");
+        return sum;
     }
 }

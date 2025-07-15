@@ -2,15 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 
 // 等级1 AI逻辑
-class AIModelL1 : AIModelInterface
+public class AIModelL1 : AIModelInterface
 {
     private static string TAG = "AIModelL1";
 
     // 初始化并设置牌组
-    public AIModelL1(PlaySceneModel playSceneModel_, List<int> deckList = null) : base(playSceneModel_, deckList)
+    public AIModelL1(PlaySceneModel playSceneModel_, List<int> deckList = null, AIBase.AIMode aiMode_ = AIBase.AIMode.Normal) : base(playSceneModel_, aiMode_)
     {
+        aiModelCommon = new AIModelCommon(AIBase.AILevel.L1);
         // 设置牌组
         SetDeckInfoIdList(deckList);
     }
@@ -24,34 +26,24 @@ class AIModelL1 : AIModelInterface
     }
 
     // WAIT_SELF_ACTION时的操作
-    public override void DoPlayAction()
+    public override async UniTask DoPlayAction()
     {
-        int scoreDiff = AIModelCommon.GetScoreDiff(playSceneModel.wholeAreaModel);
+        int scoreDiff = aiModelCommon.GetScoreDiff(playSceneModel.wholeAreaModel);
         if (scoreDiff > 0 && playSceneModel.wholeAreaModel.gameState.enemyPass) {
             KLog.I(TAG, "DoPlayAction: scoreDiff: " + scoreDiff + ", enemyPass: true, will pass");
             playSceneModel.Pass();
             return;
         }
-        var returnList = AIModelCommon.GetAllAction(playSceneModel.wholeAreaModel);
+        var returnList = aiModelCommon.GetAllAction(playSceneModel.wholeAreaModel);
         var actionReturn = SelectActionReturn(returnList);
-        if (returnList.Count == 0 || AIModelCommon.NeedPass(playSceneModel, returnList[0]) || actionReturn == null) {
+        if (returnList.Count == 0 || NeedPass(playSceneModel, returnList[0]) || actionReturn == null) {
             playSceneModel.Pass();
         } else {
             foreach (var action in actionReturn.actionList) {
-                AIModelCommon.ApplyAction(playSceneModel, action);
+                ApplyAction(playSceneModel, action);
             }
         }
-    }
-
-    private void SetDeckInfoIdList(List<int> deckList)
-    {
-        if (deckList == null) {
-            CardGroup cardGroup = playSceneModel.wholeAreaModel.playTracker.selfPlayerInfo.cardGroup;
-            var groupDeckList = AIDefaultDeck.deckConfigDic[cardGroup];
-            var selectDeckIndex = new Random().Next(groupDeckList.Length);
-            deckList = new List<int>(groupDeckList[selectDeckIndex]);
-        }
-        playSceneModel.SetBackupCardInfoIdList(deckList);
+        await UniTask.Yield();
     }
 
     // 选择操作
@@ -73,27 +65,24 @@ class AIModelL1 : AIModelInterface
                 return null;
             }
         }
-        int actionIndex = GetActionIndexLinearProbabilities(filterList.Count);
+        int actionIndex = AIBase.GetIndexLinearProbabilities(filterList.Count);
         KLog.I(TAG, "SelectAction: actionIndex = " + actionIndex + ", filterList.Count = " + filterList.Count + ", total count = " + allAction.Count);
         return allAction[actionIndex];
     }
 
-    // 线性分布 获取操作index
-    private int GetActionIndexLinearProbabilities(int num)
+    private bool NeedPass(PlaySceneModel model, AIModelCommon.ActionReturn maxReturn)
     {
-        double total = num * (num + 1) / 2.0;
-        List<double> probabilities = new List<double>();
-        for (int i = num; i >= 1; i--) {
-            probabilities.Add(i / total);
+        int scoreDiff = aiModelCommon.GetScoreDiff(model.wholeAreaModel);
+        bool ret = false;
+        if (model.wholeAreaModel.playTracker.enemyPlayerInfo.setScore == 0 &&
+            ((scoreDiff < -10 && maxReturn.scoreDiff < 3) ||
+             scoreDiff > 20 && maxReturn.scoreDiff > 5)) {
+            ret = true;
         }
-        double randomValue = new Random().NextDouble(); // 生成一个0到1之间的随机数
-        double cumulativeProbability = 0.0;
-        for (int i = 0; i < num; i++) {
-            cumulativeProbability += probabilities[i];
-            if (randomValue <= cumulativeProbability) {
-                return i;
-            }
-        }
-        return 0;
+        KLog.I(TAG, "NeedPass: scoreDiff: " + scoreDiff +
+            ", maxReturn.scoreDiff: " + maxReturn.scoreDiff +
+            ", maxReturn.handCardReturn: " + maxReturn.handCardReturn +
+            ", ret = " + ret);
+        return ret;
     }
 }

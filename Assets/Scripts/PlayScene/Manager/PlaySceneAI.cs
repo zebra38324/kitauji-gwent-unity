@@ -9,8 +9,14 @@ public class PlaySceneAI
 
     public enum AIType
     {
+        // L1
         L1K1 = 0,
         L1K2,
+        L1K3,
+        // L2
+        L2K1,
+        L2K2,
+        L2K3,
     }
 
     private bool isAbort = false;
@@ -58,17 +64,19 @@ public class PlaySceneAI
                 continue;
             }
             await UniTask.Delay(1000); // 延迟一秒
-            aiModelInterface.DoPlayAction();
+            await aiModelInterface.DoPlayAction();
         }
     }
 
     private CardGroup GetAIGroup(AIType aiType)
     {
         switch (aiType) {
-            case AIType.L1K1: {
+            case AIType.L1K1:
+            case AIType.L2K1: {
                 return CardGroup.KumikoFirstYear;
             }
-            case AIType.L1K2: {
+            case AIType.L1K2:
+            case AIType.L2K2: {
                 return CardGroup.KumikoSecondYear;
             }
             default: {
@@ -83,6 +91,10 @@ public class PlaySceneAI
             case AIType.L1K1:
             case AIType.L1K2: {
                 return new AIModelL1(playSceneModel);
+            }
+            case AIType.L2K1:
+            case AIType.L2K2: {
+                return new AIModelL2(playSceneModel);
             }
             default: {
                 return null;
