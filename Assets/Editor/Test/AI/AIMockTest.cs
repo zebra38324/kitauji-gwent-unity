@@ -88,13 +88,13 @@ public class AIMockTest
     [UnityTest]
     public IEnumerator MockTest()
     {
-        KLog.redirectToFile = true;
+        //KLog.redirectToFile = true;
         int total = 1;
         for (int i = 0; i < total; i++) {
             //yield return AIMock();
         }
         KLog.I(TAG, $"total: {total}, AI1 win count: {ai1WinCount}, rate {(float)ai1WinCount / total}");
-        KLog.redirectToFile = false;
+        //KLog.redirectToFile = false;
         yield break;
     }
 }
