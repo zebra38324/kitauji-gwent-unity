@@ -512,7 +512,7 @@
             "grade": 1,
             "originPower": 3,
             "badgeType": "Wood",
-            "ability": "None",
+            "ability": "TubaAlliance",
             "cardType": "Normal",
             "quote": "憧憬着上低音萨克斯而入部。"
         },
@@ -564,7 +564,7 @@
             "grade": 1,
             "originPower": 10,
             "badgeType": "Percussion",
-            "ability": "None",
+            "ability": "TubaAlliance",
             "cardType": "Hero",
             "quote": "“爱与死亡是音乐永恒的主题。”"
         },

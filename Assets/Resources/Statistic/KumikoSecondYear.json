@@ -272,7 +272,7 @@
             "grade": 2,
             "originPower": 5,
             "badgeType": "Wood",
-            "ability": "None",
+            "ability": "TubaAlliance",
             "cardType": "Normal",
             "quote": "和低音提琴担当的川岛绿辉\n结成了“大号君同盟”"
         },
@@ -583,7 +583,7 @@
             "grade": 2,
             "originPower": 10,
             "badgeType": "Percussion",
-            "ability": "None",
+            "ability": "TubaAlliance",
             "cardType": "Hero",
             "quote": "“爱与死亡是音乐永恒的主题。”"
         },

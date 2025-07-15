@@ -609,7 +609,7 @@
             "grade": 3,
             "originPower": 7,
             "badgeType": "Wood",
-            "ability": "None",
+            "ability": "TubaAlliance",
             "cardType": "Normal",
             "quote": "萨克斯声部长。\n和川岛绿辉结成了“大号君同盟”。"
         },
@@ -770,7 +770,7 @@
             "grade": 3,
             "originPower": 10,
             "badgeType": "Percussion",
-            "ability": "None",
+            "ability": "TubaAlliance",
             "cardType": "Hero",
             "quote": "“那么现在就由小绿我\n来讲解一下吹奏乐的基础吧。”"
         },

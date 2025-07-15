@@ -314,6 +314,8 @@ public class CardDisplay : MonoBehaviour,
                 return "defend.png";
             case CardAbility.PowerFirst:
                 return "power_first.png";
+            case CardAbility.TubaAlliance:
+                return "tuba_alliance.png";
             default: // None
                 return "none";
         }
