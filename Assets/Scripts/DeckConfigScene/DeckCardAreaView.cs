@@ -93,7 +93,7 @@ public class DeckCardAreaView : MonoBehaviour
 
     private void UpdateUI()
     {
-        cardList.Sort((GameObject x, GameObject y) => x.GetComponent<CardDisplay>().cardModel.cardInfo.infoId.CompareTo(y.GetComponent<CardDisplay>().cardModel.cardInfo.infoId));
+        cardList.Sort(CardSortCompare);
         UpdateShowCardList();
 
         while (cellList.Count < showCardList.Count) {
@@ -147,6 +147,18 @@ public class DeckCardAreaView : MonoBehaviour
             }
         }
         showCardList = newShowCardList;
-        showCardList.Sort((GameObject x, GameObject y) => x.GetComponent<CardDisplay>().cardModel.cardInfo.infoId.CompareTo(y.GetComponent<CardDisplay>().cardModel.cardInfo.infoId));
+        showCardList.Sort(CardSortCompare);
+    }
+
+    private int CardSortCompare(GameObject x, GameObject y)
+    {
+        var xInfo = x.GetComponent<CardDisplay>().cardModel.cardInfo;
+        var yInfo = y.GetComponent<CardDisplay>().cardModel.cardInfo;
+        if (xInfo.group != yInfo.group || xInfo.group != CardGroup.Neutral) {
+            // 非中立牌组，按照info id排序
+            return xInfo.infoId.CompareTo(yInfo.infoId);
+        }
+        // 中立牌组可能有重复的，按照名字排序
+        return xInfo.chineseName.CompareTo(yInfo.chineseName);
     }
 }

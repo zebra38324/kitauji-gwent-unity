@@ -124,6 +124,26 @@
             "ability": "ClearWeather",
             "cardType": "Leader",
             "quote": "意大利白向日葵的花语是：\n我一直思念着你"
+        },
+        {
+            "infoId": 5013,
+            "imageName": "origin-image-tubakun.png",
+            "chineseName": "大号君",
+            "englishName": "Tubakun",
+            "group": "Neutral",
+            "ability": "Decoy",
+            "cardType": "Util",
+            "quote": "被骗了。。。"
+        },
+        {
+            "infoId": 5014,
+            "imageName": "origin-image-taibu.png",
+            "chineseName": "退部申请书",
+            "englishName": "Taibu",
+            "group": "Neutral",
+            "ability": "Scorch",
+            "cardType": "Util",
+            "quote": "“明日香，\n你现在就给我说要退部。”"
         }
     ]
 }
