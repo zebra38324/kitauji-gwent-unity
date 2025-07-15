@@ -377,11 +377,17 @@ public class WholeAreaModelTest
         Assert.AreEqual(0, updated.enemySinglePlayerAreaModel.GetCurrentPower());
         Assert.AreEqual(9, updated.enemySinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList.Count); // enemy不会直接抽牌
         Assert.AreEqual(3, updated.enemySinglePlayerAreaModel.handCardAreaModel.backupCardList.Count);
-        Assert.AreEqual(2, updated.actionEventList.Count);
+        Assert.AreEqual(1, updated.actionEventList.Count);
         Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[0].type);
         Assert.AreEqual(string.Format("<color=red>E</color> 打出卡牌：<b>{0}</b>\n", card.cardInfo.chineseName), updated.actionEventList[0].args[0]);
-        Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[1].type);
-        Assert.AreEqual("<color=red>E</color> 抽取了2张牌\n", updated.actionEventList[1].args[0]);
+        var drawIdList = updated.enemySinglePlayerAreaModel.handCardAreaModel.backupCardList.GetRange(0, 2).Select(o => o.cardInfo.id).ToList();
+        updated = updated with {
+            actionEventList = ImmutableList<ActionEvent>.Empty
+        };
+        updated = updated.EnemyDrawHandCard(drawIdList);
+        Assert.AreEqual(1, updated.actionEventList.Count);
+        Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[0].type);
+        Assert.AreEqual("<color=red>E</color> 抽取了2张牌\n", updated.actionEventList[0].args[0]);
     }
 
     [Test]
@@ -3008,7 +3014,9 @@ public class WholeAreaModelTest
             actionEventList = ImmutableList<ActionEvent>.Empty
         };
         updated = updated.EnemyDrawHandCard(drawIdList);
-        Assert.AreEqual(0, updated.actionEventList.Count);
+        Assert.AreEqual(1, updated.actionEventList.Count);
+        Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[0].type);
+        Assert.AreEqual("<color=red>E</color> 抽取了2张牌\n", updated.actionEventList[0].args[0]);
     }
 
     [Test]
@@ -3215,10 +3223,10 @@ public class WholeAreaModelTest
         SetHostFirst(false);
         var model = new WholeAreaModel(true, "S", "E", CardGroup.KumikoFirstYear);
         var updated = model.SelfInit(new List<int> { 1 })
-            .EnemyInit(new List<int> { 1 }, new List<int> { 13 }, CardGroup.KumikoFirstYear, false)
+            .EnemyInit(Enumerable.Repeat(1, 13).ToList(), Enumerable.Range(13, 13).ToList(), CardGroup.KumikoFirstYear, false)
             .SelfDrawInitHandCard()
             .SelfReDrawInitHandCard()
-            .EnemyDrawInitHandCard(new List<int> { 13 });
+            .EnemyDrawInitHandCard(Enumerable.Range(13, 10).ToList());
         updated = updated.ChooseCard(updated.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0], false);
         updated = updated.Pass(true);
         updated = updated with {
@@ -3238,7 +3246,14 @@ public class WholeAreaModelTest
         Assert.AreEqual(AudioManager.SFXType.SetFinish, updated.actionEventList[2].args[0]);
         Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[3].type);
         Assert.AreEqual("新一局开始，<color=red>E</color> 先手\n", updated.actionEventList[3].args[0]);
-        // 抽牌操作由额外的消息传递，此处enemy无特殊处理
+        var drawIdList = updated.enemySinglePlayerAreaModel.handCardAreaModel.backupCardList.GetRange(0, 1).Select(o => o.cardInfo.id).ToList();
+        updated = updated with {
+            actionEventList = ImmutableList<ActionEvent>.Empty
+        };
+        updated = updated.EnemyDrawHandCard(drawIdList);
+        Assert.AreEqual(1, updated.actionEventList.Count);
+        Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[0].type);
+        Assert.AreEqual("<color=red>E</color> 抽取了1张牌\n", updated.actionEventList[0].args[0]);
     }
 
     // 游戏结束，本方获胜

@@ -295,6 +295,9 @@ public record WholeAreaModel
         var newRecord = this;
         // 抽牌可能在状态流转后才到这里，因此不判断状态
         newRecord = Lens_EnemySinglePlayerAreaModel_HandCardAreaModel.Set(newRecord.enemySinglePlayerAreaModel.handCardAreaModel.DrawHandCardsWithoutRandom(idList), newRecord);
+        newRecord = newRecord with {
+            actionEventList = newRecord.actionEventList.Add(new ActionEvent(ActionEvent.Type.ActionText, string.Format("{0} 抽取了{1}张牌\n", newRecord.playTracker.GetNameText(false), idList.Count)))
+        };
         return newRecord;
     }
 
@@ -483,9 +486,9 @@ public record WholeAreaModel
                     selfArea = selfArea with {
                         handCardAreaModel = selfArea.handCardAreaModel.DrawHandCardsRandom(2, out var idList)
                     };
-                    newActionList = newActionList.Add(new ActionEvent(ActionEvent.Type.BattleMsg, BattleModel.ActionType.DrawHandCard, idList));
+                    newActionList = newActionList.Add(new ActionEvent(ActionEvent.Type.BattleMsg, BattleModel.ActionType.DrawHandCard, idList))
+                        .Add(new ActionEvent(ActionEvent.Type.ActionText, string.Format("{0} 抽取了{1}张牌\n", newRecord.playTracker.GetNameText(isSelf), idList.Count)));
                 }
-                newActionList = newActionList.Add(new ActionEvent(ActionEvent.Type.ActionText, string.Format("{0} 抽取了2张牌\n", newRecord.playTracker.GetNameText(isSelf))));
                 break;
             }
             case CardAbility.Attack: {
@@ -813,7 +816,7 @@ public record WholeAreaModel
                 // 久一年技能
                 newRecord = Lens_SelfSinglePlayerAreaModel_HandCardAreaModel.Set(newRecord.selfSinglePlayerAreaModel.handCardAreaModel.DrawHandCardsRandom(1, out var idList), newRecord);
                 newActionEventList = newActionEventList.Add(new ActionEvent(ActionEvent.Type.BattleMsg, BattleModel.ActionType.DrawHandCard, idList))
-                    .Add(new ActionEvent(ActionEvent.Type.ActionText, string.Format("{0} 抽取了1张牌\n", newRecord.playTracker.GetNameText(true))));
+                    .Add(new ActionEvent(ActionEvent.Type.ActionText, string.Format("{0} 抽取了{1}张牌\n", newRecord.playTracker.GetNameText(true), idList.Count)));
             }
         }
 
