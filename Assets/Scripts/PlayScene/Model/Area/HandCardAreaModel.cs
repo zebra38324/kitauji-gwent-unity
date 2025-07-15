@@ -153,7 +153,7 @@ public record HandCardAreaModel
         return newRecord;
     }
 
-    // 抽牌到手牌区。enemy设置时，随机抽取的操作在对端进行，因此直接指定idList
+    // 抽牌到手牌区。enemy设置时，随机抽取的操作在对端进行，因此直接指定idList。以及一些指定牌的场景
     public HandCardAreaModel DrawHandCardsWithoutRandom(List<int> idList)
     {
         List<CardModel> newCardList = new List<CardModel>();

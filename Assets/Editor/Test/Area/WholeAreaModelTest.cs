@@ -3319,4 +3319,85 @@ public class WholeAreaModelTest
         Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[2].type);
         Assert.AreEqual("本局结果：双方平局\n", updated.actionEventList[2].args[0]);
     }
+
+    [Test]
+    public void ChooseCard_TubaAlliance_Self()
+    {
+        SetHostFirst(true);
+        AppendAllCardInfoList(new List<CardInfo> {
+            new CardInfo { chineseName = "大号君同盟牌", infoId = 6, originPower = 5, ability = CardAbility.TubaAlliance, badgeType = CardBadgeType.Wood },
+            new CardInfo { chineseName = "大号君", infoId = 7, originPower = 0, ability = CardAbility.Decoy, cardType = CardType.Util },
+        });
+        var model = new WholeAreaModel(true, "S", "E", CardGroup.KumikoFirstYear);
+        var updated = model.SelfInit(new List<int> { 6, 7 })
+            .EnemyInit(new List<int> { 1 }, new List<int> { 13 }, CardGroup.KumikoThirdYear, false)
+            .SelfDrawInitHandCard()
+            .SelfReDrawInitHandCard()
+            .EnemyDrawInitHandCard(new List<int> { 13 })
+            .ReplaceHandAndBackupCard(new List<int> { 6 }, new List<int> { 61 }, new List<int> { 7 }, new List<int> { 71 }, true);
+        updated = updated with {
+            actionEventList = ImmutableList<ActionEvent>.Empty
+        };
+        var card = updated.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0];
+        updated = updated.ChooseCard(card, true);
+        Assert.AreEqual(GameState.State.WAIT_ENEMY_ACTION, updated.gameState.curState);
+        Assert.AreEqual(5, updated.selfSinglePlayerAreaModel.GetCurrentPower());
+        Assert.AreEqual(0, updated.enemySinglePlayerAreaModel.GetCurrentPower());
+        Assert.AreEqual(1, updated.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList.Count);
+        Assert.AreEqual(7, updated.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0].cardInfo.infoId);
+        Assert.AreEqual(0, updated.selfSinglePlayerAreaModel.handCardAreaModel.backupCardList.Count);
+        Assert.AreEqual(4, updated.actionEventList.Count);
+        Assert.AreEqual(ActionEvent.Type.BattleMsg, updated.actionEventList[0].type);
+        Assert.AreEqual(BattleModel.ActionType.ChooseCard, updated.actionEventList[0].args[0]);
+        Assert.AreEqual(card.cardInfo.id, updated.actionEventList[0].args[1]);
+        Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[1].type);
+        Assert.AreEqual(string.Format("<color=green>S</color> 打出卡牌：<b>{0}</b>\n", card.cardInfo.chineseName), updated.actionEventList[1].args[0]);
+        Assert.AreEqual(ActionEvent.Type.BattleMsg, updated.actionEventList[2].type);
+        Assert.AreEqual(BattleModel.ActionType.DrawHandCard, updated.actionEventList[2].args[0]);
+        CollectionAssert.AreEquivalent(new List<int> { 71 }, (List<int>)(updated.actionEventList[2].args[1]));
+        Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[3].type);
+        Assert.AreEqual("<color=green>S</color> 抽取了1张牌\n", updated.actionEventList[3].args[0]);
+    }
+
+    [Test]
+    public void ChooseCard_TubaAlliance_Enemy()
+    {
+        SetHostFirst(false);
+        AppendAllCardInfoList(new List<CardInfo> {
+            new CardInfo { chineseName = "大号君同盟牌", infoId = 6, originPower = 5, ability = CardAbility.TubaAlliance, badgeType = CardBadgeType.Wood },
+            new CardInfo { chineseName = "大号君", infoId = 7, originPower = 0, ability = CardAbility.Decoy, cardType = CardType.Util },
+        });
+        var model = new WholeAreaModel(true, "S", "E", CardGroup.KumikoFirstYear);
+        var infoList = Enumerable.Repeat(6, 13).ToList();
+        var idList = Enumerable.Range(63, 13).ToList();
+        var updated = model.SelfInit(new List<int> { 1 })
+            .EnemyInit(new List<int> { 6, 7 }, new List<int> { 63, 73 }, CardGroup.KumikoThirdYear, false)
+            .SelfDrawInitHandCard()
+            .SelfReDrawInitHandCard()
+            .EnemyDrawInitHandCard(new List<int> { 63 });
+        updated = updated with {
+            actionEventList = ImmutableList<ActionEvent>.Empty
+        };
+        var card = updated.enemySinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0];
+        updated = updated.ChooseCard(card, false);
+        Assert.AreEqual(GameState.State.WAIT_SELF_ACTION, updated.gameState.curState);
+        Assert.AreEqual(0, updated.selfSinglePlayerAreaModel.GetCurrentPower());
+        Assert.AreEqual(5, updated.enemySinglePlayerAreaModel.GetCurrentPower());
+        Assert.AreEqual(0, updated.enemySinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList.Count); // enemy不会直接抽牌
+        Assert.AreEqual(1, updated.enemySinglePlayerAreaModel.handCardAreaModel.backupCardList.Count);
+        Assert.AreEqual(1, updated.actionEventList.Count);
+        Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[0].type);
+        Assert.AreEqual(string.Format("<color=red>E</color> 打出卡牌：<b>{0}</b>\n", card.cardInfo.chineseName), updated.actionEventList[0].args[0]);
+        var drawIdList = new List<int> { 73 };
+        updated = updated with {
+            actionEventList = ImmutableList<ActionEvent>.Empty
+        };
+        updated = updated.EnemyDrawHandCard(drawIdList);
+        Assert.AreEqual(1, updated.enemySinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList.Count);
+        Assert.AreEqual(7, updated.enemySinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0].cardInfo.infoId);
+        Assert.AreEqual(0, updated.enemySinglePlayerAreaModel.handCardAreaModel.backupCardList.Count);
+        Assert.AreEqual(1, updated.actionEventList.Count);
+        Assert.AreEqual(ActionEvent.Type.ActionText, updated.actionEventList[0].type);
+        Assert.AreEqual("<color=red>E</color> 抽取了1张牌\n", updated.actionEventList[0].args[0]);
+    }
 }

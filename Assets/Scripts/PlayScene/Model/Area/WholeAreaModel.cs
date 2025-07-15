@@ -402,12 +402,18 @@ public record WholeAreaModel
     }
 
     // TODO: 暂时默认对enemy生效
-    public WholeAreaModel ReplaceHandAndBackupCard(List<int> handInfoIdList, List<int> handIdList, List<int> backupInfoIdList, List<int> backupIdList)
+    public WholeAreaModel ReplaceHandAndBackupCard(List<int> handInfoIdList, List<int> handIdList, List<int> backupInfoIdList, List<int> backupIdList, bool mockSelf = false)
     {
         var newRecord = this;
-        newRecord = Lens_EnemySinglePlayerAreaModel_HandCardAreaModel.Set(
-            newRecord.enemySinglePlayerAreaModel.handCardAreaModel.ReplaceHandAndBackupCard(handInfoIdList, handIdList, backupInfoIdList, backupIdList),
-            newRecord);
+        if (mockSelf) {
+            newRecord = Lens_SelfSinglePlayerAreaModel_HandCardAreaModel.Set(
+                newRecord.selfSinglePlayerAreaModel.handCardAreaModel.ReplaceHandAndBackupCard(handInfoIdList, handIdList, backupInfoIdList, backupIdList),
+                newRecord);
+        } else {
+            newRecord = Lens_EnemySinglePlayerAreaModel_HandCardAreaModel.Set(
+                newRecord.enemySinglePlayerAreaModel.handCardAreaModel.ReplaceHandAndBackupCard(handInfoIdList, handIdList, backupInfoIdList, backupIdList),
+                newRecord);
+        }
         return newRecord;
     }
 
@@ -675,6 +681,20 @@ public record WholeAreaModel
                     newActionList = RecordScorchAction(newActionList, removedCardList, CardAbility.PowerFirst);
                 } else if (attackCardList.Count > 0) {
                     newActionList = RecordAttackAction(newActionList, attackCardList, CardAbility.PowerFirst);
+                }
+                break;
+            }
+            case CardAbility.TubaAlliance: {
+                selfArea = selfArea.AddBattleAreaCard(realCard);
+                // 仅self时需要实际抽牌
+                CardModel tubaCard = selfArea.handCardAreaModel.backupCardList.Find(x => x.cardInfo.chineseName == "大号君");
+                if (isSelf && tubaCard != null) {
+                    var idList = new List<int> { tubaCard.cardInfo.id };
+                    selfArea = selfArea with {
+                        handCardAreaModel = selfArea.handCardAreaModel.DrawHandCardsWithoutRandom(idList)
+                    };
+                    newActionList = newActionList.Add(new ActionEvent(ActionEvent.Type.BattleMsg, BattleModel.ActionType.DrawHandCard, idList))
+                        .Add(new ActionEvent(ActionEvent.Type.ActionText, string.Format("{0} 抽取了{1}张牌\n", newRecord.playTracker.GetNameText(isSelf), idList.Count)));
                 }
                 break;
             }
