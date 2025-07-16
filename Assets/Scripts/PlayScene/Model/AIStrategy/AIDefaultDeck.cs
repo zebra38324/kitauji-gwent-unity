@@ -182,7 +182,7 @@ public class AIDefaultDeck
                     5004, // 第三乐章
                     5008, // 新山老师 - HornUtil（工具卡）
                     // leader
-                    5010, // 泷昇 - 指挥技能（领袖卡）
+                    5011, // 泷昇 - 指挥技能（领袖卡）
                 },
                 new int[] {
                     // wood
@@ -258,6 +258,40 @@ public class AIDefaultDeck
                     5005, // 忘带鼓槌
                     // leader
                     5012, // 泷千寻 - 指挥技能（领袖卡）
+                },
+                new int[] {
+                    // wood
+                    3021, // 剑崎梨梨花 (Wood) - Tunning
+                    3022, // 兜谷爱瑠 (Wood) - Bond，相关卡片：笼手山骏河
+                    3023, // 笼手山骏河 (Wood) - Bond，相关卡片：兜谷爱瑠
+                    3037, // 高久智惠理 (Wood) - Bond，相关卡片：泷川近夫
+                    3040, // 松绮洋子 (Wood) - Spy技能
+                    3045, // 泷川近夫 (Wood) - Bond，相关卡片：高久智惠理
+                    3038, // 高野久惠 (Wood) - Morale
+                    3041, // 小田芽衣子 (Wood) - Muster，相关卡片：高桥沙里
+                    3042, // 高桥沙里 (Wood) - Muster，相关卡片：小田芽衣子
+                    // brass
+                    3026, // 小日向梦 (Brass) - Medic
+                    3029, // 久石奏 (Brass) - Guard，相关卡片：黄前久美子
+                    3046, // 高坂丽奈 (Brass) - Hero卡，Pressure
+                    3048, // 冢本秀一 (Brass) - Hero卡，Guard，相关卡片：黄前久美子
+                    3051, // 瞳拉拉 (Brass) - Spy技能
+                    3053, // 黄前久美子 (Brass) - Hero卡，Medic技能
+                    3055, // 加藤叶月 (Brass) - Spy技能
+                    // percussion
+                    3032, // 月永求 (Percussion) - SalutdAmour
+                    3033, // 前田飒介 (Percussion) - Bond，相关卡片：前田苍太
+                    3034, // 前田苍太 (Percussion) - Bond，相关卡片：前田飒介
+                    3056, // 川岛绿辉 (Percussion) - Hero卡，TubaAlliance
+                    3057, // 堺万纱子 (Percussion) - Defend
+                    3058, // 井上顺菜 (Percussion) - Morale
+                    // util
+                    5001, // 大号君 - Decoy（工具卡）
+                    5002, // 退部申请书 - Scorch（工具卡）
+                    5004, // 第三乐章
+                    5008, // 新山老师 - HornUtil（工具卡）
+                    // leader
+                    5011, // 泷升 - 指挥技能（领袖卡）
                 }
             }
         }
