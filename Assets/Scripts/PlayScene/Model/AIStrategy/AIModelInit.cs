@@ -126,124 +126,134 @@ public class AIModelInit
                 case CardAbility.Spy: {
                     // spy优先级最高
                     baseBenifit = -baseBenifit;
-                    extra = 500;
+                    extra += 500;
                     break;
                 }
                 case CardAbility.Attack: {
-                    extra = card.cardInfo.attackNum;
+                    extra += card.cardInfo.attackNum;
                     break;
                 }
                 case CardAbility.Tunning: {
-                    extra = random.Next(0, 5);
+                    extra += random.Next(0, 5);
                     break;
                 }
                 case CardAbility.Bond: {
                     string bondType = card.cardInfo.bondType;
                     int count = handCardList.Count(x => x.cardInfo.bondType == bondType);
-                    extra = baseBenifit * (count - 1);
+                    extra += baseBenifit * (count - 1);
                     break;
                 }
                 case CardAbility.ScorchWood: {
-                    extra = random.Next(5, 20);
+                    extra += random.Next(5, 20);
                     break;
                 }
                 case CardAbility.Muster: {
                     string musterType = card.cardInfo.musterType;
                     int handCount = handCardList.Count(x => x.cardInfo.musterType == musterType);
-                    extra = -(handCount - 1) * 100; // 相当于少手牌，收益大幅降低
+                    extra += -(handCount - 1) * 100; // 相当于少手牌，收益大幅降低
                     extra += (handCardList.Sum(x => x.cardInfo.musterType == musterType ? x.cardInfo.originPower : 0) +
                         backupCardList.Sum(x => x.cardInfo.musterType == musterType ? x.cardInfo.originPower : 0)) / handCount;
                     break;
                 }
                 case CardAbility.Morale: {
-                    extra = random.Next(3, 6);
+                    extra += random.Next(3, 6);
                     break;
                 }
                 case CardAbility.Medic: {
-                    extra = random.Next(20, 30);
+                    extra += random.Next(20, 30);
                     break;
                 }
                 case CardAbility.Horn: {
-                    extra = random.Next(15, 30);
+                    extra += random.Next(15, 30);
                     break;
                 }
                 case CardAbility.Decoy: {
-                    extra = 100;
+                    extra += 100;
                     break;
                 }
                 case CardAbility.Scorch: {
-                    extra = random.Next(10, 30);
+                    extra += random.Next(10, 30);
                     break;
                 }
                 case CardAbility.SunFes: {
-                    extra = random.Next(10, 30);
+                    extra += random.Next(10, 30);
                     break;
                 }
                 case CardAbility.Daisangakushou: {
-                    extra = random.Next(10, 25);
+                    extra += random.Next(10, 25);
                     break;
                 }
                 case CardAbility.Drumstick: {
-                    extra = random.Next(10, 20);
+                    extra += random.Next(10, 20);
                     break;
                 }
                 case CardAbility.ClearWeather: {
-                    extra = random.Next(0, 20);
+                    extra += random.Next(0, 20);
                     break;
                 }
                 case CardAbility.HornUtil:
                 case CardAbility.HornBrass: {
-                    extra = random.Next(0, 20);
+                    extra += random.Next(0, 20);
                     break;
                 }
                 case CardAbility.Lip: {
-                    extra = random.Next(0, 4);
+                    extra += random.Next(0, 4);
                     break;
                 }
                 case CardAbility.Guard: {
                     bool hasTarget = handCardList.Any(x => x.cardInfo.chineseName == card.cardInfo.relatedCard);
-                    extra = hasTarget ? 4 : 0;
+                    extra += hasTarget ? 4 : 0;
                     break;
                 }
                 case CardAbility.Monaka: {
-                    extra = 2;
+                    extra += 2;
                     break;
                 }
                 case CardAbility.Kasa: {
                     bool hasMizore = handCardList.Any(x => x.cardInfo.chineseName == "铠冢霙");
                     if (hasMizore) {
-                        extra = 5 + random.Next(0, 4);
+                        extra += 5 + random.Next(0, 4);
                     } else {
-                        extra = 0;
+                        extra += 0;
                     }
                     break;
                 }
                 case CardAbility.K5Leader: {
                     int k5Count = handCardList.Count(x => x.cardInfo.grade == 1);
                     float ratio = random.Next(2, 4) / 3;
-                    extra = (int)(2 * (k5Count - 1) * ratio);
+                    extra += (int)(2 * (k5Count - 1) * ratio);
                     break;
                 }
                 case CardAbility.SalutdAmour: {
                     bool hasSapphire = handCardList.Any(x => x.cardInfo.chineseName == "川岛绿辉");
-                    extra = hasSapphire ? 3 : 0;
+                    extra += hasSapphire ? 3 : 0;
                     break;
                 }
                 case CardAbility.Pressure: {
-                    extra = random.Next(-5, 10);
+                    extra += random.Next(-5, 10);
                     break;
                 }
                 case CardAbility.Defend: {
-                    extra = random.Next(5, 20);
+                    extra += random.Next(5, 20);
                     break;
                 }
                 case CardAbility.PowerFirst: {
-                    extra = random.Next(0, 5);
+                    extra += random.Next(0, 5);
+                    break;
+                }
+                case CardAbility.TubaAlliance: {
+                    extra += 0;
                     break;
                 }
             }
             sum += baseBenifit + extra;
         }
+        // 一些全局考虑的技能
+        // 大号君同盟
+        int tubaAllianceCount = handCardList.Count(x => x.cardInfo.ability == CardAbility.TubaAlliance);
+        int backupDecoyCount = backupCardList.Count(x => x.cardInfo.chineseName == "大号君");
+        sum += 200 * (tubaAllianceCount - backupDecoyCount);
+
         //KLog.I(TAG, $"GetHandCardBenifit: hand card list: {string.Join(", ", handCardList.Select(x => x.cardInfo.chineseName))}");
         //KLog.I(TAG, $"GetHandCardBenifit: result: {sum}");
         return sum;
