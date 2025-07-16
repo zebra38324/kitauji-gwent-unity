@@ -173,7 +173,6 @@ public class AIDefaultDeck
                     2041, // 久石奏 (Brass) - Hero卡，Spy技能
                     // percussion
                     2042, // 川岛绿辉 (Percussion) - Hero卡，TubaAlliance
-                    2044, // 大野美代子 (Percussion)
                     2045, // 井上顺菜 (Percussion) - Bond，相关卡片：堺万纱子
                     2047, // 堺万纱子 (Percussion) - Bond，相关卡片：井上顺菜
                     // util
