@@ -38,7 +38,7 @@ public class AIModelL2 : AIModelInterface
         };
         allAction.Add(passAction);
         var mockModelList = MockEnemyCard();
-        long timeout = aiMode == AIBase.AIMode.Normal ? 8000 : 1000;
+        long timeout = aiMode == AIBase.AIMode.Normal ? 8000 : 500;
         foreach (var action in allAction) {
             float sum = 0;
             foreach (var model in mockModelList) {
