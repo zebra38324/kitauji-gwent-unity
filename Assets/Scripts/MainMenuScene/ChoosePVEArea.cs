@@ -37,6 +37,13 @@ public class ChoosePVEArea : MonoBehaviour
         roomManager.StartPVE(type);
     }
 
+    public void OnClickK3()
+    {
+        RoomManager roomManager = new RoomManager();
+        PlaySceneAI.AIType type = (PlaySceneAI.AIType)(aiLevel * 3 + 2);
+        roomManager.StartPVE(type);
+    }
+
     public void OnClose()
     {
         gameObject.SetActive(false);

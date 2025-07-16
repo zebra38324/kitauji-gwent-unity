@@ -227,5 +227,39 @@ public class AIDefaultDeck
                 },
             }
         },
+        {
+            CardGroup.KumikoThirdYear,
+            new int[][] {
+                new int[] {
+                    // wood
+                    3001, // 义井沙里 (Wood) - K5Leader
+                    3004, // 吉田巧美 (Wood) -
+                    3005, // 加千须实久 (Wood) - 
+                    3006, // 河口纯夏 (Wood) - Muster，相关卡片：梶原支音
+                    3007, // 梶原支音 (Wood) - Muster，相关卡片：河口纯夏
+                    3011, // 针谷佳穗 (Wood) - Muster，相关卡片：上石弥生
+                    3012, // 上石弥生 (Wood) - Muster，相关卡片：针谷佳穗
+                    3013, // 釜屋雀 (Wood) - Bond，相关卡片：釜屋燕
+                    3021, // 剑崎梨梨花 (Wood) - Tunning
+                    3022, // 兜谷爱瑠 (Wood) - Bond，相关卡片：笼手山骏河
+                    3023, // 笼手山骏河 (Wood) - Bond，相关卡片：兜谷爱瑠
+                    3037, // 高久智惠理 (Wood) - Bond，相关卡片：泷川近夫
+                    3040, // 松绮洋子 (Wood) - Spy技能
+                    3045, // 泷川近夫 (Wood) - Bond，相关卡片：高久智惠理
+                    // brass
+                    3046, // 高坂丽奈 (Brass) - Hero卡，Pressure
+                    3051, // 瞳拉拉 (Brass) - Spy技能
+                    3053, // 黄前久美子 (Brass) - Hero卡，Medic技能
+                    // percussion
+                    3059, // 釜屋燕 (Percussion) - Bond，相关卡片：釜屋雀
+                    // util
+                    5002, // 退部申请书 - Scorch（工具卡）
+                    5004, // 第三乐章
+                    5005, // 忘带鼓槌
+                    // leader
+                    5012, // 泷千寻 - 指挥技能（领袖卡）
+                }
+            }
+        }
     };
 }

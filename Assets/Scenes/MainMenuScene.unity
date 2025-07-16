@@ -622,7 +622,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u4E00\u5E74\u4E4B\u8BD7\n\uFF08\u656C\u8BF7\u671F\u5F85\uFF09"
+  m_text: "\u4E00\u5E74\u4E4B\u8BD7"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 81b689e8712710a4e8d26c0ce41dfd29, type: 2}
   m_sharedMaterial: {fileID: 67576259127510927, guid: 81b689e8712710a4e8d26c0ce41dfd29, type: 2}
@@ -5462,7 +5462,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1903255463}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1977146589}
+        m_TargetAssemblyTypeName: ChoosePVEArea, Assembly-CSharp
+        m_MethodName: OnClickK3
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1903255463
 MonoBehaviour:
   m_ObjectHideFlags: 0
