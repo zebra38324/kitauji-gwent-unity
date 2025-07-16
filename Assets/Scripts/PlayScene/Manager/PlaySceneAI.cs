@@ -17,6 +17,10 @@ public class PlaySceneAI
         L2K1,
         L2K2,
         L2K3,
+        // L3
+        L3K1,
+        L3K2,
+        L3K3,
     }
 
     private bool isAbort = false;
@@ -87,14 +91,22 @@ public class PlaySceneAI
 
     private AIModelInterface GetAIImpl(AIType aiType, PlaySceneModel playSceneModel)
     {
+        int deckIndex = (int)aiType / 3;
+        CardGroup group = (CardGroup)((int)aiType % 3);
+        List<int> deckList = new List<int>(AIDefaultDeck.deckConfigDic[group][deckIndex]);
         switch (aiType) {
             case AIType.L1K1:
             case AIType.L1K2: {
-                return new AIModelL1(playSceneModel);
+                return new AIModelL1(playSceneModel, deckList);
             }
             case AIType.L2K1:
             case AIType.L2K2: {
-                return new AIModelL2(playSceneModel);
+                return new AIModelL2(playSceneModel, deckList);
+            }
+            case AIType.L3K1:
+            case AIType.L3K2: {
+                // TODO: 实际L3
+                return new AIModelL2(playSceneModel, deckList);
             }
             default: {
                 return null;
