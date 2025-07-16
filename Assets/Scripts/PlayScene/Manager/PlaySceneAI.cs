@@ -27,6 +27,8 @@ public class PlaySceneAI
 
     private AIModelInterface aiModelInterface;
 
+    private bool needDelay = false;
+
     public PlaySceneAI(bool isHost_,
         string selfName,
         string enemyName,
@@ -67,8 +69,17 @@ public class PlaySceneAI
                 await UniTask.Delay(1);
                 continue;
             }
-            await UniTask.Delay(1000); // 延迟一秒
-            await aiModelInterface.DoPlayAction();
+
+            if (needDelay) {
+                await UniTask.Delay(1000); // 延迟一秒
+            }
+            var task = aiModelInterface.DoPlayAction();
+            var timeoutTask = UniTask.Delay(25000); // 25s超时pass
+            var finishedIndex = await UniTask.WhenAny(task, timeoutTask);
+            if (finishedIndex == 1) {
+                // timeout
+                playSceneModel.Pass();
+            }
         }
     }
 
@@ -105,6 +116,7 @@ public class PlaySceneAI
             case AIType.L1K1:
             case AIType.L1K2:
             case AIType.L1K3: {
+                needDelay = true;
                 return new AIModelL1(playSceneModel, deckList);
             }
             case AIType.L2K1:
