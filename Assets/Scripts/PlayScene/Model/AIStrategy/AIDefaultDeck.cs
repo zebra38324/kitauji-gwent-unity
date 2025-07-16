@@ -265,7 +265,6 @@ public class AIDefaultDeck
                     3022, // 兜谷爱瑠 (Wood) - Bond，相关卡片：笼手山骏河
                     3023, // 笼手山骏河 (Wood) - Bond，相关卡片：兜谷爱瑠
                     3037, // 高久智惠理 (Wood) - Bond，相关卡片：泷川近夫
-                    3040, // 松绮洋子 (Wood) - Spy技能
                     3045, // 泷川近夫 (Wood) - Bond，相关卡片：高久智惠理
                     3038, // 高野久惠 (Wood) - Morale
                     3041, // 小田芽衣子 (Wood) - Muster，相关卡片：高桥沙里
@@ -286,6 +285,7 @@ public class AIDefaultDeck
                     3057, // 堺万纱子 (Percussion) - Defend
                     3058, // 井上顺菜 (Percussion) - Morale
                     // util
+                    3096, // 明日香的明信片 - Medic
                     5001, // 大号君 - Decoy（工具卡）
                     5002, // 退部申请书 - Scorch（工具卡）
                     5004, // 第三乐章
