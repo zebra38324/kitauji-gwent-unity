@@ -76,12 +76,19 @@ public class PlaySceneAI
     {
         switch (aiType) {
             case AIType.L1K1:
-            case AIType.L2K1: {
+            case AIType.L2K1:
+            case AIType.L3K1: {
                 return CardGroup.KumikoFirstYear;
             }
             case AIType.L1K2:
-            case AIType.L2K2: {
+            case AIType.L2K2:
+            case AIType.L3K2: {
                 return CardGroup.KumikoSecondYear;
+            }
+            case AIType.L1K3:
+            case AIType.L2K3:
+            case AIType.L3K3: {
+                return CardGroup.KumikoThirdYear;
             }
             default: {
                 return CardGroup.KumikoFirstYear;
@@ -96,15 +103,18 @@ public class PlaySceneAI
         List<int> deckList = new List<int>(AIDefaultDeck.deckConfigDic[group][deckIndex]);
         switch (aiType) {
             case AIType.L1K1:
-            case AIType.L1K2: {
+            case AIType.L1K2:
+            case AIType.L1K3: {
                 return new AIModelL1(playSceneModel, deckList);
             }
             case AIType.L2K1:
-            case AIType.L2K2: {
+            case AIType.L2K2:
+            case AIType.L2K3: {
                 return new AIModelL2(playSceneModel, deckList);
             }
             case AIType.L3K1:
-            case AIType.L3K2: {
+            case AIType.L3K2:
+            case AIType.L3K3: {
                 // TODO: 实际L3
                 return new AIModelL2(playSceneModel, deckList);
             }

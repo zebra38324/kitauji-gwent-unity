@@ -122,6 +122,7 @@ public class AIDefaultDeck
             new int[][] {
                 new int[] {
                     // wood
+                    2001, // 岛理惠 (Wood) - Tunning
                     2005, // 铠冢霙 (Wood) - Hero卡，无特殊技能
                     2006, // 剑崎梨梨花 (Wood) - Bond，相关卡片：兜谷爱瑠、笼手山骏河
                     2007, // 兜谷爱瑠 (Wood) - Bond，相关卡片：剑崎梨梨花、笼手山骏河
@@ -130,13 +131,16 @@ public class AIDefaultDeck
                     2012, // 高桥沙里 (Wood) - Muster，相关卡片：小田芽衣子、中野蕾实
                     2013, // 中野蕾实 (Wood) - Muster，相关卡片：小田芽衣子、高桥沙里
                     // brass
+                    2020, // 吉川优子 (Brass) - Hero卡，Morale技能
+                    2023, // 高坂丽奈 (Brass) - Hero卡，Attack技能
                     2028, // 冢本秀一 (Brass) - 无技能
                     2030, // 叶加濑满 (Brass) - Spy技能
                     2032, // 瞳拉拉 (Brass) - Spy技能
                     2034, // 后藤卓也 (Brass) - Bond，相关卡片：长濑梨子
                     2035, // 长濑梨子 (Brass) - Bond，相关卡片：后藤卓也
+                    2040, // 黄前久美子 (Brass) - Hero卡，Medic技能
                     // percussion
-                    2042, // 川岛绿辉 (Percussion) - Hero卡，无特殊技能
+                    2042, // 川岛绿辉 (Percussion) - Hero卡，TubaAlliance
                     2047, // 堺万纱子 (Percussion) - Bond，相关卡片：井上顺菜
                     2048, // 东浦心子 (Percussion) - 无技能
                     // util
@@ -146,13 +150,20 @@ public class AIDefaultDeck
                 },
                 new int[] {
                     // wood
+                    2001, // 岛理惠 (Wood) - Tunning
+                    2003, // 高久智惠理 (Wood) - Bond，相关卡片：泷川近夫
                     2005, // 铠冢霙 (Wood) - Hero卡，无特殊技能
                     2006, // 剑崎梨梨花 (Wood) - Bond，相关卡片：兜谷爱瑠、笼手山骏河
                     2007, // 兜谷爱瑠 (Wood) - Bond，相关卡片：剑崎梨梨花、笼手山骏河
                     2008, // 笼手山骏河 (Wood) - Bond，相关卡片：剑崎梨梨花、兜谷爱瑠
                     2010, // 伞木希美 (Wood) - Hero卡，ScorchWood技能
+                    2011, // 小田芽衣子 (Wood) - Muster，相关卡片：高桥沙里、中野蕾实
+                    2012, // 高桥沙里 (Wood) - Muster，相关卡片：小田芽衣子、中野蕾实
+                    2013, // 中野蕾实 (Wood) - Muster，相关卡片：小田芽衣子、高桥沙里
+                    2018, // 泷川近夫 (Wood) - Bond，相关卡片：高久智惠理
                     // brass
                     2020, // 吉川优子 (Brass) - Hero卡，Morale技能
+                    2021, // 加部友惠 (Brass) - Medic技能
                     2023, // 高坂丽奈 (Brass) - Hero卡，Attack技能
                     2027, // 岩田慧菜 (Brass) - Medic技能
                     2032, // 瞳拉拉 (Brass) - Spy技能
@@ -161,44 +172,59 @@ public class AIDefaultDeck
                     2040, // 黄前久美子 (Brass) - Hero卡，Medic技能
                     2041, // 久石奏 (Brass) - Hero卡，Spy技能
                     // percussion
-                    2042, // 川岛绿辉 (Percussion) - Hero卡，无特殊技能
+                    2042, // 川岛绿辉 (Percussion) - Hero卡，TubaAlliance
                     2044, // 大野美代子 (Percussion)
                     2045, // 井上顺菜 (Percussion) - Bond，相关卡片：堺万纱子
                     2047, // 堺万纱子 (Percussion) - Bond，相关卡片：井上顺菜
                     // util
+                    5001, // 大号君 - Decoy（工具卡）
                     5002, // 退部申请书 - Scorch（工具卡）
                     5003, // 日升祭
                     5004, // 第三乐章
+                    5008, // 新山老师 - HornUtil（工具卡）
                     // leader
                     5010, // 泷昇 - 指挥技能（领袖卡）
                 },
                 new int[] {
                     // wood
+                    2001, // 岛理惠 (Wood) - Tunning
+                    2003, // 高久智惠理 (Wood) - Bond，相关卡片：泷川近夫
                     2005, // 铠冢霙 (Wood) - Hero卡，无特殊技能
                     2006, // 剑崎梨梨花 (Wood) - Bond，相关卡片：兜谷爱瑠、笼手山骏河
                     2007, // 兜谷爱瑠 (Wood) - Bond，相关卡片：剑崎梨梨花、笼手山骏河
                     2008, // 笼手山骏河 (Wood) - Bond，相关卡片：剑崎梨梨花、兜谷爱瑠
                     2010, // 伞木希美 (Wood) - Hero卡，ScorchWood技能
+                    2011, // 小田芽衣子 (Wood) - Muster，相关卡片：高桥沙里、中野蕾实
+                    2012, // 高桥沙里 (Wood) - Muster，相关卡片：小田芽衣子、中野蕾实
+                    2013, // 中野蕾实 (Wood) - Muster，相关卡片：小田芽衣子、高桥沙里
+                    2018, // 泷川近夫 (Wood) - Bond，相关卡片：高久智惠理
+                    2019, // 牧誓 (Wood) - TubaAlliance
                     // brass
                     2020, // 吉川优子 (Brass) - Hero卡，Morale技能
+                    2021, // 加部友惠 (Brass) - Medic技能
                     2023, // 高坂丽奈 (Brass) - Hero卡，Attack技能
                     2027, // 岩田慧菜 (Brass) - Medic技能
+                    2030, // 叶加濑满 (Brass) - Spy技能
                     2032, // 瞳拉拉 (Brass) - Spy技能
                     2034, // 后藤卓也 (Brass) - Bond，相关卡片：长濑梨子
                     2035, // 长濑梨子 (Brass) - Bond，相关卡片：后藤卓也
+                    2036, // 加藤叶月 (Brass) - Horn
                     2040, // 黄前久美子 (Brass) - Hero卡，Medic技能
                     2041, // 久石奏 (Brass) - Hero卡，Spy技能
                     // percussion
-                    2042, // 川岛绿辉 (Percussion) - Hero卡，无特殊技能
-                    2044, // 大野美代子 (Percussion)
+                    2042, // 川岛绿辉 (Percussion) - Hero卡，TubaAlliance
                     2045, // 井上顺菜 (Percussion) - Bond，相关卡片：堺万纱子
                     2047, // 堺万纱子 (Percussion) - Bond，相关卡片：井上顺菜
                     // util
+                    5001, // 大号君 - Decoy（工具卡）
                     5002, // 退部申请书 - Scorch（工具卡）
                     5003, // 日升祭
                     5004, // 第三乐章
+                    5008, // 新山老师 - HornUtil（工具卡）
+                    5013, // 大号君 - Decoy（工具卡）
+                    5014, // 退部申请书 - Scorch（工具卡）
                     // leader
-                    5010, // 泷昇 - 指挥技能（领袖卡）
+                    5012, // 泷千寻 - 指挥技能（领袖卡）
                 },
             }
         },
