@@ -9,12 +9,12 @@ public class ChoosePVEArea : MonoBehaviour
 
     public TMP_Dropdown aiLevelSelect;
 
-    private int aiLevel = 0; // 默认AI等级
+    private static int aiLevel = 0; // 默认AI等级
 
     // Start is called before the first frame update
     void Start()
     {
-
+        aiLevelSelect.GetComponent<TMP_Dropdown>().value = aiLevel;
     }
 
     // Update is called once per frame
