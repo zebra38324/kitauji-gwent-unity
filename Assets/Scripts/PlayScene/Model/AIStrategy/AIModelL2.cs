@@ -194,15 +194,6 @@ public class AIModelL2 : AIModelInterface
             bool isSelfAction = curModel.EnableChooseCard(true);
             var nextModelList = new List<WholeAreaModel>();
             GetNextPossibleAction(curModel, ref nextModelList);
-            // 剪枝，去除收益过低的分支
-            nextModelList.RemoveAll(x => {
-                int xDiff = CalcBenifitDiff(curModel, x);
-                if (isSelfAction) {
-                    return xDiff < -50;
-                } else {
-                    return xDiff > 50;
-                }
-            });
             nextModelList.Sort((x, y) => {
                 int xDiff = CalcBenifitDiff(curModel, x);
                 int yDiff = CalcBenifitDiff(curModel, y);
