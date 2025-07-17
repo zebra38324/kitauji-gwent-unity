@@ -27,8 +27,6 @@ public class PlaySceneAI
 
     private AIModelInterface aiModelInterface;
 
-    private bool needDelay = false;
-
     public PlaySceneAI(bool isHost_,
         string selfName,
         string enemyName,
@@ -64,15 +62,16 @@ public class PlaySceneAI
                playSceneModel.wholeAreaModel.gameState.curState != GameState.State.WAIT_ENEMY_ACTION) {
             await UniTask.Delay(1);
         }
+        long lastActionCost = 0;
         while (!isAbort) {
             if (playSceneModel.wholeAreaModel.gameState.curState != GameState.State.WAIT_SELF_ACTION) {
                 await UniTask.Delay(1);
                 continue;
             }
-
-            if (needDelay) {
+            if (lastActionCost < 1000) {
                 await UniTask.Delay(1000); // 延迟一秒
             }
+            long startTs = KTime.CurrentMill();
             var task = aiModelInterface.DoPlayAction();
             var timeoutTask = UniTask.Delay(25000); // 25s超时pass
             var finishedIndex = await UniTask.WhenAny(task, timeoutTask);
@@ -80,6 +79,7 @@ public class PlaySceneAI
                 // timeout
                 playSceneModel.Pass();
             }
+            lastActionCost = KTime.CurrentMill() - startTs;
         }
     }
 
@@ -116,7 +116,6 @@ public class PlaySceneAI
             case AIType.L1K1:
             case AIType.L1K2:
             case AIType.L1K3: {
-                needDelay = true;
                 return new AIModelL1(playSceneModel, deckList);
             }
             case AIType.L2K1:
