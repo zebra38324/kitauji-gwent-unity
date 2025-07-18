@@ -106,7 +106,7 @@ public class CompetitionScene : MonoBehaviour
     {
         var contextRecord = KConfig.Instance.GetCompetitionContext();
         if (contextRecord == null) {
-            context = new CompetitionContextModel("北宇治高中", CompetitionBase.Level.KyotoPrefecture);
+            context = new CompetitionContextModel("北宇治高中");
         } else {
             context = new CompetitionContextModel(contextRecord);
         }

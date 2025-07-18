@@ -6,13 +6,13 @@ using System.Reflection;
 public class CompetitionContextModelTest
 {
     private const string testName = "TestTeam";
-    private const CompetitionBase.Level testStartLevel = CompetitionBase.Level.Kansai;
+    private const CompetitionBase.Level testStartLevel = CompetitionBase.Level.KyotoPrefecture;
     private CompetitionContextModel context;
 
     [SetUp]
     public void Setup()
     {
-        context = new CompetitionContextModel(testName, testStartLevel);
+        context = new CompetitionContextModel(testName);
     }
 
     [Test]
@@ -245,7 +245,7 @@ public class CompetitionContextModelTest
         }
         context.FinishCurrentLevel();
         context.StartNextLevel();
-        Assert.AreEqual(CompetitionBase.Level.National, context.currnetLevel);
+        Assert.AreEqual(CompetitionBase.Level.Kansai, context.currnetLevel);
         Assert.AreEqual(CompetitionContextModel.TEAM_NUM, context.teamDict.Count);
         foreach (var team in context.teamDict.Values) {
             Assert.AreEqual(0, team.currentRound);
