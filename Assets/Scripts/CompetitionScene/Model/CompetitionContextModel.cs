@@ -15,12 +15,14 @@ public class CompetitionContextModel
 
     public Dictionary<string, CompetitionTeamInfoModel> teamDict { get; private set; }
 
+    // 府赛对应L1，关西赛对应L2，全国赛对应L3
+    // 由于有个ai队伍一起晋级，所以关西赛与全国赛的队伍默认数量是8个
     private static string[][] AI_TEAM_NAME_LIST = new string[][]
     {
         new string[] {
             "龙圣学园高中", // 金奖，进全国赛
-            "洛秋高中", // 金奖
             "立华高中", // 金奖，进关西赛
+            "洛秋高中", // 金奖，进关西赛
             "南阳高中", // 金奖
             "山城高中", // 银奖
             "鸟羽高中", // 银奖
@@ -36,7 +38,6 @@ public class CompetitionContextModel
             "花咲女子高中", // 银奖
             "光川高中", // 银奖
             "京都市立西院中学", // 银奖
-            "果永中高中", // 铜奖
             "志化合高中", // 铜奖
         }, // 关西赛
         new string[] {
@@ -48,14 +49,17 @@ public class CompetitionContextModel
             "成合高中", // 银奖
             "浜松圣星高中", // 银奖
             "福岛县立磐城高中", // 铜奖
-            "金沢学院大学附属高中", // 铜奖
         } // 全国赛
     };
 
-    public CompetitionContextModel(string playerName, CompetitionBase.Level level)
+    private List<string> currentAITeamNameList;
+
+    public CompetitionContextModel(string playerName)
     {
         this.playerName = playerName;
-        currnetLevel = level;
+        currnetLevel = CompetitionBase.Level.KyotoPrefecture;
+        // 此处只有京都府赛会走到
+        currentAITeamNameList = new List<string>(AI_TEAM_NAME_LIST[(int)currnetLevel]);
         Init();
     }
 
@@ -64,8 +68,12 @@ public class CompetitionContextModel
         this.playerName = record.playerName;
         this.currnetLevel = record.currnetLevel;
         teamDict = new Dictionary<string, CompetitionTeamInfoModel>();
+        currentAITeamNameList = new List<string>();
         foreach (var teamRecord in record.teamRecords) {
             teamDict[teamRecord.name] = new CompetitionTeamInfoModel(teamRecord);
+            if (teamRecord.name != playerName) {
+                currentAITeamNameList.Add(teamRecord.name);
+            }
         }
     }
 
@@ -149,8 +157,21 @@ public class CompetitionContextModel
             KLog.E(TAG, "StartNextLevel: already National");
             return;
         }
+        string promoteAITeam = ""; // 另一个晋级的ai队伍
+        foreach (var team in teamDict.Values) {
+            if (team.name == playerName && team.prize != CompetitionBase.Prize.GoldPromote) {
+                KLog.W(TAG, "StartNextLevel: player not promote");
+                return;
+            }
+            if (team.name != playerName && team.prize == CompetitionBase.Prize.GoldPromote) {
+                promoteAITeam = team.name;
+            }
+        }
         currnetLevel += 1;
         KLog.I(TAG, $"StartNextLevel: new level = {currnetLevel}");
+        currentAITeamNameList = new List<string>(AI_TEAM_NAME_LIST[(int)currnetLevel]) {
+            promoteAITeam
+        };
         Init();
     }
 
@@ -159,8 +180,7 @@ public class CompetitionContextModel
         KLog.I(TAG, $"Init: currnetLevel = {currnetLevel}");
         teamDict = new Dictionary<string, CompetitionTeamInfoModel>();
         teamDict[playerName] = new CompetitionTeamInfoModel(playerName);
-        for (int i = 0; i < TEAM_NUM - 1; i++) {
-            string teamName = AI_TEAM_NAME_LIST[(int)currnetLevel][i];
+        foreach (var teamName in currentAITeamNameList) {
             teamDict[teamName] = new CompetitionTeamInfoModel(teamName);
         }
         InitGameSchedule();
@@ -169,8 +189,9 @@ public class CompetitionContextModel
     // 初始化赛程
     private void InitGameSchedule()
     {
-        List<string> allTeams = new List<string>(AI_TEAM_NAME_LIST[(int)currnetLevel]);
-        allTeams.Add(playerName);
+        List<string> allTeams = new List<string>(currentAITeamNameList) {
+            playerName
+        };
         var shuffledTeams = allTeams.OrderBy(x => Guid.NewGuid()).ToList();
         List<List<string>> gameSchedule = new List<List<string>>();
         for (int i = 0; i < TEAM_NUM; i++) {
