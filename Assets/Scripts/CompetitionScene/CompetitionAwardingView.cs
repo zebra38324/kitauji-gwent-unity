@@ -31,6 +31,7 @@ public class CompetitionAwardingView : MonoBehaviour
         this.context = context;
         gameObject.SetActive(true);
         standingsView.Show(context);
+        context.FinishCurrentLevel();
         var playerTeam = context.teamDict[context.playerName];
         string levelText = CompetitionBase.LEVEL_TEXT[(int)context.currnetLevel];
         string prizeText = CompetitionBase.PRIZE_TEXT[(int)playerTeam.prize];
