@@ -12,6 +12,8 @@ public class CompetitionScene : MonoBehaviour
 
     public CompetitionGameRetView gameRetView;
 
+    public CompetitionAwardingView awardingView;
+
     private enum PanelType
     {
         Current = 0, // 当前日程
@@ -100,6 +102,12 @@ public class CompetitionScene : MonoBehaviour
     public void ClickFinishLevelButton()
     {
         KLog.I(TAG, "ClickFinishLevelButton");
+        awardingView.Show(context);
+    }
+
+    public void ClickAwardingExitButton()
+    {
+        KLog.I(TAG, "ClickAwardingExitButton");
     }
 
     private void Init()
