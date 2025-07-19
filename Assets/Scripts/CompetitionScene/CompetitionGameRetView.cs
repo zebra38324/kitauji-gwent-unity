@@ -59,7 +59,7 @@ public class CompetitionGameRetView : MonoBehaviour
         tip.text = defaultTip;
         tip.gameObject.SetActive(true);
         while (!currentRoundFinish) {
-            if (KTime.CurrentMill() - lastUpdateTs < 1000) {
+            if (KTime.CurrentMill() - lastUpdateTs < 500) {
                 yield return null;
                 continue;
             }
