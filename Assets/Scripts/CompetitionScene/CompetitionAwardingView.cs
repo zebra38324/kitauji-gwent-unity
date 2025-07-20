@@ -50,6 +50,8 @@ public class CompetitionAwardingView : MonoBehaviour
             tip.text = $"获得【{levelText}】{prizeText}，很遗憾未能晋级";
         }
         continueButton.gameObject.SetActive(showContinueButton);
+        AudioManager.Instance.PauseBGM();
+        AudioManager.Instance.PlaySFX(AudioManager.SFXType.Awarding);
     }
 
     public void Hide()
@@ -57,5 +59,7 @@ public class CompetitionAwardingView : MonoBehaviour
         KLog.I(TAG, "Hide");
         gameObject.SetActive(false);
         KConfig.Instance.SaveCompetitionContext(context.GetRecord());
+        AudioManager.Instance.StopSFX();
+        AudioManager.Instance.ResumeBGM();
     }
 }

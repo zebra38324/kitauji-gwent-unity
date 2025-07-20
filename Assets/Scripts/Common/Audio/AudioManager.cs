@@ -21,6 +21,7 @@ public class AudioManager : MonoBehaviour
         Tunning, // 调音
         SetFinish, // 单局结束
         Win, // 获得胜利
+        Awarding, // 颁奖仪式
     }
 
     private Dictionary<SFXType, AudioClip> sfxCache;
@@ -79,6 +80,13 @@ public class AudioManager : MonoBehaviour
         sfxPlayer.clip = sfxCache[type];
         if (sfxPlayer.clip != null) {
             sfxPlayer.Play();
+        }
+    }
+
+    public void StopSFX()
+    {
+        if (sfxPlayer.isPlaying) {
+            sfxPlayer.Stop();
         }
     }
 
@@ -167,5 +175,6 @@ public class AudioManager : MonoBehaviour
         sfxCache[SFXType.Tunning] = KResources.Instance.LoadLocal<AudioClip>(@"Audio/sfx/tunning");
         sfxCache[SFXType.SetFinish] = KResources.Instance.LoadLocal<AudioClip>(@"Audio/sfx/set_finish");
         sfxCache[SFXType.Win] = KResources.Instance.LoadLocal<AudioClip>(@"Audio/sfx/win");
+        sfxCache[SFXType.Awarding] = KResources.Instance.LoadLocal<AudioClip>(@"Audio/sfx/awarding");
     }
 }
