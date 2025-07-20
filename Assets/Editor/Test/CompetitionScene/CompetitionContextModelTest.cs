@@ -222,9 +222,9 @@ public class CompetitionContextModelTest
         for (int i = 0; i < rankList.Count; i++) {
             if (i <= 1) {
                 rankList[i].prize = CompetitionBase.Prize.GoldPromote; // 前两名晋级
-            } else if (i <= 3) {
+            } else if (i <= 2) {
                 rankList[i].prize = CompetitionBase.Prize.Gold; // 金奖
-            } else if (i <= 6) {
+            } else if (i <= 5) {
                 rankList[i].prize = CompetitionBase.Prize.Silver; // 银奖
             } else {
                 rankList[i].prize = CompetitionBase.Prize.Bronze; // 铜奖

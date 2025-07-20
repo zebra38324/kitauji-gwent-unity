@@ -37,9 +37,9 @@ public class CompetitionBase
     {
         if (rank <= 1 && level != Level.National)
             return Prize.GoldPromote; // 前两名晋级
-        else if (rank <= 3)
+        else if (rank <= 2)
             return Prize.Gold; // 金奖
-        else if (rank <= 6)
+        else if (rank <= 5)
             return Prize.Silver; // 银奖
         else
             return Prize.Bronze; // 铜奖
