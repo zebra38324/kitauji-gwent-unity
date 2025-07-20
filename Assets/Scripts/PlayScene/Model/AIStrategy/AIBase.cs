@@ -9,6 +9,7 @@ public class AIBase
     {
         L1 = 0, // 不考虑手牌具体收益，线性概率分布选择
         L2, // 考虑手牌后续收益，指数概率分布选择
+        L3, // 暂时占位
     }
 
     public enum AIMode

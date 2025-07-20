@@ -102,7 +102,8 @@ public class CompetitionGameRetView : MonoBehaviour
                     selfRet.FinishGame(gameConfig.enemyScore, gameConfig.selfScore, !gameConfig.isSelfWin);
                 }
             } else {
-                var mockBattle = new MockBattle(new MockBattle.Side { name = game.selfName }, new MockBattle.Side { name = game.enemyName });
+                var mockBattle = new MockBattle(new MockBattle.Side { isPlayer = game.selfName == context.playerName, name = game.selfName },
+                    new MockBattle.Side { isPlayer = game.enemyName == context.playerName, name = game.enemyName });
                 bool originBlockLog = KLog.blockLog;
                 KLog.blockLog = true;
                 mockBattle.Start();
