@@ -105,9 +105,21 @@ public class CompetitionScene : MonoBehaviour
         awardingView.Show(context);
     }
 
-    public void ClickAwardingExitButton()
+    // 晋级
+    public void ClickAwardingContinueButton()
     {
-        KLog.I(TAG, "ClickAwardingExitButton");
+        KLog.I(TAG, "ClickAwardingContinueButton");
+        context.StartNextLevel();
+        awardingView.Hide();
+    }
+
+    // 重启竞赛。fromKyotoPrefecture：从京都赛重新开始，还是从当前等级重新开始
+    public void ClickAwardingRestartButton(bool fromKyotoPrefecture)
+    {
+        KLog.I(TAG, "ClickAwardingRestartButton");
+        // 此处必是没晋级
+        // TODO
+        awardingView.Hide();
     }
 
     private void Init()
