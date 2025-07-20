@@ -175,6 +175,16 @@ public class CompetitionContextModel
         Init();
     }
 
+    public void Restart(bool fromKyotoPrefecture)
+    {
+        KLog.I(TAG, $"Restart: fromKyotoPrefecture = {fromKyotoPrefecture}");
+        if (fromKyotoPrefecture) {
+            currnetLevel = CompetitionBase.Level.KyotoPrefecture;
+            currentAITeamNameList = new List<string>(AI_TEAM_NAME_LIST[(int)currnetLevel]);
+        }
+        Init();
+    }
+
     private void Init()
     {
         KLog.I(TAG, $"Init: currnetLevel = {currnetLevel}");

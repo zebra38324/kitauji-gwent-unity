@@ -255,4 +255,64 @@ public class CompetitionContextModelTest
             Assert.AreEqual(null, team.gameList.Find(x => x.enemyName == team.name));
         }
     }
+
+    [Test]
+    public void Restart_FromKyotoPrefecture()
+    {
+        for (int round = 0; round < CompetitionContextModel.TEAM_NUM - 1; round++) {
+            foreach (var team in context.teamDict.Values) {
+                if (team.gameList[round].hasFinished) {
+                    continue;
+                }
+                context.FinishGame(team.name, 5, team.gameList[round].enemyName, 3, true);
+            }
+        }
+        context.FinishCurrentLevel();
+        context.StartNextLevel();
+        foreach (var team in context.teamDict.Values) {
+            if (team.gameList[0].hasFinished) {
+                continue;
+            }
+            context.FinishGame(team.name, 5, team.gameList[0].enemyName, 3, true);
+        }
+
+        context.Restart(true);
+
+        Assert.AreEqual(CompetitionBase.Level.KyotoPrefecture, context.currnetLevel);
+        Assert.AreEqual(CompetitionContextModel.TEAM_NUM, context.teamDict.Count);
+        foreach (var team in context.teamDict.Values) {
+            Assert.AreEqual(0, team.currentRound);
+        }
+    }
+
+
+
+    [Test]
+    public void Restart_NotFromKyotoPrefecture()
+    {
+        for (int round = 0; round < CompetitionContextModel.TEAM_NUM - 1; round++) {
+            foreach (var team in context.teamDict.Values) {
+                if (team.gameList[round].hasFinished) {
+                    continue;
+                }
+                context.FinishGame(team.name, 5, team.gameList[round].enemyName, 3, true);
+            }
+        }
+        context.FinishCurrentLevel();
+        context.StartNextLevel();
+        foreach (var team in context.teamDict.Values) {
+            if (team.gameList[0].hasFinished) {
+                continue;
+            }
+            context.FinishGame(team.name, 5, team.gameList[0].enemyName, 3, true);
+        }
+
+        context.Restart(false);
+
+        Assert.AreEqual(CompetitionBase.Level.Kansai, context.currnetLevel);
+        Assert.AreEqual(CompetitionContextModel.TEAM_NUM, context.teamDict.Count);
+        foreach (var team in context.teamDict.Values) {
+            Assert.AreEqual(0, team.currentRound);
+        }
+    }
 }

@@ -118,9 +118,9 @@ public class CompetitionScene : MonoBehaviour
     public void ClickAwardingRestartButton(bool fromKyotoPrefecture)
     {
         KLog.I(TAG, "ClickAwardingRestartButton");
-        // 此处必是没晋级
-        // TODO
+        context.Restart(fromKyotoPrefecture);
         awardingView.Hide();
+        UpdateBackground();
     }
 
     private void Init()
