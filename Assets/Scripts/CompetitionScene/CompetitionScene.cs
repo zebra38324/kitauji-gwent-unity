@@ -111,6 +111,7 @@ public class CompetitionScene : MonoBehaviour
         KLog.I(TAG, "ClickAwardingContinueButton");
         context.StartNextLevel();
         awardingView.Hide();
+        UpdateBackground();
     }
 
     // 重启竞赛。fromKyotoPrefecture：从京都赛重新开始，还是从当前等级重新开始
@@ -131,7 +132,7 @@ public class CompetitionScene : MonoBehaviour
             context = new CompetitionContextModel(contextRecord);
         }
 
-        KResources.Instance.Load<Sprite>(gameObject.GetComponent<Image>(), @"Image/texture/CompetitionScene/" + backgroundImgNameList[(int)context.currnetLevel]);
+        UpdateBackground();
 
         HideAllPanel();
         panelViewList[(int)PanelType.Current].Show(context);
@@ -147,5 +148,10 @@ public class CompetitionScene : MonoBehaviour
         foreach (var panel in panelViewList) {
             panel.Hide();
         }
+    }
+
+    private void UpdateBackground()
+    {
+        KResources.Instance.Load<Sprite>(gameObject.GetComponent<Image>(), @"Image/texture/CompetitionScene/" + backgroundImgNameList[(int)context.currnetLevel]);
     }
 }
