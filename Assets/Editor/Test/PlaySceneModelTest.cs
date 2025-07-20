@@ -579,7 +579,6 @@ public class PlaySceneModelTest
             CheckCurState(playerModel, GameState.State.WAIT_INIT_HAND_CARD);
             playerModel.DrawInitHandCard();
             playerModel.ReDrawInitHandCard();
-            CheckCurState(playerModel, GameState.State.WAIT_ENEMY_ACTION);
             CheckCurState(playerModel, GameState.State.WAIT_SELF_ACTION);
             playerModel.ChooseCard(playerModel.wholeAreaModel.selfSinglePlayerAreaModel.handCardAreaModel.handCardListModel.cardList[0]);
             CheckCurState(playerModel, GameState.State.WAIT_SELF_ACTION);
