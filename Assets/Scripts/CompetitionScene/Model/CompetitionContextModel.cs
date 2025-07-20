@@ -17,7 +17,7 @@ public class CompetitionContextModel
 
     // 府赛对应L1，关西赛对应L2，全国赛对应L3
     // 由于有个ai队伍一起晋级，所以关西赛与全国赛的队伍默认数量是8个
-    private static string[][] AI_TEAM_NAME_LIST = new string[][]
+    public static string[][] AI_TEAM_NAME_LIST = new string[][]
     {
         new string[] {
             "龙圣学园高中", // 金奖，进全国赛
