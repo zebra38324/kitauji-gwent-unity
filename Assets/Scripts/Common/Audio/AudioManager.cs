@@ -29,6 +29,8 @@ public class AudioManager : MonoBehaviour
 
     private bool switchNextBGM = false;
 
+    private bool pauseBGM = false;
+
     private bool isAbort = false;
 
     // Start is called before the first frame update
@@ -94,6 +96,18 @@ public class AudioManager : MonoBehaviour
         switchNextBGM = true;
     }
 
+    public void PauseBGM()
+    {
+        KLog.I(TAG, "PauseBGM");
+        pauseBGM = true;
+    }
+
+    public void ResumeBGM()
+    {
+        KLog.I(TAG, "ResumeBGM");
+        pauseBGM = false;
+    }
+
     private IEnumerator PlayBGM()
     {
         bgmPlayer.volume = 0.5f; // 初始默认音量
@@ -103,6 +117,15 @@ public class AudioManager : MonoBehaviour
         }
         int lastIndex = 0;
         while (!isAbort) {
+            if (pauseBGM) {
+                if (bgmPlayer.isPlaying) {
+                    bgmPlayer.Pause();
+                }
+                yield return null;
+                continue;
+            } else if (!bgmPlayer.isPlaying) {
+                bgmPlayer.UnPause();
+            }
             if (bgmPlayer.isPlaying && !switchNextBGM) {
                 yield return null;
                 continue;
