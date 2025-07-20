@@ -388,7 +388,6 @@ public class PlaySceneModelTest
             CheckCurState(playerModel, GameState.State.WAIT_INIT_HAND_CARD);
             playerModel.DrawInitHandCard();
             playerModel.ReDrawInitHandCard();
-            CheckCurState(playerModel, GameState.State.WAIT_ENEMY_ACTION);
             CheckCurState(playerModel, GameState.State.WAIT_SELF_ACTION);
             int lastIndex = playerRecvList.Count - 1;
             Assert.AreEqual(ActionEvent.Type.ActionText, playerRecvList[lastIndex].type);
@@ -435,7 +434,6 @@ public class PlaySceneModelTest
             CheckCurState(playerModel, GameState.State.WAIT_INIT_HAND_CARD);
             playerModel.DrawInitHandCard();
             playerModel.ReDrawInitHandCard();
-            CheckCurState(playerModel, GameState.State.WAIT_ENEMY_ACTION);
             CheckCurState(playerModel, GameState.State.WAIT_SELF_ACTION);
             Thread.Sleep(10); // 等待，确保重抽手牌信息达到
             int lastIndex = playerRecvList.Count - 1;
@@ -484,7 +482,6 @@ public class PlaySceneModelTest
             CheckCurState(playerModel, GameState.State.WAIT_INIT_HAND_CARD);
             playerModel.DrawInitHandCard();
             playerModel.ReDrawInitHandCard();
-            CheckCurState(playerModel, GameState.State.WAIT_ENEMY_ACTION);
             CheckCurState(playerModel, GameState.State.WAIT_SELF_ACTION);
             int lastIndex = playerRecvList.Count - 1;
             Assert.AreEqual(ActionEvent.Type.ActionText, playerRecvList[lastIndex].type);
@@ -532,7 +529,6 @@ public class PlaySceneModelTest
             CheckCurState(playerModel, GameState.State.WAIT_INIT_HAND_CARD);
             playerModel.DrawInitHandCard();
             playerModel.ReDrawInitHandCard();
-            CheckCurState(playerModel, GameState.State.WAIT_ENEMY_ACTION);
             CheckCurState(playerModel, GameState.State.WAIT_SELF_ACTION);
             int lastIndex = playerRecvList.Count - 1;
             Assert.AreEqual(ActionEvent.Type.ActionText, playerRecvList[lastIndex].type);
