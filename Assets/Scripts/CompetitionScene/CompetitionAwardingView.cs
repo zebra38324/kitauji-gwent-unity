@@ -12,6 +12,10 @@ public class CompetitionAwardingView : MonoBehaviour
 
     public Button continueButton;
 
+    public Button restartButton;
+
+    public Button restartCurrentButton;
+
     private CompetitionContextModel context;
 
     // Start is called before the first frame update
@@ -33,10 +37,9 @@ public class CompetitionAwardingView : MonoBehaviour
         gameObject.SetActive(true);
         context.FinishCurrentLevel();
         awardingResult.Show(context);
-        var playerTeam = context.teamDict[context.playerName];
-        continueButton.gameObject.SetActive(playerTeam.prize == CompetitionBase.Prize.GoldPromote);
         AudioManager.Instance.PauseBGM();
         AudioManager.Instance.PlaySFX(AudioManager.SFXType.Awarding);
+        StartCoroutine(UpdateUI());
     }
 
     public void Hide()
@@ -46,5 +49,35 @@ public class CompetitionAwardingView : MonoBehaviour
         KConfig.Instance.SaveCompetitionContext(context.GetRecord());
         AudioManager.Instance.StopSFX();
         AudioManager.Instance.ResumeBGM();
+    }
+
+    private IEnumerator UpdateUI()
+    {
+        // 0-3s，保留
+        yield return new WaitForSeconds(3);
+
+        // 3-4s，awardingResult移动
+        float elapsed = 0f;
+        float duration = 1000f;
+        long startTs = KTime.CurrentMill();
+        while (elapsed < duration) {
+            float newElapsed = KTime.CurrentMill() - startTs;
+            float diffX = Mathf.Lerp(0f, 1f, (newElapsed - elapsed) / duration) * 500f; // target
+            var targetPos = awardingResult.transform.localPosition;
+            targetPos.x += diffX;
+            awardingResult.transform.localPosition = targetPos;
+            elapsed = newElapsed;
+            yield return null;
+        }
+
+        // 4s后，按钮显示
+        var playerTeam = context.teamDict[context.playerName];
+        continueButton.gameObject.SetActive(playerTeam.prize == CompetitionBase.Prize.GoldPromote);
+        restartButton.gameObject.SetActive(true);
+        restartCurrentButton.gameObject.SetActive(true);
+
+        // 同时开始展示剧照
+        // TODO
+        yield break;
     }
 }
