@@ -87,7 +87,9 @@ public class CompetitionScene : MonoBehaviour
         gameConfig.selfGroup = KConfig.Instance.deckCardGroup;
         gameConfig.isHost = true;
         gameConfig.isPVP = false;
-        gameConfig.pveAIType = PlaySceneAI.AIType.L1K1;
+        AIBase.AILevel aiLevel = MockBattle.GetAILevel(gameConfig.enemyName);
+        int groupNum = (int)CardGroup.Neutral;
+        gameConfig.pveAIType = (PlaySceneAI.AIType)((int)aiLevel * groupNum + (new System.Random().Next(0, groupNum)));
         gameConfig.fromScene = "CompetitionScene";
         KHeartbeat.Instance.SendHeartbeat(KHeartbeat.UserStatus.PVE_GAMING);
         SceneManager.LoadScene("PlayScene");
