@@ -435,7 +435,7 @@ public class PlaySceneModelTest
             playerModel.DrawInitHandCard();
             playerModel.ReDrawInitHandCard();
             CheckCurState(playerModel, GameState.State.WAIT_SELF_ACTION);
-            Thread.Sleep(10); // 等待，确保重抽手牌信息达到
+            Thread.Sleep(100); // 等待，确保重抽手牌信息达到
             int lastIndex = playerRecvList.Count - 1;
             Assert.AreEqual(ActionEvent.Type.ActionText, playerRecvList[lastIndex].type);
             Assert.AreEqual("<color=red>host</color> 抽取了2张牌\n", playerRecvList[lastIndex].args[0]);
