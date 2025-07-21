@@ -8,7 +8,7 @@ public class CompetitionAwardingView : MonoBehaviour
 {
     private string TAG = "CompetitionAwardingView";
 
-    public CompetitionStandingsView standingsView;
+    public AwardingResult awardingResult;
 
     public TextMeshProUGUI tip;
 
@@ -33,8 +33,8 @@ public class CompetitionAwardingView : MonoBehaviour
         KLog.I(TAG, "Show");
         this.context = context;
         gameObject.SetActive(true);
-        standingsView.Show(context);
         context.FinishCurrentLevel();
+        awardingResult.Show(context);
         var playerTeam = context.teamDict[context.playerName];
         string levelText = CompetitionBase.LEVEL_TEXT[(int)context.currnetLevel];
         string prizeText = CompetitionBase.PRIZE_TEXT[(int)playerTeam.prize];
