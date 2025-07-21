@@ -14,6 +14,8 @@ public class CompetitionScene : MonoBehaviour
 
     public CompetitionAwardingView awardingView;
 
+    public GameObject helpText;
+
     private enum PanelType
     {
         Current = 0, // 当前日程
@@ -123,6 +125,16 @@ public class CompetitionScene : MonoBehaviour
         context.Restart(fromKyotoPrefecture);
         awardingView.Hide();
         UpdateBackground();
+    }
+
+    public void ClickHelpTextButton()
+    {
+        KLog.I(TAG, "ClickHelpTextButton");
+        if (helpText.activeSelf) {
+            helpText.SetActive(false);
+        } else {
+            helpText.SetActive(true);
+        }
     }
 
     private void Init()
