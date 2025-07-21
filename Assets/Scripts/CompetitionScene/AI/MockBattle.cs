@@ -78,6 +78,30 @@ public class MockBattle
         return gameInfoModel;
     }
 
+    public static AIBase.AILevel GetAILevel(string name)
+    {
+        var aiTeamNameList = CompetitionContextModel.AI_TEAM_NAME_LIST;
+        AIBase.AILevel level;
+        if (aiTeamNameList[(int)CompetitionBase.Level.KyotoPrefecture].Contains(name)) {
+            if (name == "龙圣学园高中") {
+                level = AIBase.AILevel.L3;
+            } else if (name == "立华高中" || name == "洛秋高中") {
+                level = AIBase.AILevel.L2;
+            } else {
+                level = AIBase.AILevel.L1;
+            }
+        } else if (aiTeamNameList[(int)CompetitionBase.Level.Kansai].Contains(name)) {
+            if (name == "大阪东照高中" || name == "明静工科高中" || name == "秀塔大学附属高中") {
+                level = AIBase.AILevel.L3;
+            } else {
+                level = AIBase.AILevel.L2;
+            }
+        } else {
+            level = AIBase.AILevel.L3;
+        }
+        return level;
+    }
+
     private async void AICoroutine(AIModelInterface aiModel)
     {
         PlaySceneModel playSceneModel = aiModel.playSceneModel;
@@ -109,24 +133,7 @@ public class MockBattle
             result.deck = KConfig.Instance.GetDeckInfoIdList(KConfig.Instance.deckCardGroup);
             return result;
         }
-        var aiTeamNameList = CompetitionContextModel.AI_TEAM_NAME_LIST;
-        if (aiTeamNameList[(int)CompetitionBase.Level.KyotoPrefecture].Contains(result.name)) {
-            if (result.name == "龙圣学园高中") {
-                result.level = AIBase.AILevel.L3;
-            } else if (result.name == "立华高中" || result.name == "洛秋高中") {
-                result.level = AIBase.AILevel.L2;
-            } else {
-                result.level = AIBase.AILevel.L1;
-            }
-        } else if (aiTeamNameList[(int)CompetitionBase.Level.Kansai].Contains(result.name)) {
-            if (result.name == "大阪东照高中" || result.name == "明静工科高中" || result.name == "秀塔大学附属高中") {
-                result.level = AIBase.AILevel.L3;
-            } else {
-                result.level = AIBase.AILevel.L2;
-            }
-        } else {
-            result.level = AIBase.AILevel.L3;
-        }
+        result.level = GetAILevel(result.name);
         result.group = (CardGroup)(new Random().Next(0, (int)CardGroup.Neutral));
         result.deck = new List<int>(AIDefaultDeck.deckConfigDic[result.group][(int)result.level]);
         return result;
