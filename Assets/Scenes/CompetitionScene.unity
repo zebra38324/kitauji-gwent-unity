@@ -468,12 +468,13 @@ RectTransform:
   m_Children:
   - {fileID: 1662482205}
   - {fileID: 1690309154}
+  - {fileID: 1638946611}
   m_Father: {fileID: 452117677}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 720, y: 700}
+  m_SizeDelta: {x: 720, y: 800}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &131955663
 MonoBehaviour:
@@ -528,6 +529,7 @@ MonoBehaviour:
   title: {fileID: 1662482206}
   table: {fileID: 1690309153}
   rowPrefab: {fileID: 1730878284396449187, guid: 1a472de53160f014082229509b3f4cda, type: 3}
+  tip: {fileID: 1638946612}
 --- !u!224 &155077497 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4292233050842752255, guid: ba3a89fd98c756542a4cda9632836201, type: 3}
@@ -1475,7 +1477,6 @@ RectTransform:
   m_Children:
   - {fileID: 229858779}
   - {fileID: 131955662}
-  - {fileID: 1638946611}
   - {fileID: 934289291}
   - {fileID: 1619875499}
   - {fileID: 1722660330}
@@ -1499,7 +1500,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   awardingResult: {fileID: 131955665}
-  tip: {fileID: 1638946612}
   continueButton: {fileID: 1619875500}
 --- !u!114 &452117679
 MonoBehaviour:
@@ -6045,12 +6045,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 452117677}
+  m_Father: {fileID: 131955662}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -360}
-  m_SizeDelta: {x: -1000, y: -980}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: 0, y: 60}
+  m_SizeDelta: {x: -100, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1638946612
 MonoBehaviour:
@@ -6082,7 +6082,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -6099,12 +6099,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
+  m_fontSize: 26
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 24
-  m_fontSizeMax: 36
+  m_fontSizeMin: 20
+  m_fontSizeMax: 26
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
