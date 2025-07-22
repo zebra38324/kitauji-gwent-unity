@@ -16,7 +16,17 @@ public class CompetitionAwardingView : MonoBehaviour
 
     public Button restartCurrentButton;
 
+    public Image review;
+
     private CompetitionContextModel context;
+
+    private long lastUpdateReviewTs = 0;
+
+    private bool enableReview = false;
+
+    private int reviewImgNameIndex = 0;
+
+    private static string[] reviewImgNameList = { "kanban.kanade.hisaishi.png", "kanban.kumiko.oumae.png" };
 
     // Start is called before the first frame update
     void Start()
@@ -27,7 +37,10 @@ public class CompetitionAwardingView : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (enableReview && KTime.CurrentMill() - lastUpdateReviewTs > 8000) {
+            lastUpdateReviewTs = KTime.CurrentMill();
+            StartCoroutine(UpdateReview());
+        }
     }
 
     public void Show(CompetitionContextModel context)
@@ -54,11 +67,14 @@ public class CompetitionAwardingView : MonoBehaviour
     private IEnumerator UpdateUI()
     {
         // 0-3s，保留
-        yield return new WaitForSeconds(3);
+        // 2s开始展示剧照
+        yield return new WaitForSeconds(2);
+        enableReview = true;
+        yield return new WaitForSeconds(1);
 
         // 3-4s，awardingResult移动
         float elapsed = 0f;
-        float duration = 1000f;
+        float duration = 2000f;
         long startTs = KTime.CurrentMill();
         while (elapsed < duration) {
             float newElapsed = KTime.CurrentMill() - startTs;
@@ -75,9 +91,35 @@ public class CompetitionAwardingView : MonoBehaviour
         continueButton.gameObject.SetActive(playerTeam.prize == CompetitionBase.Prize.GoldPromote);
         restartButton.gameObject.SetActive(true);
         restartCurrentButton.gameObject.SetActive(true);
+    }
 
-        // 同时开始展示剧照
-        // TODO
-        yield break;
+    private IEnumerator UpdateReview()
+    {
+        Image image = review;
+        float elapsed = 0f;
+        // 淡入淡出效果
+        float duration = 1000f;
+        long startTs = KTime.CurrentMill();
+        while (elapsed < duration) {
+            float alpha = image.sprite == null ? 0f : Mathf.Lerp(0f, 1f, (duration - elapsed) / duration);
+            image.color = new Color(image.color.r, image.color.g, image.color.b, alpha);
+            elapsed = KTime.CurrentMill() - startTs;
+            yield return null;
+        }
+        elapsed = 0f;
+        Sprite oldSprite = image.sprite;
+        // TODO: 预加载
+        KResources.Instance.Load<Sprite>(image, @"Image/texture/kanban/" + reviewImgNameList[reviewImgNameIndex]);
+        reviewImgNameIndex = (reviewImgNameIndex + 1) % reviewImgNameList.Length;
+        while (image.sprite == oldSprite) {
+            yield return null;
+        }
+        startTs = KTime.CurrentMill();
+        while (elapsed < duration) {
+            image.color = new Color(image.color.r, image.color.g, image.color.b, Mathf.Lerp(0f, 1f, elapsed / duration));
+            elapsed = KTime.CurrentMill() - startTs;
+            yield return null;
+        }
+        image.color = new Color(image.color.r, image.color.g, image.color.b, 1f);
     }
 }
