@@ -26,7 +26,7 @@ public class CompetitionAwardingView : MonoBehaviour
 
     private int reviewImgNameIndex = 0;
 
-    private static string[] reviewImgNameList = { "kanban.kanade.hisaishi.png", "kanban.kumiko.oumae.png" };
+    private static string[] reviewImgNameList = { "Kyoto_A_1.jpg", "Kyoto_A_2.jpg", "Kyoto_A_3.jpg", "Kyoto_A_4.jpg", "Kyoto_A_5.jpg" };
 
     // Start is called before the first frame update
     void Start()
@@ -48,6 +48,7 @@ public class CompetitionAwardingView : MonoBehaviour
         KLog.I(TAG, "Show");
         // reset
         enableReview = false;
+        lastUpdateReviewTs = 0;
         review.color = new Color(review.color.r, review.color.g, review.color.b, 0f);
         review.sprite = null;
         continueButton.gameObject.SetActive(false);
@@ -78,7 +79,7 @@ public class CompetitionAwardingView : MonoBehaviour
         // 2s开始展示剧照
         yield return new WaitForSeconds(2);
         enableReview = true;
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(1.5f);
 
         // 3-4s，awardingResult移动
         yield return awardingResult.Move();
@@ -95,7 +96,7 @@ public class CompetitionAwardingView : MonoBehaviour
         Image image = review;
         float elapsed = 0f;
         // 淡入淡出效果
-        float duration = 1000f;
+        float duration = 1500f;
         long startTs = KTime.CurrentMill();
         while (elapsed < duration) {
             float alpha = image.sprite == null ? 0f : Mathf.Lerp(0f, 1f, (duration - elapsed) / duration);
@@ -106,7 +107,7 @@ public class CompetitionAwardingView : MonoBehaviour
         elapsed = 0f;
         Sprite oldSprite = image.sprite;
         // TODO: 预加载
-        KResources.Instance.Load<Sprite>(image, @"Image/texture/kanban/" + reviewImgNameList[reviewImgNameIndex]);
+        KResources.Instance.Load<Sprite>(image, @"Image/Competition/Review/" + reviewImgNameList[reviewImgNameIndex]);
         reviewImgNameIndex = (reviewImgNameIndex + 1) % reviewImgNameList.Length;
         while (image.sprite == oldSprite) {
             yield return null;
