@@ -37,7 +37,7 @@ public class CompetitionAwardingView : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (enableReview && KTime.CurrentMill() - lastUpdateReviewTs > 8000) {
+        if (enableReview && KTime.CurrentMill() - lastUpdateReviewTs > 10000) {
             lastUpdateReviewTs = KTime.CurrentMill();
             StartCoroutine(UpdateReview());
         }
