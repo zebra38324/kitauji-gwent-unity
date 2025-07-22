@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: RemoteImageCompetitionReview
+  m_EditorClassIdentifier: 
+  m_GroupName: RemoteImageCompetitionReview
+  m_Data:
+    m_SerializedData: []
+  m_GUID: b36142526f38bdd49853336b78590789
+  m_SerializeEntries:
+  - m_GUID: 44dd84173a249bb4792690502ea98e26
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kyoto_A_3.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7fa1a79d2f55efa409f29dadbadb45a3
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kyoto_A_2.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9c927b863d8782a4ab07a58de894b507
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kyoto_A_5.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa138acefe89bb444b97826e21d0cb50
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kyoto_A_1.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fbd155490ff4a9146889e39f6ec78e4c
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kyoto_A_4.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: a0611c52f639b8145b25d7fc1e3ec1d2, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 5673335d9995e1c49adb0a0b582e8b3c, type: 2}
+    - {fileID: 11400000, guid: 888b927c587cab54bae6b8b6cf79b03c, type: 2}
