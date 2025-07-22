@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Linq;
 
 public class AwardingResult : MonoBehaviour
 {
@@ -42,7 +43,8 @@ public class AwardingResult : MonoBehaviour
             "代表");
 
         int index = 0;
-        foreach (var team in context.teamDict.Values) {
+        var teamList = new List<CompetitionTeamInfoModel>(context.teamDict.Values).OrderBy(x => System.Guid.NewGuid()).ToList();
+        foreach (var team in teamList) {
             string prefix = "";
             string suffix = "";
             if (team.name == context.playerName) {
