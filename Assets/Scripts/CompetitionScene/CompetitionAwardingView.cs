@@ -46,6 +46,14 @@ public class CompetitionAwardingView : MonoBehaviour
     public void Show(CompetitionContextModel context)
     {
         KLog.I(TAG, "Show");
+        // reset
+        enableReview = false;
+        review.color = new Color(review.color.r, review.color.g, review.color.b, 0f);
+        review.sprite = null;
+        continueButton.gameObject.SetActive(false);
+        restartButton.gameObject.SetActive(false);
+        restartCurrentButton.gameObject.SetActive(false);
+
         this.context = context;
         gameObject.SetActive(true);
         context.FinishCurrentLevel();
@@ -73,18 +81,7 @@ public class CompetitionAwardingView : MonoBehaviour
         yield return new WaitForSeconds(1);
 
         // 3-4s，awardingResult移动
-        float elapsed = 0f;
-        float duration = 2000f;
-        long startTs = KTime.CurrentMill();
-        while (elapsed < duration) {
-            float newElapsed = KTime.CurrentMill() - startTs;
-            float diffX = Mathf.Lerp(0f, 1f, (newElapsed - elapsed) / duration) * 500f; // target
-            var targetPos = awardingResult.transform.localPosition;
-            targetPos.x += diffX;
-            awardingResult.transform.localPosition = targetPos;
-            elapsed = newElapsed;
-            yield return null;
-        }
+        yield return awardingResult.Move();
 
         // 4s后，按钮显示
         var playerTeam = context.teamDict[context.playerName];

@@ -16,6 +16,8 @@ public class AwardingResult : MonoBehaviour
 
     private CompetitionContextModel context;
 
+    private float deltaX = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,6 +32,7 @@ public class AwardingResult : MonoBehaviour
 
     public void Show(CompetitionContextModel context_)
     {
+        ResetUI();
         context = context_;
         title.text = $"【{CompetitionBase.LEVEL_TEXT[(int)context.currnetLevel]}】竞赛结果";
 
@@ -70,6 +73,36 @@ public class AwardingResult : MonoBehaviour
             tip.text = $"恭喜获得【{levelText}】{prizeText}！将晋级{nextLevelText}！";
         } else {
             tip.text = $"获得【{levelText}】{prizeText}，很遗憾未能晋级";
+        }
+    }
+
+    public IEnumerator Move()
+    {
+        float elapsed = 0f;
+        float duration = 2000f;
+        long startTs = KTime.CurrentMill();
+        while (elapsed < duration) {
+            float newElapsed = KTime.CurrentMill() - startTs;
+            float diffX = Mathf.Lerp(0f, 1f, (newElapsed - elapsed) / duration) * 500f; // target
+            var targetPos = transform.localPosition;
+            targetPos.x += diffX;
+            deltaX += diffX;
+            transform.localPosition = targetPos;
+            elapsed = newElapsed;
+            yield return null;
+        }
+    }
+
+    private void ResetUI()
+    {
+        var resetPos = transform.localPosition;
+        resetPos.x -= deltaX;
+        deltaX = 0;
+        transform.localPosition = resetPos;
+        int childCount = table.transform.childCount;
+        // 注意反向
+        for (int i = childCount - 1; i >= 0; i--) {
+            Destroy(table.transform.GetChild(i).gameObject);
         }
     }
 }
