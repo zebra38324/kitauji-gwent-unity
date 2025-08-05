@@ -17,30 +17,401 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: b36142526f38bdd49853336b78590789
   m_SerializeEntries:
-  - m_GUID: 44dd84173a249bb4792690502ea98e26
-    m_Address: Assets/RemoteRes/Image/Competition/Review/Kyoto_A_3.jpg
+  - m_GUID: 03629c658693e6045b6e290b2e3b0ac6
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/5.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_review
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7fa1a79d2f55efa409f29dadbadb45a3
-    m_Address: Assets/RemoteRes/Image/Competition/Review/Kyoto_A_2.jpg
+  - m_GUID: 0c1038f26eac9df4aaa752356d80fe6e
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/14.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_review
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9c927b863d8782a4ab07a58de894b507
-    m_Address: Assets/RemoteRes/Image/Competition/Review/Kyoto_A_5.jpg
+  - m_GUID: 11f59af04ef7d7740b089ac3400f3a42
+    m_Address: Assets/RemoteRes/Image/Competition/Review/National/10.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_review
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fa138acefe89bb444b97826e21d0cb50
-    m_Address: Assets/RemoteRes/Image/Competition/Review/Kyoto_A_1.jpg
+  - m_GUID: 122e68e09c9c3e948af04bd9a797e6e5
+    m_Address: Assets/RemoteRes/Image/Competition/Review/National/5.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_review
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fbd155490ff4a9146889e39f6ec78e4c
-    m_Address: Assets/RemoteRes/Image/Competition/Review/Kyoto_A_4.jpg
+  - m_GUID: 14397ad293cb6984a907e261265947db
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kansai/13.jpg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 18a85f1e65e7d80458110ecaee5bc3ff
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/6.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2047c1fce80494040bac081ccac2b67f
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/1.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 23a6e6b90317a224d8def6cb1bfc02ca
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/4.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 289afec154a11bb48b961fc457b4d685
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/20.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a1c764061948a5468e71f5baddfeba1
+    m_Address: Assets/RemoteRes/Image/Competition/Review/National/19.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f8c6bf107209a94cb18eccd64b73058
+    m_Address: Assets/RemoteRes/Image/Competition/Review/National/12.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 393b59a0697f203419a1f4d7eac60466
+    m_Address: Assets/RemoteRes/Image/Competition/Review/National/4.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3a54b605d57ef3344a40e030b3d17800
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/13.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3b40ec60f0b737c409b7ba854b96e473
+    m_Address: Assets/RemoteRes/Image/Competition/Review/National/17.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c5e24e73237d65489b9b54f3169159d
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/2.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 449325e4490c03d4cbe83c3019dc200a
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/10.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 44d06f2f89523fe4587e0d48d2a0e084
+    m_Address: Assets/RemoteRes/Image/Competition/Review/National/11.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 48a33110ecc173f4ba526c5d3b74cee1
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/7.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b488720a20cea14598f06fe7e21f327
+    m_Address: Assets/RemoteRes/Image/Competition/Review/National/21.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4cbecb11bf09b494dbbb419d4b604a0f
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/16.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f05b45b37d5fdf4fa3ab1eb0c217d46
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kansai/5.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f309ee97ce14494bb0275fc10e0da07
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/11.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f8aebcb8a51fd74980a1ce7701bea32
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kansai/18.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5071ecf685ebdf540b54116063bd14ac
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/24.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 531a192c09c3c0742b07b08a0fe505a8
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/22.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5335e5e8a19479347983dcd2e1415e69
+    m_Address: Assets/RemoteRes/Image/Competition/Review/National/15.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 591c7ada62cc23d4e9d040ba7a607c55
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kansai/11.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5c5b3beae2ac8884aa5d34fd98b2a008
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kansai/10.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68caf3c5f7551c44a829f4ea59f34494
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/26.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68d916f180bde5c4fb55433501da14ac
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kansai/17.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6dad65c5c890e954786204299e61366c
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kansai/4.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 712a0a5dead8c654b9366601c3cb4281
+    m_Address: Assets/RemoteRes/Image/Competition/Review/National/1.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7388203b187ff174fbe03c8579330411
+    m_Address: Assets/RemoteRes/Image/Competition/Review/National/3.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7a9cf8ad94590894ba4d330c334e7685
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/27.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7cef5e1fdbea0584aa0e0d4b18cd926f
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/15.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e13ccddf91ded949abd44adc8e75431
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kansai/15.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e4d2ae84cf10704cb669f601ce5d752
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kansai/1.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 838bdacd454d6e248b04e88aa445fc40
+    m_Address: Assets/RemoteRes/Image/Competition/Review/National/14.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 887be5bf5b822a0418119283c27f971b
+    m_Address: Assets/RemoteRes/Image/Competition/Review/National/20.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8bdf515b33cdb9645904bd9c5c6510ea
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kansai/8.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d4e98d5d3219504b92516cbcc9996be
+    m_Address: Assets/RemoteRes/Image/Competition/Review/National/9.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8e2294dc72b95444a9588fe307bcbc66
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/18.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9002bd041fc992e44abc8a57085720df
+    m_Address: Assets/RemoteRes/Image/Competition/Review/National/18.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 90cdb371546a6b341b4d188475fc6594
+    m_Address: Assets/RemoteRes/Image/Competition/Review/National/6.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 96f3ebfb7b18656489ded27e81d041e8
+    m_Address: Assets/RemoteRes/Image/Competition/Review/National/16.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a870a148f9ee8d741ace82c557ee4035
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/3.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a873b57441f831c418d83e0a5c0fd8e2
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/17.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: abe2c9f53a506654fa4a6788feabdc02
+    m_Address: Assets/RemoteRes/Image/Competition/Review/National/7.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: abf8e23463cb86e46ba473042a211d14
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kansai/14.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: afc2c8f8cbd99044c8a6cac31f76bb15
+    m_Address: Assets/RemoteRes/Image/Competition/Review/National/2.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: beb75849fbfaae04d97fff318825a00c
+    m_Address: Assets/RemoteRes/Image/Competition/Review/National/8.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c0b3e18836b15da4b8cd4d7a15b41880
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kansai/9.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c4eb71c66a9cf0a47920e8ca765704a1
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/23.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c964738e6e7df5646bf63ee04efafd9f
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/12.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0f93d44d36aefb4cac181d3103a1b0a
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kansai/16.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d640ea02d96b263418ba33127aabacd3
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kansai/2.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7d10a0c09eae294eade3e01bd336393
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/8.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d9380b7c99707ae42b6cb5cea4f518a9
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/19.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dee2b334c005b354f99c6d7434ac8c63
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kansai/12.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e42bf399a1a4a974db2e2958505048a5
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/25.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ebb17ce8f1dee4641a0f0e40eba95dde
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/21.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ecc17847ba6d7c84bb5e06f7e7279b82
+    m_Address: Assets/RemoteRes/Image/Competition/Review/National/13.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ecfa50281e156474e9c639aa227a9daf
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kansai/7.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f24a26cb4f78ac249a878689948f10eb
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kansai/6.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd62439cfad41b64083ffe909b1da36a
+    m_Address: Assets/RemoteRes/Image/Competition/Review/Kansai/3.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ffb46aaf955f8d9469d06781a1ac7590
+    m_Address: Assets/RemoteRes/Image/Competition/Review/KyotoPrefecture/9.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - image_review
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: a0611c52f639b8145b25d7fc1e3ec1d2, type: 2}
