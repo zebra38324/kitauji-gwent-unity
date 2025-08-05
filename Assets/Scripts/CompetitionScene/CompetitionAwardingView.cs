@@ -111,7 +111,6 @@ public class CompetitionAwardingView : MonoBehaviour
         }
         elapsed = 0f;
         Sprite oldSprite = image.sprite;
-        // TODO: 预加载
         KResources.Instance.Load<Sprite>(image, GetNextShowImagePath());
         while (image.sprite == oldSprite) {
             yield return null;
