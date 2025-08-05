@@ -20,7 +20,7 @@ public class KConfig
 
     public string playerName = "";
 
-    private bool isTourist = false;
+    public bool isTourist { get; private set; } = false;
 
     private static int[][] DEFAULT_DECK = new int[][] {
         new int[] {
