@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,9 +26,9 @@ public class CompetitionAwardingView : MonoBehaviour
 
     private bool enableReview = false;
 
-    private int reviewImgNameIndex = 0;
+    private int reviewImgIdIndex = 0;
 
-    private static string[] reviewImgNameList = { "Kyoto_A_1.jpg", "Kyoto_A_2.jpg", "Kyoto_A_3.jpg", "Kyoto_A_4.jpg", "Kyoto_A_5.jpg" };
+    private List<int> reviewImgIdList;
 
     // Start is called before the first frame update
     void Start()
@@ -61,6 +63,8 @@ public class CompetitionAwardingView : MonoBehaviour
         awardingResult.Show(context);
         AudioManager.Instance.PauseBGM();
         AudioManager.Instance.PlaySFX(AudioManager.SFXType.Awarding);
+        // 设置图片随机展示顺序
+        reviewImgIdList = Enumerable.Range(1, GetImageCount()).OrderBy(x => Guid.NewGuid()).ToList();
         StartCoroutine(UpdateUI());
     }
 
@@ -107,8 +111,7 @@ public class CompetitionAwardingView : MonoBehaviour
         elapsed = 0f;
         Sprite oldSprite = image.sprite;
         // TODO: 预加载
-        KResources.Instance.Load<Sprite>(image, @"Image/Competition/Review/" + reviewImgNameList[reviewImgNameIndex]);
-        reviewImgNameIndex = (reviewImgNameIndex + 1) % reviewImgNameList.Length;
+        KResources.Instance.Load<Sprite>(image, GetNextShowImagePath());
         while (image.sprite == oldSprite) {
             yield return null;
         }
@@ -119,5 +122,29 @@ public class CompetitionAwardingView : MonoBehaviour
             yield return null;
         }
         image.color = new Color(image.color.r, image.color.g, image.color.b, 1f);
+    }
+
+    private int GetImageCount()
+    {
+        switch (context.currnetLevel) {
+            case CompetitionBase.Level.KyotoPrefecture: {
+                return 27;
+            }
+            case CompetitionBase.Level.Kansai: {
+                return 18;
+            }
+            case CompetitionBase.Level.National: {
+                return 21;
+            }
+        }
+        return 0;
+    }
+
+    private string GetNextShowImagePath()
+    {
+        string prefix = @"Image/Competition/Review/" + context.currnetLevel.ToString();
+        string imagePath = $"{prefix}/{reviewImgIdList[reviewImgIdIndex]}.jpg";
+        reviewImgIdIndex = (reviewImgIdIndex + 1) % reviewImgIdList.Count;
+        return imagePath;
     }
 }
