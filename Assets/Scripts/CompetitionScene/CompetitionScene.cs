@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class CompetitionScene : MonoBehaviour
 {
@@ -155,6 +157,8 @@ public class CompetitionScene : MonoBehaviour
             gameRetView.Show(context, false);
         }
         needShownGameRetViewAtStart = false;
+
+        StartCoroutine(DownloadReviewImage());
     }
 
     private void HideAllPanel()
@@ -167,5 +171,19 @@ public class CompetitionScene : MonoBehaviour
     private void UpdateBackground()
     {
         KResources.Instance.Load<Sprite>(gameObject.GetComponent<Image>(), @"Image/texture/CompetitionScene/" + backgroundImgNameList[(int)context.currnetLevel]);
+    }
+
+    private IEnumerator DownloadReviewImage()
+    {
+        string assetGroupName = "image_review";
+        var downloadHandle = Addressables.DownloadDependenciesAsync("image_review");
+        while (!downloadHandle.IsDone) {
+            yield return null;
+        }
+        if (downloadHandle.Status == AsyncOperationStatus.Succeeded) {
+            KLog.I(TAG, $"DownloadReviewImage: {assetGroupName} success");
+        } else {
+            KLog.E(TAG, $"DownloadReviewImage: {assetGroupName} fail");
+        }
     }
 }
