@@ -75,8 +75,9 @@ public class AudioManager : MonoBehaviour
         return sfxPlayer.volume;
     }
 
-    public void PlaySFX(SFXType type)
+    public void PlaySFX(SFXType type, bool loop = false)
     {
+        sfxPlayer.loop = loop;
         sfxPlayer.clip = sfxCache[type];
         if (sfxPlayer.clip != null) {
             sfxPlayer.Play();
@@ -85,6 +86,7 @@ public class AudioManager : MonoBehaviour
 
     public void StopSFX()
     {
+        sfxPlayer.loop = false;
         if (sfxPlayer.isPlaying) {
             sfxPlayer.Stop();
         }

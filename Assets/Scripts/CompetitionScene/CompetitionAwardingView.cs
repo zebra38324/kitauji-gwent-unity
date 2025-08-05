@@ -51,6 +51,7 @@ public class CompetitionAwardingView : MonoBehaviour
         // reset
         enableReview = false;
         lastUpdateReviewTs = 0;
+        reviewImgIdIndex = 0;
         review.color = new Color(review.color.r, review.color.g, review.color.b, 0f);
         review.sprite = null;
         continueButton.gameObject.SetActive(false);
@@ -62,7 +63,7 @@ public class CompetitionAwardingView : MonoBehaviour
         context.FinishCurrentLevel();
         awardingResult.Show(context);
         AudioManager.Instance.PauseBGM();
-        AudioManager.Instance.PlaySFX(AudioManager.SFXType.Awarding);
+        AudioManager.Instance.PlaySFX(AudioManager.SFXType.Awarding, true);
         // 设置图片随机展示顺序
         reviewImgIdList = Enumerable.Range(1, GetImageCount()).OrderBy(x => Guid.NewGuid()).ToList();
         StartCoroutine(UpdateUI());
