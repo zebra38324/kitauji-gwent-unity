@@ -28,6 +28,8 @@ public class KRPC : MonoBehaviour
         auth_login, // 登录。请求格式：{"isTourist":true,"username":"","password":""}
         config_deck_get, // 获取配置的牌组。请求格式：{}
         config_deck_update, // 更新配置牌组。请求格式：{"deck": { "group": 0, "config": [[int数组], [int数组]]}}
+        config_competition_get, // 获取竞赛模式进度。请求格式：{}
+        config_competition_update, // 更新竞赛模式进度。请求格式：{"competition_config": "json_str"}
         pvp_match_start, // 请求格式：{}
         pvp_match_cancel, // 请求格式：{}
         pvp_match_action, // 请求格式：{"action":""}

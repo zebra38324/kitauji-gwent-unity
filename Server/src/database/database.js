@@ -31,10 +31,24 @@ function initDatabase(dbPath = 'users.db') {
             timestamp TIMESTAMP DEFAULT (datetime('now', '+8 hours')),
             username TEXT UNIQUE NOT NULL,
             password_hash TEXT NOT NULL,
-            deck_config TEXT,
-            competition_config TEXT
+            deck_config TEXT
         )
     `).run();
+
+    try {
+        db.prepare(`
+            ALTER TABLE ${userTable}
+            ADD COLUMN competition_config TEXT
+        `).run();
+        KLog.I(TAG, `initDatabase: add competition_config`);
+    } catch (err) {
+        if (err.message.includes('duplicate column name')) {
+            KLog.I(TAG, `initDatabase: competition_config exist, skip`);
+        } else {
+            KLog.I(TAG, `initDatabase: error: ${err.message}`);
+        }
+    }
+
     db.prepare(`
         CREATE TABLE IF NOT EXISTS ${statTable} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,

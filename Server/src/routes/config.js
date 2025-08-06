@@ -60,18 +60,11 @@ export const ConfigRoutes = {
             ws.send(BuildRes(sessionId, {status: "error", message: "tourist not support"}));
             return;
         }
-        let competition_config = null;
-        let message = "no_record";
         const result = GetCompetitionConfig(ws.user.username);
         if (result.success) {
-            competition_config = result.competition_config;
+            ws.send(BuildRes(sessionId, {status: "success", competition_config: result.competition_config}));
         } else {
-            message = result.message;
-        }
-        if (competition_config != null) {
-            ws.send(BuildRes(sessionId, {status: "success", competition_config: competition_config}));
-        } else {
-            ws.send(BuildRes(sessionId, {status: "error", message: message}));
+            ws.send(BuildRes(sessionId, {status: "error", message: result.message}));
         }
     },
     [ApiTypeEnum.CONFIG_COMPETITION_UPDATE]: (ws, sessionId, apiArgs) => {

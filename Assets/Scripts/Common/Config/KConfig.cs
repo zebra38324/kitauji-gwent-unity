@@ -131,7 +131,10 @@ public class KConfig
                 }
                 if (apiSuccess) {
                     playerName = loginResJson["username"]?.ToString();
-                    GetDeckConfig();
+                    GetDeckConfig(); // TODO: await
+                    if (!isTourist) {
+                        GetCompetitionContextFromServer();
+                    }
                 }
                 break;
             }
@@ -160,7 +163,7 @@ public class KConfig
     {
         KLog.I(TAG, "SaveCompetitionContext");
         competitionContextRecord = contextRecord;
-        // TODO: 后端保存
+        SaveCompetitionContextToServer();
     }
 
     public CompetitionBase.ContextRecord GetCompetitionContext()
@@ -241,6 +244,68 @@ public class KConfig
                 JObject registerResJson = JObject.Parse(receiveStr);
                 KLog.I(TAG, "UpdateDeckConfig: Receive: " + registerResJson);
                 bool apiSuccess = registerResJson["status"]?.ToString() == KRPC.ApiRetStatus.success.ToString();
+                break;
+            }
+            await UniTask.Delay(1);
+        }
+        KNetwork.Instance.CloseSession(sessionId);
+    }
+
+    [Serializable]
+    private class UpdateCompetitionConfigReq
+    {
+        public string competition_config;
+    }
+
+    // 请求格式：{"competition_config": "json_str"}
+    private async void SaveCompetitionContextToServer()
+    {
+        KLog.I(TAG, "SaveCompetitionContextToServer");
+        if (isTourist) {
+            KLog.I(TAG, "SaveCompetitionContextToServer: isTourist");
+            return;
+        }
+        UpdateCompetitionConfigReq updateCompetitionConfigReq = new UpdateCompetitionConfigReq();
+        updateCompetitionConfigReq.competition_config = JsonConvert.SerializeObject(competitionContextRecord);
+        string updateCompetitioConfigReqStr = JsonConvert.SerializeObject(updateCompetitionConfigReq);
+        KLog.I(TAG, "SaveCompetitionContextToServer: updateCompetitioConfigReqStr = " + updateCompetitioConfigReqStr);
+        int sessionId = KRPC.Instance.CreateSession();
+        KRPC.Instance.Send(sessionId, KRPC.ApiType.config_competition_update, updateCompetitioConfigReqStr);
+        while (true) {
+            string receiveStr = KRPC.Instance.Receive(sessionId);
+            if (receiveStr != null) {
+                JObject registerResJson = JObject.Parse(receiveStr);
+                KLog.I(TAG, "SaveCompetitionContextToServer: Receive: " + registerResJson);
+                bool apiSuccess = registerResJson["status"]?.ToString() == KRPC.ApiRetStatus.success.ToString();
+                break;
+            }
+            await UniTask.Delay(1);
+        }
+        KNetwork.Instance.CloseSession(sessionId);
+    }
+
+    private async void GetCompetitionContextFromServer()
+    {
+        KLog.I(TAG, "GetCompetitionContextFromServer");
+        if (isTourist) {
+            KLog.I(TAG, "GetCompetitionContextFromServer: isTourist");
+            return;
+        }
+        int sessionId = KRPC.Instance.CreateSession();
+        KRPC.Instance.Send(sessionId, KRPC.ApiType.config_competition_get, "{}");
+        while (true) {
+            // 返回格式：{"status": "success", "competition_config": "json_str"}
+            string receiveStr = KRPC.Instance.Receive(sessionId);
+            if (receiveStr != null) {
+                KLog.I(TAG, "GetCompetitionContextFromServer: Receive: " + receiveStr);
+                JObject resJson = JObject.Parse(receiveStr);
+                bool apiSuccess = resJson["status"]?.ToString() == KRPC.ApiRetStatus.success.ToString();
+                if (!apiSuccess) {
+                    KLog.E(TAG, "GetCompetitionContextFromServer: fail");
+                    return;
+                }
+                string configStr = resJson["competition_config"]?.ToString();
+                competitionContextRecord = JsonConvert.DeserializeObject<CompetitionBase.ContextRecord>(configStr);
                 break;
             }
             await UniTask.Delay(1);

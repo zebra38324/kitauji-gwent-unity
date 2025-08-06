@@ -498,8 +498,8 @@ describe('WebSocket Server', function () {
                     expect(sessionDataJson.status).to.equal("success");
                 } else if (sessionId == 3) {
                     // 返回格式：{"status": "error", "message": ""}
-                    expect(sessionDataJson.status).to.equal("error");
-                    expect(sessionDataJson.message).to.equal("no_record");
+                    expect(sessionDataJson.status).to.equal("success");
+                    expect(sessionDataJson.competition_config).to.equal(null);
                 } else if (sessionId == 4) {
                     expect(sessionDataJson.status).to.equal("success");
                 } else {
