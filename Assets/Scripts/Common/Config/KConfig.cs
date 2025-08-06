@@ -131,9 +131,9 @@ public class KConfig
                 }
                 if (apiSuccess) {
                     playerName = loginResJson["username"]?.ToString();
-                    GetDeckConfig(); // TODO: await
+                    await GetDeckConfig();
                     if (!isTourist) {
-                        GetCompetitionContextFromServer();
+                        await GetCompetitionContextFromServer();
                     }
                 }
                 break;
@@ -172,7 +172,7 @@ public class KConfig
         return competitionContextRecord;
     }
 
-    private async void GetDeckConfig()
+    private async UniTask GetDeckConfig()
     {
         string deckConfigReqStr = "{}";
         int sessionId = KRPC.Instance.CreateSession();
@@ -284,7 +284,7 @@ public class KConfig
         KNetwork.Instance.CloseSession(sessionId);
     }
 
-    private async void GetCompetitionContextFromServer()
+    private async UniTask GetCompetitionContextFromServer()
     {
         KLog.I(TAG, "GetCompetitionContextFromServer");
         if (isTourist) {
