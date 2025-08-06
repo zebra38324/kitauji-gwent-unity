@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { RegisterUser, AuthUser, ResetDatabase, UpdateDeckConfig, GetDeckConfig } from '../src/database/database.js';
+import { RegisterUser, AuthUser, ResetDatabase, UpdateDeckConfig, GetDeckConfig, GetCompetitionConfig, UpdateCompetitionConfig } from '../src/database/database.js';
 
 describe('Database', function () {
     before(async () => {
@@ -37,6 +37,21 @@ describe('Database', function () {
         result = UpdateDeckConfig(username, newConfig);
         result = GetDeckConfig(username);
         expect(result.deck_config.group).to.equal(1);
+    });
+
+    it('竞赛模式进度', () => {
+        const username = 'user1';
+        let result = RegisterUser(username, 'password123');
+        result = GetCompetitionConfig(username);
+        expect(result.success).to.be.true;
+        expect(result.competition_config).to.equal(null);
+
+        let newConfig = "test";
+        result = UpdateCompetitionConfig(username, newConfig);
+        expect(result.success).to.be.true;
+        result = GetCompetitionConfig(username);
+        expect(result.success).to.be.true;
+        expect(result.competition_config).to.equal(newConfig);
     });
 });
 

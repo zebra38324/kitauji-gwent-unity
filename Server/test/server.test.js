@@ -440,6 +440,137 @@ describe('WebSocket Server', function () {
         });
     });
 
+    it('CompetitionConfig', async () => {
+        const ws = new WebSocket(`ws://localhost:${port}/kitauji_api`);
+        await new Promise((resolve, reject) => {
+            ws.on('open', () => {
+                ws.send(JSON.stringify({
+                    sessionId: 1,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "register",
+                        apiArgs: JSON.stringify({
+                            username: "久美子",
+                            password: "123456"
+                        })
+                    }))),
+                }));
+                ws.send(JSON.stringify({
+                    sessionId: 2,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "auth_login",
+                        apiArgs: JSON.stringify({
+                            isTourist: false,
+                            username: "久美子",
+                            password: "123456"
+                        })
+                    }))),
+                }));
+                ws.send(JSON.stringify({
+                    sessionId: 3,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "config_competition_get",
+                        apiArgs: "{}"
+                    }))),
+                }));
+                ws.send(JSON.stringify({
+                    sessionId: 4,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "config_competition_update",
+                        apiArgs: JSON.stringify({
+                            competition_config: "test"
+                        })
+                    }))),
+                }));
+                ws.send(JSON.stringify({
+                    sessionId: 5,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "config_competition_get",
+                        apiArgs: "{}"
+                    }))),
+                }));
+            });
+
+            ws.on('message', (response) => {
+                const {sessionId, sessionDataJson} = ParseMsg(response);
+                if (sessionId == 1) {
+                    expect(sessionDataJson.status).to.equal("success");
+                } else if (sessionId == 2) {
+                    expect(sessionDataJson.status).to.equal("success");
+                } else if (sessionId == 3) {
+                    // 返回格式：{"status": "error", "message": ""}
+                    expect(sessionDataJson.status).to.equal("error");
+                    expect(sessionDataJson.message).to.equal("no_record");
+                } else if (sessionId == 4) {
+                    expect(sessionDataJson.status).to.equal("success");
+                } else {
+                    // 返回格式：{"status": "success", "competition_config": ""}
+                    expect(sessionDataJson.status).to.equal("success");
+                    expect(sessionDataJson.competition_config).to.equal("test");
+                    ws.close();
+                    resolve();
+                }
+            });
+
+            ws.on('error', (err) => {
+                reject(err);
+            });
+        });
+    });
+
+    it('CompetitionConfigTourist', async () => {
+        const ws = new WebSocket(`ws://localhost:${port}/kitauji_api`);
+        await new Promise((resolve, reject) => {
+            ws.on('open', () => {
+                ws.send(JSON.stringify({
+                    sessionId: 1,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "auth_login",
+                        apiArgs: JSON.stringify({
+                            isTourist: true,
+                            username: "",
+                            password: ""
+                        })
+                    }))),
+                }));
+                ws.send(JSON.stringify({
+                    sessionId: 2,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "config_competition_get",
+                        apiArgs: "{}"
+                    }))),
+                }));
+                ws.send(JSON.stringify({
+                    sessionId: 3,
+                    sessionData: Array.from(Buffer.from(JSON.stringify({
+                        apiType: "config_competition_update",
+                        apiArgs: JSON.stringify({
+                            competition_config: "test"
+                        })
+                    }))),
+                }));
+            });
+
+            ws.on('message', (response) => {
+                const {sessionId, sessionDataJson} = ParseMsg(response);
+                if (sessionId == 1) {
+                    expect(sessionDataJson.status).to.equal("success");
+                } else if (sessionId == 2) {
+                    expect(sessionDataJson.status).to.equal("error");
+                    expect(sessionDataJson.message).to.equal("tourist not support");
+                } else {
+                    expect(sessionDataJson.status).to.equal("error");
+                    expect(sessionDataJson.message).to.equal("tourist not support");
+                    ws.close();
+                    resolve();
+                }
+            });
+
+            ws.on('error', (err) => {
+                reject(err);
+            });
+        });
+    });
+
     it('PVPMatch', async () => {
         const ws1 = new WebSocket(`ws://localhost:${port}/kitauji_api`);
         const ws2 = new WebSocket(`ws://localhost:${port}/kitauji_api`);
