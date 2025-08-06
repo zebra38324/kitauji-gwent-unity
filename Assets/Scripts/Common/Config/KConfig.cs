@@ -126,15 +126,16 @@ public class KConfig
                 JObject loginResJson = JObject.Parse(receiveStr);
                 KLog.I(TAG, "Login: Receive: " + receiveStr);
                 bool apiSuccess = loginResJson["status"]?.ToString() == KRPC.ApiRetStatus.success.ToString();
-                if (callback != null) {
-                    callback(apiSuccess, loginResJson["message"]?.ToString());
-                }
                 if (apiSuccess) {
                     playerName = loginResJson["username"]?.ToString();
                     await GetDeckConfig();
                     if (!isTourist) {
                         await GetCompetitionContextFromServer();
                     }
+                }
+                // 各种config读取完毕再回调
+                if (callback != null) {
+                    callback(apiSuccess, loginResJson["message"]?.ToString());
                 }
                 break;
             }
