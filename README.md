@@ -4,7 +4,7 @@
 
 北宇治昆特牌改编自巫师3昆特牌，包含了一套以动画《吹响吧！上低音号》中的人物为主题的卡牌。
 
-游戏设计、美术素材等来自于[原北宇治昆特牌仓库](https://github.com/kitauji-gwent/kitauji-gwent)以及[京吹官网](https://www.kyotoanimation.co.jp/shop/kitaujisuibu/#character)。
+游戏设计、美术素材等来自于[原北宇治昆特牌仓库](https://github.com/kitauji-gwent/kitauji-gwent)、京吹动漫剧照以及[京吹官网](https://www.kyotoanimation.co.jp/shop/kitaujisuibu/#character)。
 
 原项目使用js构建，本项目为其unity重置版。
 
@@ -48,7 +48,7 @@ Windows, Unity 2022.3.50f1c1
    - [ ] 扩展更多牌组、难度的ai
 - [ ] 卡牌图鉴
 - [ ] 特殊模式
-   - [ ] 竞赛模式
+   - [x] 竞赛模式
    - [ ] 合奏比赛
 
 ## 效果实例
