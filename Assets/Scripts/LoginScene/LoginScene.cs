@@ -77,7 +77,7 @@ public class LoginScene : MonoBehaviour
     private IEnumerator SendRegisterReq()
     {
         disableSendReq = true;
-        ShowConnectTip();
+        StartCoroutine(ShowConnectTip());
 
         bool registerRet = false;
         bool registerFinish = false;
@@ -102,7 +102,7 @@ public class LoginScene : MonoBehaviour
     private IEnumerator SendLoginReq(bool isTourist)
     {
         disableSendReq = true;
-        ShowConnectTip();
+        StartCoroutine(ShowConnectTip());
 
         bool loginRet = false;
         string loginMessage = null;
@@ -193,8 +193,9 @@ public class LoginScene : MonoBehaviour
         connectTip.text = $"正在连接服务器{loadingStr}\n若长时间无反应，请刷新网页重试";
     }
 
-    private void ShowConnectTip()
+    private IEnumerator ShowConnectTip()
     {
+        yield return new WaitForSeconds(1f);
         connectTip.text = "正在连接服务器\n若长时间无反应，请刷新网页重试";
     }
 
