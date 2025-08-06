@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 using System.Security.Cryptography;
 using System.Text;
 using System;
+using System.Linq;
 
 public class LoginScene : MonoBehaviour
 {
@@ -18,6 +19,10 @@ public class LoginScene : MonoBehaviour
     public TMP_InputField password;
 
     public GameObject toastView;
+
+    public TextMeshProUGUI connectTip;
+
+    private long connectTipLastTs = 0;
 
     private bool disableSendReq = false;
 
@@ -30,7 +35,7 @@ public class LoginScene : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        UpdateConnectTip();
     }
 
     public void OnClickRegister()
@@ -72,6 +77,7 @@ public class LoginScene : MonoBehaviour
     private IEnumerator SendRegisterReq()
     {
         disableSendReq = true;
+        ShowConnectTip();
 
         bool registerRet = false;
         bool registerFinish = false;
@@ -89,12 +95,14 @@ public class LoginScene : MonoBehaviour
             toastView.GetComponent<ToastView>().ShowToast("此用户名已被注册");
         }
 
+        HideConnectTip();
         disableSendReq = false;
     }
 
     private IEnumerator SendLoginReq(bool isTourist)
     {
         disableSendReq = true;
+        ShowConnectTip();
 
         bool loginRet = false;
         string loginMessage = null;
@@ -127,6 +135,7 @@ public class LoginScene : MonoBehaviour
             toastView.GetComponent<ToastView>().ShowToast("登陆异常");
         }
 
+        HideConnectTip();
         disableSendReq = false;
     }
 
@@ -163,5 +172,34 @@ public class LoginScene : MonoBehaviour
         string combined = account.text + password.text;
         byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(combined));
         return Convert.ToBase64String(hashBytes);
+    }
+
+    private void UpdateConnectTip()
+    {
+        string originStr = connectTip.text;
+        if (originStr.Length == 0) {
+            return;
+        }
+        long currentTs = KTime.CurrentMill();
+        if (currentTs - connectTipLastTs < 1000) {
+            return;
+        }
+        connectTipLastTs = currentTs;
+        char loadingDot = '。';
+        int maxLoadingCount = 4;
+        int currentLoadingCount = originStr.Count(c => c == loadingDot);
+        currentLoadingCount = (currentLoadingCount + 1) % maxLoadingCount;
+        string loadingStr = new string(loadingDot, currentLoadingCount);
+        connectTip.text = $"正在连接服务器{loadingStr}\n若长时间无反应，请刷新网页重试";
+    }
+
+    private void ShowConnectTip()
+    {
+        connectTip.text = "正在连接服务器\n若长时间无反应，请刷新网页重试";
+    }
+
+    private void HideConnectTip()
+    {
+        connectTip.text = "";
     }
 }
