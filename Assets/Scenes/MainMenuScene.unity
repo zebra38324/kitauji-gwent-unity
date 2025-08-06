@@ -5261,7 +5261,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "20250717-v3.1\n\u65B0\u589E\u6280\u80FD: \u5927\u53F7\u541B\u540C\u76DF\n\u90E8\u5206\u5DE5\u5177\u724C\u5141\u8BB8\u91CD\u590D\n\u6DFB\u52A0\u4E45\u4E09\u5E74\u4EBA\u673A\u724C\u7EC4\n\u4EBA\u673A\u5BF9\u6218\u652F\u6301\u96BE\u5EA6\u9009\u62E9"
+  m_text: "20250806-v4.0\n\u65B0\u589E\u7ADE\u8D5B\u6A21\u5F0F\n20250717-v3.1\n\u65B0\u589E\u6280\u80FD\uFF0C\u4EBA\u673A\u8C03\u6574"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 81b689e8712710a4e8d26c0ce41dfd29, type: 2}
   m_sharedMaterial: {fileID: 67576259127510927, guid: 81b689e8712710a4e8d26c0ce41dfd29, type: 2}
@@ -5288,7 +5288,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18.55
+  m_fontSize: 22.45
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
