@@ -1,5 +1,5 @@
 import { BuildRes, ApiTypeEnum } from '../util/message_util.js';
-import { UpdateDeckConfig, GetDeckConfig } from '../database/database.js';
+import { UpdateDeckConfig, GetDeckConfig, UpdateCompetitionConfig, GetCompetitionConfig } from '../database/database.js';
 
 const CardGroupEnum = Object.freeze({
     K1: 0,
@@ -45,6 +45,45 @@ export const ConfigRoutes = {
         // {"status": "success"}
         // {"status": "error", "message": ""}
         const result = UpdateDeckConfig(ws.user.username, apiArgs.deck);
+        if (result.success) {
+            ws.send(BuildRes(sessionId, {status: "success"}));
+        } else {
+            ws.send(BuildRes(sessionId, {status: "error", message: message}));
+        }
+    },
+    [ApiTypeEnum.CONFIG_COMPETITION_GET]: (ws, sessionId, apiArgs) => {
+        // 请求格式：{}
+        // 返回格式：
+        // {"status": "success", "competition_config": "json_str"}
+        // {"status": "error", "message": ""}
+        if (ws.user.isTourist) {
+            ws.send(BuildRes(sessionId, {status: "error", message: "tourist not support"}));
+            return;
+        }
+        let competition_config = null;
+        let message = "no_record";
+        const result = GetCompetitionConfig(ws.user.username);
+        if (result.success) {
+            competition_config = result.competition_config;
+        } else {
+            message = result.message;
+        }
+        if (competition_config != null) {
+            ws.send(BuildRes(sessionId, {status: "success", competition_config: competition_config}));
+        } else {
+            ws.send(BuildRes(sessionId, {status: "error", message: message}));
+        }
+    },
+    [ApiTypeEnum.CONFIG_COMPETITION_UPDATE]: (ws, sessionId, apiArgs) => {
+        // 请求格式：{"competition_config": "json_str"}
+        // 返回格式：
+        // {"status": "success"}
+        // {"status": "error", "message": ""}
+        if (ws.user.isTourist) {
+            ws.send(BuildRes(sessionId, {status: "error", message: "tourist not support"}));
+            return;
+        }
+        const result = UpdateCompetitionConfig(ws.user.username, apiArgs.competition_config);
         if (result.success) {
             ws.send(BuildRes(sessionId, {status: "success"}));
         } else {

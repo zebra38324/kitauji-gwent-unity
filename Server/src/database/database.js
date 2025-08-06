@@ -31,7 +31,8 @@ function initDatabase(dbPath = 'users.db') {
             timestamp TIMESTAMP DEFAULT (datetime('now', '+8 hours')),
             username TEXT UNIQUE NOT NULL,
             password_hash TEXT NOT NULL,
-            deck_config TEXT
+            deck_config TEXT,
+            competition_config TEXT
         )
     `).run();
     db.prepare(`
@@ -89,6 +90,24 @@ export const AuthUser = (username, password) => {
     }
     return { success: true };
 };
+
+// competition_config为json_str
+export const UpdateCompetitionConfig = (username, competition_config) => {
+    const result = db.prepare(`UPDATE ${userTable} SET competition_config = ? WHERE username = ?`).run(competition_config, username);
+    if (result.changes === 0) {
+        return { success: false, message: "用户不存在" };
+    }
+    return { success: true };
+}
+
+// competition_config为json_str
+export const GetCompetitionConfig = (username) => {
+    const result = db.prepare(`SELECT competition_config FROM ${userTable} WHERE username = ?`).get(username);
+    if (!result) {
+        return { success: false, message: "用户不存在" };
+    }
+    return { success: true, competition_config: result.competition_config };
+}
 
 // deck_config为json
 export const UpdateDeckConfig = (username, deck_config) => {
