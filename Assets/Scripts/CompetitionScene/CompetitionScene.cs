@@ -18,8 +18,6 @@ public class CompetitionScene : MonoBehaviour
 
     public GameObject helpText;
 
-    public GameObject warnText;
-
     private enum PanelType
     {
         Current = 0, // 当前日程
