@@ -39,7 +39,7 @@ public class MainMenuSceneManager : MonoBehaviour
     public void SwtichToGuideScene()
     {
         KLog.I(TAG, "onClick SwtichToGuideScene");
-        LoadingScene.Load("GuideScene");
+        SceneManager.LoadScene("GuideScene");
     }
 
     public void SwtichToCompetitionScene()
