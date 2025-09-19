@@ -18,7 +18,13 @@ public class KResources : MonoBehaviour
 
     void Start()
     {
+        DontDestroyOnLoad(gameObject);
         Instance = this;
+    }
+
+    private void OnApplicationQuit()
+    {
+        KLog.I(TAG, "OnApplicationQuit");
     }
 
     public static T Load<T>(string filename) where T : Object
