@@ -36,9 +36,7 @@ public class PlaySceneManager : MonoBehaviour
     private PlaySceneModel playSceneModel;
 
     private PlaySceneAI playSceneAI;
-    private PlayScenePVP playScenePVP;
 
-    private bool isPVP = false;
     private bool isAbort = false;
     private bool isModelCoroutineFinish = false;
     private bool hasClickExitPlaySceneButton = false;
@@ -53,7 +51,6 @@ public class PlaySceneManager : MonoBehaviour
 
     public void Reset()
     {
-        isPVP = false;
         isAbort = false;
         isModelCoroutineFinish = false;
         hasClickExitPlaySceneButton = false;
@@ -74,10 +71,6 @@ public class PlaySceneManager : MonoBehaviour
             playSceneAI.Release();
             playSceneAI = null;
         }
-        if (playScenePVP != null) {
-            playScenePVP.Release();
-            playScenePVP = null;
-        }
         CardViewCollection.Instance.Clear();
     }
 
@@ -90,10 +83,6 @@ public class PlaySceneManager : MonoBehaviour
         KLog.I(TAG, $"Click ExitPlaySceneButton, normalFinish = {normalFinish}");
         hasClickExitPlaySceneButton = true;
         isAbort = true;
-        if (isPVP) {
-            // 发送退出消息
-            playScenePVP.SendStopMsg();
-        }
         while (!isModelCoroutineFinish) {
             await UniTask.Delay(1);
         }
@@ -152,21 +141,14 @@ public class PlaySceneManager : MonoBehaviour
             enemyPlayStatView = GameObject.Find("Canvas/Background/EnemyPlayStatView");
         }
 
-        isPVP = gameConfig.isPVP;
-        if (isPVP) {
-            int sessionId = gameConfig.pvpSessionId;
-            playScenePVP = new PlayScenePVP(playSceneModel.battleModel, sessionId);
-            playScenePVP.Start();
-        } else {
-            // 配置AI模块，注意信息要和host反过来
-            playSceneAI = new PlaySceneAI(!gameConfig.isHost,
-                gameConfig.selfName,
-                gameConfig.enemyName,
-                gameConfig.pveAIType);
-            playSceneAI.playSceneModel.battleModel.SendToEnemyFunc += playSceneModel.battleModel.AddEnemyActionMsg;
-            playSceneModel.battleModel.SendToEnemyFunc += playSceneAI.playSceneModel.battleModel.AddEnemyActionMsg;
-            playSceneAI.Start();
-        }
+        // 配置AI模块，注意信息要和host反过来
+        playSceneAI = new PlaySceneAI(!gameConfig.isHost,
+            gameConfig.selfName,
+            gameConfig.enemyName,
+            gameConfig.pveAIType);
+        playSceneAI.playSceneModel.battleModel.SendToEnemyFunc += playSceneModel.battleModel.AddEnemyActionMsg;
+        playSceneModel.battleModel.SendToEnemyFunc += playSceneAI.playSceneModel.battleModel.AddEnemyActionMsg;
+        playSceneAI.Start();
 
         InitViewModel();
 

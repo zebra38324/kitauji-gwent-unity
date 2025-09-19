@@ -18,9 +18,7 @@ public class KConfig
 
     public CardGroup deckCardGroup { get; private set; }
 
-    public string playerName = "";
-
-    public bool isTourist { get; private set; } = false;
+    public string playerName = "北宇治高中";
 
     private static int[][] DEFAULT_DECK = new int[][] {
         new int[] {
@@ -59,90 +57,6 @@ public class KConfig
         }
     }
 
-    [Serializable]
-    private class RegisterReq
-    {
-        public string username;
-        public string password;
-    }
-
-    [Serializable]
-    private class LoginReq
-    {
-        public bool isTourist;
-        public string username;
-        public string password;
-    }
-
-    /**
-     * 注册
-     * callback: 返回注册结果
-     */
-    public async void Register(Action<bool> callback, string username, string password)
-    {
-        RegisterReq registerReq = new RegisterReq();
-        registerReq.username = username;
-        registerReq.password = password;
-        string registerReqStr = JsonUtility.ToJson(registerReq);
-        KLog.I(TAG, "Register: registerReqStr = " + registerReqStr);
-        int sessionId = KRPC.Instance.CreateSession();
-        KRPC.Instance.Send(sessionId, KRPC.ApiType.register, registerReqStr);
-        while (true) {
-            string receiveStr = KRPC.Instance.Receive(sessionId);
-            if (receiveStr != null) {
-                JObject registerResJson = JObject.Parse(receiveStr);
-                KLog.I(TAG, "Register: Receive: " + registerResJson);
-                bool apiSuccess = registerResJson["status"]?.ToString() == KRPC.ApiRetStatus.success.ToString();
-                if (callback != null) {
-                    callback(apiSuccess);
-                }
-                break;
-            }
-            await UniTask.Delay(1);
-        }
-    }
-
-    /**
-     * 登录
-     * isTourist: 以游客身份登录
-     * callback: 返回登录结果
-     * username: isTourist为false时设置
-     * password: isTourist为false时设置
-     */
-    public async void Login(bool isTouristParam, Action<bool, string> callback, string username = null, string password = null)
-    {
-        isTourist = isTouristParam;
-        LoginReq loginReq = new LoginReq();
-        loginReq.isTourist = isTourist;
-        loginReq.username = username;
-        loginReq.password = password;
-        string loginReqStr = JsonUtility.ToJson(loginReq);
-        KLog.I(TAG, "Login: loginReqStr = " + loginReqStr);
-        int sessionId = KRPC.Instance.CreateSession();
-        KRPC.Instance.Send(sessionId, KRPC.ApiType.auth_login, loginReqStr);
-        while (true) {
-            string receiveStr = KRPC.Instance.Receive(sessionId);
-            if (receiveStr != null) {
-                JObject loginResJson = JObject.Parse(receiveStr);
-                KLog.I(TAG, "Login: Receive: " + receiveStr);
-                bool apiSuccess = loginResJson["status"]?.ToString() == KRPC.ApiRetStatus.success.ToString();
-                if (apiSuccess) {
-                    playerName = loginResJson["username"]?.ToString();
-                    await GetDeckConfig();
-                    if (!isTourist) {
-                        await GetCompetitionContextFromServer();
-                    }
-                }
-                // 各种config读取完毕再回调
-                if (callback != null) {
-                    callback(apiSuccess, loginResJson["message"]?.ToString());
-                }
-                break;
-            }
-            await UniTask.Delay(1);
-        }
-    }
-
     public void UpdateDeckInfoIdList(List<int> infoIdList, CardGroup cardGroup)
     {
         KLog.I(TAG, "UpdateDeckInfoIdList");
@@ -164,7 +78,7 @@ public class KConfig
     {
         KLog.I(TAG, "SaveCompetitionContext");
         competitionContextRecord = contextRecord;
-        SaveCompetitionContextToServer();
+        SaveCompetitionContextToDisk();
     }
 
     public CompetitionBase.ContextRecord GetCompetitionContext()
@@ -176,15 +90,14 @@ public class KConfig
     private async UniTask GetDeckConfig()
     {
         string deckConfigReqStr = "{}";
-        int sessionId = KRPC.Instance.CreateSession();
-        KRPC.Instance.Send(sessionId, KRPC.ApiType.config_deck_get, deckConfigReqStr);
+        // TODO:
         while (true) {
             // 返回格式：{"status": "success", "deck": { "group": 0, "config": [[int数组], [int数组]]}}
-            string receiveStr = KRPC.Instance.Receive(sessionId);
+            string receiveStr = "";
             if (receiveStr != null) {
                 KLog.I(TAG, "GetDeckInfoIdList: Receive: " + receiveStr);
                 JObject resJson = JObject.Parse(receiveStr);
-                bool apiSuccess = resJson["status"]?.ToString() == KRPC.ApiRetStatus.success.ToString();
+                bool apiSuccess = true;
                 if (!apiSuccess) {
                     KLog.E(TAG, "GetDeckInfoIdList: fail");
                     return;
@@ -204,7 +117,6 @@ public class KConfig
             }
             await UniTask.Delay(1);
         }
-        KNetwork.Instance.CloseSession(sessionId);
     }
 
     [Serializable]
@@ -223,10 +135,7 @@ public class KConfig
     // 请求格式：{"deck": { "group": 0, "config": [[int数组], [int数组]]}}
     private async void UpdateDeckConfig()
     {
-        if (isTourist) {
-            KLog.I(TAG, "UpdateDeckConfig: isTourist");
-            return;
-        }
+        // TODO:
         UpdateDeckConfigReq updateDeckConfigReq = new UpdateDeckConfigReq();
         updateDeckConfigReq.deck = new UpdateDeckConfigReqDeck();
         updateDeckConfigReq.deck.group = (int)deckCardGroup;
@@ -237,19 +146,16 @@ public class KConfig
         };
         string updateDeckConfigReqStr = JsonConvert.SerializeObject(updateDeckConfigReq);
         KLog.I(TAG, "UpdateDeckConfig: updateDeckConfigReqStr = " + updateDeckConfigReqStr);
-        int sessionId = KRPC.Instance.CreateSession();
-        KRPC.Instance.Send(sessionId, KRPC.ApiType.config_deck_update, updateDeckConfigReqStr);
         while (true) {
-            string receiveStr = KRPC.Instance.Receive(sessionId);
+            string receiveStr = "";
             if (receiveStr != null) {
                 JObject registerResJson = JObject.Parse(receiveStr);
                 KLog.I(TAG, "UpdateDeckConfig: Receive: " + registerResJson);
-                bool apiSuccess = registerResJson["status"]?.ToString() == KRPC.ApiRetStatus.success.ToString();
+                bool apiSuccess = true;
                 break;
             }
             await UniTask.Delay(1);
         }
-        KNetwork.Instance.CloseSession(sessionId);
     }
 
     [Serializable]
@@ -259,48 +165,27 @@ public class KConfig
     }
 
     // 请求格式：{"competition_config": "json_str"}
-    private async void SaveCompetitionContextToServer()
+    private void SaveCompetitionContextToDisk()
     {
-        KLog.I(TAG, "SaveCompetitionContextToServer");
-        if (isTourist) {
-            KLog.I(TAG, "SaveCompetitionContextToServer: isTourist");
-            return;
-        }
+        KLog.I(TAG, "SaveCompetitionContextToDisk");
         UpdateCompetitionConfigReq updateCompetitionConfigReq = new UpdateCompetitionConfigReq();
         updateCompetitionConfigReq.competition_config = JsonConvert.SerializeObject(competitionContextRecord);
         string updateCompetitioConfigReqStr = JsonConvert.SerializeObject(updateCompetitionConfigReq);
-        KLog.I(TAG, "SaveCompetitionContextToServer: updateCompetitioConfigReqStr = " + updateCompetitioConfigReqStr);
-        int sessionId = KRPC.Instance.CreateSession();
-        KRPC.Instance.Send(sessionId, KRPC.ApiType.config_competition_update, updateCompetitioConfigReqStr);
-        while (true) {
-            string receiveStr = KRPC.Instance.Receive(sessionId);
-            if (receiveStr != null) {
-                JObject registerResJson = JObject.Parse(receiveStr);
-                KLog.I(TAG, "SaveCompetitionContextToServer: Receive: " + registerResJson);
-                bool apiSuccess = registerResJson["status"]?.ToString() == KRPC.ApiRetStatus.success.ToString();
-                break;
-            }
-            await UniTask.Delay(1);
-        }
-        KNetwork.Instance.CloseSession(sessionId);
+        KLog.I(TAG, "SaveCompetitionContextToDisk: updateCompetitioConfigReqStr = " + updateCompetitioConfigReqStr);
+        // TODO: save
     }
 
-    private async UniTask GetCompetitionContextFromServer()
+    private async UniTask GetCompetitionContextFromDisk()
     {
-        KLog.I(TAG, "GetCompetitionContextFromServer");
-        if (isTourist) {
-            KLog.I(TAG, "GetCompetitionContextFromServer: isTourist");
-            return;
-        }
-        int sessionId = KRPC.Instance.CreateSession();
-        KRPC.Instance.Send(sessionId, KRPC.ApiType.config_competition_get, "{}");
+        KLog.I(TAG, "GetCompetitionContextFromDisk");
+        // TODO: load
         while (true) {
             // 返回格式：{"status": "success", "competition_config": "json_str"}
-            string receiveStr = KRPC.Instance.Receive(sessionId);
+            string receiveStr = "";
             if (receiveStr != null) {
                 KLog.I(TAG, "GetCompetitionContextFromServer: Receive: " + receiveStr);
                 JObject resJson = JObject.Parse(receiveStr);
-                bool apiSuccess = resJson["status"]?.ToString() == KRPC.ApiRetStatus.success.ToString();
+                bool apiSuccess = true;
                 if (!apiSuccess) {
                     KLog.E(TAG, "GetCompetitionContextFromServer: fail");
                     return;
@@ -311,6 +196,5 @@ public class KConfig
             }
             await UniTask.Delay(1);
         }
-        KNetwork.Instance.CloseSession(sessionId);
     }
 }

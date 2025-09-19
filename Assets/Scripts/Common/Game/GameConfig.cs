@@ -27,11 +27,7 @@ public class GameConfig
 
     public bool isHost; // 是否为房主
 
-    public bool isPVP; // 是否为PVP对局
-
     public PlaySceneAI.AIType pveAIType; // PVE AI类型
-
-    public int pvpSessionId; // PVP对局的会话ID
 
     public string fromScene; // 从哪个场景进入的对局
 
@@ -50,9 +46,7 @@ public class GameConfig
         enemyName = "";
         selfGroup = CardGroup.KumikoFirstYear;
         isHost = true;
-        isPVP = false;
         pveAIType = PlaySceneAI.AIType.L1K1;
-        pvpSessionId = -1;
         fromScene = "MainMenuScene";
 
         normalFinish = true;

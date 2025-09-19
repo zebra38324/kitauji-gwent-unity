@@ -92,12 +92,10 @@ public class CompetitionScene : MonoBehaviour
         gameConfig.enemyName = team.gameList[team.currentRound].enemyName;
         gameConfig.selfGroup = KConfig.Instance.deckCardGroup;
         gameConfig.isHost = true;
-        gameConfig.isPVP = false;
         AIBase.AILevel aiLevel = MockBattle.GetAILevel(gameConfig.enemyName);
         int groupNum = (int)CardGroup.Neutral;
         gameConfig.pveAIType = (PlaySceneAI.AIType)((int)aiLevel * groupNum + (new System.Random().Next(0, groupNum)));
         gameConfig.fromScene = "CompetitionScene";
-        KHeartbeat.Instance.SendHeartbeat(KHeartbeat.UserStatus.PVE_GAMING);
         SceneManager.LoadScene("PlayScene");
     }
 
@@ -149,7 +147,6 @@ public class CompetitionScene : MonoBehaviour
         } else {
             context = new CompetitionContextModel(contextRecord);
         }
-        warnText.SetActive(KConfig.Instance.isTourist);
 
         UpdateBackground();
 
