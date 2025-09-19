@@ -9,10 +9,16 @@
 原项目使用js构建，本项目为其unity重置版。
 
 ## 如何访问
-pc端使用chrome或edge浏览器，访问：https://kitauji-gwent.com/
+webgl模式：pc端使用chrome或edge浏览器，访问：https://kitauji-gwent.com/ 此网址后续可能无法访问
+
+Windows单机模式：产物可在release中进行下载
 
 ## 开发环境配置
 Windows, Unity 2022.3.50f1c1
+
+服务端配置见`Server`路径下的README
+
+特殊分支：`release/windows`，Windows单机的开发分支，基于`master`进行一些调整
 
 ### 文件结构
 - Assets
@@ -32,7 +38,7 @@ Windows, Unity 2022.3.50f1c1
         - PlayScene：对战场景
             - Model：与UI剥离的对战逻辑
               - AIStrategy：ai逻辑
-- Server：服务端模块
+- Server：webgl模式下的服务端模块，详见其路径下的README
 
 ## feature list
 优先级从高到低
