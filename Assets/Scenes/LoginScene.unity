@@ -571,10 +571,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1215044852}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 18.8941, y: 0.001193}
-  m_SizeDelta: {x: 462.6558, y: 136.2}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &719416721
 MonoBehaviour:
@@ -596,7 +596,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u63D0\u793A\uFF1A\n\u6B64\u7248\u672C\u4E3AWindows\u7AEF\u5355\u673A\u7248\u672C\uFF0C\u4EC5\u652F\u6301\u4EBA\u673A\u5BF9\u5C40\u3001\u7ADE\u8D5B\u6A21\u5F0F\u7B49\u672C\u5730\u529F\u80FD\uFF0C\u4E0D\u652F\u6301\u5728\u7EBF\u5339\u914D\n\u4EE3\u7801\u5F00\u6E90\u5730\u5740\uFF1Ahttps://github.com/zebra38324/kitauji-gwent-unity"
+  m_text: "\u63D0\u793A\uFF1A\n\u6B64\u7248\u672C\u4E3AWindows\u7AEF\u5355\u673A\u7248\u672C\uFF0C\u4EC5\u652F\u6301\u4EBA\u673A\u5BF9\u5C40\u3001\u7ADE\u8D5B\u6A21\u5F0F\u7B49\u672C\u5730\u529F\u80FD\uFF0C\u4E0D\u652F\u6301\u5728\u7EBF\u5339\u914D\n\u4EE3\u7801\u5F00\u6E90\u5730\u5740\uFF1Ahttps://github.com/zebra38324/kitauji-gwent-unity\n\u8F6F\u4EF6\u4E0B\u8F7D\u53EF\u89C1\u5F00\u6E90\u4ED3\u5E93\u7684release"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 81b689e8712710a4e8d26c0ce41dfd29, type: 2}
   m_sharedMaterial: {fileID: 67576259127510927, guid: 81b689e8712710a4e8d26c0ce41dfd29, type: 2}
@@ -839,7 +839,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 3.9388, y: 89.6}
+  m_AnchoredPosition: {x: 3.9388, y: 163}
   m_SizeDelta: {x: 975.1262, y: 548.51}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &783884665
@@ -1334,8 +1334,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -542, y: -252.75}
-  m_SizeDelta: {x: 474.1216, y: 136.197}
+  m_AnchoredPosition: {x: -7, y: -370}
+  m_SizeDelta: {x: 562.46, y: 84.743}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1215044853
 MonoBehaviour:
@@ -1547,8 +1547,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000015259, y: -248}
-  m_SizeDelta: {x: 325.3843, y: 86.7739}
+  m_AnchoredPosition: {x: 0.000030518, y: -134}
+  m_SizeDelta: {x: 243.7293, y: 83.1448}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1797225760
 MonoBehaviour:
