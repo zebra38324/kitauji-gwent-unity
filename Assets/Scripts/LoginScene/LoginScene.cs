@@ -21,4 +21,10 @@ public class LoginScene : MonoBehaviour
         KLog.I(TAG, "OnClickTourist");
         SceneManager.LoadScene("MainMenuScene");
     }
+
+    public void OnClickDelete()
+    {
+        KLog.I(TAG, "OnClickDelete");
+        PlayerPrefs.DeleteAll();
+    }
 }
