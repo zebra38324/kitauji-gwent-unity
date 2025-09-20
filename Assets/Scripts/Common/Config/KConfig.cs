@@ -46,9 +46,15 @@ public class KConfig
 
     private CompetitionBase.ContextRecord competitionContextRecord = null;
 
+    private static string DECK_CONFIG_KEY = "deck_config";
+
+    private static string COMPETITION_CONFIG_KEY = "competition_config";
+
     private KConfig()
     {
         deckInfoIdListDic = new Dictionary<CardGroup, List<int>>();
+        GetDeckConfig();
+        GetCompetitionContextFromDisk();
     }
 
     public static KConfig Instance {
@@ -87,35 +93,25 @@ public class KConfig
         return competitionContextRecord;
     }
 
-    private async UniTask GetDeckConfig()
+    private void GetDeckConfig()
     {
-        string deckConfigReqStr = "{}";
-        // TODO:
-        while (true) {
-            // 返回格式：{"status": "success", "deck": { "group": 0, "config": [[int数组], [int数组]]}}
-            string receiveStr = "";
-            if (receiveStr != null) {
-                KLog.I(TAG, "GetDeckInfoIdList: Receive: " + receiveStr);
-                JObject resJson = JObject.Parse(receiveStr);
-                bool apiSuccess = true;
-                if (!apiSuccess) {
-                    KLog.E(TAG, "GetDeckInfoIdList: fail");
-                    return;
-                }
-                JObject deckConfig = (JObject)resJson["deck"];
-                deckCardGroup = (CardGroup)(int)deckConfig["group"];
-                KLog.I(TAG, "GetDeckInfoIdList: deckCardGroup: " + deckCardGroup);
-                JArray configArray = (JArray)deckConfig["config"];
-                for (int i = 0; i < configArray.Count; i++) {
-                    CardGroup group = (CardGroup)i;
-                    JToken item = configArray[i];
-                    List<int> infoIdList = ((JArray)item).ToObject<List<int>>();
-                    deckInfoIdListDic[group] = infoIdList;
-                    KLog.I(TAG, "GetDeckInfoIdList: group: " + group + ", infoIdList: " + infoIdList.Count);
-                }
-                break;
-            }
-            await UniTask.Delay(1);
+        // 格式：{"deck_config": { "group": 0, "config": [[int数组], [int数组]]}}
+        if (!PlayerPrefs.HasKey(DECK_CONFIG_KEY)) {
+            return;
+        }
+        string configStr = PlayerPrefs.GetString(DECK_CONFIG_KEY);
+        KLog.I(TAG, "GetDeckConfig: Receive: " + configStr);
+        JObject resJson = JObject.Parse(configStr);
+        JObject deckConfig = (JObject)resJson["deck"];
+        deckCardGroup = (CardGroup)(int)deckConfig["group"];
+        KLog.I(TAG, "GetDeckInfoIdList: deckCardGroup: " + deckCardGroup);
+        JArray configArray = (JArray)deckConfig["config"];
+        for (int i = 0; i < configArray.Count; i++) {
+            CardGroup group = (CardGroup)i;
+            JToken item = configArray[i];
+            List<int> infoIdList = ((JArray)item).ToObject<List<int>>();
+            deckInfoIdListDic[group] = infoIdList;
+            KLog.I(TAG, "GetDeckInfoIdList: group: " + group + ", infoIdList: " + infoIdList.Count);
         }
     }
 
@@ -132,10 +128,9 @@ public class KConfig
         public UpdateDeckConfigReqDeck deck;
     }
 
-    // 请求格式：{"deck": { "group": 0, "config": [[int数组], [int数组]]}}
-    private async void UpdateDeckConfig()
+    private void UpdateDeckConfig()
     {
-        // TODO:
+        // 格式：{"deck_config": { "group": 0, "config": [[int数组], [int数组]]}}
         UpdateDeckConfigReq updateDeckConfigReq = new UpdateDeckConfigReq();
         updateDeckConfigReq.deck = new UpdateDeckConfigReqDeck();
         updateDeckConfigReq.deck.group = (int)deckCardGroup;
@@ -146,16 +141,8 @@ public class KConfig
         };
         string updateDeckConfigReqStr = JsonConvert.SerializeObject(updateDeckConfigReq);
         KLog.I(TAG, "UpdateDeckConfig: updateDeckConfigReqStr = " + updateDeckConfigReqStr);
-        while (true) {
-            string receiveStr = "";
-            if (receiveStr != null) {
-                JObject registerResJson = JObject.Parse(receiveStr);
-                KLog.I(TAG, "UpdateDeckConfig: Receive: " + registerResJson);
-                bool apiSuccess = true;
-                break;
-            }
-            await UniTask.Delay(1);
-        }
+        PlayerPrefs.SetString(DECK_CONFIG_KEY, updateDeckConfigReqStr);
+        PlayerPrefs.Save();
     }
 
     [Serializable]
@@ -164,37 +151,26 @@ public class KConfig
         public string competition_config;
     }
 
-    // 请求格式：{"competition_config": "json_str"}
     private void SaveCompetitionContextToDisk()
     {
+        // 格式：{"competition_config": "json_str"}
         KLog.I(TAG, "SaveCompetitionContextToDisk");
         UpdateCompetitionConfigReq updateCompetitionConfigReq = new UpdateCompetitionConfigReq();
         updateCompetitionConfigReq.competition_config = JsonConvert.SerializeObject(competitionContextRecord);
         string updateCompetitioConfigReqStr = JsonConvert.SerializeObject(updateCompetitionConfigReq);
         KLog.I(TAG, "SaveCompetitionContextToDisk: updateCompetitioConfigReqStr = " + updateCompetitioConfigReqStr);
-        // TODO: save
+        PlayerPrefs.SetString(COMPETITION_CONFIG_KEY, updateCompetitioConfigReqStr);
+        PlayerPrefs.Save();
     }
 
-    private async UniTask GetCompetitionContextFromDisk()
+    private void GetCompetitionContextFromDisk()
     {
+        // 格式：{"competition_config": "json_str"}
         KLog.I(TAG, "GetCompetitionContextFromDisk");
-        // TODO: load
-        while (true) {
-            // 返回格式：{"status": "success", "competition_config": "json_str"}
-            string receiveStr = "";
-            if (receiveStr != null) {
-                KLog.I(TAG, "GetCompetitionContextFromServer: Receive: " + receiveStr);
-                JObject resJson = JObject.Parse(receiveStr);
-                bool apiSuccess = true;
-                if (!apiSuccess) {
-                    KLog.E(TAG, "GetCompetitionContextFromServer: fail");
-                    return;
-                }
-                string configStr = resJson["competition_config"]?.ToString();
-                competitionContextRecord = JsonConvert.DeserializeObject<CompetitionBase.ContextRecord>(configStr);
-                break;
-            }
-            await UniTask.Delay(1);
+        if (!PlayerPrefs.HasKey(COMPETITION_CONFIG_KEY)) {
+            return;
         }
+        string configStr = PlayerPrefs.GetString(COMPETITION_CONFIG_KEY);
+        competitionContextRecord = JsonConvert.DeserializeObject<CompetitionBase.ContextRecord>(configStr);
     }
 }
