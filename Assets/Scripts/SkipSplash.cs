@@ -30,7 +30,7 @@ public class SkipSplash
 #else
     private static void AsyncSkip()
     {
-        SplashScreen.Stop(SplashScreen.StopBehavior.StopImmediate);
+        //SplashScreen.Stop(SplashScreen.StopBehavior.StopImmediate);
     }
 #endif
 
