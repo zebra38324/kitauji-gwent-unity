@@ -25,6 +25,6 @@ public class LoginScene : MonoBehaviour
     public void OnClickDelete()
     {
         KLog.I(TAG, "OnClickDelete");
-        PlayerPrefs.DeleteAll();
+        KConfig.Instance.DeleteDiskSave();
     }
 }

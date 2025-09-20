@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using System.IO;
 
 // kitauji config
 // 全局配置读取
@@ -46,13 +47,10 @@ public class KConfig
 
     private CompetitionBase.ContextRecord competitionContextRecord = null;
 
-    private static string DECK_CONFIG_KEY = "deck_config";
-
-    private static string COMPETITION_CONFIG_KEY = "competition_config";
-
     private KConfig()
     {
         deckInfoIdListDic = new Dictionary<CardGroup, List<int>>();
+        deckCardGroup = CardGroup.KumikoFirstYear;
         GetDeckConfig();
         GetCompetitionContextFromDisk();
     }
@@ -61,6 +59,23 @@ public class KConfig
         get {
             return instance;
         }
+    }
+
+    public void DeleteDiskSave()
+    {
+        string deckConfigPath = GetDeckConfigPath();
+        if (File.Exists(deckConfigPath)) {
+            File.Delete(deckConfigPath);
+            KLog.I(TAG, $"Deleted deck config file at: {deckConfigPath}");
+        }
+        deckInfoIdListDic = new Dictionary<CardGroup, List<int>>();
+        deckCardGroup = CardGroup.KumikoFirstYear;
+        string competitionConfigPath = GetCompetitionConfigPath();
+        if (File.Exists(competitionConfigPath)) {
+            File.Delete(competitionConfigPath);
+            KLog.I(TAG, $"Deleted competition config file at: {competitionConfigPath}");
+        }
+        competitionContextRecord = null;
     }
 
     public void UpdateDeckInfoIdList(List<int> infoIdList, CardGroup cardGroup)
@@ -96,22 +111,28 @@ public class KConfig
     private void GetDeckConfig()
     {
         // 格式：{"deck_config": { "group": 0, "config": [[int数组], [int数组]]}}
-        if (!PlayerPrefs.HasKey(DECK_CONFIG_KEY)) {
+        string configPath = GetDeckConfigPath();
+        if (!File.Exists(configPath)) {
+            KLog.I(TAG, $"Deck config file not found at: {configPath}");
             return;
         }
-        string configStr = PlayerPrefs.GetString(DECK_CONFIG_KEY);
-        KLog.I(TAG, "GetDeckConfig: Receive: " + configStr);
-        JObject resJson = JObject.Parse(configStr);
-        JObject deckConfig = (JObject)resJson["deck"];
-        deckCardGroup = (CardGroup)(int)deckConfig["group"];
-        KLog.I(TAG, "GetDeckInfoIdList: deckCardGroup: " + deckCardGroup);
-        JArray configArray = (JArray)deckConfig["config"];
-        for (int i = 0; i < configArray.Count; i++) {
-            CardGroup group = (CardGroup)i;
-            JToken item = configArray[i];
-            List<int> infoIdList = ((JArray)item).ToObject<List<int>>();
-            deckInfoIdListDic[group] = infoIdList;
-            KLog.I(TAG, "GetDeckInfoIdList: group: " + group + ", infoIdList: " + infoIdList.Count);
+        try {
+            string configStr = File.ReadAllText(configPath);
+            KLog.I(TAG, "GetDeckConfig: Receive: " + configStr);
+            JObject resJson = JObject.Parse(configStr);
+            JObject deckConfig = (JObject)resJson["deck"];
+            deckCardGroup = (CardGroup)(int)deckConfig["group"];
+            KLog.I(TAG, "GetDeckInfoIdList: deckCardGroup: " + deckCardGroup);
+            JArray configArray = (JArray)deckConfig["config"];
+            for (int i = 0; i < configArray.Count; i++) {
+                CardGroup group = (CardGroup)i;
+                JToken item = configArray[i];
+                List<int> infoIdList = ((JArray)item).ToObject<List<int>>();
+                deckInfoIdListDic[group] = infoIdList;
+                KLog.I(TAG, "GetDeckInfoIdList: group: " + group + ", infoIdList: " + infoIdList.Count);
+            }
+        } catch (Exception ex) {
+            KLog.E(TAG, $"Error reading deck config file: {ex.Message}");
         }
     }
 
@@ -141,36 +162,62 @@ public class KConfig
         };
         string updateDeckConfigReqStr = JsonConvert.SerializeObject(updateDeckConfigReq);
         KLog.I(TAG, "UpdateDeckConfig: updateDeckConfigReqStr = " + updateDeckConfigReqStr);
-        PlayerPrefs.SetString(DECK_CONFIG_KEY, updateDeckConfigReqStr);
-        PlayerPrefs.Save();
+        try {
+            string configPath = GetDeckConfigPath();
+            File.WriteAllText(configPath, updateDeckConfigReqStr);
+            KLog.I(TAG, $"Deck config saved to: {configPath}");
+        } catch (Exception ex) {
+            KLog.E(TAG, $"Error saving deck config: {ex.Message}");
+        }
     }
 
-    [Serializable]
-    private class UpdateCompetitionConfigReq
+    private string GetDeckConfigPath()
     {
-        public string competition_config;
+#if UNITY_EDITOR
+        return Path.Combine(Application.persistentDataPath, "deck_config_test.json");
+#else
+        return Path.Combine(Application.persistentDataPath, "deck_config.json");
+#endif
+    }
+
+    private string GetCompetitionConfigPath()
+    {
+#if UNITY_EDITOR
+        return Path.Combine(Application.persistentDataPath, "competition_config_test.json");
+#else
+        return Path.Combine(Application.persistentDataPath, "competition_config.json");
+#endif
     }
 
     private void SaveCompetitionContextToDisk()
     {
         // 格式：{"competition_config": "json_str"}
         KLog.I(TAG, "SaveCompetitionContextToDisk");
-        UpdateCompetitionConfigReq updateCompetitionConfigReq = new UpdateCompetitionConfigReq();
-        updateCompetitionConfigReq.competition_config = JsonConvert.SerializeObject(competitionContextRecord);
-        string updateCompetitioConfigReqStr = JsonConvert.SerializeObject(updateCompetitionConfigReq);
+        string updateCompetitioConfigReqStr = JsonConvert.SerializeObject(competitionContextRecord);
         KLog.I(TAG, "SaveCompetitionContextToDisk: updateCompetitioConfigReqStr = " + updateCompetitioConfigReqStr);
-        PlayerPrefs.SetString(COMPETITION_CONFIG_KEY, updateCompetitioConfigReqStr);
-        PlayerPrefs.Save();
+        try {
+            string configPath = GetCompetitionConfigPath();
+            File.WriteAllText(configPath, updateCompetitioConfigReqStr);
+            KLog.I(TAG, $"Competition config saved to: {configPath}");
+        } catch (Exception ex) {
+            KLog.E(TAG, $"Error saving Competition config: {ex.Message}");
+        }
     }
 
     private void GetCompetitionContextFromDisk()
     {
         // 格式：{"competition_config": "json_str"}
         KLog.I(TAG, "GetCompetitionContextFromDisk");
-        if (!PlayerPrefs.HasKey(COMPETITION_CONFIG_KEY)) {
+        string configPath = GetCompetitionConfigPath();
+        if (!File.Exists(configPath)) {
+            KLog.I(TAG, $"Deck config file not found at: {configPath}");
             return;
         }
-        string configStr = PlayerPrefs.GetString(COMPETITION_CONFIG_KEY);
-        competitionContextRecord = JsonConvert.DeserializeObject<CompetitionBase.ContextRecord>(configStr);
+        try {
+            string configStr = File.ReadAllText(configPath);
+            competitionContextRecord = JsonConvert.DeserializeObject<CompetitionBase.ContextRecord>(configStr);
+        } catch (Exception ex) {
+            KLog.E(TAG, $"Error reading deck config file: {ex.Message}");
+        }
     }
 }
