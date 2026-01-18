@@ -34,6 +34,7 @@ public class ExportScene : MonoBehaviour
 
     public IEnumerator ExportAll()
     {
+        yield return new WaitForSeconds(1);
         yield return Export(CardGroup.KumikoFirstYear);
         yield return Export(CardGroup.KumikoSecondYear);
         yield return Export(CardGroup.KumikoThirdYear);
@@ -53,14 +54,25 @@ public class ExportScene : MonoBehaviour
         };
         foreach (CardModel cardModel in allCardModelList) {
             yield return GenBytes(cardModel);
-            string filename = Application.dataPath + $"/ExportCardImg/{groupName}/{groupName}_{cardModel.cardInfo.chineseName}.png";
-            string directoryPath = Path.GetDirectoryName(filename);
-            if (!string.IsNullOrEmpty(directoryPath) && !Directory.Exists(directoryPath)) {
-                Directory.CreateDirectory(directoryPath);
-            }
+            string filename = GetPath(groupName, cardModel);
             File.WriteAllBytes(filename, bytes);
             Debug.Log($"{filename} saved.");
         }
+    }
+
+    public string GetPath(string groupName, CardModel cardModel)
+    {
+        int count = 1;
+        string filename = Application.dataPath + $"/ExportCardImg/{groupName}/{groupName}_{cardModel.cardInfo.chineseName}.png";
+        string directoryPath = Path.GetDirectoryName(filename);
+        if (!string.IsNullOrEmpty(directoryPath) && !Directory.Exists(directoryPath)) {
+            Directory.CreateDirectory(directoryPath);
+        }
+        while (File.Exists(filename)) {
+            filename = Application.dataPath + $"/ExportCardImg/{groupName}/{groupName}_{cardModel.cardInfo.chineseName}_{count}.png";
+            count++;
+        }
+        return filename;
     }
     
     private byte[] bytes;
