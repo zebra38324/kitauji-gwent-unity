@@ -79,3 +79,5 @@ crashlytics-build.properties
 /ServerData
 
 .idea/
+Assets/ExportCardImg/
+Assets/ExportCardImg.meta

@@ -444,6 +444,9 @@ GameObject:
   m_Component:
   - component: {fileID: 9180543953383840881}
   - component: {fileID: 6058924821133276042}
+  - component: {fileID: 9169951090794539397}
+  - component: {fileID: 7987743729861181381}
+  - component: {fileID: 1217995295345849187}
   m_Layer: 5
   m_Name: EntireCard
   m_TagString: Untagged
@@ -509,6 +512,57 @@ MonoBehaviour:
   abilityBackground: {fileID: 1812066567477262371}
   ability: {fileID: 7402438456654422560}
   frame: {fileID: 0}
+--- !u!222 &9169951090794539397
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4237425473757966632}
+  m_CullTransparentMesh: 1
+--- !u!114 &7987743729861181381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4237425473757966632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 58a3d3d8c016b174b9f36491fd6942f1, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1217995295345849187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4237425473757966632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShowMaskGraphic: 1
 --- !u!1 &4423199408750520132
 GameObject:
   m_ObjectHideFlags: 0
@@ -618,7 +672,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 21.708618, y: -219.35313}
+  m_AnchoredPosition: {x: 43, y: -219.35313}
   m_SizeDelta: {x: 301.1835, y: 46.4653}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1085313186078376739
@@ -902,7 +956,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 18.708618, y: -256.93262}
+  m_AnchoredPosition: {x: 43, y: -256.93262}
   m_SizeDelta: {x: 245.6526, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7215378660937871852

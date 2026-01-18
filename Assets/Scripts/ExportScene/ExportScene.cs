@@ -11,32 +11,70 @@ public class ExportScene : MonoBehaviour
     public int width = 410;
     public int height = 775;
 
-    private void Update()
+    private Camera cam;
+
+    private void Start()
     {
-        if (Input.GetKeyDown(KeyCode.F)) {
-            Export();
-        }
+        Init();
+        StartCoroutine(ExportAll());
     }
 
-    public void Export()
+    public void Init()
     {
         // 1. 准备环境
-        GameObject instance = Instantiate(cardPrefab, transform);
-        instance.transform.localPosition = new Vector3(-width / 2f, 0, 0);
-        RenderTexture rt = new RenderTexture(width, height, 24);
-        Camera cam = new GameObject("TempCam").AddComponent<Camera>();
+        cam = new GameObject("TempCam").AddComponent<Camera>();
         gameObject.GetComponent<Canvas>().worldCamera = cam;
         
         // 设置相机参数（根据你的卡牌大小调整位置和正交尺寸）
-        cam.targetTexture = rt;
         cam.orthographic = true;
         cam.orthographicSize = 5; // 调整这个值以适配卡牌大小
         cam.clearFlags = CameraClearFlags.SolidColor;
         cam.backgroundColor = new Color(0, 0, 0, 0); // 设置背景透明
+    }
 
-        // 2. 渲染
+    public IEnumerator ExportAll()
+    {
+        yield return Export(CardGroup.KumikoFirstYear);
+        yield return Export(CardGroup.KumikoSecondYear);
+        yield return Export(CardGroup.KumikoThirdYear);
+        yield return Export(CardGroup.Neutral);
+    }
+
+    public IEnumerator Export(CardGroup cardGroup)
+    {
+        CardGenerator cardGenerator = new CardGenerator(true);
+        List<CardModel> allCardModelList = cardGenerator.GetGroupCardList(cardGroup);
+        string groupName = cardGroup switch {
+            CardGroup.KumikoFirstYear => "K1",
+            CardGroup.KumikoSecondYear => "K2",
+            CardGroup.KumikoThirdYear => "K3",
+            CardGroup.Neutral => "N",
+            _ => throw new ArgumentOutOfRangeException()
+        };
+        foreach (CardModel cardModel in allCardModelList) {
+            yield return GenBytes(cardModel);
+            string filename = Application.dataPath + $"/ExportCardImg/{groupName}/{groupName}_{cardModel.cardInfo.chineseName}.png";
+            string directoryPath = Path.GetDirectoryName(filename);
+            if (!string.IsNullOrEmpty(directoryPath) && !Directory.Exists(directoryPath)) {
+                Directory.CreateDirectory(directoryPath);
+            }
+            File.WriteAllBytes(filename, bytes);
+            Debug.Log($"{filename} saved.");
+        }
+    }
+    
+    private byte[] bytes;
+
+    public IEnumerator GenBytes(CardModel cardModel)
+    {
+        GameObject card = Instantiate(cardPrefab, transform);
+        card.transform.localPosition = new Vector3(-width / 2f, 0, 0);
+        card.GetComponent<CardDisplay>().SetCardModel(cardModel);
+        yield return new WaitForSeconds(1f);
+        
+        RenderTexture rt = new RenderTexture(width, height, 24);
+        cam.targetTexture = rt;
         cam.Render();
-
         // 3. 读取像素
         RenderTexture.active = rt;
         Texture2D screenShot = new Texture2D(width, height, TextureFormat.ARGB32, false);
@@ -44,14 +82,10 @@ public class ExportScene : MonoBehaviour
         screenShot.Apply();
 
         // 4. 保存文件
-        byte[] bytes = screenShot.EncodeToPNG();
-        string filename = Application.dataPath + "/CardExport.png";
-        File.WriteAllBytes(filename, bytes);
+        bytes = screenShot.EncodeToPNG();
 
         // 5. 清理
-        Object.DestroyImmediate(instance);
-        Object.DestroyImmediate(cam.gameObject);
+        Object.DestroyImmediate(card);
         RenderTexture.active = null;
-        Debug.Log("导出成功: " + filename);
     }
 }

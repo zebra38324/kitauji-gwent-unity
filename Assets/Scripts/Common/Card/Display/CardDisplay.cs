@@ -67,7 +67,7 @@ public class CardDisplay : MonoBehaviour,
     // Update is called once per frame
     void Update()
     {
-        JudgeShowCardInfo();
+        //JudgeShowCardInfo(); TODO temp
     }
 
     public void SetCardModel(CardModel model, bool needUpdate = false)
